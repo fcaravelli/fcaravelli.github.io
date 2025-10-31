@@ -55,13 +55,47 @@
         </div>
       </section>
 
-      <section class="news-preview">
-        <h3>Recent News</h3>
-        <ul>
-          <li><strong>Sep 2025:</strong> Book out.</li>
-        </ul>
-        <p><a href="news.html">See all news →</a></p>
-      </section>
+<section class="news-preview">
+  <h3>Recent News</h3>
+  <ul id="home-news"></ul>
+  <p><a href="news.html">See all news →</a></p>
+</section>
+
+<script>
+  async function loadRecentNews() {
+    // 👉 Customize this value to show more or fewer items
+    const numberOfNewsToShow = 3;
+
+    const container = document.getElementById('home-news');
+    try {
+      const response = await fetch('news/news.json');
+      const newsItems = await response.json();
+
+      // sort by date descending
+      newsItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      // select only the latest N items
+      const latest = newsItems.slice(0, numberOfNewsToShow);
+
+      latest.forEach(item => {
+        const date = new Date(item.date);
+        const formatted = date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short'
+        });
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${formatted}:</strong> <a href="${item.link}" target="_blank">${item.title}</a>`;
+        container.appendChild(li);
+      });
+    } catch (err) {
+      console.error(err);
+      container.innerHTML = '<li>Error loading news.</li>';
+    }
+  }
+
+  loadRecentNews();
+</script>
+
     </main>
   </div>
 </body>
