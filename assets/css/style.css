@@ -142,3 +142,20 @@ body {
 .news-list a:hover {
   text-decoration: underline;
 }
+
+
+.poem {
+  font-family: 'Merriweather', serif;
+  font-style: italic;
+  line-height: 1.6;
+  margin-left: 1em;
+}
+
+.project-image-small {
+  display: block;
+  margin: 15px auto;
+  max-width: 300px;
+  width: 80%;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
