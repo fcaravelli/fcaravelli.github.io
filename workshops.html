@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workshops & Schools – Francesco Caravelli</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h2>Workshops & Schools</h2>
+      <p><em>Scientific events organized or co-organized by Francesco Caravelli, focusing on complex systems, computation, and interdisciplinary physics.</em></p>
+
+      <!-- Workshop 1 -->
+      <section class="project">
+        <h3>School on Spectral Methods for Complex Systems (2018)</h3>
+        <img src="/assets/img/spectral-methods-banner.png" alt="School on Spectral Methods for Complex Systems" class="project-banner" />
+        <p>
+          Co-organized with <strong>Lyubov Tupikina</strong>. The school introduced participants to spectral graph theory, complex networks, and time-series analysis in dynamical systems.
+        </p>
+        <p>
+          <a href="https://complexsystems.unipv.it/spectral-school" target="_blank">Official Website</a> |
+          <a href="/assets/img/spectral-methods-banner.png" target="_blank">Poster</a>
+        </p>
+      </section>
+
+      <!-- Workshop 2 -->
+      <section class="project">
+        <h3>Workshop: Neuromorphic Computing Meets Quantum (2024)</h3>
+        <p>
+          Keynote and organizational role in an interdisciplinary workshop bringing together experts in neuromorphic and quantum computation. The event explored cross-domain architectures and energy-efficient computing paradigms.
+        </p>
+        <p><a href="https://www.quantumneuromorphics2024.org" target="_blank">Event Website</a></p>
+      </section>
+
+      <!-- Workshop 3 -->
+      <section class="project">
+        <h3>Conference on Complexity, Criticality, and Computation (2017–ongoing)</h3>
+        <p>
+          Recurring invited sessions and talks since 2017, covering the interplay between complex networks, phase transitions, and computational modeling of physical systems.
+        </p>
+        <p><a href="https://www.complexityconference.org" target="_blank">Conference Website</a></p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        // highlight active page
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath || link.getAttribute('href').endsWith('workshops.html')) {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
