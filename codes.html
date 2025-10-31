@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Codes – Francesco Caravelli</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h2>Codes and Computational Projects</h2>
+      <p><em>Open-source and collaborative software developed for research in quantum computing, complex systems, and statistical physics.</em></p>
+
+      <!-- After 2020 -->
+      <section class="project">
+        <h3>After 2020</h3>
+        <p>Recent and ongoing codes reflecting current research directions in quantum, neuromorphic, and analog computation.</p>
+        <ul>
+            To be filled soon.  
+         </ul>
+      </section>
+
+      <!-- Before 2020 -->
+      <section class="project">
+        <h3>Before 2024 - Matlab and C</h3>
+        <p>Earlier codes focused on theoretical modeling, graph theory, and the early development of memristive computing.</p>
+        <ul>
+
+           <li>
+            <strong><a href="https://github.com/fcaravelli/spin-ice-simulation" target="_blank">Artificial Spin Ice Simulator</a></strong><br>
+            Code developed for simulating spin dynamics, ergodicity, and pattern formation in artificial spin ice lattices.
+          </li>
+
+            <li>
+            <strong><a href="http://figshare.com/articles/Evolving_Networks_with_Memory/1486365" target="_blank">Evolving Networks with Memory</a></strong><br>
+            <img src="/img/evolnet.png" alt="Evolving Networks with Memory Simulation" class="project-image" />
+            MATLAB package for simulating <em>networks with reinforcing walkers</em>, developed from the research published in 
+            <a href="https://doi.org/10.1209/0295-5075/109/28006" target="_blank">EPL 109, 28006 (2015)</a>.  
+            This software models evolving and growing networks subject to reinforcement dynamics and decay, with support for multiple 
+            types of dynamics, directed or undirected graphs, weighted links, and control over initial graph structure.  
+            The simulator can analyze clustering, thermalization times, and graph observables, and can also generate animations such as 
+            <a href="https://www.youtube.com/watch?v=lAzAvyalpl4" target="_blank">this example video</a>.<br>
+            Contact: <code>fcaravelli [at] ucl . ac . uk</code><br>
+            <em>If used, please cite:</em>  
+            F. Caravelli, A. Hamma, M. Di Ventra, <em>Evolving Networks with Memory</em>, EPL 109, 28006 (2015).  
+            <a href="http://dx.doi.org/10.6084/m9.figshare.1486365" target="_blank">figshare repository</a>.
+            </li>
+
+
+
+
+
+
+
+        </ul>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        // highlight active page automatically
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath || link.getAttribute('href').endsWith('codes.html')) {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
