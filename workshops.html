@@ -16,38 +16,71 @@
     <!-- Main Content -->
     <main class="content">
       <h2>Workshops & Schools</h2>
-      <p><em>Scientific events organized or co-organized by Francesco Caravelli, focusing on complex systems, computation, and interdisciplinary physics.</em></p>
+      <p><em>A selection of scientific events I have organized or co-organized, bringing together researchers across complex systems, computation, and physics.</em></p>
 
-      <!-- Workshop 1 -->
+      <!-- Conclave -->
       <section class="project">
-        <h3>School on Spectral Methods for Complex Systems (2018)</h3>
-        <img src="/assets/img/spectral-methods-banner.png" alt="School on Spectral Methods for Complex Systems" class="project-banner" />
+        <h3>The Conclave on Computation and Complexity (2023)</h3>
         <p>
-          Co-organized with <strong>Lyubov Tupikina</strong>. The school introduced participants to spectral graph theory, complex networks, and time-series analysis in dynamical systems.
+          Organized with Michael Saccone, Luis Pedro Garcia-Pintos, and Cristiano Nisoli. The Conclave gathered experts in complex systems, network theory, and computation to explore emergent computational paradigms and the boundaries between physics and information science.
         </p>
         <p>
-          <a href="https://complexsystems.unipv.it/spectral-school" target="_blank">Official Website</a> |
-          <a href="/assets/img/spectral-methods-banner.png" target="_blank">Poster</a>
+          The event fostered discussion around computational complexity in natural and artificial systems, featuring interdisciplinary panels and interactive sessions.
+          Among the invited speakers, we had Chris Jarzynski, Cris Moore, David Wolpert, Dante Chialvo, Zdenka Kuncic, Gianluca Milano, Kilian Stenning, Mikhail Prokopenko, Valentina Baccetti
+          and many others.
+
+        </p>
+        
+      </section>
+
+      <!-- Spectral Methods -->
+      <section class="project">
+        <h3>Online Winter School on Spectral Methods for Complex Systems (2020)</h3>
+        <p>
+          Co-organized with <strong>Lyubov Tupikina</strong>.  
+          The main motivation for this online Winter School was to learn about the broad applications of spectral methods, exchange new ideas, and record lectures that are now freely available online.
+        </p>
+        <p>
+          Topics included spectral graph theory, community detection, eigenvalue spectra of complex systems, and data-driven dynamical modeling.
+        </p>
+        <p>
+          <a href="https://sites.google.com/view/cssm/home?read_current=1" target="_blank">Official Website</a> |
+          <a href="/img/spectral.png" target="_blank">Poster</a>
         </p>
       </section>
 
-      <!-- Workshop 2 -->
+      <!-- ETOCS -->
       <section class="project">
-        <h3>Workshop: Neuromorphic Computing Meets Quantum (2024)</h3>
+        <h3>Emergent Topological Order in Classical Systems (ETOCS) Workshop (2018)</h3>
         <p>
-          Keynote and organizational role in an interdisciplinary workshop bringing together experts in neuromorphic and quantum computation. The event explored cross-domain architectures and energy-efficient computing paradigms.
+          Co-Organizer with Cristiano Nisoli, Eli Ben-Naim and Avadh Saxena, through the Center for Nonlinear Studies, Los Alamos National Laboratory (LANL).
+          The workshop explored emergent topological order and collective phenomena in classical systems, with applications to spin ices, artificial neural networks, 
+          and metamaterials.
+            
         </p>
-        <p><a href="https://www.quantumneuromorphics2024.org" target="_blank">Event Website</a></p>
+        <p>
+          Invited speakers included leading figures in statistical mechanics and complex systems, contributing to cross-disciplinary research on emergent behavior.
+        </p>
+        <p>
+          <a href="https://cnls.lanl.gov/" target="_blank">CNLS Website</a> |
+          <a href="/img/etocs.jpg" target="_blank">Poster</a>
+        </p>
       </section>
 
-      <!-- Workshop 3 -->
+      <!-- NEEFS -->
       <section class="project">
-        <h3>Conference on Complexity, Criticality, and Computation (2017–ongoing)</h3>
+        <h3>NEEFS 2016 – Non-Stationarity and Ergodicity in Economic and Financial Systems</h3>
         <p>
-          Recurring invited sessions and talks since 2017, covering the interplay between complex networks, phase transitions, and computational modeling of physical systems.
+          Organizer (with Marco Bardoscia and Fabio Caccioli) of the NEEFS 2016 satellite meeting at <em>Conference on Complex Systems (CCS 2016)</em>, Amsterdam.
+          The workshop focused on non-equilibrium behavior, ergodicity, and time series in financial and economic systems.
         </p>
-        <p><a href="https://www.complexityconference.org" target="_blank">Conference Website</a></p>
-      </section>
+        <p>
+          Invited speakers included Doyne Farmer, Ole Peters, and Guido Caldarelli, with discussions on stochastic modeling, statistical physics, and complex dynamics in markets.
+        </p>
+        <p>
+          <a href="/img/neefs2016.jpg" target="_blank">Poster</a>
+        </p>        
+         </section>
     </main>
   </div>
 
@@ -61,7 +94,7 @@
         const html = await response.text();
         sidebarContainer.innerHTML = html;
 
-        // highlight active page
+        // highlight current page automatically
         const currentPath = window.location.pathname.split('/').pop();
         const links = sidebarContainer.querySelectorAll('a');
         links.forEach(link => {
