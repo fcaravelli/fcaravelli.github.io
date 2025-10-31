@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News – Francesco Caravelli</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-content">
+        <img src="assets/img/me.jpg" alt="Francesco Caravelli" class="profile-pic" />
+        <h1><a href="index.html">Francesco Caravelli</a></h1>
+        <nav>
+          <ul>
+            <li><a href="ecv.html">eCV</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="publications.html">Publications</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="news.html" class="active">News</a></li>
+          </ul>
+        </nav>
+      </div>
+      <footer>
+        <p>© 2025 Francesco Caravelli</p>
+      </footer>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h2>News</h2>
+      <p><em>Recent updates and announcements, automatically ordered by date.</em></p>
+
+      <ul id="news-container" class="news-list"></ul>
+    </main>
+  </div>
+
+  <script>
+    async function loadNews() {
+      const container = document.getElementById('news-container');
+      try {
+        const response = await fetch('news/news.json');
+        const items = await response.json();
+
+        // sort newest first
+        items.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        items.forEach(news => {
+          const date = new Date(news.date);
+          const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${formattedDate}:</strong> <a href="${news.link}" target="_blank">${news.title}</a>`;
+          container.appendChild(li);
+        });
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<li>Error loading news items.</li>';
+      }
+    }
+
+    loadNews();
+  </script>
+</body>
+</html>
