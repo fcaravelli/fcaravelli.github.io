@@ -40,40 +40,57 @@
   </div>
 
   <script>
-    async function loadBlog() {
-      const container = document.getElementById('blog-container');
-      try {
-        const response = await fetch('blog/posts.json');
-        const posts = await response.json();
+async function loadBlog() {
+  const container = document.getElementById('blog-container');
+  try {
+    const response = await fetch('blog/posts.json');
+    const posts = await response.json();
 
-        // sort newest first
-        posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+    // sort newest first
+    posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        let currentMonth = '';
-        posts.forEach(post => {
-          const date = new Date(post.date);
-          const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-          if (monthYear !== currentMonth) {
-            const h3 = document.createElement('h3');
-            h3.textContent = monthYear;
-            container.appendChild(h3);
-            currentMonth = monthYear;
-          }
-
-          const entry = document.createElement('p');
-          const formattedDate = date.toLocaleDateString('en-US', {
-            year: 'numeric', month: 'short', day: 'numeric'
-          });
-          entry.innerHTML = `📄 <a href="blog/${post.file}">${post.title}</a> — <em>${formattedDate}</em>`;
-          container.appendChild(entry);
-        });
-      } catch (err) {
-        console.error(err);
-        container.textContent = 'Error loading blog posts.';
+    let currentMonth = '';
+    posts.forEach(post => {
+      const date = new Date(post.date);
+      const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+      if (monthYear !== currentMonth) {
+        const h3 = document.createElement('h3');
+        h3.textContent = monthYear;
+        container.appendChild(h3);
+        currentMonth = monthYear;
       }
-    }
 
-    loadBlog();
-  </script>
+      // main entry
+      const entry = document.createElement('div');
+      entry.classList.add('blog-entry');
+
+      const formattedDate = date.toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+
+      // title + date
+      const link = `<a href="blog/${post.file}">${post.title}</a>`;
+      let html = `📄 ${link} — <em>${formattedDate}</em>`;
+
+      // optional tags
+      if (post.tags && post.tags.length) {
+        const tags = post.tags.map(tag =>
+          `<span class="tag">${tag}</span>`
+        ).join(' ');
+        html += `<div class="tags">${tags}</div>`;
+      }
+
+      entry.innerHTML = html;
+      container.appendChild(entry);
+    });
+  } catch (err) {
+    console.error(err);
+    container.textContent = 'Error loading blog posts.';
+  }
+}
+
+loadBlog();
+</script>
+
 </body>
 </html>
