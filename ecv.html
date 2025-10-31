@@ -10,26 +10,8 @@
 
 <body>
   <div class="layout">
-    <!-- Sidebar (same as index.html) -->
-    <aside class="sidebar">
-      <div class="sidebar-content">
-        <img src="assets/img/me.jpg" alt="Francesco Caravelli" class="profile-pic" />
-        <h1><a href="index.html">Francesco Caravelli</a></h1>
-        <nav>
-            <ul>
-                <li><a href="ecv.html" class="active">eCV</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="publications.html">Publications</a></li>
-                <li><a href="news.html">News</a></li>
-                <li><a href="codes.html">Codes</a></li>
-                <li><a href="blog.html">Blog</a></li>
-            </ul>
-        </nav>
-      </div>
-      <footer>
-        <p>© 2025 Francesco Caravelli</p>
-      </footer>
-    </aside>
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
 
     <!-- Main Content -->
     <main class="content">
@@ -106,5 +88,30 @@
       </section>
     </main>
   </div>
+
+  <!-- Load shared sidebar -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        // highlight current page automatically
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadSidebar();
+  </script>
 </body>
 </html>

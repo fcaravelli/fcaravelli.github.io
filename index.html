@@ -10,27 +10,8 @@
 
 <body>
   <div class="layout">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-content">
-        <img src="assets/img/me.jpg" alt="Francesco Caravelli" class="profile-pic" />
-        <h1><a href="index.html">Francesco Caravelli</a></h1>
-        <nav>
-          <ul>
-            <li><a href="ecv.html">eCV</a></li>
-            <li><a href="projects.html">Projects</a></li>
-            <li><a href="publications.html">Publications</a></li>
-            <li><a href="news.html">News</a></li>
-            <li><a href="codes.html">Codes</a></li>
-            <li><a href="blog.html">Blog</a></li>
-
-          </ul>
-        </nav>
-      </div>
-      <footer>
-        <p>© 2025 Francesco Caravelli</p>
-      </footer>
-    </aside>
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
 
     <!-- Main Content -->
     <main class="content">
@@ -38,15 +19,17 @@
         <div class="bio">
           <h2>Hello, I'm Francesco Caravelli</h2>
           <p>
-            I am a theoretical physicist. I am currently the head of the Theory and Modeling Group at Planckian, a spin-off of Scuola Normale Superiore and the University of Pisa (where I am also a guest).
+            I am a theoretical physicist. I am currently the head of the Theory and Modeling Group at Planckian,
+            a spin-off of Scuola Normale Superiore and the University of Pisa (where I am also a guest).
             Previously, I was a Staff Scientist at Los Alamos National Laboratory, where I am still a guest scientist.
-            I work in quantum and neuromorphic computing, complex systems, network theory, and statistical physics. 
+            I work in quantum and neuromorphic computing, complex systems, network theory, and statistical physics.
           </p>
           <p>
-            My research focuses on the intersection of physics, computation and statistical physics, exploring how structure and dynamics interact across scales.
+            My research focuses on the intersection of physics, computation, and statistical physics — exploring
+            how structure and dynamics interact across scales.
           </p>
           <div class="links">
-            <a href="https://www.linkedin.com/in/francesco-c-0bab3b2b4/" target="_blank">Linkedin</a>|
+            <a href="https://www.linkedin.com/in/francesco-c-0bab3b2b4/" target="_blank">LinkedIn</a> |
             <a href="https://www.researchgate.net/profile/Francesco-C-3?ev=hdr_xprf" target="_blank">ResearchGate</a> |
             <a href="https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=francesco+caravelli&btnG=" target="_blank">Google Scholar</a> |
             <a href="https://arxiv.org/search/?query=Caravelli+francesco&searchtype=all&source=header" target="_blank">arXiv</a> |
@@ -55,48 +38,74 @@
         </div>
       </section>
 
-<section class="news-preview">
-  <h3>Recent News</h3>
-  <ul id="home-news"></ul>
-  <p><a href="news.html">See all news →</a></p>
-</section>
-
-<script>
-  async function loadRecentNews() {
-    // 👉 Customize this value to show more or fewer items
-    const numberOfNewsToShow = 3;
-
-    const container = document.getElementById('home-news');
-    try {
-      const response = await fetch('news/news.json');
-      const newsItems = await response.json();
-
-      // sort by date descending
-      newsItems.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      // select only the latest N items
-      const latest = newsItems.slice(0, numberOfNewsToShow);
-
-      latest.forEach(item => {
-        const date = new Date(item.date);
-        const formatted = date.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short'
-        });
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${formatted}:</strong> <a href="${item.link}" target="_blank">${item.title}</a>`;
-        container.appendChild(li);
-      });
-    } catch (err) {
-      console.error(err);
-      container.innerHTML = '<li>Error loading news.</li>';
-    }
-  }
-
-  loadRecentNews();
-</script>
-
+      <!-- Recent News -->
+      <section class="news-preview">
+        <h3>Recent News</h3>
+        <ul id="home-news"></ul>
+        <p><a href="news.html">See all news →</a></p>
+      </section>
     </main>
   </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        // Highlight active page
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+
+  <!-- Dynamic News Loader -->
+  <script>
+    async function loadRecentNews() {
+      // 👉 Customize how many recent news items to display
+      const numberOfNewsToShow = 3;
+
+      const container = document.getElementById('home-news');
+      try {
+        const response = await fetch('news/news.json');
+        const newsItems = await response.json();
+
+        // sort newest first
+        newsItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // select only the latest N
+        const latest = newsItems.slice(0, numberOfNewsToShow);
+
+        latest.forEach(item => {
+          const date = new Date(item.date);
+          const formatted = date.toLocaleDateString('en-US', {
+            year: 'numeric', month: 'short'
+          });
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${formatted}:</strong> <a href="${item.link}" target="_blank">${item.title}</a>`;
+          container.appendChild(li);
+        });
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<li>Error loading news.</li>';
+      }
+    }
+
+    loadRecentNews();
+  </script>
 </body>
 </html>

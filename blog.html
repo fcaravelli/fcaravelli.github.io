@@ -10,88 +10,125 @@
 
 <body>
   <div class="layout">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-content">
-        <img src="assets/img/me.jpg" alt="Francesco Caravelli" class="profile-pic" />
-        <h1><a href="index.html">Francesco Caravelli</a></h1>
-        <nav>
-          <ul>
-            <li><a href="ecv.html">eCV</a></li>
-            <li><a href="projects.html">Projects</a></li>
-            <li><a href="publications.html">Publications</a></li>
-            <li><a href="news.html">News</a></li>
-            <li><a href="codes.html">Codes</a></li>
-            <li><a href="blog.html" class="active">Blog</a></li>
-          </ul>
-        </nav>
-      </div>
-      <footer>
-        <p>© 2025 Francesco Caravelli</p>
-      </footer>
-    </aside>
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
 
-    <!-- Main Content -->
-    <main class="content">
-      <h2>Blog & Updates</h2>
-      <p><em>Recent reflections, research highlights, and code updates — arranged by month.</em></p>
+    <!-- Main Blog Layout -->
+    <main class="content blog-layout">
+      <section class="blog-main">
+        <h2>Blog & Updates</h2>
+        <p><em>Recent reflections, research highlights, and code updates — arranged by month.</em></p>
+        <div id="blog-container"></div>
+      </section>
 
-      <div id="blog-container"></div>
+      <aside class="tag-sidebar">
+        <h3>Topics</h3>
+        <ul id="tag-list"></ul>
+      </aside>
     </main>
   </div>
 
+  <!-- Sidebar Loader -->
   <script>
-async function loadBlog() {
-  const container = document.getElementById('blog-container');
-  try {
-    const response = await fetch('blog/posts.json');
-    const posts = await response.json();
+  async function loadSidebar() {
+    try {
+      const sidebarContainer = document.getElementById('sidebar');
+      const response = await fetch('partials/sidebar.html');
+      if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+      const html = await response.text();
+      sidebarContainer.innerHTML = html;
 
-    // sort newest first
-    posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+      // highlight current page automatically
+      const currentPath = window.location.pathname.split('/').pop();
+      const links = sidebarContainer.querySelectorAll('a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) link.classList.add('active');
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  loadSidebar();
+  </script>
 
-    let currentMonth = '';
-    posts.forEach(post => {
-      const date = new Date(post.date);
-      const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-      if (monthYear !== currentMonth) {
-        const h3 = document.createElement('h3');
-        h3.textContent = monthYear;
-        container.appendChild(h3);
-        currentMonth = monthYear;
-      }
+  <!-- Blog Loader with Tag Sidebar -->
+  <script>
+  async function loadBlog() {
+    const container = document.getElementById('blog-container');
+    const tagList = document.getElementById('tag-list');
+    try {
+      const response = await fetch('blog/posts.json');
+      const posts = await response.json();
 
-      // main entry
-      const entry = document.createElement('div');
-      entry.classList.add('blog-entry');
+      // sort newest first
+      posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-      const formattedDate = date.toLocaleDateString('en-US', {
-        year: 'numeric', month: 'short', day: 'numeric'
+      // collect all tags
+      const allTags = new Set();
+      posts.forEach(p => (p.tags || []).forEach(tag => allTags.add(tag)));
+
+      // render tags in sidebar
+      const sortedTags = Array.from(allTags).sort();
+      sortedTags.forEach(tag => {
+        const li = document.createElement('li');
+        li.innerHTML = `<button class="tag-filter" data-tag="${tag}">${tag}</button>`;
+        tagList.appendChild(li);
       });
 
-      // title + date
-      const link = `<a href="blog/${post.file}">${post.title}</a>`;
-      let html = `📄 ${link} — <em>${formattedDate}</em>`;
+      // render posts
+      let currentMonth = '';
+      posts.forEach(post => {
+        const date = new Date(post.date);
+        const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+        if (monthYear !== currentMonth) {
+          const h3 = document.createElement('h3');
+          h3.textContent = monthYear;
+          container.appendChild(h3);
+          currentMonth = monthYear;
+        }
 
-      // optional tags
-      if (post.tags && post.tags.length) {
-        const tags = post.tags.map(tag =>
-          `<span class="tag">${tag}</span>`
-        ).join(' ');
-        html += `<div class="tags">${tags}</div>`;
-      }
+        const entry = document.createElement('div');
+        entry.classList.add('blog-entry');
+        entry.dataset.tags = (post.tags || []).join(',');
 
-      entry.innerHTML = html;
-      container.appendChild(entry);
-    });
-  } catch (err) {
-    console.error(err);
-    container.textContent = 'Error loading blog posts.';
+        const formattedDate = date.toLocaleDateString('en-US', {
+          year: 'numeric', month: 'short', day: 'numeric'
+        });
+
+        const link = `<a href="blog/${post.file}">${post.title}</a>`;
+        let html = `📄 ${link} — <em>${formattedDate}</em>`;
+
+        if (post.tags && post.tags.length) {
+          const tags = post.tags.map(tag => `<span class="tag">${tag}</span>`).join(' ');
+          html += `<div class="tags">${tags}</div>`;
+        }
+
+        entry.innerHTML = html;
+        container.appendChild(entry);
+      });
+
+      // filtering behavior
+      tagList.addEventListener('click', e => {
+        if (!e.target.classList.contains('tag-filter')) return;
+        const selected = e.target.dataset.tag;
+        const allEntries = container.querySelectorAll('.blog-entry');
+        allEntries.forEach(entry => {
+          const tags = entry.dataset.tags.split(',');
+          entry.style.display = tags.includes(selected) ? 'block' : 'none';
+        });
+
+        // visually mark selected tag
+        document.querySelectorAll('.tag-filter').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+      });
+
+    } catch (err) {
+      console.error(err);
+      container.textContent = 'Error loading blog posts.';
+    }
   }
-}
 
-loadBlog();
-</script>
-
+  loadBlog();
+  </script>
 </body>
 </html>
