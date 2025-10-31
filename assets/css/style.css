@@ -123,3 +123,22 @@ body {
   margin-right: 4px;
   font-weight: 500;
 }
+
+.news-list {
+  list-style: none;
+  padding: 0;
+}
+
+.news-list li {
+  margin: 0.4em 0;
+  line-height: 1.5;
+}
+
+.news-list a {
+  color: #007acc;
+  text-decoration: none;
+}
+
+.news-list a:hover {
+  text-decoration: underline;
+}
