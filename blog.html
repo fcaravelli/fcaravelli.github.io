@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog – Francesco Caravelli</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-content">
+        <img src="assets/img/me.jpg" alt="Francesco Caravelli" class="profile-pic" />
+        <h1><a href="index.html">Francesco Caravelli</a></h1>
+        <nav>
+          <ul>
+            <li><a href="ecv.html">eCV</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="publications.html">Publications</a></li>
+            <li><a href="blog.html" class="active">Blog</a></li>
+            <li><a href="news.html">News</a></li>
+          </ul>
+        </nav>
+      </div>
+      <footer>
+        <p>© 2025 Francesco Caravelli</p>
+      </footer>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h2>Blog & Updates</h2>
+      <p><em>Recent reflections, research highlights, and code updates — arranged by month.</em></p>
+
+      <div id="blog-container"></div>
+    </main>
+  </div>
+
+  <script>
+    async function loadBlog() {
+      const container = document.getElementById('blog-container');
+      try {
+        const response = await fetch('blog/posts.json');
+        const posts = await response.json();
+
+        // sort newest first
+        posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        let currentMonth = '';
+        posts.forEach(post => {
+          const date = new Date(post.date);
+          const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+          if (monthYear !== currentMonth) {
+            const h3 = document.createElement('h3');
+            h3.textContent = monthYear;
+            container.appendChild(h3);
+            currentMonth = monthYear;
+          }
+
+          const entry = document.createElement('p');
+          const formattedDate = date.toLocaleDateString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric'
+          });
+          entry.innerHTML = `📄 <a href="blog/${post.file}">${post.title}</a> — <em>${formattedDate}</em>`;
+          container.appendChild(entry);
+        });
+      } catch (err) {
+        console.error(err);
+        container.textContent = 'Error loading blog posts.';
+      }
+    }
+
+    loadBlog();
+  </script>
+</body>
+</html>
