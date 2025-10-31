@@ -2,7 +2,7 @@
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
-  background: #fdfdfd;
+  background: #caeadf;
   color: #333;
 }
 
@@ -14,8 +14,8 @@ body {
 /* --- Sidebar --- */
 .sidebar {
   width: 240px;
-  background-color: #fafafa;
-  border-right: 1px solid #ddd;
+  background-color: #878484;
+  border-right: 1px solid #020202;
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
@@ -76,7 +76,7 @@ body {
 }
 
 .links a {
-  color: #032a45;
+  color: #9e053b;
   text-decoration: none;
 }
 
@@ -95,7 +95,7 @@ body {
     width: 100%;
     height: auto;
     border-right: none;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #787676;
   }
 
   .content {
