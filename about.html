@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About – Francesco Caravelli</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h2>About Me</h2>
+      <p><em>Last updated: October 2025</em></p>
+
+      <section>
+        <h3>Origins</h3>
+        <p>
+          Born in Palmi, Calabria, on June 6th, 1985 — in that mythical, often forgotten corner of Southern Europe. 
+          According to some I was Italian; for others, simply a <em>terrone</em>. Historians agree only that I was 
+          the outcome of an unlikely symmetry breaking between a communist and a fascist — an event that, according 
+          to physicists, occurred within a Planck-sized sphere over a Planck-time duration.
+        </p>
+        <p>
+          I speak <em>italiano</em>, English, <em>Deutsch</em>, and <em>Calabbrisi</em>. I consider myself a European 
+          of Italian nationality — or, more precisely, Calabrian.
+        </p>
+                <img src="/img/bronzo1.jpg" alt="Bronzo 1" class="project-image-small" />
+                <img src="/img/bronzo2.jpg" alt="Bronzo 2" class="project-image-small" />
+
+      </section>
+
+      <section>
+        <h3>Facts (Not Too Seriously)</h3>
+        <p>
+          I was a Staff Scientist at Los Alamos National Laboratory between 2020 and 2025.  
+          Being from Southern Italy, it’s statistically unlikely that I’ll become famous — but that’s fine.
+        </p>
+        <p>
+          I have few hobbies. I find squirrels and chipmunks funny, and I’m not particularly fond of spiders.  
+          I sometimes dream of living on Craven Road no. 8, next door to Dylan Dog, my hero (or anti-hero).  
+        </p>
+                <img src="/img/craven.jpg" alt="Alba dei Morti Viventi - Dylan Dog" class="project-image-small" />
+
+        <p>
+          My favorite athlete used to be Oscar Pistorius. Now I root for Alex Zanardi.  
+          To me, sport is about struggle rather than success.
+        </p>
+        <p>
+          I also sell zero-point energy — <em>Nullpunktenergie</em> if you prefer the German sound — 
+          for the fair price of £25 per box. <strong>Zero-Point Energy: Zero-Point in buying it!</strong>
+        </p>
+      </section>
+
+      <section>
+        <h3>Things I Like</h3>
+        <p>
+          <a href="https://www.flickr.com" target="_blank">Flickr</a> used to be awesome.  
+
+          GNU/Linux Ubuntu was even cooler.
+        </p>
+        <p>
+          I used to read <em>Repubblica</em>, <em>Corriere</em>, <em>Linkiesta</em>, now I only read <em>Il Post</em>;  
+          they often disagree with each other and with themselves, which is comforting.  
+
+        </p>
+        <p>
+          According to a random internet quiz, I am a night owl.
+        </p>
+      </section>
+
+      <section>
+        <h3>Poetry and Humor</h3>
+        <blockquote>
+          来て見れば夕の桜実となりぬ  
+          <br><em>When you come to see them, evening cherries have turned to fruit.</em>
+          佔著茅坑不拉屎.
+          <br><em>Sitting on the toilet, not taking a dump.</em>
+          
+        </blockquote>
+
+        <h4>Ashes of Rome</h4>
+        <p class="poem">
+          Remo did not know that his brother<br>
+          would kill him for the power of Rome.<br>
+          Caesar felt the cold blade of Brutus<br>
+          and cried for forgiveness.<br>
+          Caligula should have known<br>
+          that Claudius would sell his soul to the devil himself<br>
+          so that Virginia and Nero could burn Rome to ashes.<br>
+          This is why I canceled my flight to Rome.<br>
+          <strong>Damnatio Memoriae.</strong>
+        </p>
+      </section>
+
+      <section>
+        <h3>Where I’ve Lived</h3>
+        <p>
+          I currently work in Pisa. 
+          Previously I lived in Los Alamos, Santa Fe.  Cambridge, London,  Oxford, Berlin, Waterloo (Canada), Pisa — 
+          Canada is where I learned the true meaning of the word “cold.”  
+        </p>
+        <p>
+          If you’re depressed, remember: it can’t rain forever.  
+          But if you live in Pisa… well, you might be an exception.
+        </p>
+        <p> I have an online presence. In the following forms:</p>
+                <img src="/img/fc1.jpg" alt="FC" class="project-image-small" />
+                <img src="/img/fc2.png" alt="FC" class="project-image-small" />
+                                <img src="/img/fc3.png" alt="FC" class="project-image-small" />
+
+      </section>
+
+      <section>
+        <h3>Miscellanea</h3>
+        <p>
+          I am a proud Calabrian.  
+          I come from Magna Graecia — this is the ancient stamp of my region:
+        </p>
+        <img src="/img/magnagrecia.jpg" alt="Magna Graecia emblem" class="project-image-small" />
+        <p>
+          I plan to get it tattooed someday.
+        </p>
+        <p>
+          I used to love coding. My first contribution to Freshmeat (circa 2003) 
+          was a text-based CD player for Linux — long lost, but not forgotten.
+        </p>
+                <img src="/img/yeacd1.png" alt="Yet Another CD Player" class="project-image-small" />
+                <img src="/img/yeacd2.png" alt="Yet Another CD Player" class="project-image-small" />
+
+      </section>
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        // highlight current page
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath || link.getAttribute('href').endsWith('about.html')) {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
