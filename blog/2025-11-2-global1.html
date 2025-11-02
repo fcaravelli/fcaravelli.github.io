@@ -74,7 +74,12 @@
 
       <p>
         where each species $\\chi$ corresponds to a subset of qubits that share the same global
-        drive $V_\\chi(t) = A_\\chi(t) \\sin(\\omega_{d,\\chi} t + \\phi_\\chi(t))$.
+        drive 
+        <p class="math">
+        \[ 
+            V_{\chi}(t) = A_{\chi}(t) \sin(\omega_{d,\chi} t + \phi_{\chi}(t))
+        \]
+        </p>
         Adjacent qubits never belong to the same species, ensuring that the always-on ZZ interactions
         connect only different classes of qubits. This architectural symmetry — and its deliberate
         breaking — is what makes the system controllable. We outlined this in a recent paper, see <a href="https://arxiv.org/pdf/2509.09271.pdf">this paper here and citations therein</a>.
@@ -167,11 +172,11 @@
 <h3>Overcoming Disorder in Superconducting Global Architectures</h3>
 
 <p>
-  One of the practical hurdles in bringing globally controlled architectures from elegant theory to
+  Let me now discuss the recent paper that appeared on the arXiv on disorder. One of the practical hurdles in bringing globally controlled architectures from elegant theory to
   <em>artificial atoms</em> is <strong>static disorder</strong>. Rydberg arrays enjoy a natural uniformity; transmons do not.
   Nanometer-level variations in Josephson junctions become small offsets in qubit frequencies and couplings,
   and even a few percent is enough to desynchronize a processor that is steered by the same global pulse everywhere.
-  In our recent Planckian study (Aiudi, Despres, Menta, Abedi, Menichetti, Giovannetti, Polini, Caravelli),
+  In our recent Planckian study (see <a href="https://arxiv.org/pdf/2510.25996">Overcoming Disorder in Superconducting Global Architectures by Aiudi, Despres, Menta, Abedi, Menichetti, Giovannetti, Polini, and I</a>),
   we quantified precisely how such inhomogeneities affect the ladder architecture and showed how to
   <em>compensate them in software</em> via pulse design.
 </p>
