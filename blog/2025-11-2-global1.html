@@ -63,11 +63,14 @@
         In this framework, the processor’s Hamiltonian can be written schematically as
       </p>
 
-      <p>
-        $$\\hat{H}(t) = \\sum_i \\frac{\\hbar \\omega_i}{2} \\hat{\\sigma}^z_i +
-        \\sum_{\\langle i,j \\rangle} \\frac{\\hbar \\zeta}{2} \\hat{\\sigma}^z_i \\hat{\\sigma}^z_j +
-        \\sum_{\\chi \\in S} V_\\chi(t) \\sum_{i \\in \\chi} V_i \\hat{\\sigma}^y_i,$$
-      </p>
+        <p class="math">
+        \[
+        \hat{H}(t) = \sum_i \frac{\hbar \omega_i}{2} \hat{\sigma}^z_i +
+        \sum_{\langle i,j \rangle} \frac{\hbar \zeta}{2} \hat{\sigma}^z_i \hat{\sigma}^z_j +
+        \sum_{\chi \in S} V_{\chi}(t) \sum_{i \in \chi} V_i \hat{\sigma}^y_i
+        \]
+        </p>
+
 
       <p>
         where each species $\\chi$ corresponds to a subset of qubits that share the same global
@@ -84,17 +87,27 @@
         Rabi frequencies
       </p>
 
-      <p>
-        $$\\Omega_{\\chi,i}(t) =
-        \\begin{cases}
-        \\Omega_{\\chi,r}(t) = \\dfrac{A_\\chi(t)\\bar{V}}{\\hbar}, & i \\in \\chi_r, \\\\[8pt]
-        \\Omega_{\\chi,\\times}(t) = 2\\Omega_{\\chi,r}(t), & i \\in \\chi_\\times.
-        \\end{cases}$$
-      </p>
+ <p class="math">
+  \[
+  \Omega_{\chi,i}(t) =
+  \begin{cases}
+  \Omega_{\chi,r}(t) = \dfrac{A_{\chi}(t)\,\bar{V}}{\hbar}, & i \in \chi_r, \\\\[8pt]
+  \Omega_{\chi,\times}(t) = 2\,\Omega_{\chi,r}(t), & i \in \chi_{\times}.
+  \end{cases}
+  \]
+</p>
+
 
       <p>
         This fabrication asymmetry is the seed of local control. When the system operates in the
-        so-called <em>blockade regime</em>, defined by $|\\zeta / \\Omega_{\\chi,r}| \\gg 1$, excitations
+        so-called <em>blockade regime</em>, defined by 
+        
+        <p class="math">
+        \[
+        \left|\frac{\zeta}{\Omega_{\chi,r}}\right| \gg 1
+        \]
+        </p>
+        excitations
         become conditional: a qubit cannot flip if one of its neighbors is already excited. The result
         is a form of <em>emergent locality</em> — a regime where a single global pulse can trigger
         targeted, conditional rotations within a sea of qubits.
@@ -104,15 +117,25 @@
         Mathematically, the corresponding control unitary reads
       </p>
 
-      <p>
-        $$\\hat{W}_j(\\theta_j, \\mathbf{n}_j) =
-        \\hat{\\mathbb{1}}_j \\otimes \\hat{Q}_{\\langle j \\rangle} +
-        \\hat{R}_j(\\theta_j, \\mathbf{n}_j) \\otimes \\hat{P}_{\\langle j \\rangle},$$
-      </p>
+        <p class="math">
+        \[
+        \hat{W}_j(\theta_j, \mathbf{n}_j) =
+        \hat{\mathbb{1}}_j \otimes \hat{Q}_{\langle j \rangle} +
+        \hat{R}_j(\theta_j, \mathbf{n}_j) \otimes \hat{P}_{\langle j \rangle}
+        \]
+        </p>
+
 
       <p>
-        where $\\hat{R}_j(\\theta_j, \\mathbf{n}_j) =
-        e^{-i (\\theta_j / 2) \\, \\mathbf{n}_j \\cdot \\boldsymbol{\\sigma}_j}$ is a single-qubit
+        where 
+        <p class="math">
+        \[
+        \hat{R}_j(\theta_j, \mathbf{n}_j) =
+        e^{-i (\theta_j / 2)\, \mathbf{n}_j \cdot \boldsymbol{\sigma}_j}
+        \]
+        </p>
+        
+        is a single-qubit
         rotation acting only on unblocked sites — those whose neighbors remain in the ground state.
         This is how <em>locality</em> arises from <em>globality</em>.
       </p>
