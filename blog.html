@@ -57,7 +57,7 @@
     const container = document.getElementById('blog-container');
     const tagList = document.getElementById('tag-list');
     try {
-      const response = await fetch('blog/posts.json');
+      const response = await fetch('/blog/posts.json');
       const posts = await response.json();
 
       // sort newest first
