@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Globally Controlled Quantum Architectures – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+  
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+        <!-- === Part I:  Superconducting Global Architectures === -->
+
+      <h2>Globally Controlled Quantum Architectures</h2>
+      <p class="post-date"><em>November 2, 2025</em></p>
+
+      <p>
+        At <strong>Planckian</strong>, the concept of globally controlled superconducting processors
+        emerged from a simple but radical question: how much of quantum control can be made
+        <em>global</em> without losing computational universality?
+        Before I joined the company, the foundations of this idea had already been laid by
+        <strong>Roberto Menta</strong>, <strong>Francesco Cioni</strong>, and <strong>Riccardo Aiudi</strong>,
+        who demonstrated that ZZ interactions — the natural longitudinal couplings between
+        transmon qubits — could serve not as a nuisance to be tuned away, but as a fundamental
+        resource for computation. In Rydberg atoms this was introduced through the Rydberg blockade by Cesa and Pichler;
+        in superconducting circuits, it translates into a regime where qubit excitations become
+        conditional on the state of their neighbors.
+      </p>
+
+      <p>
+        When I joined Planckian, under the guidance of Marco Polini and
+        Vittorio Giovannetti I began leading the day to day operations of theory group to
+        develop the architectural, computational and analytical framework behind these globally driven systems.
+        Our goal is to show that local addressability can, paradoxically, emerge from the physics
+        of collective control — a philosophy that has now crystallized into what we call the
+        <strong>crossed-qubit architecture</strong>. In our minds, scalability is very important.
+      </p>
+
+      <p>
+        The motivation is well known to anyone who has worked on large-scale superconducting
+        systems: every qubit demands multiple control lines, calibration routines, and cryogenic
+        interfaces. The resulting wiring complexity quickly becomes unmanageable. Global control,
+        by contrast, offers a way to collapse this hardware overhead into a handful of synchronized
+        microwave pulses that act on entire <em>species</em> of qubits at once.
+      </p>
+
+      <p>
+        In this framework, the processor’s Hamiltonian can be written schematically as
+      </p>
+
+      <p>
+        $$\\hat{H}(t) = \\sum_i \\frac{\\hbar \\omega_i}{2} \\hat{\\sigma}^z_i +
+        \\sum_{\\langle i,j \\rangle} \\frac{\\hbar \\zeta}{2} \\hat{\\sigma}^z_i \\hat{\\sigma}^z_j +
+        \\sum_{\\chi \\in S} V_\\chi(t) \\sum_{i \\in \\chi} V_i \\hat{\\sigma}^y_i,$$
+      </p>
+
+      <p>
+        where each species $\\chi$ corresponds to a subset of qubits that share the same global
+        drive $V_\\chi(t) = A_\\chi(t) \\sin(\\omega_{d,\\chi} t + \\phi_\\chi(t))$.
+        Adjacent qubits never belong to the same species, ensuring that the always-on ZZ interactions
+        connect only different classes of qubits. This architectural symmetry — and its deliberate
+        breaking — is what makes the system controllable. We outlined this in a recent paper, see <a href="https://arxiv.org/pdf/2509.09271.pdf">this paper here and citations therein</a>.
+      </p>
+
+      <p>
+        The <strong>crossed-qubit method</strong> achieves this by introducing static inhomogeneities
+        in the qubit–drive coupling strengths. During fabrication, certain qubits are engineered
+        to couple twice as strongly to the global field as their regular neighbors, leading to
+        Rabi frequencies
+      </p>
+
+      <p>
+        $$\\Omega_{\\chi,i}(t) =
+        \\begin{cases}
+        \\Omega_{\\chi,r}(t) = \\dfrac{A_\\chi(t)\\bar{V}}{\\hbar}, & i \\in \\chi_r, \\\\[8pt]
+        \\Omega_{\\chi,\\times}(t) = 2\\Omega_{\\chi,r}(t), & i \\in \\chi_\\times.
+        \\end{cases}$$
+      </p>
+
+      <p>
+        This fabrication asymmetry is the seed of local control. When the system operates in the
+        so-called <em>blockade regime</em>, defined by $|\\zeta / \\Omega_{\\chi,r}| \\gg 1$, excitations
+        become conditional: a qubit cannot flip if one of its neighbors is already excited. The result
+        is a form of <em>emergent locality</em> — a regime where a single global pulse can trigger
+        targeted, conditional rotations within a sea of qubits.
+      </p>
+
+      <p>
+        Mathematically, the corresponding control unitary reads
+      </p>
+
+      <p>
+        $$\\hat{W}_j(\\theta_j, \\mathbf{n}_j) =
+        \\hat{\\mathbb{1}}_j \\otimes \\hat{Q}_{\\langle j \\rangle} +
+        \\hat{R}_j(\\theta_j, \\mathbf{n}_j) \\otimes \\hat{P}_{\\langle j \\rangle},$$
+      </p>
+
+      <p>
+        where $\\hat{R}_j(\\theta_j, \\mathbf{n}_j) =
+        e^{-i (\\theta_j / 2) \\, \\mathbf{n}_j \\cdot \\boldsymbol{\\sigma}_j}$ is a single-qubit
+        rotation acting only on unblocked sites — those whose neighbors remain in the ground state.
+        This is how <em>locality</em> arises from <em>globality</em>.
+      </p>
+
+      <p>
+        Historically, global control traces back to the work of <strong>Seth Lloyd</strong> in the early 1990s,
+        and later to <strong>Simon Benjamin</strong>, who reduced the required number of qubit species to two.
+        Yet these were conceptual blueprints, detached from hardware. What we and our collaborators
+        at Planckian have been able to demonstrate is that the same principles can now be realized
+        in a physically grounded setting — in superconducting circuits, with natural ZZ interactions,
+        and using no more than two or three global control lines.
+      </p>
+
+      <p>
+        In these architectures, wiring is replaced by geometry, and calibration by symmetry.
+        Gates are not applied through individual addresses but through designed differences:
+        static, architectural asymmetries that translate a uniform pulse into a structured evolution.
+        The pulse is the same everywhere — yet the system itself encodes where it matters more.
+      </p>
+
+      <p>
+        This is the essence of <em>global control</em>: a reversal of the usual paradigm of quantum
+        engineering, in which minimal asymmetry and maximal coherence combine to produce
+        addressable computation through collective motion.
+      </p>
+
+<!-- === Part II: Overcoming Disorder in Superconducting Global Architectures === -->
+
+<h3>Overcoming Disorder in Superconducting Global Architectures</h3>
+
+<p>
+  One of the practical hurdles in bringing globally controlled architectures from elegant theory to
+  <em>artificial atoms</em> is <strong>static disorder</strong>. Rydberg arrays enjoy a natural uniformity; transmons do not.
+  Nanometer-level variations in Josephson junctions become small offsets in qubit frequencies and couplings,
+  and even a few percent is enough to desynchronize a processor that is steered by the same global pulse everywhere.
+  In our recent Planckian study (Aiudi, Despres, Menta, Abedi, Menichetti, Giovannetti, Polini, Caravelli),
+  we quantified precisely how such inhomogeneities affect the ladder architecture and showed how to
+  <em>compensate them in software</em> via pulse design.
+</p>
+
+<p>
+  In the disorder-free picture, uniform drives shift the <em>information-carrying column</em> (ICC) coherently across the ladder.
+  With fabrication inhomogeneities, local qubit frequencies and couplings become random variables,
+</p>
+
+<p class="math">
+  \[
+  \omega_i \sim \mathcal{N}(\bar{\omega},\,\epsilon\,\bar{\omega})
+  \qquad\text{and}\qquad
+  \zeta_{ij} \sim \mathcal{N}(\bar{\zeta},\,\epsilon\,\bar{\zeta})\,,
+  \]
+</p>
+
+<p>
+  and the single global command no longer produces an identical response on every site. In practice, frequency disorder
+  is the dominant culprit: it distorts resonance conditions and quickly erodes the fidelity of information transport and gates
+  if left uncorrected. The key is to make the global pulses <em>learn</em> the specific, static imperfections of the chip.
+</p>
+
+<h4>What GRAPE is (and how we used it)</h4>
+
+<p>
+  We addressed the problem with <strong>quantum optimal control</strong>, using the
+  <em>Gradient Ascent Pulse Engineering</em> algorithm (GRAPE). Conceptually, GRAPE treats the waveform
+  of each control channel as a collection of tunable parameters and adjusts them to make the device’s evolution
+  match a desired target operation despite disorder.
+</p>
+
+<p>
+  Write the control Hamiltonian as
+</p>
+
+<p class="math">
+  \[
+  \hat{H}(t) \;=\; \hat{H}_0 \;+\; \sum_{j=1}^{N_c} u_j(t)\,\hat{H}_j\,,
+  \]
+</p>
+
+<p>
+  where \(\hat{H}_0\) contains the on-chip physics (local energies and ZZ interactions) and the
+  \(u_j(t)\) are the time-dependent control amplitudes. In our globally driven ladder,
+  the controls are the two quadratures (X,Y) for each species \(\chi\in\{A,B,C\}\), so \(N_c=6\).
+  We discretize time into short slots and optimize the pulse vector
+  \(\{u_j(t_k)\}\) to minimize a gate mismatch cost, e.g. the trace-distance–based objective
+</p>
+
+<p class="math">
+  \[
+  E \;=\; 1 \;-\; \frac{1}{d}\,\Bigl|\mathrm{Tr}\!\big[\hat{U}(T)\,\hat{U}_{\mathrm{target}}^{\dagger}\big]\Bigr|\,,
+  \]
+</p>
+
+<p>
+  where \(\hat{U}(T)\) is the propagator generated by the candidate pulses and
+  \(\hat{U}_{\mathrm{target}}\) is the desired unitary (shift step, single–qubit rotation, or CZ).
+  GRAPE computes gradients \(\partial E/\partial u_j(t_k)\) efficiently via forward–backward propagation and
+  updates the amplitudes along the negative gradient (gradient ascent on fidelity).
+  Because the disorder is <em>static</em>, once measured it can be explicitly included in \(\hat{H}_0\), allowing the
+  optimizer to “bake in” the necessary corrections.
+</p>
+
+<h4>How optimized global pulses differ from the naive ones</h4>
+
+<p>
+  In the idealized, homogeneous design, control is “bang–bang”: one species at a time, square pulses, strict time windows.
+  After optimization on a disordered chip, the global pulses look different:
+  all species can be driven simultaneously, with small, carefully phased oscillations in both quadratures.
+  Those gentle modulations create destructive interference against the unwanted, disorder-induced phase accumulation.
+  In short, <em>we use fluctuations to cancel fluctuations</em>.
+</p>
+
+<p>
+  At the architectural level, nothing changes — the processor is still globally driven, ZZ-coupled, and arranged in the same ladder.
+  What changes is the <em>waveform</em>: the control software supplies the missing uniformity that hardware cannot guarantee.
+  Numerically we find that optimized sequences restore high-fidelity information transport and single- and two-qubit gates
+  under realistic frequency spreads, and they can be further compressed in time while keeping performance high.
+</p>
+
+
+<p>
+  Global control was first attractive because it slashes wiring and calibration overhead. The worry was that solid-state disorder would
+  make it too brittle compared to natural platforms. The lesson here is the opposite: once disorder is measured,
+  <em>global control absorbs it</em>. The emergent blockade physics still functions; the ICC still moves; the logical gates still execute.
+  Uniformity can be manufactured at the pulse level, allowing globally controlled superconducting processors to retain their
+  hardware simplicity while achieving the fidelities required for useful algorithms.
+</p>
+
+<p>
+  In the broader Planckian program, this closes a loop that began with the crossed-qubit idea and the exploitation of ZZ interactions:
+  symmetry in the architecture, mild and deliberate asymmetry in the hardware, and adaptability in the pulses. Together, they turn a
+  global command into local, conditional action — now robust to the imperfections of real transmons. Of course, one would have to be careful
+  when implementing this in real hardware, as GRAPE's pulses still excite higher levels of the transmon. 
+  But this is a problem that can be mitigated with further constraints in the optimization, not to be discussed here.
+</p>
+
+
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('../partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath || link.getAttribute('href') === '../blog.html') {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
