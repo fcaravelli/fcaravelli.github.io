@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Blume–Capel Model in One Dimension – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+
+      <h2>The Blume–Capel Model in One Dimension</h2>
+      <p class="post-date"><em>November 4, 2025</em></p>
+      <p>
+        Typically, blogs that cover topics in Statistical Mechanics, Condensed Matter, or Computational Physics
+        focus on the <strong>Ising model</strong> as a prototypical system before discussing more complex models.
+        However, the Ising model is just one member of a broader family of lattice models that capture various physical phenomena.
+        Two colleagues recently asked if we could discuss with them of the <strong>Blume–Capel model</strong> in the context
+        of some experiments that they are performing, and I want to look into my notes. What results is this blog post!
+        What is interesting about the Blume-Capel model is also a model in which microcanonical and canonical ensembles disagree
+        in certain regions of the phase diagram, leading to intriguing thermodynamic behavior. We will come back to these at a certain point.
+        For now, we discuss the model and its exact solution in one dimension using the transfer matrix method.
+      </p>
+      <p>
+        The <strong>Blume–Capel model</strong> is a generalization of the Ising model, first introduced independently by
+        <strong>Melvin Blume</strong> and <strong>H. W. Capel</strong> in 1966. Its Hamiltonian reads:
+      </p>
+
+      <p class="math">
+        \[
+        H = -J \sum_{\langle i,j \rangle} s_i s_j - d \sum_i s_i^2 - h \sum_i s_i,
+        \]
+      </p>
+
+      <p>
+        where $s_i = -1, 0, 1$ represents a spin-1 variable that can occupy one of three states.
+        The parameter $J$ controls the ferromagnetic coupling between neighboring spins, $d$ (often denoted $D$)
+        is a single-ion anisotropy or <em>crystal-field coupling</em>, and $h$ is an external magnetic field.
+      </p>
+
+      <p>
+        The model extends the standard Ising picture by including a “neutral” state $s_i = 0$, which can be interpreted as a
+        <strong>vacancy</strong> or non-magnetic configuration. This additional degree of freedom leads to a rich phase diagram.
+        The system exhibits both <strong>second-order</strong> and <strong>first-order</strong> phase transitions, depending on the temperature
+        and the value of $d$. For large positive $d$, the neutral state dominates, suppressing magnetization; for smaller or negative $d$,
+        the $\pm1$ states become energetically favorable, and ferromagnetic order may emerge.
+      </p>
+
+      <p>
+        Originally formulated to describe magnetic materials such as <em>UO₂</em> with crystal-field splitting,
+        the Blume–Capel model was later found to apply to <em>³He–⁴He mixtures</em>, where the $s = 0$ state corresponds to a
+        ⁴He atom and $s = \pm 1$ to ³He. In that context, the quadrupole moment
+        $1 - \langle s^2 \rangle$ corresponds to the ³He concentration.
+        (<a href="https://journals.aps.org/pr/abstract/10.1103/PhysRev.141.517">Blume, Phys. Rev. 141, 517 (1966)</a>;
+        <a href="https://doi.org/10.1016/0031-8914(66)90027-9">Capel, Physica 32, 966 (1966)</a>;
+        <a href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.4.1071">Blume, Emery, Griffiths, Phys. Rev. A 4, 1071 (1971)</a>).
+      </p>
+
+      <p>
+        Despite its apparent simplicity, the Blume–Capel model captures the essential ingredients of
+        <strong>first-order transitions</strong>, <strong>tricritical points</strong>, and <strong>vacancy-mediated magnetism</strong>.
+        It also serves as a conceptual bridge between the Ising and <em>Potts</em> models, representing one of the earliest
+        multi-state generalizations of the Ising paradigm.
+      </p>
+
+      <h3>The One-Dimensional Case</h3>
+
+      <p>
+        In this post, we explore the <strong>exact solution of the 1D Blume–Capel model on a ring</strong>
+        using the <em>transfer matrix method</em>. Although the one-dimensional system does not exhibit a true phase transition
+        at finite temperature, it remains a valuable pedagogical example — simple enough to solve analytically, yet rich enough
+        to reveal the mathematical structure of the model.
+      </p>
+
+      <p class="math">
+        \[
+        H = -J \sum_{i=1}^{N-1} s_i s_{i+1} - d \sum_{i=1}^{N} s_i^2 - h \sum_{i=1}^{N} s_i,
+        \]
+      </p>
+
+      <p>
+        where $s_i = -1, 0, 1$, and $N$ is the number of sites in the chain.
+        The goal is to express the partition function in terms of a <em>transfer matrix</em>,
+        find its eigenvalues, and compute the free energy in the thermodynamic limit.
+      </p>
+
+      <h3>Solution Outline</h3>
+
+      <p>
+        The Boltzmann weight for a spin configuration is
+      </p>
+
+      <p class="math">
+        \[
+        w(s_1, s_2, \ldots, s_N) = e^{-\beta H},
+        \]
+      </p>
+
+      <p>
+        and we define the <strong>transfer matrix</strong> $R(s, s')$ as
+      </p>
+
+      <p class="math">
+        \[
+        R(s,s') = e^{-\beta H_f(s)/2} e^{-\beta H_{int}(s,s')} e^{-\beta H_f(s')/2}.
+        \]
+      </p>
+
+      <p>
+        For the Blume–Capel model, this yields a $3\times3$ matrix representation:
+      </p>
+
+      <p class="math">
+        \[
+        R =
+        \begin{pmatrix}
+        e^{\beta (J + d + h)} & e^{\beta (d + h)/2} & e^{\beta (-J + d)} \\
+        e^{\beta (d + h)/2} & 1 & e^{\beta (d - h)/2} \\
+        e^{\beta (-J + d)} & e^{\beta (d - h)/2} & e^{\beta (J + d - h)}
+        \end{pmatrix}.
+        \]
+      </p>
+
+      <p>
+        The eigenvector
+        $\psi = \frac{1}{\sqrt{2}}(1, 0, -1)$
+        has eigenvalue
+      </p>
+
+      <p class="math">
+        \[
+        \lambda = 2 e^{\beta d} \sinh(\beta J).
+        \]
+      </p>
+
+      <p>
+        The remaining two eigenvalues, $\lambda_\pm$, are found analytically as
+      </p>
+
+      <p class="math">
+        \[
+        \lambda_{\pm} = \frac{1}{2}\left(
+        2 e^{\beta d} \cosh(\beta J)
+        \pm
+        \sqrt{8 e^{\beta d} + \left( 2 e^{\beta d} \cosh(\beta J) - 1 \right)^2}
+        + 1
+        \right).
+        \]
+      </p>
+
+      <p>
+        The partition function is therefore
+      </p>
+
+      <p class="math">
+        \[
+        Z = \lambda_+^N + \lambda^N + \lambda_-^N,
+        \]
+      </p>
+
+      <p>
+        and in the thermodynamic limit $N \to \infty$, the free energy per site is dominated by the largest eigenvalue:
+      </p>
+
+      <p class="math">
+        \[
+        f = -kT \ln \lambda_+.
+        \]
+      </p>
+
+      <p>
+        This exact solution highlights how the transfer matrix approach provides a powerful and elegant method to treat
+        lattice models with local interactions, even when the spin variables take on more than two values.
+        In higher dimensions, the Blume–Capel model continues to serve as a paradigmatic system for studying
+        tricritical behavior and universality classes at the boundary between first- and second-order phase transitions.
+        We will come back to this model in other posts.
+      </p>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('../partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath || link.getAttribute('href') === '../blog.html') {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
