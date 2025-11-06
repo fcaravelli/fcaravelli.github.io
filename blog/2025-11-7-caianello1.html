@@ -25,7 +25,7 @@
     <!-- Main Content -->
     <main class="content">
 
-      <h2>Caianello’s Learning Theory: When Physics Dreamed of AI (Before It Was Called AI)</h2>
+      <h2>Caianello’s Learning Theory: When physicists dreamed of intelligent machines</h2>
       <p class="post-date"><em>November 7, 2025</em></p>
 
       <p>
@@ -38,8 +38,9 @@
 
       <p>
         I stumbled upon Caianello’s work almost accidentally while studying
-        the Pfaffian formulation of <em>dimer models</em> in statistical mechanics, specifically Kasteleyn’s solution.
-        All nice things I’ll talk about eventually.
+        the Pfaffian formulation to properly understand <em>dimer models</em> in statistical mechanics, specifically Kasteleyn’s solution.
+        All nice things I’ll talk about eventually. Serendipity!</p>
+      <p>
         When I discover somebody new who contributed to physics
         to this extent and between 1920–1980, I typically do a bit of digging on what they did, where they are, etc.
         I think it might be called <em>graveyard stalking</em>, for lack of a better word.
@@ -78,7 +79,9 @@
         and \(W_{ij}\), \(W'_{ij}\), … are synaptic weights encoding
         temporal correlations — effectively a <em>memory kernel</em>.
         It greatly reminds me of the work on reservoir computing, which is quite popular 
-        since the early 2000s and having a second quantum resurgence.
+        since the early 2000s and having a second quantum resurgence. Also, it is similar to
+        the work on liquid state machines by Wolfgang Maass and others, and in particular the great
+        body of work in statistical mechanics concerning neural networks.
       </p>
 
       <p>
@@ -100,12 +103,15 @@
         E = -\frac{1}{2} \sum_{i,j} W_{ij} x_i x_j,
         \]
       </p>
+      In Hopfield’s formulation, the dynamics minimize this energy, and patterns are stored in the weights \(W_{ij}\). 
+      Retrieval corresponds to descending into energy minima and recovering such patterns as fixed points.
+      Caianello's work instead focused on the dynamics of the states themselves, with memory effects built into the evolution equations.
 
       <p>
-        whose minima correspond to stable patterns.
-        Caianello’s theory is more general: it describes
+        In a sense, Caianello’s theory is more general: it describes
         a <em>non-Markovian dynamical system</em> where memory extends across time steps.
-        It’s as if Hopfield’s energy landscape had an extra temporal dimension.
+        It is not quite so, but this serves well the goal of this short post.
+        It’s as if Hopfield’s energy landscape had an extra temporal dimension, e.g. how did those patterns get there?
       </p>
 
       <p>
@@ -114,6 +120,7 @@
         His “neuronic equations” resemble the relaxation dynamics in spin glasses,
         and indeed, later researchers rediscovered similar mathematics in the
         context of disordered systems. I think his work should be better recognized nowadays.
+        The department of Physics at the University of Salerno is named after him.
       </p>
 
       <p>
