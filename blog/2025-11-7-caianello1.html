@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caianello’s Learning Theory: When Physics Dreamed of AI – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+
+      <h2>Caianello’s Learning Theory: When Physics Dreamed of AI (Before It Was Called AI)</h2>
+      <p class="post-date"><em>November 7, 2025</em></p>
+
+      <p>
+        In the vast prehistory of what we now call <em>Artificial Intelligence</em>, there are
+        figures who quietly foresaw much of what we have been taking for granted in the last fifteen years.
+        One of them is <strong>Eduardo R. Caianello</strong> — a Neapolitan physicist and cyberneticist
+        whose work in the 1960s proposed what might well be called the
+        <em>Hamiltonian mechanics of learning</em>.
+      </p>
+
+      <p>
+        I stumbled upon Caianello’s work almost accidentally while studying
+        the Pfaffian formulation of <em>dimer models</em> in statistical mechanics, specifically Kasteleyn’s solution.
+        All nice things I’ll talk about eventually.
+        When I discover somebody new who contributed to physics
+        to this extent and between 1920–1980, I typically do a bit of digging on what they did, where they are, etc.
+        I think it might be called <em>graveyard stalking</em>, for lack of a better word.
+        There, hidden among determinants and combinatorial symmetries,
+        I found a paper connecting neurons, learning, and the formal structure of
+        statistical physics. As someone working today on
+        <em>self-organizing memristive networks</em> — systems that learn and adapt using
+        memristive devices — this was an irresistible rabbit hole.
+      </p>
+
+      <p>
+        Caianello’s early works (notably his <em>“Outline of a Theory of Thought-Processes and Thinking Machines”</em>, 1961;
+        see <a href="https://www.sciencedirect.com/science/article/abs/pii/0022519361900467?via%3Dihub">here</a>)
+        predate much of the modern formalism of neural networks.
+        He conceived of the brain as a system of “neuronic equations,” where the
+        state of neuron \(i\) at time \(t\) depends on the states of its inputs
+        at earlier times.
+        This recursive, time-dependent structure anticipated both Hebbian learning
+        and Hopfield dynamics — but with an explicitly <em>dynamical systems</em> flavor.
+        This is still a flavor favored by physicists; see, for instance, the modern work on Neural ODEs.
+      </p>
+
+      <p>
+        At the core of Caianello’s model lies what is now called
+        the <strong>Caianello Equation</strong>:
+      </p>
+
+      <p class="math">
+        \[
+        x_i(t + 1) = f\!\left(\sum_j W_{ij} \, x_j(t) + \sum_j W'_{ij} \, x_j(t - 1) + \cdots \right),
+        \]
+      </p>
+
+      <p>
+        where \(x_i(t)\) represents the state of neuron \(i\) at time \(t\),
+        and \(W_{ij}\), \(W'_{ij}\), … are synaptic weights encoding
+        temporal correlations — effectively a <em>memory kernel</em>.
+        It greatly reminds me of the work on reservoir computing, which is quite popular 
+        since the early 2000s and having a second quantum resurgence.
+      </p>
+
+      <p>
+        In contrast, <strong>Hebbian learning</strong> focuses on the <em>change</em> of weights:
+      </p>
+
+      <p class="math">
+        \[
+        \Delta W_{ij} \propto x_i x_j,
+        \]
+      </p>
+
+      <p>
+        while <strong>Hopfield networks</strong> introduce an energy function
+      </p>
+
+      <p class="math">
+        \[
+        E = -\frac{1}{2} \sum_{i,j} W_{ij} x_i x_j,
+        \]
+      </p>
+
+      <p>
+        whose minima correspond to stable patterns.
+        Caianello’s theory is more general: it describes
+        a <em>non-Markovian dynamical system</em> where memory extends across time steps.
+        It’s as if Hopfield’s energy landscape had an extra temporal dimension.
+      </p>
+
+      <p>
+        What makes Caianello’s approach so remarkable is its <em>physical realism</em>.
+        He wanted not just an algorithm, but a <strong>law of motion for cognition</strong>.
+        His “neuronic equations” resemble the relaxation dynamics in spin glasses,
+        and indeed, later researchers rediscovered similar mathematics in the
+        context of disordered systems. I think his work should be better recognized nowadays.
+      </p>
+
+      <p>
+        Fast-forward to today: in our <em>memristive networks</em>, conductance plays the
+        role of synaptic weight, and the system learns through the very physics of
+        ion motion and hysteresis.
+        When we build self-organizing networks of memristors, we are — perhaps without realizing it — exploring Caianello’s dream:
+        that learning and memory are not separate processes, but two faces of the
+        same physical law.
+        Maybe I will be able to make this connection more explicit in future work.
+        For now, I played my part and cited his work in the
+        <a href="https://arxiv.org/abs/2509.00747">review on SOMN</a> that I wrote with colleagues
+        Gianluca Milano, Zdenka Kuncic, Carlo Ricciardi, Adam Stieg, and Simon Brown.
+      </p>
+
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+        crossorigin="anonymous"></script>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('../partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath || link.getAttribute('href') === '../blog.html') {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
