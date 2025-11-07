@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caianello’s Learning Theory: When Physics Dreamed of AI – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+
+      <h2>Karinthy's chains and the six degree of separation idea - Francesco Caravelli</h2>
+      <p class="post-date"><em>November 11, 2025</em></p>
+      <p> I recently finished the italian translation of <em><a href="https://www.goodreads.com/book/show/1657001.A_Journey_Round_My_Skull">A journey round my skull</a></em> (Viaggio intorno al mio cranio in italian),
+        by Frigyes Karinthy, a Hungarian writer and poet known for his wit and humor. The book is a semi-autobiographical account of his experience with a brain tumor, 
+        and it blends some (uninformed) medical observations with philosophical reflections, and accounts of allucinations. In the very first chapters, he talks about invisible trains. 
+        It is the first known account of a patient going through an open skull surgery.
+        However, as I got to the end of the book I realized that there was a bonus: an essay titled Chains (Catene), which is considered the origin of the
+        <em>six degrees of separation</em> concept. This idea suggests that any two people on Earth are connected through a chain of acquaintances with no more than five intermediaries,
+        meaning that the total number of connections is six. This concept has fascinated sociologists, psychologists, and network scientists for decades, leading to various studies and experiments to explore the small-world phenomenon. 
+        The essay starts with
+          <p>
+            "Here is an element of crucial importance" I said vehemently in the course of a discussion. We were discussing progress and the whether the world was going in any direction, for real,
+            or whether these were mere set phrases. The eternal return of something that always existed (I translated it).
+          </p>
+        The essay was written 1929. I recognized a few sentences from the essay. "The worker knows his boss who knows Mr. Ford", you can see how the chains of knowledges start. I did not know that the concept had started in literature.
+      </p>
+
+      <p>Now, Karinthy was Hungarian. And so was Paul Erdős who studied the idea from a mathematical point of view. Erdős is also well known because among mathematicians and physicists
+        there is the concept of the <em>Erdős number</em>, which describes the "collaborative distance" between an author and Erdős in terms of co-authored mathematical papers.
+        For example, if you co-authored a paper with Erdős, your Erdős number is 1. If you co-authored a paper with someone who has an Erdős number of 1, your Erdős number is 2, and so on.
+        This concept has become a playful way to illustrate the interconnectedness of the mathematical community and has been extended to other fields as well. My Erdős number is \(3^2\), I have 
+        papers both with Leonardo Banchi and Simone Severini, who published respectively with Chris Godsil and Peter Cameron respectively, and them both published at least one paper with Erdős.
+        I also have a paper with Seth Lloyd, who has Erdős number 2, and with Toufik Mansour, who has Erdős number 3, so I have multiple paths to Erdős but the shortest is 3.
+        And so on and so forth. Among non-scientists, one can also use the Bacon number (the actor).
+      </p>
+
+      <p>A proper way of looking at this is through graph theory. In this framework, the “six degrees” hypothesis simply means that the <em>average path length</em> 
+      between any two people is surprisingly small. For a network \( G = (V, E) \), 
+      with \( V \) the set of individuals and \( E \) the set of connections, the average distance is</p>
+
+      <p class="math">
+      \[
+      L(G) = \frac{1}{n(n-1)} \sum_{i \neq j} d(v_i, v_j),
+      \]
+      </p>
+
+      <p>where \( d(v_i, v_j) \) measures the length of the shortest path between \( v_i \) and \( v_j \). 
+      What Karinthy sensed intuitively is that \( L(G) \) grows very slowly with the number of people \( n \); 
+      even as the world’s population explodes, we remain only a handful of introductions away from anyone. </p>
+
+      <p>This “small world” behavior was rediscovered and formalized decades later by 
+      <a href="https://www.nature.com/articles/30918">Watts and Strogatz (1998)</a>. One might say that 
+      this is the paper that kickstarted the whole field of network theory among physicists, engineers, computer scientists 
+      and in particular in statistical mechanics. The field was particularly successful (I think) because the premise is quite simple, e.g. 
+      graphs are easy to describe, only a set of nodes and edges. Graph theory is however one of the touhghest mathematical fields,
+      with many open problems. Watts and Strogatz built on earlier work by 
+      <a href="https://www.science.org/doi/10.1126/science.275.5301.412">Milgram (1967)</a>, who conducted the famous 
+      “small world experiment.” In this study, Milgram sent packages to random individuals in 
+      the Midwest, asking them to forward the package to a target person in Boston, but only through acquaintances. 
+      The surprising result was that the average number of intermediaries needed to reach the target was around six, 
+      providing empirical support for the “six degrees of separation” idea.
+      Watts and Strogatz showed that many real networks — not just social ones, 
+      but biological, technological, and even neural — share two striking properties: 
+      high clustering (your friends tend to know each other) and short average path length 
+      (you can reach almost anyone in a few steps). The combination of these two features defines 
+      what we now call a <em>small-world network</em>. </p>
+
+      <p>In quantitative terms, one can compare a real network’s structure to that of a random one 
+      with the same number of nodes and links. If \( C \) and \( L \) denote the clustering and 
+      average path length, and \( C_{\text{rand}} \), \( L_{\text{rand}} \) their random equivalents, 
+      the small-worldness coefficient</p>
+
+      <p class="math">
+      \[
+      \sigma = \frac{C / C_{\text{rand}}}{L / L_{\text{rand}}}
+      \]
+      </p>
+
+      <p>is typically greater than one — a signature that a network is simultaneously 
+      <em>locally dense</em> and <em>globally connected</em>. 
+      The same concept applies to large number of networks. </p>
+
+      <h3>The Watts–Strogatz Model</h3>
+
+    <p>The beauty of the small-world idea is that it can be made precise. 
+    In that same paper of 1998, Duncan Watts and Steven Strogatz proposed a simple model to show 
+    how networks can be both highly clustered and yet have very short path lengths. 
+    They began with an ordered ring of \( n \) nodes, each connected to its \( k \) nearest neighbors. 
+    This configuration is perfectly regular: everyone knows their immediate neighbors, 
+    and information diffuses slowly along the ring. </p>
+
+    <p>Then, with probability \( p \), each edge is <em>rewired</em> — its endpoint connected 
+    to a random node instead of a nearby one. When \( p = 0 \), the graph remains a 
+    regular lattice; when \( p = 1 \), it becomes a random graph in the Erdős–Rényi sense. 
+    For small but nonzero \( p \), something remarkable happens: 
+    the average path length \( L(p) \) drops rapidly, while the clustering coefficient \( C(p) \) 
+    remains high. The result is a network that is both locally coherent and globally efficient — 
+    a mathematical incarnation of Karinthy’s intuition and a blessing for many statistical physicists interested in 
+    this type of models (percolation transition is just one example). </p>
+
+    <p>In symbols, the model shows a transition such that</p>
+
+    <p class="math">
+    \[
+    L(p) \approx L_{\text{rand}} \quad \text{for small } p,
+    \]
+    \[
+    C(p) \gg C_{\text{rand}},
+    \]
+    </p>
+
+    <p>capturing the essence of the small-world phenomenon: 
+    just a few random long-range connections are enough to 
+    collapse distances in a vast network. 
+    . </p>
+
+
+
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+        crossorigin="anonymous"></script>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('../partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath || link.getAttribute('href') === '../blog.html') {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
