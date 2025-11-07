@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Books – Francesco Caravelli</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h2>Books</h2>
+      <p><em>Selected authored and co-authored volumes.</em></p>
+
+      <!-- Book 1 -->
+      <section class="book">
+        <h3>
+          <a href="https://www.amazon.it/-/en/Spectral-methods-complex-systems-perspective/dp/B0FPKR3FPP"
+             target="_blank">Spectral Methods in Complex Systems: A Perspective</a>
+        </h3>
+        <img src="img/spectralb.png" alt="Spectral Methods in Complex Systems book cover"
+             style="max-width: 250px; display: block; margin-bottom: 1em;">
+        <p>
+          <strong>Author:</strong> Francesco Caravelli<br>
+          <strong>Publisher:</strong> Independently published (2025)
+        </p>
+        <p>
+          <em>Spectral Methods in Complex Systems</em> is a comprehensive yet accessible introduction
+          to spectral methods in linear algebra and their applications across physics, computer science,
+          and network theory. The book develops from the fundamentals — matrices, determinants,
+          eigenvalues, and graph theory — into advanced topics such as perturbation theory, pseudospectra,
+          functional calculus, and spectral decompositions. Throughout, emphasis is placed on practical
+          tools and formulae rather than lengthy proofs, making the text a usable companion for students
+          and researchers alike.
+        </p>
+        <p>
+          The text collects an extensive library of results, identities, and worked-out equations. These
+          mathematical tools are then placed in the context of complex systems applications: community
+          detection, stability in ecology and economics, PageRank and ranking algorithms, epidemic
+          spreading, synchronization, and memristive networks, among others.
+        </p>
+        <p>
+          Intended primarily for advanced undergraduates and beginning graduate students, the book also
+          serves as a reference for researchers who wish to approach interdisciplinary problems from a
+          spectral perspective. By weaving together linear algebra, dynamical systems, and network
+          science, <em>Spectral Methods in Complex Systems</em> offers both a technical manual and a
+          conceptual guide to the spectral viewpoint in modern complexity research.
+        </p>
+      </section>
+
+      <!-- Book 2 -->
+      <section class="book">
+        <h3>
+          <a href="https://www.amazon.it/-/en/Francesca-Medda/dp/3319470388"
+             target="_blank">A Collaborative Approach to Trade: Enhancing Connectivity in Sea- and Land-locked Countries</a>
+        </h3>
+               <img src="img/landlockedb.png" alt="A Collaborative Approach to Trade book cover"
+             style="max-width: 250px; display: block; margin-bottom: 1em;">
+        <p>
+          <strong>Authors:</strong> Francesca Medda, Francesco Caravelli, Simone Caschili, Alan Wilson.<br>
+          <strong>Publisher:</strong> Springer (2017)
+        </p>
+        <p>
+          This book applies regional analysis to the challenges facing global investment agencies seeking
+          to enhance trade in lagging regions. It shows how spatial interaction and agent-based modelling
+          can be used as the basis for developing new plans and policies. An in-depth analysis of trade
+          routes is presented, which can be used to develop policies for increasing efficiency and reducing
+          costs. Landlocked Uganda and the sea-locked South Pacific Islands serve to illustrate the problems
+          of covering sizable distances, accelerating export flows and improving supply-chain efficiency.
+          These examples also provide an excellent illustration of the power of regional science, from
+          assembling databases in difficult situations to developing and applying models of the trade system.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        // Highlight active page
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
