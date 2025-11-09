@@ -37,11 +37,7 @@
       <select id="boundary">
         <option value="circle">Circle</option>
         <option value="square">Square</option>
-        <option value="ellipse">Ellipse</option>
       </select>
-    </label>
-    <label title="Only for ellipse">Eccentricity ε
-      <input id="ecc" type="range" min="0" max="0.8" step="0.02" value="0.2">
     </label>
     <label>Particles N
       <input id="n" type="number" min="10" max="500" step="10" value="100">
@@ -107,7 +103,7 @@
   const ctx = cvs.getContext('2d');
   const hR = document.getElementById('histR').getContext('2d');
   const hV = document.getElementById('histV').getContext('2d');
-
+  const eps =0; 
   const boundaryEl = document.getElementById('boundary');
   const eccEl = document.getElementById('ecc');
   const nEl = document.getElementById('n');
@@ -168,12 +164,6 @@
         const th = rand(0, TAU);
         x = Cx + rr * Math.cos(th);
         y = Cy + rr * Math.sin(th);
-    } else { // ellipse
-        const rx = (a - rad) * Math.sqrt(bias);
-        const th = rand(0, TAU);
-        x = Cx + rx * Math.cos(th);
-        y = Cy + (b - rad) * (rx / (a - rad)) * Math.sin(th);
-        if (!insideEllipse(x, y, a - rad, b - rad)) continue;
     }
 
     // --- Overlap rejection ---
@@ -221,10 +211,7 @@
     const dx = x - Cx, dy = y - Cy;
     return dx*dx + dy*dy <= rad*rad + 1e-9;
   }
-  function insideEllipse(x,y,ax=state.a,by=state.b) {
-    const dx = (x - Cx)/ax, dy = (y - Cy)/by;
-    return (dx*dx + dy*dy) <= 1 + 1e-9;
-  }
+ 
 
   // Specular reflection helpers
   function reflectOnCircle(p) {
@@ -237,17 +224,6 @@
     p.vy = p.vy - 2*vdotn*uy;
   }
 
-  function reflectOnEllipse(p) {
-    // Ellipse F(x,y)= (x-Cx)^2/a^2 + (y-Cy)^2/b^2 - 1 = 0
-    // Normal ∝ ∇F = (2(x-Cx)/a^2, 2(y-Cy)/b^2)
-    const nx = 2*(p.x - Cx)/(state.a*state.a);
-    const ny = 2*(p.y - Cy)/(state.b*state.b);
-    const nlen = Math.hypot(nx, ny) || 1;
-    const ux = nx/nlen, uy = ny/nlen;
-    const vdotn = p.vx*ux + p.vy*uy;
-    p.vx = p.vx - 2*vdotn*ux;
-    p.vy = p.vy - 2*vdotn*uy;
-  }
 
   function reflectOnSquare(p) {
     const Rv = R;
@@ -318,22 +294,7 @@
           state.collisions++;
         }
       }
-    } else { // ellipse
-      for (let p of parts) {
-        if (!insideEllipse(p.x,p.y,state.a - r, state.b - r)) {
-          // project roughly to boundary (iterate a bit)
-          let k=0;
-          while (!insideEllipse(p.x,p.y,state.a - r, state.b - r) && k<5) {
-            // move towards center slightly
-            p.x = (p.x + Cx)*0.5;
-            p.y = (p.y + Cy)*0.5;
-            k++;
-          }
-          reflectOnEllipse(p);
-          state.collisions++;
-        }
-      }
-    }
+    } 
 
     // Particle collisions
     handlePairCollisions();
@@ -356,11 +317,7 @@
       ctx.beginPath();
       ctx.arc(Cx, Cy, R, 0, TAU);
       ctx.stroke();
-    } else {
-      ctx.beginPath();
-      ctx.ellipse(Cx, Cy, state.a, state.b, 0, 0, TAU);
-      ctx.stroke();
-    }
+    } 
   }
 
   function draw() {
