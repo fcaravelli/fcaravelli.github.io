@@ -380,12 +380,15 @@
     const counts = new Array(bins).fill(0);
     const P = state.parts;
     if (state.shape === 'square') {
-      // radial vs square: use circle radius anyway (distance from center / R)
-      for (let p of P) {
-        const r = Math.min(1, Math.hypot(p.x-Cx, p.y-Cy)/R);
-        counts[Math.min(bins-1, Math.floor(r*bins))]++;
-      }
-    } else {
+    for (let p of P) {
+        const dx = p.x - Cx, dy = p.y - Cy;
+        // max radius along this direction before hitting wall
+        const scale = R / Math.max(Math.abs(dx), Math.abs(dy));
+        const r = Math.min(1, Math.hypot(dx, dy) * scale / R);
+        counts[Math.min(bins - 1, Math.floor(r * bins))]++;
+    }
+    }
+    else {
       const denom = (state.shape==='circle') ? R : Math.max(state.a, state.b);
       for (let p of P) {
         const r = Math.min(1, Math.hypot(p.x-Cx, p.y-Cy)/denom);
