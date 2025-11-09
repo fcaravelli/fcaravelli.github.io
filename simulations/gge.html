@@ -181,29 +181,40 @@
         // velocity
         let vx, vy;
         if (init === 'tangential') {
-        // Controlled angular momentum based on target Ξ
+        // --- unified rotation direction + radial bias ---
+        const xiTarget = +xiTargetEl.value;  // 0–1 slider
+
+        // Choose a rotation sense: +1 = CCW, -1 = CW
+        const rotSense = 1; // set to -1 if you prefer clockwise
+
+        // Re-bias the initial position radius depending on Ξ
+        const bias = Math.pow(Math.random(), 1 - 0.9 * xiTarget);
+        const rr = (R - rad) * Math.sqrt(bias);
+        const th = rand(0, TAU);
+        x = Cx + rr * Math.cos(th);
+        y = Cy + rr * Math.sin(th);
+
+        // Tangential direction (same for everyone)
         const dx = x - Cx, dy = y - Cy;
         const rmag = Math.hypot(dx, dy) || 1;
-        const ux = -dy / rmag, uy = dx / rmag; // unit tangent
-        const xiTarget = +xiTargetEl.value;    // 0–1 slider
+        // rotate (+90° for CCW)
+        const ux = rotSense * (-dy / rmag);
+        const uy = rotSense * ( dx / rmag);
 
-        // Base tangential speed scaled by target Ξ
-        const omega = xiTarget * v0 / R;       // angular velocity
+        // Tangential speed scales with radius
+        const v0 = 70;
+        const omega = xiTarget * v0 / R;
         const vt = omega * rmag;
 
         vx = ux * vt;
         vy = uy * vt;
 
-        // Add small random jitter so not perfectly rigid
-        const jit = 0.05 * v0 * (1 - xiTarget);
+        // small jitter only for intermediate Ξ
+        const jit = 0.03 * v0 * (1 - xiTarget);
         vx += rand(-jit, jit);
         vy += rand(-jit, jit);
-        } else {
-        // Random initialization (Ξ≈0)
-        const ang = rand(0, TAU);
-        vx = v0 * Math.cos(ang);
-        vy = v0 * Math.sin(ang);
         }
+
 
 
 
