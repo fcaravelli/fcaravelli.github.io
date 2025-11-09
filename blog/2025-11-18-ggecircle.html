@@ -121,7 +121,7 @@
             The reason is that angular momentum couples position and momentum degrees of freedom.
             Particles near the boundary tend to have tangential velocities, while particles near
             the center carry smaller angular momentum. The strength of this coupling can be
-            quantified by introducing a dimensionless order parameter,
+            quantified by introducing a dimensionless order parameter (which we show to be between 0 and 1)
         </p>
 
         <p class="math">
@@ -131,30 +131,56 @@
         </p>
 
         <p>
-            where $M=N$ is the total mass and $R$ is the radius of the container.
-            The parameter $\Xi$ measures how much of the total energy is stored in rotational motion.
-            For $\Xi \approx 0$ the system behaves as a standard Gibbs ensemble (no net rotation),
-            while for $\Xi \approx 1$ almost all energy is in rigid rotation.
+            Here $M=N$ is the total mass and $R$ the radius of the container.
+            The dimensionless parameter $\Xi$ quantifies the relative weight of rotational energy
+            with respect to the total energy, and can be interpreted as an “order parameter” 
+            for the transition between the usual Gibbs regime and the angular–momentum–dominated regime.
+            For $\Xi \approx 0$, the system behaves as an ordinary Gibbs ensemble with no net rotation.
+            As $\Xi \to 1$, almost all of the energy is stored in collective rotational motion,
+            approaching a rigidly rotating configuration.
         </p>
 
         <p>
-            By maximizing the entropy $S = -\int f\log f$ subject to the constraints of normalization,
-            total energy and angular momentum, one finds that the marginal distribution for the particle
-            positions is proportional to the accessible phase–space volume at fixed $r$:
+            The stationary one–body distribution can be obtained by maximizing the entropy
+            <span class="math">S = -\!\int f \log f \, d\mathbf{r}\,d\mathbf{p}</span>
+            under the constraints of fixed normalization, total energy and total angular momentum.
+            This leads to a generalized Gibbs ensemble of the form
         </p>
 
         <p class="math">
-            \[ 
-            \rho(r) \propto r\,\exp\!\big[-\beta \tfrac{1}{2} m (\Omega^2 r^2)\big],
+            \[ f(\mathbf{r},\mathbf{p}) = Z^{-1}\,
+            \exp\!\left[-\beta \!\left(
+            \frac{|\mathbf{p}|^2}{2} - \Omega\,(\mathbf{r}\times\mathbf{p})_z
+            \right)\right],
             \]
         </p>
 
         <p>
-            where $\Omega$ is determined self–consistently from the constraint on $\Xi$.
-            For small $\Omega$, $\rho(r)$ is approximately uniform as in the Gibbs case.
-            However, as $\Xi$ increases, the effective centrifugal potential
-            $-\tfrac{1}{2}m\Omega^2 r^2$ favors configurations with particles near the boundary,
-            leading to a clear "condensation" at $r\simeq R$ and a distribution that tends to a Dirac-delta function.
+            where $\beta^{-1}$ is the kinetic (or “thermal”) temperature associated with the total energy,
+            while the Lagrange multiplier $\Omega$ defines a second, “rotational” temperature
+            <span class="math">T_\mathrm{rot} = (\beta \Omega)^{-1}</span>
+            that enforces conservation of angular momentum.
+            The competition between these two scales determines the stationary state.
+        </p>
+
+        <p>
+            Integrating over momenta, one obtains the radial density profile
+        </p>
+
+        <p class="math">
+            \[ \rho(r) \propto r \,
+            \exp\!\left[-\frac{\beta_\mathrm{eff}}{2}\, m\, \Omega^2 r^2 \right],
+            \]
+        </p>
+
+        <p>
+            where the effective inverse temperature $\beta_\mathrm{eff}$ depends on both $\beta$ and $\Omega$ 
+            through the constraint fixing $\Xi$.
+            For small $\Omega$ (or equivalently $\Xi \to 0$), the rotational temperature is negligible and
+            $\rho(r)$ is nearly uniform, reproducing the standard Gibbs case.
+            In contrast, as $\Xi \to 1$, the rotational temperature dominates:
+            the centrifugal term $-\tfrac{1}{2}m\Omega^2 r^2$ confines most of the probability mass near the boundary,
+            and $\rho(r)$ tends asymptotically to a Dirac delta centered at $r = R$.
         </p>
 
         <p>
