@@ -151,75 +151,64 @@
     const parts = [];
     let attempts = 0;
     while (parts.length < N && attempts < 10000) {
-      attempts++;
-      // sample position inside chosen boundary (shrink a bit by r)
-      let x,y;
-      if (shape === 'square') {
+    attempts++;
+
+    // --- Choose position ---
+    let x, y;
+    const xiTarget = +xiTargetEl.value;
+    const bias = (init === 'tangential')
+        ? Math.pow(Math.random(), 1 - 0.9 * xiTarget)
+        : Math.random(); // unbiased for random init
+
+    if (shape === 'square') {
         x = rand(Cx - R + rad, Cx + R - rad);
         y = rand(Cy - R + rad, Cy + R - rad);
-      } else if (shape === 'circle') {
-        const rr = (R - rad)*Math.sqrt(Math.random());
-        const th = rand(0, TAU);
-        x = Cx + rr*Math.cos(th);
-        y = Cy + rr*Math.sin(th);
-      } else {
-        // ellipse rejection sample
-        const rx = (a - rad)*Math.sqrt(Math.random());
-        const th = rand(0, TAU);
-        x = Cx + rx*Math.cos(th);
-        y = Cy + (b - rad)*(rx/(a - rad))*Math.sin(th);
-        if (!insideEllipse(x,y,a-rad,b-rad)) continue;
-      }
-      // avoid overlapping existing disks (naive)
-      let ok = true;
-      for (let p of parts) {
-        const dx = p.x - x, dy = p.y - y;
-        if (dx*dx + dy*dy < (2*rad)*(2*rad)) { ok=false; break; }
-      }
-      if (!ok) continue;
-
-        // velocity
-        let vx, vy;
-        if (init === 'tangential') {
-        // --- unified rotation direction + radial bias ---
-        const xiTarget = +xiTargetEl.value;  // 0–1 slider
-
-        // Choose a rotation sense: +1 = CCW, -1 = CW
-        const rotSense = 1; // set to -1 if you prefer clockwise
-
-        // Re-bias the initial position radius depending on Ξ
-        const bias = Math.pow(Math.random(), 1 - 0.9 * xiTarget);
+    } else if (shape === 'circle') {
         const rr = (R - rad) * Math.sqrt(bias);
         const th = rand(0, TAU);
         x = Cx + rr * Math.cos(th);
         y = Cy + rr * Math.sin(th);
+    } else { // ellipse
+        const rx = (a - rad) * Math.sqrt(bias);
+        const th = rand(0, TAU);
+        x = Cx + rx * Math.cos(th);
+        y = Cy + (b - rad) * (rx / (a - rad)) * Math.sin(th);
+        if (!insideEllipse(x, y, a - rad, b - rad)) continue;
+    }
 
-        // Tangential direction (same for everyone)
+    // --- Overlap rejection ---
+    let ok = true;
+    for (let p of parts) {
+        const dx = p.x - x, dy = p.y - y;
+        if (dx*dx + dy*dy < (2*rad)*(2*rad)) { ok = false; break; }
+    }
+    if (!ok) continue;
+
+    // --- Assign velocity ---
+    let vx, vy;
+    const v0 = 70;
+    if (init === 'tangential') {
+        const rotSense = 1; // CCW
         const dx = x - Cx, dy = y - Cy;
         const rmag = Math.hypot(dx, dy) || 1;
-        // rotate (+90° for CCW)
         const ux = rotSense * (-dy / rmag);
         const uy = rotSense * ( dx / rmag);
-
-        // Tangential speed scales with radius
-        const v0 = 70;
         const omega = xiTarget * v0 / R;
         const vt = omega * rmag;
-
         vx = ux * vt;
         vy = uy * vt;
-
-        // small jitter only for intermediate Ξ
         const jit = 0.03 * v0 * (1 - xiTarget);
         vx += rand(-jit, jit);
         vy += rand(-jit, jit);
-        }
-
-
-
-
-      parts.push({x,y,vx,vy});
+    } else {
+        const ang = rand(0, TAU);
+        vx = v0 * Math.cos(ang);
+        vy = v0 * Math.sin(ang);
     }
+
+    parts.push({ x, y, vx, vy });
+    }
+
 
     state = {
       shape, eps, a, b, N, r:rad, dt, parts,
