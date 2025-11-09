@@ -178,8 +178,8 @@
       }
       if (!ok) continue;
 
-      // velocity
-      let vx, vy;
+        // velocity
+        let vx, vy;
         if (init === 'tangential') {
         // Controlled angular momentum based on target Ξ
         const dx = x - Cx, dy = y - Cy;
@@ -188,7 +188,6 @@
         const xiTarget = +xiTargetEl.value;    // 0–1 slider
 
         // Base tangential speed scaled by target Ξ
-        // Ξ=1 → rigid rotation (max rotation), Ξ=0 → no rotation
         const omega = xiTarget * v0 / R;       // angular velocity
         const vt = omega * rmag;
 
@@ -199,7 +198,13 @@
         const jit = 0.05 * v0 * (1 - xiTarget);
         vx += rand(-jit, jit);
         vy += rand(-jit, jit);
+        } else {
+        // Random initialization (Ξ≈0)
+        const ang = rand(0, TAU);
+        vx = v0 * Math.cos(ang);
+        vy = v0 * Math.sin(ang);
         }
+
 
 
       parts.push({x,y,vx,vy});
