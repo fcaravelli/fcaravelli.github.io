@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caianello’s Learning Theory: When Physics Dreamed of AI – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+
+      <h2>Weird effects of conservations laws in Statistical Mechanics - Francesco Caravelli</h2>
+      <p class="post-date"><em>November 11, 2025</em></p>
+        <p>
+            In recent years, there has been a growing interest in understanding how conservation laws
+            affect the dynamics and equilibration of many-body systems. While traditional statistical mechanics
+            often assumes that systems relax to thermal equilibrium, the presence of additional conserved quantities
+            can lead to non-thermal steady states and anomalous transport properties.
+        </p>
+
+        <p>
+            One of the key insights in this area comes from the study of integrable systems, which possess an extensive
+            number of conserved quantities. These systems do not thermalize in the conventional sense; instead, they
+            relax to a generalized Gibbs ensemble (GGE) that accounts for all conserved quantities. This has profound
+            implications for our understanding of thermalization and ergodicity in quantum systems.
+        </p>
+
+        <p>
+            In the quantum case this has been studied extensively in the context of cold atomic gases, where experiments have observed
+            signatures of GGE behavior. Theoretical work has also explored how conservation laws can lead to
+            anomalous diffusion and transport phenomena, such as superdiffusion or subdiffusion, d
+            epending on the nature of the conserved quantities.
+        </p>
+
+        <p> However, I had not personally seen a lot of studies in the classical case. Yet, if one opens an old book in statistical mechanics,
+            these effects were quite known - for instance in the book by Tolman, he explicitly write that these cases are of no practical interest
+            because the perfect boundary does not exist. This is of course true, but still, it is interesting to see how these effects manifest in simple models.
+            Symmetry and boundaries go hand in hand, and it is interesting to see how the shape of the boundary can affect the dynamics of particles inside a container.
+        </p>
+
+        <p> I had not appreciated this until some time ago. Marc Vuffray and I were involved in a project for Los Alamos. As he was walking out of my office,
+            we started to discuss (for reasons that I do not recall precisely), the effect of boundaries in classical systems with conservation laws.
+            In particular, he mentioned that he did not understand as a teenager or first year student in Physics, 
+            why the classical gas in contained in a disk or in a sphere should be distributed according to the usual Maxwell-Boltzmann distribution.
+            I thought that he was quite right about that, and him and I started to discuss how one could simulate this effect and 
+            how to make some analytical progress. This is, in a sense, quite similar to the GGE case I mentioned above, but in which
+            there is a single extra conservation law other than Energy: the total angular momentum with respect to the center of the container.
+            This is only the case of the circular or spherical container, because of rotational symmetry - but it is not the case otherwise. 
+            I also this is a particular instructive case, as it shows in a particularly simple problem how symmetry and conservation laws are intertwined.
+
+
+        </p>
+
+        <p>
+            To make these ideas more concrete, let us consider a simple classical model: 
+            a gas of $N$ identical point particles of unit mass, confined inside a 
+            two–dimensional container, either circular or square, and interacting only through
+            hard–core elastic collisions. The total energy of the system is conserved:
+        </p>
+
+        <p class="math">
+            E = \sum_{i=1}^N \frac{|\mathbf{p}_i|^2}{2}.
+        </p>
+
+        <p>
+            When the boundary is a circle (or a sphere in three dimensions), the total angular momentum
+            with respect to the center of the container is also conserved:
+        </p>
+
+        <p class="math">
+            L_z = \sum_{i=1}^N (\mathbf{r}_i \times \mathbf{p}_i)_z.
+        </p>
+
+        <p>
+            The presence of this additional conserved quantity changes the structure of the
+            equilibrium measure. Instead of the usual Gibbs ensemble, the system relaxes to a
+            <em>generalized Gibbs ensemble</em> (GGE) in which both energy and angular momentum are fixed on average.
+            The one–body distribution function that maximizes the entropy under these two constraints is
+        </p>
+
+        <p class="math">
+            f(\mathbf{r}, \mathbf{p}) = Z^{-1} 
+            \exp\!\big[-\beta \big(\tfrac{1}{2}|\mathbf{p}|^2 - \Omega\, (\mathbf{r} \times \mathbf{p})_z \big)\big],
+        </p>
+
+        <p>
+            where $\beta$ is the inverse temperature and $\Omega$ is a Lagrange multiplier
+            conjugate to the total angular momentum $L_z$.  The partition function $Z$ ensures normalization.
+            Notice that, unlike the usual Maxwell–Boltzmann case, the distribution does not factorize into
+            separate functions of $\mathbf{r}$ and $\mathbf{p}$:
+        </p>
+
+        <p class="math">
+            f(\mathbf{r}, \mathbf{p}) \neq g(\mathbf{r})\,h(\mathbf{p}).
+        </p>
+
+        <p>
+            The reason is that angular momentum couples position and momentum degrees of freedom.
+            Particles near the boundary tend to have tangential velocities, while particles near
+            the center carry smaller angular momentum. The strength of this coupling can be
+            quantified by introducing a dimensionless order parameter,
+        </p>
+
+        <p class="math">
+            \Xi = \frac{L_z^2}{2\,M\,R^2\,E},
+        </p>
+
+        <p>
+            where $M=N$ is the total mass and $R$ is the radius of the container.
+            The parameter $\Xi$ measures how much of the total energy is stored in rotational motion.
+            For $\Xi \approx 0$ the system behaves as a standard Gibbs ensemble (no net rotation),
+            while for $\Xi \approx 1$ almost all energy is in rigid rotation.
+        </p>
+
+        <p>
+            By maximizing the entropy $S = -\int f\log f$ subject to the constraints of normalization,
+            total energy and angular momentum, one finds that the marginal distribution for the particle
+            positions is proportional to the accessible phase–space volume at fixed $r$:
+        </p>
+
+        <p class="math">
+            \rho(r) \propto r\,\exp\!\big[-\beta \tfrac{1}{2} m (\Omega^2 r^2)\big],
+        </p>
+
+        <p>
+            where $\Omega$ is determined self–consistently from the constraint on $\Xi$.
+            For small $\Omega$, $\rho(r)$ is approximately uniform as in the Gibbs case.
+            However, as $\Xi$ increases, the effective centrifugal potential
+            $-\tfrac{1}{2}m\Omega^2 r^2$ favors configurations with particles near the boundary,
+            leading to a clear "condensation" at $r\simeq R$ and a distribution that tends to a Dirac-delta function.
+        </p>
+
+        <p>
+            In other words, when angular momentum dominates, the steady state is characterized by a 
+            thin, rotating layer of particles close to the circular boundary — a purely classical manifestation
+            of a generalized Gibbs ensemble. Also, this implies that the system breaks ergodicity in a strong sense,
+            as the accessible phase space is drastically reduced by the conservation of $L_z$.
+            In contrast, if the same gas is placed in a square container, angular momentum is not conserved:
+            collisions with the corners and walls continuously transfer angular momentum to the boundary.
+            The system then relaxes to the usual Maxwell–Boltzmann equilibrium, with a uniform density profile.
+        </p>
+
+        <p>
+            I built a small <a href="/simulations/gge.html" target="_blank"> simulator</a> to visualize these effects (getting some help from ChatGPT), and you can see this yourself . 
+            By choosing the boundary shape (circle or square), the number of particles, and the value of the
+            parameter $\Xi$, one can observe in real time the transition between the Gibbs-like uniform
+            distribution and the boundary-condensed rotating state predicted by the GGE.
+        </p>
+
+
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+        crossorigin="anonymous"></script>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('../partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath || link.getAttribute('href') === '../blog.html') {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
