@@ -59,7 +59,7 @@
             In particular, he mentioned that he did not understand as a teenager or first year student in Physics, 
             why the classical gas in contained in a disk or in a sphere should be distributed according to the usual Maxwell-Boltzmann distribution.
             I thought that he was quite right about that, and him and I started to discuss how one could simulate this effect and 
-            how to make some analytical progress. This is, in a sense, quite similar to the GGE case I mentioned above, but in which
+            how to make some analytical progress. The result is this paper <a href="https://arxiv.org/abs/2407.08833" target="_blank">here</a> This is, in a sense, quite similar to the GGE case I mentioned above, but in which
             there is a single extra conservation law other than Energy: the total angular momentum with respect to the center of the container.
             This is only the case of the circular or spherical container, because of rotational symmetry - but it is not the case otherwise. 
             I also this is a particular instructive case, as it shows in a particularly simple problem how symmetry and conservation laws are intertwined.
@@ -150,14 +150,23 @@
             In other words, when angular momentum dominates, the steady state is characterized by a 
             thin, rotating layer of particles close to the circular boundary — a purely classical manifestation
             of a generalized Gibbs ensemble. Also, this implies that the system breaks ergodicity in a strong sense,
-            as the accessible phase space is drastically reduced by the conservation of $L_z$.
+            as the accessible phase space is drastically reduced by the conservation of $L_z$, and in fact the gas becomes chiral.
             In contrast, if the same gas is placed in a square container, angular momentum is not conserved:
             collisions with the corners and walls continuously transfer angular momentum to the boundary.
             The system then relaxes to the usual Maxwell–Boltzmann equilibrium, with a uniform density profile.
+            What is also interesting is that Bohr and van Leeuwen theorem states that in classical physics,
+            in presence of magnetic fields there should be no magnetization at equilibrium. However, because a 
+            magnetic field would induce a Lorentz force that breaks angular momentum conservation for the time it is active,
+            it means that it precisely induces a rotation. As the field is switchedd off, the angular momentum is conserved and the gas 
+            remains rotating.
+            Yet, in this case, because of the conservation of angular momentum, one can have a net rotation
+            of the gas at equilibrium, which is a sort of classical analog of remaining magnetization if the particles are charged
+            (which would create other effects which we did not look into). 
         </p>
 
         <p>
-            I built a small <a href="/simulations/gge.html" target="_blank"> simulator</a> to visualize these effects (getting some help from ChatGPT), and you can see this yourself . 
+            I built a small <a href="/simulations/gge.html" target="_blank"> simulator</a> to visualize these effects (getting quite some help from ChatGPT),
+             and you can see this yourself . 
             By choosing the boundary shape (circle or square), the number of particles, and the value of the
             parameter $\Xi$, one can observe in real time the transition between the Gibbs-like uniform
             distribution and the boundary-condensed rotating state predicted by the GGE.
