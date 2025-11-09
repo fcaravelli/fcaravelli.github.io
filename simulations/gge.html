@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hard Disks with Selectable Boundary (Gibbs vs GGE)</title>
+<style>
+  :root { --bg:#0e0f13; --fg:#e7e8ea; --mut:#9aa1aa; --accent:#5ad; }
+  body { margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto; background:var(--bg); color:var(--fg); }
+  header { padding:16px 20px; border-bottom:1px solid #1b1e24; display:flex; gap:16px; align-items:center; flex-wrap:wrap;}
+  header h1 { font-size:16px; font-weight:700; margin:0 10px 0 0; color:#cfe7ff; letter-spacing:.2px; }
+  label { font-size:13px; color:var(--mut); margin-right:10px; }
+  select, input[type="number"], input[type="range"] {
+    background:#141821; color:var(--fg); border:1px solid #252b36; border-radius:8px; padding:6px 10px; font-size:13px;
+  }
+  input[type="range"] { padding:0; }
+  button {
+    background:var(--accent); color:#001019; border:none; border-radius:999px; padding:8px 14px; font-weight:700; cursor:pointer;
+  }
+  button.secondary { background:#242b37; color:var(--fg); }
+  main { display:grid; grid-template-columns: minmax(320px, 760px) minmax(260px, 1fr); gap:14px; padding:14px; }
+  .panel { background:#12151d; border:1px solid #1f2631; border-radius:14px; padding:12px; }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:6px 0; }
+  canvas { display:block; width:100%; height:auto; background: #0a0c10; border-radius:10px; }
+  .stat { font-variant-numeric:tabular-nums; }
+  .small { font-size:12px; color:var(--mut); }
+  .grid { display:grid; gap:8px; }
+  .grid.two { grid-template-columns: 1fr 1fr; }
+  a { color:#9ad0ff; text-decoration:none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Hard Disks Simulator — boundary-induced Gibbs vs GGE</h1>
+  <div class="row">
+    <label>Boundary
+      <select id="boundary">
+        <option value="circle">Circle</option>
+        <option value="square">Square</option>
+        <option value="ellipse">Ellipse</option>
+      </select>
+    </label>
+    <label title="Only for ellipse">Eccentricity ε
+      <input id="ecc" type="range" min="0" max="0.8" step="0.02" value="0.2">
+    </label>
+    <label>Particles N
+      <input id="n" type="number" min="10" max="500" step="10" value="200">
+    </label>
+    <label>Disk radius r
+      <input id="rad" type="number" min="2" max="12" step="1" value="4">
+    </label>
+    <label>dt
+      <input id="dt" type="number" min="0.0005" max="0.02" step="0.0005" value="0.002">
+    </label>
+    <label>Init
+      <select id="init">
+        <option value="random">Random (Ξ≈0)</option>
+        <option value="tangential">Tangential (Ξ>0)</option>
+      </select>
+    </label>
+    <button id="reset">Reset</button>
+    <button id="toggle">Pause</button>
+  </div>
+</header>
+
+<main>
+  <div class="panel">
+    <canvas id="sim" width="760" height="760"></canvas>
+    <div class="row small">
+      Tip: choose <b>Circle + Tangential</b> to see near-boundary condensation;
+      choose <b>Square</b> to see uniform density & Maxwellian-like speeds. (Time-driven MD; elastic, equal masses)
+    </div>
+  </div>
+
+  <div class="panel grid">
+    <div class="row"><b>Stats</b></div>
+    <div class="grid two small">
+      <div>Time: <span id="t" class="stat">0.0</span></div>
+      <div>Collisions: <span id="col" class="stat">0</span></div>
+      <div>⟨|v|⟩: <span id="vavg" class="stat">0</span></div>
+      <div>⟨E⟩/N: <span id="eavg" class="stat">0</span></div>
+      <div>Ξ (approx): <span id="xi" class="stat">0</span></div>
+      <div>Lz (total): <span id="lz" class="stat">0</span></div>
+    </div>
+    <canvas id="histR" width="360" height="160"></canvas>
+    <div class="small">Radial distribution P(r/R). In the circle with tangential init, this piles up near r≈R (the “condensation” seen in the paper).</div>
+    <canvas id="histV" width="360" height="160"></canvas>
+    <div class="small">Speed distribution. In the square or circle with Ξ≈0 you’ll see a Gibbs-like (Maxwell-Boltzmann) shape.</div>
+    <div class="small">Reference: boundary shape can induce a classical Generalized Gibbs Ensemble with conserved angular momentum; circle ≈ GGE, square ≈ Gibbs. :contentReference[oaicite:1]{index=1}</div>
+  </div>
+</main>
+
+<script>
+(() => {
+  // ----- Helpers
+  const rand = (a,b)=>a+Math.random()*(b-a);
+  const TAU = Math.PI*2;
+
+  // ----- Elements
+  const cvs = document.getElementById('sim');
+  const ctx = cvs.getContext('2d');
+  const hR = document.getElementById('histR').getContext('2d');
+  const hV = document.getElementById('histV').getContext('2d');
+
+  const boundaryEl = document.getElementById('boundary');
+  const eccEl = document.getElementById('ecc');
+  const nEl = document.getElementById('n');
+  const rEl = document.getElementById('rad');
+  const dtEl = document.getElementById('dt');
+  const initEl = document.getElementById('init');
+  const resetBtn = document.getElementById('reset');
+  const toggleBtn = document.getElementById('toggle');
+
+  const tEl = document.getElementById('t');
+  const colEl = document.getElementById('col');
+  const vavgEl = document.getElementById('vavg');
+  const eavgEl = document.getElementById('eavg');
+  const xiEl = document.getElementById('xi');
+  const lzEl = document.getElementById('lz');
+
+  // ----- Simulation state
+  let W=cvs.width, H=cvs.height;
+  const R = Math.min(W,H)*0.45;      // visual radius for circle/ellipse
+  const Cx = W*0.5, Cy = H*0.5;
+
+  let state;
+  const MAX_N = 500; // safety
+
+  function reset() {
+    const shape = boundaryEl.value;
+    const eps = +eccEl.value;
+    const N = Math.min(+nEl.value, MAX_N);
+    const rad = +rEl.value;
+    const dt = +dtEl.value;
+    const init = initEl.value;
+
+    // initial speed magnitude (scaled with r and N for stability)
+    const v0 = 70; // px/s — tuned for nice visuals
+
+    // ellipse axes for "ellipse" boundary
+    const a = R;                     // major
+    const b = R*Math.sqrt(1-Math.min(eps,0.8)**2);  // minor from eccentricity
+
+    const parts = [];
+    let attempts = 0;
+    while (parts.length < N && attempts < 10000) {
+      attempts++;
+      // sample position inside chosen boundary (shrink a bit by r)
+      let x,y;
+      if (shape === 'square') {
+        x = rand(Cx - R + rad, Cx + R - rad);
+        y = rand(Cy - R + rad, Cy + R - rad);
+      } else if (shape === 'circle') {
+        const rr = (R - rad)*Math.sqrt(Math.random());
+        const th = rand(0, TAU);
+        x = Cx + rr*Math.cos(th);
+        y = Cy + rr*Math.sin(th);
+      } else {
+        // ellipse rejection sample
+        const rx = (a - rad)*Math.sqrt(Math.random());
+        const th = rand(0, TAU);
+        x = Cx + rx*Math.cos(th);
+        y = Cy + (b - rad)*(rx/(a - rad))*Math.sin(th);
+        if (!insideEllipse(x,y,a-rad,b-rad)) continue;
+      }
+      // avoid overlapping existing disks (naive)
+      let ok = true;
+      for (let p of parts) {
+        const dx = p.x - x, dy = p.y - y;
+        if (dx*dx + dy*dy < (2*rad)*(2*rad)) { ok=false; break; }
+      }
+      if (!ok) continue;
+
+      // velocity
+      let vx, vy;
+      if (init === 'tangential') {
+        // give it a tangential kick to seed nonzero Lz
+        const dx = x - Cx, dy = y - Cy;
+        const n = Math.hypot(dx,dy) || 1;
+        // tangent: rotate (dx,dy) by +90°
+        vx = -dy/n * v0;
+        vy =  dx/n * v0;
+        // add small jitter
+        const jit = 0.05*v0;
+        vx += rand(-jit, jit); vy += rand(-jit, jit);
+      } else {
+        const ang = rand(0, TAU);
+        vx = v0*Math.cos(ang); vy = v0*Math.sin(ang);
+      }
+
+      parts.push({x,y,vx,vy});
+    }
+
+    state = {
+      shape, eps, a, b, N, r:rad, dt, parts,
+      t:0, collisions:0, running:true
+    };
+    toggleBtn.textContent = 'Pause';
+  }
+
+  function insideCircle(x,y,rad=R) {
+    const dx = x - Cx, dy = y - Cy;
+    return dx*dx + dy*dy <= rad*rad + 1e-9;
+  }
+  function insideEllipse(x,y,ax=state.a,by=state.b) {
+    const dx = (x - Cx)/ax, dy = (y - Cy)/by;
+    return (dx*dx + dy*dy) <= 1 + 1e-9;
+  }
+
+  // Specular reflection helpers
+  function reflectOnCircle(p) {
+    // normal at point is radial from center
+    const nx = (p.x - Cx), ny = (p.y - Cy);
+    const nlen = Math.hypot(nx, ny) || 1;
+    const ux = nx/nlen, uy = ny/nlen; // outward unit normal
+    const vdotn = p.vx*ux + p.vy*uy;
+    p.vx = p.vx - 2*vdotn*ux;
+    p.vy = p.vy - 2*vdotn*uy;
+  }
+
+  function reflectOnEllipse(p) {
+    // Ellipse F(x,y)= (x-Cx)^2/a^2 + (y-Cy)^2/b^2 - 1 = 0
+    // Normal ∝ ∇F = (2(x-Cx)/a^2, 2(y-Cy)/b^2)
+    const nx = 2*(p.x - Cx)/(state.a*state.a);
+    const ny = 2*(p.y - Cy)/(state.b*state.b);
+    const nlen = Math.hypot(nx, ny) || 1;
+    const ux = nx/nlen, uy = ny/nlen;
+    const vdotn = p.vx*ux + p.vy*uy;
+    p.vx = p.vx - 2*vdotn*ux;
+    p.vy = p.vy - 2*vdotn*uy;
+  }
+
+  function reflectOnSquare(p) {
+    const Rv = R;
+    const r = state.r;
+    if (p.x - r < Cx - Rv) { p.x = Cx - Rv + r; p.vx *= -1; }
+    if (p.x + r > Cx + Rv) { p.x = Cx + Rv - r; p.vx *= -1; }
+    if (p.y - r < Cy - Rv) { p.y = Cy - Rv + r; p.vy *= -1; }
+    if (p.y + r > Cy + Rv) { p.y = Cy + Rv - r; p.vy *= -1; }
+  }
+
+  // O(N^2) elastic collisions for equal masses
+  function handlePairCollisions() {
+    const r = state.r;
+    const rr = (2*r)*(2*r);
+    const P = state.parts;
+    for (let i=0;i<P.length;i++) {
+      for (let j=i+1;j<P.length;j++) {
+        const a = P[i], b = P[j];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist2 = dx*dx + dy*dy;
+        if (dist2 <= rr && dist2 > 0) {
+          const dist = Math.sqrt(dist2);
+          // push them apart minimally
+          const overlap = 2*r - dist + 1e-6;
+          const ux = dx/dist, uy = dy/dist;
+          a.x -= ux*overlap*0.5; a.y -= uy*overlap*0.5;
+          b.x += ux*overlap*0.5; b.y += uy*overlap*0.5;
+
+          // relative velocity along normal
+          const rvx = b.vx - a.vx, rvy = b.vy - a.vy;
+          const rel = rvx*ux + rvy*uy;
+          if (rel < 0) {
+            // equal masses: swap normal components
+            const imp = -2*rel/2; // / (1/m+1/m) with m=1
+            const jx = imp*ux, jy = imp*uy;
+            a.vx -= jx; a.vy -= jy;
+            b.vx += jx; b.vy += jy;
+          }
+          state.collisions++;
+        }
+      }
+    }
+  }
+
+  function step() {
+    if (!state?.running) return;
+    const {parts, dt, r} = state;
+
+    // Integrate
+    for (let p of parts) {
+      p.x += p.vx*dt*60; // scale dt to animation framerate feel
+      p.y += p.vy*dt*60;
+    }
+
+    // Boundary handling
+    if (state.shape === 'square') {
+      for (let p of parts) reflectOnSquare(p);
+    } else if (state.shape === 'circle') {
+      for (let p of parts) {
+        const dx = p.x - Cx, dy = p.y - Cy;
+        const dist = Math.hypot(dx,dy);
+        if (dist + r > R) {
+          // pull to boundary and reflect
+          const ux = dx/dist, uy = dy/dist;
+          p.x = Cx + ux*(R - r);
+          p.y = Cy + uy*(R - r);
+          reflectOnCircle(p);
+          state.collisions++;
+        }
+      }
+    } else { // ellipse
+      for (let p of parts) {
+        if (!insideEllipse(p.x,p.y,state.a - r, state.b - r)) {
+          // project roughly to boundary (iterate a bit)
+          let k=0;
+          while (!insideEllipse(p.x,p.y,state.a - r, state.b - r) && k<5) {
+            // move towards center slightly
+            p.x = (p.x + Cx)*0.5;
+            p.y = (p.y + Cy)*0.5;
+            k++;
+          }
+          reflectOnEllipse(p);
+          state.collisions++;
+        }
+      }
+    }
+
+    // Particle collisions
+    handlePairCollisions();
+
+    state.t += dt;
+
+    // Draw
+    draw();
+    // Stats
+    if ((performance.now()|0) % 2 === 0) updateStats();
+    requestAnimationFrame(step);
+  }
+
+  function drawBoundary() {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#2a3241";
+    if (state.shape === 'square') {
+      ctx.strokeRect(Cx - R, Cy - R, 2*R, 2*R);
+    } else if (state.shape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(Cx, Cy, R, 0, TAU);
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      ctx.ellipse(Cx, Cy, state.a, state.b, 0, 0, TAU);
+      ctx.stroke();
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    drawBoundary();
+
+    // particles
+    ctx.fillStyle = "#9ad0ff";
+    for (let p of state.parts) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, state.r, 0, TAU);
+      ctx.fill();
+    }
+
+    // Histograms
+    drawHistR();
+    drawHistV();
+  }
+
+  function drawHistR() {
+    const bins = 40;
+    const counts = new Array(bins).fill(0);
+    const P = state.parts;
+    if (state.shape === 'square') {
+      // radial vs square: use circle radius anyway (distance from center / R)
+      for (let p of P) {
+        const r = Math.min(1, Math.hypot(p.x-Cx, p.y-Cy)/R);
+        counts[Math.min(bins-1, Math.floor(r*bins))]++;
+      }
+    } else {
+      const denom = (state.shape==='circle') ? R : Math.max(state.a, state.b);
+      for (let p of P) {
+        const r = Math.min(1, Math.hypot(p.x-Cx, p.y-Cy)/denom);
+        counts[Math.min(bins-1, Math.floor(r*bins))]++;
+      }
+    }
+    // draw
+    const w = hR.canvas.width, h = hR.canvas.height;
+    hR.clearRect(0,0,w,h);
+    const maxC = Math.max(...counts,1);
+    hR.fillStyle="#1d2533"; hR.fillRect(0,0,w,h);
+    hR.fillStyle="#6bd3a3";
+    for (let i=0;i<bins;i++) {
+      const bh = (counts[i]/maxC)*(h-10);
+      const bw = w/bins;
+      hR.fillRect(i*bw, h - bh, bw-1, bh);
+    }
+    // axis
+    hR.strokeStyle="#2a3241"; hR.strokeRect(0,0,w,h);
+  }
+
+  function drawHistV() {
+    const bins = 40;
+    const counts = new Array(bins).fill(0);
+    let vmax = 0;
+    for (let p of state.parts) vmax = Math.max(vmax, Math.hypot(p.vx,p.vy));
+    vmax = Math.max(vmax, 1);
+    for (let p of state.parts) {
+      const v = Math.hypot(p.vx,p.vy)/vmax;
+      counts[Math.min(bins-1, Math.floor(v*bins))]++;
+    }
+    const w = hV.canvas.width, h = hV.canvas.height;
+    hV.clearRect(0,0,w,h);
+    hV.fillStyle="#1d2533"; hV.fillRect(0,0,w,h);
+    const maxC = Math.max(...counts,1);
+    hV.fillStyle="#eab676";
+    for (let i=0;i<bins;i++) {
+      const bh = (counts[i]/maxC)*(h-10);
+      const bw = w/bins;
+      hV.fillRect(i*bw, h - bh, bw-1, bh);
+    }
+    hV.strokeStyle="#2a3241"; hV.strokeRect(0,0,w,h);
+  }
+
+  function updateStats() {
+    const P = state.parts;
+    const N = P.length;
+    let E=0, Lz=0, vavg=0;
+    for (let p of P) {
+      const v2 = p.vx*p.vx+p.vy*p.vy;
+      E += 0.5*v2; vavg += Math.sqrt(v2);
+      // angular momentum about center (m=1): Lz = r x p = x*py - y*px (translated)
+      const rx = p.x - Cx, ry = p.y - Cy;
+      Lz += rx*p.vy - ry*p.vx;
+    }
+    vavg/=N;
+    const xi = (Lz*Lz)/(2*(R*R)*N*(2*E)); // Ξ ≈ L^2/(2MR^2 E) with M=N (m=1)
+
+    tEl.textContent = state.t.toFixed(2);
+    colEl.textContent = state.collisions.toString();
+    vavgEl.textContent = vavg.toFixed(1);
+    eavgEl.textContent = (E/N).toFixed(1);
+    lzEl.textContent = Lz.toFixed(1);
+    xiEl.textContent = isFinite(xi)? xi.toFixed(3) : '0.000';
+  }
+
+  // ----- Wiring
+  resetBtn.addEventListener('click', () => { reset(); draw(); });
+  toggleBtn.addEventListener('click', () => {
+    if (!state) return;
+    state.running = !state.running;
+    toggleBtn.textContent = state.running ? 'Pause' : 'Resume';
+    if (state.running) requestAnimationFrame(step);
+  });
+  boundaryEl.addEventListener('change', () => {
+    const show = boundaryEl.value === 'ellipse';
+    eccEl.disabled = !show;
+  });
+
+  // init
+  reset();
+  draw();
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
