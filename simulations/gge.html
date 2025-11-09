@@ -385,14 +385,17 @@
     const counts = new Array(bins).fill(0);
     const P = state.parts;
     if (state.shape === 'square') {
+    const Rin = 0.98 * R; // or 0.95*R if you like
     for (let p of P) {
-        const dx = p.x - Cx, dy = p.y - Cy;
-        // max radius along this direction before hitting wall
-        const scale = R / Math.max(Math.abs(dx), Math.abs(dy));
-        const r = Math.min(1, Math.hypot(dx, dy) * scale / R);
-        counts[Math.min(bins - 1, Math.floor(r * bins))]++;
+        const rEu = Math.hypot(p.x - Cx, p.y - Cy);
+        if (rEu <= Rin) { // only particles inside the inscribed circle
+        const r = rEu / Rin; // 0..1
+        const bin = Math.min(bins - 1, Math.floor(r * bins));
+        counts[bin]++;
+        }
     }
     }
+
     else {
       const denom = (state.shape==='circle') ? R : Math.max(state.a, state.b);
       for (let p of P) {
