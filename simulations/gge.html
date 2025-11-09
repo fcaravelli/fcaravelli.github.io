@@ -105,7 +105,6 @@
   const hV = document.getElementById('histV').getContext('2d');
   const eps =0; 
   const boundaryEl = document.getElementById('boundary');
-  const eccEl = document.getElementById('ecc');
   const nEl = document.getElementById('n');
   const rEl = document.getElementById('rad');
   const dtEl = document.getElementById('dt');
@@ -131,7 +130,6 @@
 
   function reset() {
     const shape = boundaryEl.value;
-    const eps = +eccEl.value;
     const N = Math.min(+nEl.value, MAX_N);
     const rad = +rEl.value;
     const dt = +dtEl.value;
@@ -201,7 +199,7 @@
 
 
     state = {
-      shape, eps, a, b, N, r:rad, dt, parts,
+      shape, a, b, N, r:rad, dt, parts,
       t:0, collisions:0, running:true
     };
     toggleBtn.textContent = 'Pause';
@@ -428,10 +426,7 @@
     toggleBtn.textContent = state.running ? 'Pause' : 'Resume';
     if (state.running) requestAnimationFrame(step);
   });
-  boundaryEl.addEventListener('change', () => {
-    const show = boundaryEl.value === 'ellipse';
-    eccEl.disabled = !show;
-  });
+
 
   // init
   reset();
