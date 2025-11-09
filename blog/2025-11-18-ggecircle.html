@@ -149,17 +149,17 @@
 
         <p class="math">
             \[ f(\mathbf{r},\mathbf{p}) = Z^{-1}\,
-            \exp\!\left[-\beta \!\left(
-            \frac{|\mathbf{p}|^2}{2} - \Omega\,(\mathbf{r}\times\mathbf{p})_z
-            \right)\right],
+            \exp\!\left[-\beta_T
+            \frac{|\mathbf{p}|^2}{2} -\beta_L \Omega\,(\mathbf{r}\times\mathbf{p})_z
+            \right],
             \]
         </p>
 
         <p>
             where $\beta^{-1}$ is the kinetic (or “thermal”) temperature associated with the total energy,
-            while the Lagrange multiplier $\Omega$ defines a second, “rotational” temperature
+            while the $\beta_L$ multiplier $\Omega$ defines a second, “rotational” temperature
             <span class="math">T_\mathrm{rot} = (\beta \Omega)^{-1}</span>
-            that enforces conservation of angular momentum.
+            that comes from the conservation of angular momentum.
             The competition between these two scales determines the stationary state.
         </p>
 
