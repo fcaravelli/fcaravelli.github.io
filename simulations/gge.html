@@ -54,10 +54,16 @@
     </label>
     <label>Init
       <select id="init">
+        
         <option value="random">Random (Ξ≈0)</option>
         <option value="tangential">Tangential (Ξ>0)</option>
       </select>
+      
     </label>
+<label>Target Ξ
+  <input id="xiTarget" type="range" min="0" max="1" step="0.05" value="0.5">
+</label>
+
     <button id="reset">Reset</button>
     <button id="toggle">Pause</button>
   </div>
@@ -117,6 +123,7 @@
   const eavgEl = document.getElementById('eavg');
   const xiEl = document.getElementById('xi');
   const lzEl = document.getElementById('lz');
+  const xiTargetEl = document.getElementById('xiTarget');
 
   // ----- Simulation state
   let W=cvs.width, H=cvs.height;
@@ -173,20 +180,27 @@
 
       // velocity
       let vx, vy;
-      if (init === 'tangential') {
-        // give it a tangential kick to seed nonzero Lz
+        if (init === 'tangential') {
+        // Controlled angular momentum based on target Ξ
         const dx = x - Cx, dy = y - Cy;
-        const n = Math.hypot(dx,dy) || 1;
-        // tangent: rotate (dx,dy) by +90°
-        vx = -dy/n * v0;
-        vy =  dx/n * v0;
-        // add small jitter
-        const jit = 0.05*v0;
-        vx += rand(-jit, jit); vy += rand(-jit, jit);
-      } else {
-        const ang = rand(0, TAU);
-        vx = v0*Math.cos(ang); vy = v0*Math.sin(ang);
-      }
+        const rmag = Math.hypot(dx, dy) || 1;
+        const ux = -dy / rmag, uy = dx / rmag; // unit tangent
+        const xiTarget = +xiTargetEl.value;    // 0–1 slider
+
+        // Base tangential speed scaled by target Ξ
+        // Ξ=1 → rigid rotation (max rotation), Ξ=0 → no rotation
+        const omega = xiTarget * v0 / R;       // angular velocity
+        const vt = omega * rmag;
+
+        vx = ux * vt;
+        vy = uy * vt;
+
+        // Add small random jitter so not perfectly rigid
+        const jit = 0.05 * v0 * (1 - xiTarget);
+        vx += rand(-jit, jit);
+        vy += rand(-jit, jit);
+        }
+
 
       parts.push({x,y,vx,vy});
     }
