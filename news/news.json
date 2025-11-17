@@ -1,5 +1,15 @@
 [
   {
+    "title": "Blog: Simple two dimensional gas (Gibbs vs GGE - Square vs Disk)",
+    "date": "2025-11-18",
+    "link": "/blog/2025-11-18-ggecircle.html"
+  },
+  {
+    "title": "Simulation: Simple two dimensional gas (Gibbs vs GGE - Square vs Disk)",
+    "date": "2025-11-18",
+    "link": "/simulations/gge.html"
+  },
+  {
     "title": "Blog post: Karinthy's six degrees of separation",
     "date": "2025-11-12",
     "link": "/blog/2025-11-12-sixdegrees1.html"
