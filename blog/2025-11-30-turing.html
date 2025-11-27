@@ -24,7 +24,7 @@
 
     <!-- Main Content -->
     <main class="content">
-      <h2>A visit to Jagellonian University in Krakow</h2>
+      <h2>A visit to Jagellonian University in Krakow and Turing Instabilities</h2>
         <p class="post-date"><em>November 30, 2025</em></p>
         I was recently visiting Krakow to give a talk at Jagellonian University. This is not my first visit,
         as I had the pleasure of collaborating with some of the faculty there in the past.
@@ -47,145 +47,271 @@
         There is a nice article on Turing patterns on Wikipedia as well, and also I suggest this paper <a href="https://www.nature.com/articles/s43588-022-00306-0">here</a>.
         This fits well with other readings I have been doing on pattern formation, such as von Neumann's work on cellular automata.
 
-      <h2>Turing Patterns via Jacobian Instability</h2>
-      <p class="post-date"><em>November 25, 2025</em></p>
+ 
+<p>
+Turing patterns arise in reaction–diffusion systems when a spatially uniform fixed point, stable in the absence of diffusion,
+becomes unstable once diffusion is introduced. This instability occurs because different diffusion rates modify the linear
+stability of perturbations in a wavenumber-dependent way.
+</p>
 
-      <p>
-        In 1952, Alan Turing proposed that the interplay between local reactions and diffusion can destabilize a uniform state and
-        generate spatial structure. Here I derive the classic <em>diffusion–driven instability</em> (Turing instability) in a concise way:
-        start from a continuous two–species model, linearize around a homogeneous fixed point, and analyze the
-        wave–number–dependent Jacobian to identify when modes grow.
-      </p>
+<h3>Reaction–Diffusion Model</h3>
 
-      <h3>Reaction–Diffusion Model</h3>
+<p>
+We consider two scalar fields:
+<ul>
+  <li>$u(x,t)$: concentration of species 1</li>
+  <li>$v(x,t)$: concentration of species 2</li>
+</ul>
+on a spatial domain $x\in\mathbb{R}^d$ and time $t$.
+</p>
 
-      <p class="math">
-        \[
-        \partial_t u = f(u,v) + D_u \nabla^2 u,\qquad
-        \partial_t v = g(u,v) + D_v \nabla^2 v,
-        \]
-      </p>
+<p class="math">
+\[
+\partial_t u = f(u,v) + D_u \nabla^2 u,\qquad
+\partial_t v = g(u,v) + D_v \nabla^2 v.
+\]
+</p>
 
-      <p>
-        with $u(x,t), v(x,t)$ scalar fields, $f,g$ smooth reaction terms, and $D_u,D_v \ge 0$ diffusion coefficients.
-        Let $(u_*,v_*)$ be a homogeneous fixed point: $f(u_*,v_*)=0$, $g(u_*,v_*)=0$.
-        Define the Jacobian (reaction linearization) at the fixed point:
-      </p>
+<p>
+Here $f(u,v)$ and $g(u,v)$ are local reaction terms, and $D_u,D_v\ge 0$ are diffusion coefficients.
+$\nabla^2$ is the Laplacian, causing spatial smoothing.
+</p>
 
-      <p class="math">
-        \[
-        J =
-        \begin{pmatrix}
-        f_u & f_v\\
-        g_u & g_v
-        \end{pmatrix}_{(u_*,v_*)},
-        \qquad
-        \operatorname{tr}J = f_u+g_v,\quad
-        \det J = f_u g_v - f_v g_u.
-        \]
-      </p>
+<h3>Homogeneous Fixed Point</h3>
 
-      <h3>Linearization and Dispersion Relation</h3>
+<p>
+A well-mixed fixed point $(u_*,v_*)$ satisfies
+</p>
 
-      <p>
-        Consider small perturbations $u=u_*+\delta u$, $v=v_*+\delta v$.
-        After Fourier decomposing $\propto e^{\sigma t + i \mathbf{k}\cdot \mathbf{x}}$ with $k=\lVert \mathbf{k}\rVert$, the linearized dynamics is:
-      </p>
+<p class="math">
+\[
+f(u_*,v_*) = 0,\qquad g(u_*,v_*) = 0.
+\]
+</p>
 
-      <p class="math">
-        \[
-        \sigma\,\begin{pmatrix}\hat u\\ \hat v\end{pmatrix}
-        =
-        \bigl(J - k^2 D\bigr)\begin{pmatrix}\hat u\\ \hat v\end{pmatrix},
-        \qquad
-        D=\begin{pmatrix} D_u & 0\\ 0 & D_v\end{pmatrix}.
-        \]
-      </p>
+<p>
+If diffusion is ignored, the system reduces to the ODEs $\dot{u}=f(u,v)$, $\dot{v}=g(u,v)$.
+Stability of this fixed point requires
+$\mathrm{tr}J<0$ and $\det J>0$, where $J$ is the Jacobian of $(f,g)$ evaluated at $(u_*,v_*)$.
+</p>
 
-      <p>
-        Therefore $\sigma(k)$ are the eigenvalues of $J - k^2 D$, equivalently the roots of
-      </p>
+<h3>Linearization</h3>
 
-      <p class="math">
-        \[
-        \sigma^2 - \tau(k)\,\sigma + \Delta(k) = 0,
-        \]
-        \[
-        \tau(k)=\operatorname{tr}J - (D_u + D_v)k^2,\qquad
-        \Delta(k)=\det J - (D_v f_u + D_u g_v)\,k^2 + D_u D_v k^4.
-        \]
-      </p>
+<p>
+Write perturbations $u=u_*+\delta u$, $v=v_*+\delta v$, with $|\delta u|,|\delta v|\ll 1$.
+Linearizing gives
+</p>
 
-      <p>
-        Stability requires $\Re\,\sigma(k)&lt;0$ for all $k$. A <em>Turing instability</em> means the fixed point is stable
-        to spatially uniform perturbations ($k=0$) but unstable to some $k&gt;0$.
-      </p>
+<p class="math">
+\[
+\partial_t
+\begin{pmatrix}\delta u \\ \delta v\end{pmatrix}
+=
+J\begin{pmatrix}\delta u \\ \delta v\end{pmatrix}
++
+D\nabla^2\begin{pmatrix}\delta u \\ \delta v\end{pmatrix},
+\]
+\[
+J=
+\begin{pmatrix}f_u & f_v \\ g_u & g_v\end{pmatrix},
+\qquad
+D=\begin{pmatrix}D_u & 0 \\ 0 & D_v\end{pmatrix}.
+\]
+</p>
 
-      <h3>Conditions for Diffusion–Driven Instability</h3>
+<h3>Fourier Modes and Dispersion Relation</h3>
 
-      <p>
-        <strong>Stability without diffusion (well–mixed):</strong>
-      </p>
+<p>
+Use Fourier modes $\delta u,\delta v\propto e^{\sigma t+i\mathbf{k}\cdot\mathbf{x}}$.
+Because $\nabla^2 e^{i\mathbf{k}\cdot\mathbf{x}}=-k^2 e^{i\mathbf{k}\cdot\mathbf{x}}$,
+we obtain
+</p>
 
-      <p class="math">
-        \[
-        \operatorname{tr}J = f_u + g_v &lt; 0,
-        \qquad
-        \det J = f_u g_v - f_v g_u &gt; 0.
-        \]
-      </p>
+<p class="math">
+\[
+\sigma\begin{pmatrix}\hat u\\ \hat v\end{pmatrix}
+=
+\bigl(J - k^2 D\bigr)\begin{pmatrix}\hat u\\ \hat v\end{pmatrix}.
+\]
+</p>
 
-      <p>
-        <strong>Instability induced by diffusion:</strong> there exists $k&gt;0$ with $\Re\,\sigma(k)&gt;0$.
-        For $2\times2$ systems this occurs if and only if the following hold in addition to the above:
-      </p>
+<p>
+Thus, for each wavenumber $k$, the growth rates $\sigma(k)$ are the eigenvalues of $J-k^2D$.
+A Turing instability occurs when the fixed point is stable at $k=0$, but unstable for some $k>0$.
+</p>
+<p>
+For each wavenumber $k$, the growth rates $\sigma(k)$ satisfy the characteristic equation
+</p>
 
-      <p class="math">
-        \[
-        D_v f_u + D_u g_v &gt; 0,
-        \qquad
-        \bigl(D_v f_u + D_u g_v\bigr)^2 - 4 D_u D_v \det J &gt; 0.
-        \]
-      </p>
+<p class="math">
+\[
+\sigma^2 - \tau(k)\sigma + \Delta(k) = 0,
+\]
+\[
+\tau(k)=\operatorname{tr}J - (D_u + D_v)k^2,\qquad
+\Delta(k)=\det J - (D_v f_u + D_u g_v)\,k^2 + D_u D_v k^4.
+\]
+</p>
 
-      <p>
-        Intuitively, diffusion must skew the effective Jacobian enough to flip the sign of a mode:
-        one species should act as a slowly diffusing <em>activator</em> (typically $D_u$ small) and the other as a
-        fast diffusing <em>inhibitor</em> (typically $D_v \gg D_u$), so that mixed terms $D_v f_u + D_u g_v$ are positive and large.
-        If $D_u=D_v$, diffusion merely shifts eigenvalues uniformly and cannot create a Turing pattern.
-      </p>
+<p>
+Here $\tau(k)$ is the trace and $\Delta(k)$ the determinant of the effective Jacobian $J - k^2 D$.
+A Fourier mode of wavelength $2\pi/k$ grows when $\Re\,\sigma(k)&gt;0$.
+</p>
 
-      <h3>Most Unstable Wavelength</h3>
+<h3>Stability at $k=0$</h3>
 
-      <p>
-        The growth rate is
-      </p>
+<p>
+At zero wavenumber, $\tau(0)=\operatorname{tr}J$ and $\Delta(0)=\det J$.
+The homogeneous fixed point is stable in the well-mixed limit when
+</p>
 
-      <p class="math">
-        \[
-        \sigma_\pm(k)=\frac{\tau(k)\pm\sqrt{\tau(k)^2-4\Delta(k)}}{2}.
-        \]
-      </p>
+<p class="math">
+\[
+\operatorname{tr}J &lt; 0,\qquad \det J &gt; 0.
+\]
+</p>
 
-      <p>
-        When the conditions above hold, there is a band $k\in(k_-,k_+)$ with $\Re\,\sigma_+(k)&gt;0$.
-        The selected pattern scale is near the maximizer of $\Re\,\sigma_+(k)$, which, to leading order, is controlled by
-        the quadratic form in $\Delta(k)$ and the linear decay in $\tau(k)$ with $k^2$.
-      </p>
+<h3>Instability for Some $k &gt; 0$</h3>
 
-      <h3>Sign Structure (Activator–Inhibitor Heuristic)</h3>
+<p>
+Diffusion introduces the $k^2$-dependent modifications to $\tau(k)$ and $\Delta(k)$.
+Since $\tau(k)$ decreases monotonically with $k^2$, diffusion cannot change its sign.
+Instability must therefore arise from $\Delta(k)$.
+</p>
 
-      <p>
-        A common minimal sign pattern near $(u_*,v_*)$ is
-        $f_u&gt;0$ (self–activation), $g_v&lt;0$ (self–inhibition), $f_v&gt;0$ (v promotes u), $g_u&lt;0$ (u inhibits v),
-        with $D_v\gg D_u$. This typically satisfies the stability-at-$k=0$ constraints while enabling the two diffusion
-        inequalities to hold, thus producing stationary spots/stripes.
-      </p>
+<p>
+The determinant is a quadratic polynomial in $k^2$:
+</p>
 
-      <p>
-        In a follow–up, I’ll contrast this <em>continuous-field</em> route to pattern formation with
-        von Neumann’s <em>discrete</em> cellular automata, where local rules similarly create global order—but computation itself is the “reaction.”
-      </p>
+<p class="math">
+\[
+\Delta(k) = \det J - (D_v f_u + D_u g_v)k^2 + D_u D_v k^4.
+\]
+</p>
+
+<p>
+A Turing instability occurs only if $\Delta(k)$ becomes negative for some $k&gt;0$.
+For a $2\times 2$ system, this is equivalent to the two conditions:
+</p>
+
+<p class="math">
+\[
+D_v f_u + D_u g_v &gt; 0,\qquad
+\left( D_v f_u + D_u g_v \right)^2 &gt; 4 D_u D_v\,\det J.
+\]
+</p>
+
+<p>
+These conditions ensure that the quadratic in $k^2$ has real, positive roots and that $\Delta(k)$ is negative on an interval $(k_-,k_+)$.
+Equal diffusion coefficients $D_u=D_v$ cannot satisfy these inequalities, so identical diffusion rates cannot generate a Turing instability.
+</p>
+
+<h3>Band of Unstable Modes</h3>
+
+<p>
+The eigenvalues associated with wavenumber $k$ are
+</p>
+
+<p class="math">
+\[
+\sigma_\pm(k)
+=
+\frac{ \tau(k) \pm \sqrt{\tau(k)^2 - 4\Delta(k)} }{2}.
+\]
+</p>
+
+<p>
+Instability requires $\Delta(k)&lt;0$ and a real discriminant.
+The set of wavenumbers $k\in(k_-,k_+)$ for which $\Re\,\sigma_+(k)&gt;0$ defines the band of unstable modes.
+The dominant pattern scale corresponds to the $k$ that maximizes $\sigma_+(k)$.
+</p>
+
+<p>
+Thus diffusion modifies the linearized dynamics in a $k$-dependent way, and unequal diffusion rates can invert stability at finite wavenumber while preserving stability at $k=0$.
+This is the defining feature of the Turing mechanism.
+</p>
+<h3>Brusselator Example</h3>
+
+<p>
+Now, as mentioned at the beginning, a standard reaction–diffusion system exhibiting a Turing instability is the <em>Brusselator</em>, defined by
+</p>
+
+<p class="math">
+\[
+f(u,v) = A - (B+1)u + u^2 v, \qquad
+g(u,v) = Bu - u^2 v,
+\]
+</p>
+
+<p>
+where $A&gt;0$ and $B&gt;0$ are constant feed parameters. The variables $u(x,t)$ and $v(x,t)$ represent the concentrations of two chemical species in an autocatalytic reaction scheme.
+</p>
+
+<p>
+The homogeneous fixed point is
+</p>
+
+<p class="math">
+\[
+u_* = A, \qquad v_* = \frac{B}{A}.
+\]
+</p>
+
+<p>
+Linearization at $(u_*,v_*)$ gives the Jacobian
+</p>
+
+<p class="math">
+\[
+J =
+\begin{pmatrix}
+B-1 & A^2\\
+-B & -A^2
+\end{pmatrix}.
+\]
+\]
+</p>
+
+<p>
+In the absence of diffusion, the fixed point is stable when $B &lt; 1 + A^2$, ensuring $\operatorname{tr}J&lt;0$ and $\det J&gt;0$.
+</p>
+
+<p>
+Including diffusion,
+</p>
+
+<p class="math">
+\[
+\partial_t u = f(u,v) + D_u \nabla^2 u, \qquad
+\partial_t v = g(u,v) + D_v \nabla^2 v,
+\]
+</p>
+
+<p>
+changes the stability of the Fourier modes. A Turing instability arises when $D_v \gg D_u$, so that the determinant
+</p>
+
+<p class="math">
+\[
+\Delta(k) = \det J - (D_v f_u + D_u g_v)k^2 + D_u D_v k^4
+\]
+</p>
+
+<p>
+is negative in the interval $k\in(k_-,k_+)$. For the Brusselator, the sign structure of $(f_u,f_v,g_u,g_v)$ matches the activator–inhibitor heuristic: $u$ acts as an activator and $v$ as an inhibitor.
+</p>
+
+<p>
+The resulting patterns are spatially inhomogeneous steady states with a characteristic 
+wavelength determined by the maximizer of $\sigma_+(k)$ (see the image below). 
+Nonlinear terms fix the final amplitude but not the selected length scale.
+
+</p>
+
+<p>
+    <img src="../blog/images/brusselator/brusselator.gif" alt="Turing Pattern from Brusselator Model" />
+</p>
+
 
       <p><a href="../blog.html">← Back to Blog</a></p>
 
