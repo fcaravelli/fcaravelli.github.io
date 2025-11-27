@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Turing Patterns via Jacobian Instability – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h2>A visit to Jagellonian University in Krakow</h2>
+        <p class="post-date"><em>November 30, 2025</em></p>
+        I was recently visiting Krakow to give a talk at Jagellonian University. This is not my first visit,
+        as I had the pleasure of collaborating with some of the faculty there in the past.
+        This time around, the visit was centered around quantum computing with global control.
+        It was a great experience to interact with the local researchers and students. 
+        The city itself is beautiful, with a rich history and vibrant culture, but I was there only for less than two days.
+        I had the chance other times to explore some of the historic sites other times, 
+        enjoy the local cuisine, and attend some fascinating lectures. This time I was mostly focused on work, so I didn't get to 
+        see much of the city this time around as I was staying near the University.
+        
+        I did however manage to have quite a few interesting discussions with faculty members and students, and in particular
+        Ewa Gudowska-Nowak, who is an expert in complex systems and statistical physics, and Maciej Nowak who is a well-known figure in 
+        random matrix theory and its applications to physics. 
+        A visitor (whom I am sorry I do not remember the name) was giving a talk on Turing patterns, and did mention
+        that actually Ewa was a student of Prigogine in Brussels (the Nobel prize in Chemistry), and had worked on reaction-diffusion systems in the past.
+        I have to admit that I know quite little about Turing patterns, so I was intrigued to learn more about them.
+        So, that night I found an 
+        <a href="https://www.cheetah.fi/teemuleppanen/content/science/turing/publications/teemu_leppanen_chapter_theory_turing.pdf">introduction</a> to the topic by Lappänen and 
+        wrote a short derivation summary of the classic Turing instability. I thought it would be useful to share it here as well.
+        There is a nice article on Turing patterns on Wikipedia as well, and also I suggest this paper <a href="https://www.nature.com/articles/s43588-022-00306-0">here</a>.
+        This fits well with other readings I have been doing on pattern formation, such as von Neumann's work on cellular automata.
+
+      <h2>Turing Patterns via Jacobian Instability</h2>
+      <p class="post-date"><em>November 25, 2025</em></p>
+
+      <p>
+        In 1952, Alan Turing proposed that the interplay between local reactions and diffusion can destabilize a uniform state and
+        generate spatial structure. Here I derive the classic <em>diffusion–driven instability</em> (Turing instability) in a concise way:
+        start from a continuous two–species model, linearize around a homogeneous fixed point, and analyze the
+        wave–number–dependent Jacobian to identify when modes grow.
+      </p>
+
+      <h3>Reaction–Diffusion Model</h3>
+
+      <p class="math">
+        \[
+        \partial_t u = f(u,v) + D_u \nabla^2 u,\qquad
+        \partial_t v = g(u,v) + D_v \nabla^2 v,
+        \]
+      </p>
+
+      <p>
+        with $u(x,t), v(x,t)$ scalar fields, $f,g$ smooth reaction terms, and $D_u,D_v \ge 0$ diffusion coefficients.
+        Let $(u_*,v_*)$ be a homogeneous fixed point: $f(u_*,v_*)=0$, $g(u_*,v_*)=0$.
+        Define the Jacobian (reaction linearization) at the fixed point:
+      </p>
+
+      <p class="math">
+        \[
+        J =
+        \begin{pmatrix}
+        f_u & f_v\\
+        g_u & g_v
+        \end{pmatrix}_{(u_*,v_*)},
+        \qquad
+        \operatorname{tr}J = f_u+g_v,\quad
+        \det J = f_u g_v - f_v g_u.
+        \]
+      </p>
+
+      <h3>Linearization and Dispersion Relation</h3>
+
+      <p>
+        Consider small perturbations $u=u_*+\delta u$, $v=v_*+\delta v$.
+        After Fourier decomposing $\propto e^{\sigma t + i \mathbf{k}\cdot \mathbf{x}}$ with $k=\lVert \mathbf{k}\rVert$, the linearized dynamics is:
+      </p>
+
+      <p class="math">
+        \[
+        \sigma\,\begin{pmatrix}\hat u\\ \hat v\end{pmatrix}
+        =
+        \bigl(J - k^2 D\bigr)\begin{pmatrix}\hat u\\ \hat v\end{pmatrix},
+        \qquad
+        D=\begin{pmatrix} D_u & 0\\ 0 & D_v\end{pmatrix}.
+        \]
+      </p>
+
+      <p>
+        Therefore $\sigma(k)$ are the eigenvalues of $J - k^2 D$, equivalently the roots of
+      </p>
+
+      <p class="math">
+        \[
+        \sigma^2 - \tau(k)\,\sigma + \Delta(k) = 0,
+        \]
+        \[
+        \tau(k)=\operatorname{tr}J - (D_u + D_v)k^2,\qquad
+        \Delta(k)=\det J - (D_v f_u + D_u g_v)\,k^2 + D_u D_v k^4.
+        \]
+      </p>
+
+      <p>
+        Stability requires $\Re\,\sigma(k)&lt;0$ for all $k$. A <em>Turing instability</em> means the fixed point is stable
+        to spatially uniform perturbations ($k=0$) but unstable to some $k&gt;0$.
+      </p>
+
+      <h3>Conditions for Diffusion–Driven Instability</h3>
+
+      <p>
+        <strong>Stability without diffusion (well–mixed):</strong>
+      </p>
+
+      <p class="math">
+        \[
+        \operatorname{tr}J = f_u + g_v &lt; 0,
+        \qquad
+        \det J = f_u g_v - f_v g_u &gt; 0.
+        \]
+      </p>
+
+      <p>
+        <strong>Instability induced by diffusion:</strong> there exists $k&gt;0$ with $\Re\,\sigma(k)&gt;0$.
+        For $2\times2$ systems this occurs if and only if the following hold in addition to the above:
+      </p>
+
+      <p class="math">
+        \[
+        D_v f_u + D_u g_v &gt; 0,
+        \qquad
+        \bigl(D_v f_u + D_u g_v\bigr)^2 - 4 D_u D_v \det J &gt; 0.
+        \]
+      </p>
+
+      <p>
+        Intuitively, diffusion must skew the effective Jacobian enough to flip the sign of a mode:
+        one species should act as a slowly diffusing <em>activator</em> (typically $D_u$ small) and the other as a
+        fast diffusing <em>inhibitor</em> (typically $D_v \gg D_u$), so that mixed terms $D_v f_u + D_u g_v$ are positive and large.
+        If $D_u=D_v$, diffusion merely shifts eigenvalues uniformly and cannot create a Turing pattern.
+      </p>
+
+      <h3>Most Unstable Wavelength</h3>
+
+      <p>
+        The growth rate is
+      </p>
+
+      <p class="math">
+        \[
+        \sigma_\pm(k)=\frac{\tau(k)\pm\sqrt{\tau(k)^2-4\Delta(k)}}{2}.
+        \]
+      </p>
+
+      <p>
+        When the conditions above hold, there is a band $k\in(k_-,k_+)$ with $\Re\,\sigma_+(k)&gt;0$.
+        The selected pattern scale is near the maximizer of $\Re\,\sigma_+(k)$, which, to leading order, is controlled by
+        the quadratic form in $\Delta(k)$ and the linear decay in $\tau(k)$ with $k^2$.
+      </p>
+
+      <h3>Sign Structure (Activator–Inhibitor Heuristic)</h3>
+
+      <p>
+        A common minimal sign pattern near $(u_*,v_*)$ is
+        $f_u&gt;0$ (self–activation), $g_v&lt;0$ (self–inhibition), $f_v&gt;0$ (v promotes u), $g_u&lt;0$ (u inhibits v),
+        with $D_v\gg D_u$. This typically satisfies the stability-at-$k=0$ constraints while enabling the two diffusion
+        inequalities to hold, thus producing stationary spots/stripes.
+      </p>
+
+      <p>
+        In a follow–up, I’ll contrast this <em>continuous-field</em> route to pattern formation with
+        von Neumann’s <em>discrete</em> cellular automata, where local rules similarly create global order—but computation itself is the “reaction.”
+      </p>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('../partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath || link.getAttribute('href') === '../blog.html') {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
