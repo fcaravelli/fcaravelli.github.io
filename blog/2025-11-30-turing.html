@@ -80,7 +80,7 @@ Instead, $\nabla^2$ is the Laplacian operator, causing spatial smoothing. The dy
 To see how Turing patterns arise, we analyze the linear stability of a homogeneous fixed point under spatial perturbations.
 </p>
 
-<h3>Homogeneous Fixed Point</h3>
+<h3>Homogeneous Fixed Point and Linarization</h3>
 <p>
 A fixed point $(u_*,v_*)$ satisfies
 </p>
@@ -96,8 +96,6 @@ If diffusion is ignored, the system reduces to the ODEs $\dot{u}=f(u,v)$, $\dot{
 Stability of this fixed point requires
 $\mathrm{tr}J<0$ and $\det J>0$, where $J$ is the Jacobian of $(f,g)$ evaluated at $(u_*,v_*)$.
 </p>
-
-<h3>Linearization</h3>
 
 <p>
 To understand the instability, we write perturbations $u=u_*+\delta u$, $v=v_*+\delta v$, with $|\delta u|,|\delta v|\ll 1$ - we will check how they grow.
@@ -121,7 +119,6 @@ D=\begin{pmatrix}D_u & 0 \\ 0 & D_v\end{pmatrix}.
 \]
 </p>
 
-<h3>Fourier Modes and Dispersion Relation</h3>
 
 <p>
 At this point, we introduce Fourier modes $\delta u,\delta v\propto e^{\sigma t+i\mathbf{k}\cdot\mathbf{x}}$.
@@ -255,7 +252,7 @@ u_* = A, \qquad v_* = \frac{B}{A}.
 </p>
 
 <p>
-Linearization at $(u_*,v_*)$ gives the Jacobian
+Now, the linearization at $(u_*,v_*)$ gives the Jacobian
 </p>
 
 <p class="math">
