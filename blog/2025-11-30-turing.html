@@ -63,7 +63,7 @@ A typical example of Turing pattern arise for two scalar fields on the plane. We
   <li>$u(x,t)$: concentration of species 1</li>
   <li>$v(x,t)$: concentration of species 2</li>
 </ul>
-on a spatial domain $x\in\mathbb{R}^d$ and time $t$. These represent chemical concentrations, biological populations, or other quantities that diffuse and react.
+on a spatial domain ($x\in\mathbb{R}^d$) and time $t$. These may represent chemical concentrations, biological populations, or other quantities that diffuse and react.
 The dynamics is governed by the reaction–diffusion equations:
 </p>
 
@@ -76,13 +76,13 @@ The dynamics is governed by the reaction–diffusion equations:
 
 <p>
 Here $f(u,v)$ and $g(u,v)$ are local reaction terms, and $D_u,D_v\ge 0$ are diffusion coefficients.
-$\nabla^2$ is the Laplacian, causing spatial smoothing. The dynamics is thus a combination of local reactions and diffusion, the first leading to interactins, the second tries to smooth the scalar field across the plane.
+Instead, $\nabla^2$ is the Laplacian operator, causing spatial smoothing. The dynamics is thus a combination of local reactions and diffusion, the first leading to interactins, the second tries to smooth the scalar field across the plane.
 To see how Turing patterns arise, we analyze the linear stability of a homogeneous fixed point under spatial perturbations.
 </p>
 
 <h3>Homogeneous Fixed Point</h3>
 <p>
-A well-mixed fixed point $(u_*,v_*)$ satisfies
+A fixed point $(u_*,v_*)$ satisfies
 </p>
 
 <p class="math">
@@ -100,7 +100,7 @@ $\mathrm{tr}J<0$ and $\det J>0$, where $J$ is the Jacobian of $(f,g)$ evaluated 
 <h3>Linearization</h3>
 
 <p>
-Write perturbations $u=u_*+\delta u$, $v=v_*+\delta v$, with $|\delta u|,|\delta v|\ll 1$.
+To understand the instability, we write perturbations $u=u_*+\delta u$, $v=v_*+\delta v$, with $|\delta u|,|\delta v|\ll 1$ - we will check how they grow.
 Linearizing gives
 </p>
 
@@ -124,7 +124,7 @@ D=\begin{pmatrix}D_u & 0 \\ 0 & D_v\end{pmatrix}.
 <h3>Fourier Modes and Dispersion Relation</h3>
 
 <p>
-Use Fourier modes $\delta u,\delta v\propto e^{\sigma t+i\mathbf{k}\cdot\mathbf{x}}$.
+At this point, we introduce Fourier modes $\delta u,\delta v\propto e^{\sigma t+i\mathbf{k}\cdot\mathbf{x}}$.
 Because $\nabla^2 e^{i\mathbf{k}\cdot\mathbf{x}}=-k^2 e^{i\mathbf{k}\cdot\mathbf{x}}$,
 we obtain
 </p>
