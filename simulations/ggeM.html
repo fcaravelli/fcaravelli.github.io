@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hard Disks in a Central Potential (Mass M, No Walls)</title>
+<style>
+  :root { --bg:#0e0f13; --fg:#e7e8ea; --mut:#9aa1aa; --accent:#5ad; }
+  body { margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto; background:var(--bg); color:var(--fg); }
+  header { padding:16px 20px; border-bottom:1px solid #1b1e24; display:flex; gap:16px; align-items:center; flex-wrap:wrap;}
+  header h1 { font-size:16px; font-weight:700; margin:0 10px 0 0; color:#cfe7ff; letter-spacing:.2px; }
+  label { font-size:13px; color:var(--mut); margin-right:10px; }
+  select, input[type="number"], input[type="range"] {
+    background:#141821; color:var(--fg); border:1px solid #252b36; border-radius:8px; padding:6px 10px; font-size:13px;
+  }
+  input[type="range"] { padding:0; }
+  button {
+    background:var(--accent); color:#001019; border:none; border-radius:999px; padding:8px 14px; font-weight:700; cursor:pointer;
+  }
+  button.secondary { background:#242b37; color:var(--fg); }
+  main { display:grid; grid-template-columns: minmax(320px, 760px) minmax(260px, 1fr); gap:14px; padding:14px; }
+  .panel { background:#12151d; border:1px solid #1f2631; border-radius:14px; padding:12px; }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:6px 0; }
+  canvas { display:block; width:100%; height:auto; background: #0a0c10; border-radius:10px; }
+  .stat { font-variant-numeric:tabular-nums; }
+  .small { font-size:12px; color:var(--mut); }
+  .grid { display:grid; gap:8px; }
+  .grid.two { grid-template-columns: 1fr 1fr; }
+  a { color:#9ad0ff; text-decoration:none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Hard Disks in a Central Potential — tunable mass M, no walls</h1>
+  <div class="row">
+    <label>Particles N
+      <input id="n" type="number" min="10" max="500" step="10" value="100">
+    </label>
+    <label>Disk radius r
+      <input id="rad" type="number" min="2" max="12" step="1" value="4">
+    </label>
+    <label>dt
+      <input id="dt" type="number" min="0.0005" max="0.02" step="0.002" value="0.004">
+    </label>
+    <label>Central mass M
+      <input id="mass" type="number" min="0" max="5000" step="100" value="1500">
+    </label>
+    <label>Init
+      <select id="init">
+        <option value="random">Random (Ξ≈0)</option>
+        <option value="tangential">Tangential (Ξ>0)</option>
+      </select>
+    </label>
+    <label>Target Ξ
+      <input id="xiTarget" type="range" min="0" max="1" step="0.05" value="0.5">
+    </label>
+
+    <button id="reset">Reset</button>
+    <button id="toggle">Pause</button>
+  </div>
+</header>
+
+<main>
+  <div class="panel">
+    <canvas id="sim" width="760" height="760"></canvas>
+    <div class="row small">
+      Central attraction ∝ M / r², no hard walls. With large M and tangential init you get bound orbits; with small M and
+      high energy some disks fly off (“escape to infinity” in this finite window). Equal masses, hard-disk collisions.
+    </div>
+  </div>
+
+  <div class="panel grid">
+    <div class="row"><b>Stats</b></div>
+    <div class="grid two small">
+      <div>Time: <span id="t" class="stat">0.0</span></div>
+      <div>Collisions: <span id="col" class="stat">0</span></div>
+      <div>⟨|v|⟩: <span id="vavg" class="stat">0</span></div>
+      <div>⟨E⟩/N: <span id="eavg" class="stat">0</span></div>
+      <div>Ξ (approx): <span id="xi" class="stat">0</span></div>
+      <div>Lz (total): <span id="lz" class="stat">0</span></div>
+    </div>
+    <canvas id="histR" width="360" height="160"></canvas>
+    <div class="small">
+      Radial distribution P(r/R₀) of particles remaining in the central region (R₀ is a fixed plotting radius).
+      For large M and tangential init you’ll see a ring-like concentration at finite r.
+    </div>
+    <canvas id="histV" width="360" height="160"></canvas>
+    <div class="small">
+      Speed distribution. For weak M and random init you get a gas-like velocity cloud; for strong M and high Ξ, more
+      orbital structure with higher average speeds near the center.
+    </div>
+    <div class="small">
+      Thought experiment: in the hard-wall model, confinement is geometric; here, confinement is via the central potential.
+      Large M gives many bound states, but energetic particles can still escape.
+    </div>
+  </div>
+</main>
+
+<script>
+(() => {
+  // ----- Helpers
+  const rand = (a,b)=>a+Math.random()*(b-a);
+  const TAU = Math.PI*2;
+
+  // ----- Elements
+  const cvs = document.getElementById('sim');
+  const ctx = cvs.getContext('2d');
+  const hR = document.getElementById('histR').getContext('2d');
+  const hV = document.getElementById('histV').getContext('2d');
+
+  const nEl = document.getElementById('n');
+  const rEl = document.getElementById('rad');
+  const dtEl = document.getElementById('dt');
+  const massEl = document.getElementById('mass');
+  const initEl = document.getElementById('init');
+  const resetBtn = document.getElementById('reset');
+  const toggleBtn = document.getElementById('toggle');
+
+  const tEl = document.getElementById('t');
+  const colEl = document.getElementById('col');
+  const vavgEl = document.getElementById('vavg');
+  const eavgEl = document.getElementById('eavg');
+  const xiEl = document.getElementById('xi');
+  const lzEl = document.getElementById('lz');
+  const xiTargetEl = document.getElementById('xiTarget');
+
+  // ----- Simulation geometry
+  let W=cvs.width, H=cvs.height;
+  const Cx = W*0.5, Cy = H*0.5;
+  const R0 = Math.min(W,H)*0.4;        // reference radius for stats / plots
+  const ESCAPE_R = Math.min(W,H)*0.8;  // beyond this we consider particles "escaped"
+
+  // ----- Simulation state
+  let state;
+  const MAX_N = 500; // safety
+
+  function reset() {
+    const N = Math.min(+nEl.value, MAX_N);
+    const rad = +rEl.value;
+    const dt = +dtEl.value;
+    const init = initEl.value;
+    const M = +massEl.value;
+
+    const v0 = 80; // base speed scale (px/s)
+    const xiTarget = +xiTargetEl.value;
+
+    const parts = [];
+    let attempts = 0;
+
+    // Initialize in an annulus around the origin to avoid huge forces at r≈0
+    const rMin = 0.15 * R0;
+    const rMax = 0.9 * R0;
+
+    while (parts.length < N && attempts < 20000) {
+      attempts++;
+
+      // --- Choose position in [rMin, rMax] with mild bias if tangential ---
+      const bias = (init === 'tangential')
+        ? Math.pow(Math.random(), 0.8) // a bit more weight near outer radii
+        : Math.random();
+
+      const rr = rMin + (rMax - rMin) * Math.sqrt(bias);
+      const th = rand(0, TAU);
+      let x = Cx + rr * Math.cos(th);
+      let y = Cy + rr * Math.sin(th);
+
+      // --- Overlap rejection ---
+      let ok = true;
+      for (let p of parts) {
+        const dx = p.x - x, dy = p.y - y;
+        if (dx*dx + dy*dy < (2*rad)*(2*rad)) { ok = false; break; }
+      }
+      if (!ok) continue;
+
+      // --- Assign velocity ---
+      let vx, vy;
+      if (init === 'tangential') {
+        const rotSense = 1; // CCW
+        const dx = x - Cx, dy = y - Cy;
+        const rmag = Math.hypot(dx, dy) || 1;
+        const ux = rotSense * (-dy / rmag);
+        const uy = rotSense * ( dx / rmag);
+        // Angular frequency ~ ξ * v0 / R0
+        const omega = xiTarget * v0 / R0;
+        const vt = omega * rmag;
+        vx = ux * vt;
+        vy = uy * vt;
+        const jit = 0.05 * v0 * (1 - xiTarget);
+        vx += rand(-jit, jit);
+        vy += rand(-jit, jit);
+      } else {
+        const ang = rand(0, TAU);
+        vx = v0 * Math.cos(ang);
+        vy = v0 * Math.sin(ang);
+      }
+
+      parts.push({ x, y, vx, vy, escaped:false });
+    }
+
+    state = {
+      N: parts.length,
+      r: rad,
+      dt,
+      M,
+      parts,
+      t:0,
+      collisions:0,
+      running:true
+    };
+    toggleBtn.textContent = 'Pause';
+  }
+
+  // Hard-disk collisions (equal masses)
+  function handlePairCollisions() {
+    const r = state.r;
+    const rr = (2*r)*(2*r);
+    const P = state.parts;
+    for (let i=0;i<P.length;i++) {
+      const a = P[i];
+      if (a.escaped) continue;
+      for (let j=i+1;j<P.length;j++) {
+        const b = P[j];
+        if (b.escaped) continue;
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist2 = dx*dx + dy*dy;
+        if (dist2 <= rr && dist2 > 0) {
+          const dist = Math.sqrt(dist2);
+          // push them apart minimally
+          const overlap = 2*r - dist + 1e-6;
+          const ux = dx/dist, uy = dy/dist;
+          a.x -= ux*overlap*0.5; a.y -= uy*overlap*0.5;
+          b.x += ux*overlap*0.5; b.y += uy*overlap*0.5;
+
+          // relative velocity along normal
+          const rvx = b.vx - a.vx, rvy = b.vy - a.vy;
+          const rel = rvx*ux + rvy*uy;
+          if (rel < 0) {
+            // equal masses: swap normal components
+            const imp = -2*rel/2; // / (1/m+1/m) with m=1
+            const jx = imp*ux, jy = imp*uy;
+            a.vx -= jx; a.vy -= jy;
+            b.vx += jx; b.vy += jy;
+          }
+          state.collisions++;
+        }
+      }
+    }
+  }
+
+  function step() {
+    if (!state?.running) {
+      requestAnimationFrame(step);
+      return;
+    }
+    const {parts, dt, r} = state;
+    const M = state.M;
+    const G = 2000;        // effective "G" for the central potential
+    const soft2 = 20;      // softening to avoid divergences near r=0
+    const frameBoost = 60; // keep your old dt × 60 convention
+
+    // Integrate: simple explicit scheme (velocity-Verlet-ish would be nicer but this is fine for demo)
+    for (let p of parts) {
+      if (p.escaped) continue;
+
+      // central force from mass M at (Cx,Cy)
+      const dx = p.x - Cx;
+      const dy = p.y - Cy;
+      const r2 = dx*dx + dy*dy + soft2;
+      const rmag = Math.sqrt(r2);
+
+      // Attractive force F = - G M m / r^2 * r̂  → acceleration a = F/m
+      const aMag = - G * M / (r2 * rmag); // ∝ -1/r^2, direction towards center
+      const ax = aMag * dx;
+      const ay = aMag * dy;
+
+      p.vx += ax * dt;
+      p.vy += ay * dt;
+      p.x += p.vx * dt * frameBoost;
+      p.y += p.vy * dt * frameBoost;
+
+      // Escape condition: if too far from center, mark as escaped
+      const rNow = Math.hypot(p.x - Cx, p.y - Cy);
+      if (rNow > ESCAPE_R) {
+        p.escaped = true;
+      }
+    }
+
+    // Particle collisions
+    handlePairCollisions();
+
+    state.t += dt;
+
+    // Draw + stats
+    draw();
+    updateStats();
+
+    requestAnimationFrame(step);
+  }
+
+  function drawCentralMarker() {
+    ctx.save();
+    ctx.fillStyle = "#ffbb66";
+    ctx.beginPath();
+    ctx.arc(Cx, Cy, 4, 0, TAU);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+
+    // Faint "plot" circle for R0
+    ctx.save();
+    ctx.strokeStyle = "#1f2935";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(Cx, Cy, R0, 0, TAU);
+    ctx.stroke();
+    ctx.restore();
+
+    drawCentralMarker();
+
+    // particles
+    ctx.fillStyle = "#9ad0ff";
+    for (let p of state.parts) {
+      if (p.escaped) continue;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, state.r, 0, TAU);
+      ctx.fill();
+    }
+
+    // Histograms
+    drawHistR();
+    drawHistV();
+  }
+
+  function drawHistR() {
+    const bins = 40;
+    const counts = new Array(bins).fill(0);
+    const P = state.parts;
+
+    for (let p of P) {
+      if (p.escaped) continue;
+      const r = Math.hypot(p.x - Cx, p.y - Cy);
+      if (r > R0) continue; // only count particles within plotting radius
+      const rr = r / R0;
+      const bin = Math.min(bins - 1, Math.floor(rr * bins));
+      counts[bin]++;
+    }
+
+    const w = hR.canvas.width, h = hR.canvas.height;
+    hR.clearRect(0,0,w,h);
+    hR.fillStyle="#1d2533"; hR.fillRect(0,0,w,h);
+    const maxC = Math.max(...counts,1);
+    hR.fillStyle="#6bd3a3";
+    for (let i=0;i<bins;i++) {
+      const bh = (counts[i]/maxC)*(h-10);
+      const bw = w/bins;
+      hR.fillRect(i*bw, h - bh, bw-1, bh);
+    }
+    hR.strokeStyle="#2a3241"; hR.strokeRect(0,0,w,h);
+  }
+
+  function drawHistV() {
+    const bins = 40;
+    const counts = new Array(bins).fill(0);
+    let vmax = 0;
+    for (let p of state.parts) {
+      if (p.escaped) continue;
+      const v = Math.hypot(p.vx,p.vy);
+      if (v>vmax) vmax = v;
+    }
+    vmax = Math.max(vmax, 1);
+    for (let p of state.parts) {
+      if (p.escaped) continue;
+      const v = Math.hypot(p.vx,p.vy)/vmax;
+      const bin = Math.min(bins-1, Math.floor(v*bins));
+      counts[bin]++;
+    }
+    const w = hV.canvas.width, h = hV.canvas.height;
+    hV.clearRect(0,0,w,h);
+    hV.fillStyle="#1d2533"; hV.fillRect(0,0,w,h);
+    const maxC = Math.max(...counts,1);
+    hV.fillStyle="#eab676";
+    for (let i=0;i<bins;i++) {
+      const bh = (counts[i]/maxC)*(h-10);
+      const bw = w/bins;
+      hV.fillRect(i*bw, h - bh, bw-1, bh);
+    }
+    hV.strokeStyle="#2a3241"; hV.strokeRect(0,0,w,h);
+  }
+
+  function updateStats() {
+    const P = state.parts;
+    let E=0, Lz=0, vavg=0;
+    let Nactive = 0;
+    const M = state.M;
+    const G = 2000;
+    const soft2 = 20;
+
+    for (let p of P) {
+      if (p.escaped) continue;
+      Nactive++;
+      const vx = p.vx, vy = p.vy;
+      const v2 = vx*vx+vy*vy;
+      E += 0.5*v2; vavg += Math.sqrt(v2);
+
+      // potential energy from central mass (just for info, not used in Xi)
+      const rx = p.x - Cx, ry = p.y - Cy;
+      const r2 = rx*rx + ry*ry + soft2;
+      const rmag = Math.sqrt(r2);
+      const U = - G * M / rmag;
+      E += U;
+
+      // angular momentum about center (m=1): Lz = r x p
+      Lz += rx*vy - ry*vx;
+    }
+
+    if (Nactive === 0) {
+      tEl.textContent = state.t.toFixed(2);
+      colEl.textContent = state.collisions.toString();
+      vavgEl.textContent = "0.0";
+      eavgEl.textContent = "0.0";
+      lzEl.textContent = "0.0";
+      xiEl.textContent = "0.000";
+      return;
+    }
+
+    vavg /= Nactive;
+    const Eper = E / Nactive;
+
+    // Ξ-like parameter using R0 as reference radius
+    // Ξ ≈ L^2/(2 M_eff R0^2 E_kin) with M_eff ≈ Nactive (m=1) and E_kin ≈ |E|/2 for this crude diagnostic
+    const denom = 2 * Nactive * R0*R0 * (Math.abs(E)/2 || 1);
+    const xi = (Lz*Lz) / denom;
+
+    tEl.textContent = state.t.toFixed(2);
+    colEl.textContent = state.collisions.toString();
+    vavgEl.textContent = vavg.toFixed(1);
+    eavgEl.textContent = Eper.toFixed(1);
+    lzEl.textContent = Lz.toFixed(1);
+    xiEl.textContent = isFinite(xi)? xi.toFixed(3) : '0.000';
+  }
+
+  // ----- Wiring
+  resetBtn.addEventListener('click', () => { reset(); draw(); });
+  toggleBtn.addEventListener('click', () => {
+    if (!state) return;
+    state.running = !state.running;
+    toggleBtn.textContent = state.running ? 'Pause' : 'Resume';
+  });
+
+  // init
+  reset();
+  draw();
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
