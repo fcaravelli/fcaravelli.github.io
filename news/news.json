@@ -1,13 +1,13 @@
 [
     {
     "title": "Seminar: I will be talking next week at the workshop on Neuromorphic Computing at the Santa Fe Institute",
-    "date": "2025-12-08",
+    "date": "2025-12-10",
     "link": "https://https://www.santafe.edu//"
   },
     {
-    "title": "Neuromorphic computing and Izhikevic neurons",
+    "title": "Blog: Neuromorphic computing and Izhikevic neurons",
     "date": "2025-12-7",
-    "file": "blog/2025-11-7-neuromorph.html"
+    "file": "blog/2025-11-7-neuromorph1.html"
   }  , 
     {
     "title": "Simulation: Izhikevich Neuron Model",
@@ -35,12 +35,12 @@
     "link": "/simulations/gge.html"
   },
   {
-    "title": "Blog post: Karinthy's six degrees of separation",
+    "title": "Blog: Karinthy's six degrees of separation",
     "date": "2025-11-12",
     "link": "/blog/2025-11-12-sixdegrees1.html"
   },
   {
-    "title": "Blog post: Caianello's learning theory",
+    "title": "Blog : Caianello's learning theory",
     "date": "2025-11-08",
     "link": "/blog/2025-11-8-caianello1.html"
   },
@@ -50,12 +50,12 @@
     "link": "https://github.com/fcaravelli"
   },
   {
-    "title": "Blog post: The Blume–Capel model in one dimension",
+    "title": "Blog: The Blume–Capel model in one dimension",
     "date": "2025-11-04",
     "link": "/blog/2025-11-4-blumecapel1.html"
   },
   {
-    "title": "Blog post: Global control and disorder!",
+    "title": "Blog: Global control and disorder!",
     "date": "2025-11-02",
     "link": "/blog/2025-11-2-global1.html"
   },
