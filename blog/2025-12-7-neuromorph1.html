@@ -118,13 +118,13 @@ u \leftarrow u + d.
   when $v$ exceeds about 30 mV, the neuron fires, $v$ is reset to a lower voltage, and the
   recovery variable $u$ is increased (representing refractory effects).  
   With only these two variables, the model reproduces almost the full behavior of cortical neurons:
-  tonic spiking, bursting, fast spiking, resonating, chattering — all by adjusting $(a,b,c,d)$.
+  tonic spiking, bursting, fast spiking, resonating, chattering, all by adjusting $(a,b,c,d)$.
 </p>
 
 <p>
   The plot below shows the classic spike train that emerges when the injected current is strong enough to push the
   neuron into its firing regime. One of the striking features of this model is how easily it switches between
-  qualitatively different behaviors simply by changing $(a,b,c,d)$ — a property that neuromorphic hardware uses
+  qualitatively different behaviors simply by changing $(a,b,c,d)$, e.g. a property that neuromorphic hardware uses
   extensively when implementing different neuronal “species” on a chip.
 </p>
 
@@ -234,7 +234,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
   voltage fluctuations.</li>
   <li><strong>Above the Hopf point:</strong> oscillations grow until the trajectory reaches the spike
   threshold, at which point the reset injects the orbit back toward the left branch of the
-  nullcline. The oscillation is now a <em>spike train</em> — a limit cycle shaped by both the
+  nullcline. The oscillation is now a <em>spike train</em>, a limit cycle shaped by both the
   differential equations and the reset discontinuity.</li>
 </ul>
 
@@ -251,7 +251,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
   Going back to the spiking hardware, which are emulators of models like this one, the combination of realism and simplicity is why neuromorphic chips like Intel’s
   <em>Loihi</em> and ETH Zürich’s <em>DYNAP</em> (among many others, SpiNNaker, TrueNorth, DeepSouth to mention a few) use variants of the Izhikevich equations.
   The hardware can run tens of thousands of neurons simultaneously with power budgets
-  in the milliwatt range — because spikes, not clocks, drive the computation. Actually, energy budget is one of the 
+  in the milliwatt range, because spikes, not clocks, drive the computation. Actually, energy budget is one of the 
   selling points of neuromorphic hardware. It will be hard for anybody to publish a paper in "mainstream" neuromorphic computing
   without mentioning the energy efficiency of their approach. It is a bit different in adjacent neumorphic fields 
   (like I consider my work in memristors).
@@ -267,7 +267,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
 <p>
   What makes models like Izhikevich’s especially relevant for neuromorphic engineering is not only
   their biological realism, but their computational expressiveness. A population of spiking neurons
-  is not just a simulator of cortex — it is a <em>dynamical machine</em> capable of performing
+  is not just a simulator of cortex but a dynamical machine (in principle) capable of performing
   optimization, signal encoding, and constraint satisfaction in continuous time.
 </p>
 
@@ -305,7 +305,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
 </p>
 
 <p>
-  Many optimization problems — SAT, max-cut, community detection, clustering, routing — can be
+  Many optimization problems, for instance SAT, max-cut, community detection, clustering, or routing, can be
   reformulated as finding a configuration of binary or analog variables that minimizes an energy
   function. A neuromorphic architecture can encode each variable as:
 </p>
@@ -318,7 +318,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
 <p>
   Recurrent connectivity implements the cost function. Because Izhikevich neurons have built-in
   adaptation and refractoriness, the network naturally avoids unstable states, suppresses local
-  noise, and moves toward a consistent assignment of states — effectively solving the constraints.
+  noise, and moves toward a consistent assignment of states and effectively solving the constraints.
 </p>
 
 <p>
@@ -333,7 +333,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
   Unlike rate-based models, spiking networks can exploit <strong>spike timing</strong> as an analog
   variable. The interspike interval of an Izhikevich neuron depends sensitively on the input current
   and on where the system lies relative to the Hopf bifurcation. Near the bifurcation, small changes
-  in input produce large shifts in spike phase — a highly nonlinear transfer function useful for:
+  in input produce large shifts in spike phase, a highly nonlinear transfer function useful for:
 </p>
 
 <ul>
@@ -370,7 +370,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
 <p>
   In this way, a neuromorphic circuit of Izhikevich neurons behaves like a
   <strong>continuous-time solver</strong>. The circuit does not “run an algorithm” in the digital
-  sense — instead, <em>the physics of the network</em> performs the computation for free.
+  sense. Instead, <em>the physics of the network</em> performs the computation for free.
 </p>
 
 <p>
@@ -395,7 +395,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
 
 <p>
   As I hinted earlier, I wanted to end with a few personal reflections. Neuromorphic computing sits at a fascinating crossroads between neuroscience, physics, and engineering. 
-  To me, the field still feels heavily driven by engineers—which is not a bad thing—but I would love to see deeper engagement from neuroscientists and more mathematical work to clarify what these systems can actually compute, and under what conditions. 
+  To me, the field still feels heavily driven by application engineers (which is not a bad thing let me be clear) but I would love to see deeper engagement from neuroscientists and more mathematical work to clarify what these systems can actually compute, and under what conditions. 
   Without that, it’s hard to know whether we’re building practical tools or elegant toys, or having proofs of how algorithms scale.
 </p>
 
@@ -403,7 +403,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
   The core idea remains compelling, e.g. neuromorphic computing borrow principles from the brain to build machines that are more efficient, more adaptive, and less brittle than the digital architectures we’ve inherited. 
   Energy efficiency is the benefit everyone talks about, and it’s real. But there’s also a question that often sits in the back of my mind: 
   <em>do the added complexities of spikes, dynamical synapses, and mixed-signal hardware really pay off for most applications?</em>  
-  In some domains—especially real-time sensing, active perception, and event-driven control—the answer increasingly seems to be yes.
+  In some domains (especially real-time sensing, active perception, and event-driven control) the answer increasingly seems to be yes.
 </p>
 
 <p>
@@ -417,7 +417,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
 <p>
   And of course, the timing is interesting. With the rise of AI and the explosion of machine learning workloads, there is renewed interest in alternative paradigms that break out of the von Neumann bottleneck. 
   Neuromorphic hardware could end up playing an important role in enabling efficient, always-on intelligence at the edge, where power and bandwidth are scarce. 
-  Meanwhile, advances in materials and device engineering—memristors, phase-change devices, and other exotic components—promise an even richer design space for future systems.
+  Meanwhile, advances in materials and device engineering, memristors, phase-change devices, and other exotic components, promise an even richer design space for future systems.
 </p>
 
 <p>
