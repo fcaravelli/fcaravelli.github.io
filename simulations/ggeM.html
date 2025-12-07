@@ -34,7 +34,7 @@
   <h1>Hard Disks in a Central Potential — tunable mass M, no walls</h1>
   <div class="row">
     <label>Particles N
-      <input id="n" type="number" min="10" max="500" step="10" value="100">
+      <input id="n" type="number" min="10" max="500" step="10" value="150">
     </label>
     <label>Disk radius r
       <input id="rad" type="number" min="2" max="12" step="1" value="4">
@@ -48,13 +48,20 @@
     <label>Init
       <select id="init">
         <option value="random">Random (Ξ≈0)</option>
-        <option value="tangential">Tangential (Ξ>0)</option>
+        <option value="tangential">Tangential ring (Ξ>0)</option>
       </select>
+    </label>
+  </div>
+  <div class="row">
+    <label>Annulus radius
+      <input id="annR" type="number" min="40" max="350" step="10" value="260">
+    </label>
+    <label>Annulus width
+      <input id="annW" type="number" min="4" max="80" step="4" value="24">
     </label>
     <label>Target Ξ
       <input id="xiTarget" type="range" min="0" max="1" step="0.05" value="0.5">
     </label>
-
     <button id="reset">Reset</button>
     <button id="toggle">Pause</button>
   </div>
@@ -64,8 +71,8 @@
   <div class="panel">
     <canvas id="sim" width="760" height="760"></canvas>
     <div class="row small">
-      Central attraction ∝ M / r², no hard walls. With large M and tangential init you get bound orbits; with small M and
-      high energy some disks fly off (“escape to infinity” in this finite window). Equal masses, hard-disk collisions.
+      Central attraction ∝ M / r², no hard walls. With large M and tangential annulus init you get bound, ring-like orbits;
+      with small M and high energy some disks fly off (“escape to infinity” within this finite window). Equal masses, hard-disk collisions.
     </div>
   </div>
 
@@ -82,15 +89,15 @@
     <canvas id="histR" width="360" height="160"></canvas>
     <div class="small">
       Radial distribution P(r/R₀) of particles remaining in the central region (R₀ is a fixed plotting radius).
-      For large M and tangential init you’ll see a ring-like concentration at finite r.
+      For large M and tangential init you’ll see a ring concentrated at finite r, plus tails from scattering / escape.
     </div>
     <canvas id="histV" width="360" height="160"></canvas>
     <div class="small">
-      Speed distribution. For weak M and random init you get a gas-like velocity cloud; for strong M and high Ξ, more
-      orbital structure with higher average speeds near the center.
+      Speed distribution. For weak M and random init you get a gas-like cloud; for strong M and high Ξ, more
+      orbital structure with higher speeds near the center.
     </div>
     <div class="small">
-      Thought experiment: in the hard-wall model, confinement is geometric; here, confinement is via the central potential.
+      Contrast to the hard-wall model: here confinement is dynamical (via the central potential) rather than geometric.
       Large M gives many bound states, but energetic particles can still escape.
     </div>
   </div>
@@ -113,6 +120,8 @@
   const dtEl = document.getElementById('dt');
   const massEl = document.getElementById('mass');
   const initEl = document.getElementById('init');
+  const annREl = document.getElementById('annR');
+  const annWEl = document.getElementById('annW');
   const resetBtn = document.getElementById('reset');
   const toggleBtn = document.getElementById('toggle');
 
@@ -141,60 +150,96 @@
     const init = initEl.value;
     const M = +massEl.value;
 
-    const v0 = 80; // base speed scale (px/s)
+    const R_ann = +annREl.value;
+    const W_ann = +annWEl.value;
     const xiTarget = +xiTargetEl.value;
+
+    const v0 = 80; // base speed scale (px/s)
 
     const parts = [];
     let attempts = 0;
 
-    // Initialize in an annulus around the origin to avoid huge forces at r≈0
-    const rMin = 0.15 * R0;
-    const rMax = 0.9 * R0;
+    if (init === "tangential") {
+      // -------------------------------------------------
+      // Tangential initialization in a thin annulus:
+      // r ∈ [R_ann - W_ann/2, R_ann + W_ann/2]
+      // velocities tangential, controlled by Xi target.
+      // -------------------------------------------------
+      const rInner = Math.max(20, R_ann - W_ann/2);
+      const rOuter = Math.min(R0 * 0.95, R_ann + W_ann/2);
 
-    while (parts.length < N && attempts < 20000) {
-      attempts++;
+      while (parts.length < N && attempts < 30000) {
+        attempts++;
 
-      // --- Choose position in [rMin, rMax] with mild bias if tangential ---
-      const bias = (init === 'tangential')
-        ? Math.pow(Math.random(), 0.8) // a bit more weight near outer radii
-        : Math.random();
+        // Sample radius with area weighting for uniform areal density
+        const u = Math.random();
+        const rCandidate = Math.sqrt(
+          rInner*rInner + u*(rOuter*rOuter - rInner*rInner)
+        );
+        const theta = rand(0, TAU);
 
-      const rr = rMin + (rMax - rMin) * Math.sqrt(bias);
-      const th = rand(0, TAU);
-      let x = Cx + rr * Math.cos(th);
-      let y = Cy + rr * Math.sin(th);
+        let x = Cx + rCandidate * Math.cos(theta);
+        let y = Cy + rCandidate * Math.sin(theta);
 
-      // --- Overlap rejection ---
-      let ok = true;
-      for (let p of parts) {
-        const dx = p.x - x, dy = p.y - y;
-        if (dx*dx + dy*dy < (2*rad)*(2*rad)) { ok = false; break; }
-      }
-      if (!ok) continue;
+        // Overlap rejection
+        let ok = true;
+        for (let p of parts) {
+          const dx = p.x - x, dy = p.y - y;
+          if (dx*dx + dy*dy < (2*rad)*(2*rad)) { ok = false; break; }
+        }
+        if (!ok) continue;
 
-      // --- Assign velocity ---
-      let vx, vy;
-      if (init === 'tangential') {
+        // Tangential velocity: unit tangent vector at angle theta
         const rotSense = 1; // CCW
-        const dx = x - Cx, dy = y - Cy;
-        const rmag = Math.hypot(dx, dy) || 1;
-        const ux = rotSense * (-dy / rmag);
-        const uy = rotSense * ( dx / rmag);
-        // Angular frequency ~ ξ * v0 / R0
-        const omega = xiTarget * v0 / R0;
-        const vt = omega * rmag;
-        vx = ux * vt;
-        vy = uy * vt;
-        const jit = 0.05 * v0 * (1 - xiTarget);
+        const ux = rotSense * (-Math.sin(theta));
+        const uy = rotSense * ( Math.cos(theta));
+
+        // Angular frequency ~ xiTarget * v0 / R_ann
+        const omega = xiTarget * v0 / (R_ann || 1);
+        const vt = omega * rCandidate;
+
+        let vx = ux * vt;
+        let vy = uy * vt;
+
+        // Small jitter to avoid perfect rings, decaying with Xi
+        const jit = 0.03 * v0 * (1 - xiTarget);
         vx += rand(-jit, jit);
         vy += rand(-jit, jit);
-      } else {
-        const ang = rand(0, TAU);
-        vx = v0 * Math.cos(ang);
-        vy = v0 * Math.sin(ang);
+
+        parts.push({ x, y, vx, vy, escaped:false });
       }
 
-      parts.push({ x, y, vx, vy, escaped:false });
+    } else {
+      // -------------------------------------------------
+      // Random init in a broader annulus in [0.15 R0, 0.9 R0]
+      // with isotropic random velocity of scale v0.
+      // -------------------------------------------------
+      const rMin = 0.15 * R0;
+      const rMax = 0.9 * R0;
+
+      while (parts.length < N && attempts < 30000) {
+        attempts++;
+
+        // radius ~ sqrt(u) → uniform in area
+        const rr = rMin + (rMax - rMin) * Math.sqrt(Math.random());
+        const th = rand(0, TAU);
+        let x = Cx + rr * Math.cos(th);
+        let y = Cy + rr * Math.sin(th);
+
+        // overlap check
+        let ok = true;
+        for (let p of parts) {
+          const dx = p.x - x, dy = p.y - y;
+          if (dx*dx + dy*dy < (2*rad)*(2*rad)) { ok = false; break; }
+        }
+        if (!ok) continue;
+
+        const ang = rand(0, TAU);
+        const vx = v0 * Math.cos(ang);
+        const vy = v0 * Math.sin(ang);
+
+        parts.push({ x, y, vx, vy, escaped:false });
+      }
     }
 
     state = {
@@ -207,6 +252,7 @@
       collisions:0,
       running:true
     };
+
     toggleBtn.textContent = 'Pause';
   }
 
@@ -252,13 +298,13 @@
       requestAnimationFrame(step);
       return;
     }
-    const {parts, dt, r} = state;
+    const {parts, dt} = state;
     const M = state.M;
-    const G = 2000;        // effective "G" for the central potential
+    const G = 2000;        // effective "G" for central potential
     const soft2 = 20;      // softening to avoid divergences near r=0
-    const frameBoost = 60; // keep your old dt × 60 convention
+    const frameBoost = 60; // keep dt × 60 convention
 
-    // Integrate: simple explicit scheme (velocity-Verlet-ish would be nicer but this is fine for demo)
+    // Integrate with simple explicit scheme
     for (let p of parts) {
       if (p.escaped) continue;
 
@@ -268,8 +314,8 @@
       const r2 = dx*dx + dy*dy + soft2;
       const rmag = Math.sqrt(r2);
 
-      // Attractive force F = - G M m / r^2 * r̂  → acceleration a = F/m
-      const aMag = - G * M / (r2 * rmag); // ∝ -1/r^2, direction towards center
+      // Attractive force F = - G M / r^2 * r̂ → acceleration
+      const aMag = - G * M / (r2 * rmag);
       const ax = aMag * dx;
       const ay = aMag * dy;
 
@@ -278,7 +324,7 @@
       p.x += p.vx * dt * frameBoost;
       p.y += p.vy * dt * frameBoost;
 
-      // Escape condition: if too far from center, mark as escaped
+      // Escape condition
       const rNow = Math.hypot(p.x - Cx, p.y - Cy);
       if (rNow > ESCAPE_R) {
         p.escaped = true;
@@ -309,7 +355,7 @@
   function draw() {
     ctx.clearRect(0,0,W,H);
 
-    // Faint "plot" circle for R0
+    // Faint reference circle for R0
     ctx.save();
     ctx.strokeStyle = "#1f2935";
     ctx.lineWidth = 1;
@@ -403,22 +449,23 @@
       Nactive++;
       const vx = p.vx, vy = p.vy;
       const v2 = vx*vx+vy*vy;
-      E += 0.5*v2; vavg += Math.sqrt(v2);
-
-      // potential energy from central mass (just for info, not used in Xi)
       const rx = p.x - Cx, ry = p.y - Cy;
       const r2 = rx*rx + ry*ry + soft2;
       const rmag = Math.sqrt(r2);
-      const U = - G * M / rmag;
-      E += U;
+
+      const Ekin = 0.5*v2;
+      const U = - G * M / rmag; // central potential energy (softened)
+      E += Ekin + U;
+      vavg += Math.sqrt(v2);
 
       // angular momentum about center (m=1): Lz = r x p
       Lz += rx*vy - ry*vx;
     }
 
+    tEl.textContent = state.t.toFixed(2);
+    colEl.textContent = state.collisions.toString();
+
     if (Nactive === 0) {
-      tEl.textContent = state.t.toFixed(2);
-      colEl.textContent = state.collisions.toString();
       vavgEl.textContent = "0.0";
       eavgEl.textContent = "0.0";
       lzEl.textContent = "0.0";
@@ -429,13 +476,10 @@
     vavg /= Nactive;
     const Eper = E / Nactive;
 
-    // Ξ-like parameter using R0 as reference radius
-    // Ξ ≈ L^2/(2 M_eff R0^2 E_kin) with M_eff ≈ Nactive (m=1) and E_kin ≈ |E|/2 for this crude diagnostic
-    const denom = 2 * Nactive * R0*R0 * (Math.abs(E)/2 || 1);
+    // Crude Ξ-like parameter using R0 as reference radius and |E|
+    const denom = 2 * Nactive * R0*R0 * (Math.abs(E) || 1);
     const xi = (Lz*Lz) / denom;
 
-    tEl.textContent = state.t.toFixed(2);
-    colEl.textContent = state.collisions.toString();
     vavgEl.textContent = vavg.toFixed(1);
     eavgEl.textContent = Eper.toFixed(1);
     lzEl.textContent = Lz.toFixed(1);

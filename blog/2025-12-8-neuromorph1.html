@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta-size=device-width, initial-scale=1.0">
+  <title>The origins of Neuromorphic Computing – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+
+<!-- In-article AdSense Ad -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6719988103594554"
+     data-ad-slot="2406334732"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+      
+<h2>Spiking Neuromorphic Computing and Izhikevich's model</h2>
+<p class="post-date"><em>December 7, 2025</em></p>
+
+<p>
+  You might have heard of <strong>neuromorphic computing</strong> — a paradigm that
+  seeks to build hardware and algorithms inspired by the brain’s structure and dynamics. Giacomo Indiveri, from ETH Zürich,
+  recently wrote an article giving an excellent overview of the field
+  (<a href="https://www.sciencedirect.com/science/article/pii/S0896627325007081" target="_blank">here</a>).
+  In this post, I want to give a brief introduction to the origins of neuromorphic computing
+  and one of its most influential neuron models, from a technical standpoing: the <strong>Izhikevich's neuron</strong>.
+</p>
+  Unlike conventional digital computers, neuromorphic systems leverage <strong>spiking neurons</strong>,
+  event-driven processing, and analog computation to achieve remarkable efficiency and adaptability. I have my own opinion
+  on the subject, which I will share at the end of this post.
+</p>
+  Neuromorphic computing traces its roots to a remarkable insight by <strong>Carver Mead</strong>, articulated in his
+  celebrated 1989 book <em>Analog VLSI and Neural Systems</em>. Mead has worked for years on semiconductor physics and engineering at Caltech. 
+  I've wanted to buy this book for some time, but as you can <a href="https://www.amazon.it/-/en/C-Mead/dp/B017TGUQ9W/ref=sr_1_1?crid=38PS87CKQTWY8&dib=eyJ2IjoiMSJ9.o7itGHC7T85cdam9cB_Y2w.5kXW_slpJcUxh02JulMZMmWLkpMgtPXTK50Wik8B7LE&dib_tag=se&keywords=carver+mead+1989&qid=1765109979&sprefix=carver+mead+1989%2Caps%2C108&sr=8-1">here</a>
+  it is quite expensive! The library of Santa Fe Institute has a copy, and a few visits ago I was able to skim through it.
+</p>
+  
+  Mead argued that the way we built computers was fundamentally mismatched with the way real nervous systems work. Conventional digital machines depend on
+  clock cycles, fixed precision, and rigid architectures. Brains do not. Neurons operate asynchronously,
+  respond only to meaningful events, and rely on the physics of ion channels rather than symbolic computation.
+  Actually, von Neumann himself had already noted this mismatch in the 1950s, but Mead was the first to propose
+  a concrete implementation based on analog VLSI technology. M
+  
+  VLSI technology at the time (which is what modern microchips are made of)
+  was just reaching the point where it could implement large-scale neural systems.
+  Mead's idea was to use the physics of transistors, in analog mode, to mimic the dynamics of neurons and synapses directly.
+  One could say that Neuromorphic Computing is a specific form of <strong>physical or analog computing</strong>,
+  where the computation is not abstracted away from the hardware but emerges from its physical properties.
+</p> 
+<p>
+  This perspective — computation emerging from device physics rather than instructions —
+  catalyzed a field that now spans spiking neurons, mixed-signal architectures, memristive synapses,
+  and event-driven accelerators. Instead of pushing frames of 32-bit floating-point tensors across a GPU,
+  neuromorphic systems represent information as <strong>spikes</strong>: discrete electrical events that occur in time
+  and trigger dynamics only when needed. When nothing happens, nothing computes — and the energy cost drops to
+  almost zero. To understand how this works, we need a model of spiking neurons.
+</p>
+
+<h3>The Izhikevich Model: </h3>
+
+<p>
+  One of the most influential developments in modern neuromorphic modeling is the
+  <strong>Izhikevich neuron</strong> (2003) (see the original paper <a href="https://www.izhikevich.org/publications/spikes.pdf">here</a> on Izhikevich's website). It was designed to answer a simple question:
+  <em>Can we build a neuron model that is both biologically realistic and computationally cheap?</em>
+  The Hodgkin–Huxley model is beautiful but complex; integrate-and-fire is cheap but too simple. 
+  Izhikevich’s answer was a two-variable model:
+</p>
+
+<p class="math">
+\[
+\begin{aligned}
+\dot{v} &= 0.04v^2 + 5v + 140 - u + I, \\
+\dot{u} &= a(bv - u),
+\end{aligned}
+\]
+\[
+\text{if } v \ge 30\ \text{mV}:\quad
+\begin{cases}
+v \leftarrow c, \\
+u \leftarrow u + d.
+\end{cases}
+\]
+</p>
+
+<p>
+  Above, $v$ represents the membrane potential of the neuron, and $u$ is a recovery variable
+  that accounts for the activation of ion channels and the inactivation of sodium channels. The parameters
+  $a$, $b$, $c$, and $d$ can be tuned to reproduce a wide variety of neuronal firing patterns observed in biological neurons. 
+  The term $I$ represents the input current to the neuron.
+</p>
+
+<p>
+  The reset rule captures the essential “explosion and reset” dynamics of real spiking neurons:
+  when $v$ exceeds about 30 mV, the neuron fires, $v$ is reset to a lower voltage, and the
+  recovery variable $u$ is increased (representing refractory effects).  
+  With only these two variables, the model reproduces almost the full behavior of cortical neurons:
+  tonic spiking, bursting, fast spiking, resonating, chattering — all by adjusting $(a,b,c,d)$.
+</p>
+
+
+<h3>A Minimal Simulation of the Izhikevich Neuron</h3>
+
+<p>
+  To make things more concrete, here is a short Python script that simulates a regular-spiking Izhikevich neuron.
+  You can run this in any notebook. The model is integrated using Euler’s method for clarity.
+</p>
+
+<p><strong>Example code:</strong></p>
+
+<pre><code class="language-python">
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters for a "regular spiking" neuron
+a = 0.02
+b = 0.2
+c = -65
+d = 8
+
+T = 200           # ms simulated
+dt = 0.1          # timestep (ms)
+steps = int(T/dt)
+
+v = -65 * np.ones(steps)
+u = b * v.copy()
+I = np.zeros(steps)
+
+# Inject a constant current after 20 ms
+I[200:] = 10
+
+for t in range(steps-1):
+    dv = (0.04*v[t]**2 + 5*v[t] + 140 - u[t] + I[t]) * dt
+    du = (a*(b*v[t] - u[t])) * dt
+
+    v[t+1] = v[t] + dv
+    u[t+1] = u[t] + du
+
+    # Spike & reset rule
+    if v[t+1] >= 30:
+        v[t] = 30      # show spike peak
+        v[t+1] = c
+        u[t+1] += d
+
+time = np.arange(steps) * dt
+
+plt.figure(figsize=(10,4))
+plt.plot(time, v, label='Membrane voltage v(t)')
+plt.xlabel('Time (ms)')
+plt.ylabel('Voltage (mV)')
+plt.title('Izhikevich Neuron: Regular Spiking Response')
+plt.show()
+</code></pre>
+
+
+<p>
+  The plot shows the classic spike train that emerges when the injected current is strong enough to push the
+  neuron into its firing regime. One of the striking features of this model is how easily it switches between
+  qualitatively different behaviors simply by changing $(a,b,c,d)$ — a property that neuromorphic hardware uses
+  extensively when implementing different neuronal “species” on a chip.
+</p>
+
+You can play around also <a href="/simulations/Izhikevich.html" target="_blank"> in an embedded simulator</a> on this website. 
+
+
+<img src="../blog/images/Izhi.png" alt="Izhikevich Neuron Simulation" style="max-width:100%;height:auto;"/>
+
+<p>
+  This combination of realism and simplicity is why neuromorphic chips like Intel’s
+  <em>Loihi</em> and ETH Zürich’s <em>DYNAP</em> (among many others, SpiNNaker, TrueNorth, DeepSouth to mention a few) use variants of the Izhikevich equations.
+  The hardware can run tens of thousands of neurons simultaneously with power budgets
+  in the milliwatt range — because spikes, not clocks, drive the computation. Actually, energy budget is one of the 
+  selling points of neuromorphic hardware. It will be hard for anybody to publish a paper in "mainstream" neuromorphic computing
+  without mentioning the energy efficiency of their approach. It is a bit different in adjacent neumorphic fields 
+  (like I consider my work in memristors).
+</p>
+
+<p>
+  The plot shows the classic spike train that emerges when the injected current is strong enough to push the
+  neuron into its firing regime. One of the striking features of this model is how easily it switches between
+  qualitatively different behaviors simply by changing $(a,b,c,d)$ — a property that neuromorphic hardware uses
+  extensively when implementing different neuronal “species” on a chip.
+</p>
+
+ Interestingly, recently the model was studied from the point of view of Turing instabilities coupling neurons diffusively <a href="https://www.sciencedirect.com/science/article/pii/S0960077921007293">here</a>,
+ showing interesting pattern formation dynamics when coupled in networks on the lattice.
+
+<h3>Some final thoughts</h3>
+
+<p>
+  As I hinted earlier, I wanted to end with a few personal reflections. Neuromorphic computing sits at a fascinating crossroads between neuroscience, physics, and engineering. 
+  To me, the field still feels heavily driven by engineers—which is not a bad thing—but I would love to see deeper engagement from neuroscientists and more mathematical work to clarify what these systems can actually compute, and under what conditions. 
+  Without that, it’s hard to know whether we’re building practical tools or elegant toys, or having proofs of how algorithms scale.
+</p>
+
+<p>
+  The core idea remains compelling: borrow principles from the brain to build machines that are more efficient, more adaptive, and less brittle than the digital architectures we’ve inherited. 
+  Energy efficiency is the benefit everyone talks about, and it’s real. But there’s also a question that often sits in the back of my mind: 
+  <em>do the added complexities of spikes, dynamical synapses, and mixed-signal hardware really pay off for most applications?</em>  
+  In some domains—especially real-time sensing, active perception, and event-driven control—the answer increasingly seems to be yes.
+</p>
+
+<p>
+  The field has now been evolving for well over thirty years, and the progress is impressive. 
+  Neuromorphic systems can perform pattern recognition, sensory preprocessing, and motor control with remarkable efficiency. 
+  (A fun fact I only learned recently: the old computer mice with the rolling side-ball were essentially neuromorphic devices!)  
+  As the ecosystem matures, I’d like to see more emphasis on concrete benchmarks and head-to-head comparisons with conventional architectures. 
+  I think the field is starting to move in that direction.
+</p>
+
+<p>
+  And of course, the timing is interesting. With the rise of AI and the explosion of machine learning workloads, there is renewed interest in alternative paradigms that break out of the von Neumann bottleneck. 
+  Neuromorphic hardware could end up playing an important role in enabling efficient, always-on intelligence at the edge, where power and bandwidth are scarce. 
+  Meanwhile, advances in materials and device engineering—memristors, phase-change devices, and other exotic components—promise an even richer design space for future systems.
+</p>
+
+<p>
+  Whether neuromorphic computing becomes a mainstream technology or remains a niche tool is still an open question. 
+  But it’s one of the few areas where physics, biology, and computation genuinely meet, and that alone makes it worth paying attention to.
+</p>
+
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6719988103594554"
+     data-ad-slot="2406334732"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById('sidebar');
+      const response = await fetch('../partials/sidebar.html');
+      const html = await response.text();
+      sidebarContainer.innerHTML = html;
+
+      const currentPath = window.location.pathname.split('/').pop();
+      const links = sidebarContainer.querySelectorAll('a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('active');
+        }
+      });
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
