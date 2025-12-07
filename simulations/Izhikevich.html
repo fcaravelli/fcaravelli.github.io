@@ -1,238 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Izhikevich Neuron Simulator</title>
+<meta charset="UTF-8">
+<title>Izhikevich Neuron Simulator (Minimal Test)</title>
 <style>
-  :root { --bg:#0e0f13; --fg:#e7e8ea; --mut:#9aa1aa; --accent:#5ad; }
-  body { margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto; background:var(--bg); color:var(--fg); }
-  header { padding:16px 20px; border-bottom:1px solid #1b1e24; display:flex; gap:16px; align-items:center; flex-wrap:wrap;}
-  header h1 { font-size:16px; font-weight:700; margin:0 10px 0 0; color:#cfe7ff; letter-spacing:.2px; }
-  label { font-size:13px; color:var(--mut); margin-right:10px; display:flex; align-items:center; gap:4px;}
-  select, input[type="number"], input[type="range"] {
-    background:#141821; color:var(--fg); border:1px solid #252b36; border-radius:8px; padding:4px 8px; font-size:13px;
-  }
-  input[type="range"] { padding:0; }
-  button {
-    background:var(--accent); color:#001019; border:none; border-radius:999px; padding:8px 14px; font-weight:700; cursor:pointer;
-    font-size:13px;
-  }
-  button.secondary { background:#242b37; color:var(--fg); }
-  main { display:grid; grid-template-columns: minmax(320px, 720px) minmax(260px, 1fr); gap:14px; padding:14px; }
-  .panel { background:#12151d; border:1px solid #1f2631; border-radius:14px; padding:12px; }
-  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:6px 0; }
-  canvas { display:block; width:100%; background:#05070b; border-radius:10px; }
-  .stat { font-variant-numeric:tabular-nums; }
-  .small { font-size:12px; color:var(--mut); }
-  .grid { display:grid; gap:8px; }
-  .grid.two { grid-template-columns: 1fr 1fr; }
-  a { color:#9ad0ff; text-decoration:none; }
-  .toggle-adv { font-size:12px; cursor:pointer; color:var(--mut); text-decoration:underline; }
-  .adv-controls { display:none; padding:8px; background:#151925; border-radius:10px; margin-top:6px; }
+  body { font-family: sans-serif; background:#111; color:#eee; }
+  .controls { margin-bottom:10px; }
+  canvas { background:#000; width:100%; height:300px; }
 </style>
 </head>
 
 <body>
-<header>
-  <h1>Izhikevich Neuron Simulator</h1>
-  <div class="row">
-    <label>Preset
-      <select id="preset">
-        <option value="rs">Regular Spiking</option>
-        <option value="fs">Fast Spiking</option>
-        <option value="ch">Chattering</option>
-        <option value="ib">Intrinsically Bursting</option>
-        <option value="rz">Resonator</option>
-        <option value="custom">Custom</option>
-      </select>
-    </label>
+<h2>Izhikevich Neuron Simulator — Minimal Working Version</h2>
 
-    <label>I
-      <input id="I" type="range" min="0" max="20" step="0.5" value="10">
-    </label>
-    <span class="small">I=<span id="Ival">10</span></span>
+<div class="controls">
+  I (current): <input id="I" type="range" min="0" max="20" step="1" value="10">
+  <span id="Ival">10</span><br>
 
-    <label>dt
-      <input id="dt" type="number" min="0.01" max="1" step="0.01" value="0.1">
-    </label>
+  dt: <input id="dt" type="number" value="0.1" step="0.01"><br><br>
 
-    <button id="reset">Reset</button>
-    <button id="toggle">Pause</button>
-  </div>
-</header>
+  <button id="reset">Reset</button>
+  <button id="pause">Pause</button>
+</div>
 
-<main>
-  <div class="panel">
-    <canvas id="trace" width="720" height="320"></canvas>
-    <div class="row small">
-      Tip: For classical cortical behavior, use Regular Spiking with I≈10–12.
-    </div>
-  </div>
-
-  <div class="panel grid">
-    <div class="row">
-      <b>Neuron State</b>
-      <span id="toggleAdv" class="toggle-adv">show advanced parameters</span>
-    </div>
-
-    <div class="grid two small">
-      <div>Time: <span id="t">0.0</span> ms</div>
-      <div>Spikes: <span id="spikes">0</span></div>
-      <div>v: <span id="v">-65.0</span> mV</div>
-      <div>u: <span id="u">0.0</span></div>
-    </div>
-
-    <div class="adv-controls" id="advControls">
-      <div class="grid two small">
-        <label>a <input id="a" type="number" step="0.001" value="0.02"></label>
-        <label>b <input id="b" type="number" step="0.01" value="0.2"></label>
-        <label>c <input id="c" type="number" step="1" value="-65"></label>
-        <label>d <input id="d" type="number" step="0.5" value="8"></label>
-      </div>
-    </div>
-  </div>
-</main>
+<canvas id="c" width="800" height="300"></canvas>
 
 <script>
-// ============= GLOBALS =============
-let ctx, W, H;
-let state = null;
+// ==================== GLOBALS ======================
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+let running = true;
 
-const presets = {
-  rs:{a:0.02,b:0.2,c:-65,d:8},
-  fs:{a:0.1,b:0.2,c:-65,d:2},
-  ch:{a:0.02,b:0.2,c:-50,d:2},
-  ib:{a:0.01,b:0.2,c:-55,d:4},
-  rz:{a:0.1,b:0.26,c:-60,d:0}
-};
+// Izhikevich parameters (regular spiking)
+let a = 0.02, b = 0.2, c = -65, d = 8;
 
-// ============= INIT AFTER DOM =============
-window.onload = () => {
-  const canvas = document.getElementById("trace");
-  ctx = canvas.getContext("2d");
-  W = canvas.width;
-  H = canvas.height;
+// state variables
+let v, u, t;
+let trace = [];
 
-  document.getElementById("reset").onclick = reset;
-  document.getElementById("toggle").onclick = toggleRun;
-
-  document.getElementById("preset").onchange = reset;
-  document.getElementById("I").oninput = reset;
-
-  document.getElementById("toggleAdv").onclick = () => {
-    const box = document.getElementById("advControls");
-    box.style.display = box.style.display === "block" ? "none" : "block";
-    document.getElementById("toggleAdv").textContent =
-      box.style.display === "block" ? "hide advanced parameters" : "show advanced parameters";
-  };
-
-  ["a","b","c","d","dt"].forEach(id =>
-    document.getElementById(id).oninput = reset
-  );
-
-  reset();
-  step();
-};
-
-// ============= RESET FUNCTION =============
+// ==================== RESET ========================
 function reset() {
-  const preset = document.getElementById("preset").value;
-  let a,b,c,d;
+  v = c;         // membrane voltage start
+  u = b * v;     // recovery variable
+  t = 0;
+  trace = new Array(canvas.width).fill(v);
+  draw();
+}
+reset();
 
-  if (preset !== "custom") {
-    ({a,b,c,d} = presets[preset]);
-    document.getElementById("a").value = a;
-    document.getElementById("b").value = b;
-    document.getElementById("c").value = c;
-    document.getElementById("d").value = d;
-  } else {
-    a = parseFloat(document.getElementById("a").value);
-    b = parseFloat(document.getElementById("b").value);
-    c = parseFloat(document.getElementById("c").value);
-    d = parseFloat(document.getElementById("d").value);
+// ==================== UPDATE =======================
+function step() {
+  if (!running) return requestAnimationFrame(step);
+
+  let I = parseFloat(document.getElementById("I").value);
+  let dt = parseFloat(document.getElementById("dt").value);
+
+  // Izhikevich equations
+  let dv = (0.04*v*v + 5*v + 140 - u + I) * dt;
+  let du = (a*(b*v - u)) * dt;
+
+  v += dv;
+  u += du;
+
+  if (v >= 30) {
+    v = 30;      // spike peak
+    draw();      // draw spike
+    v = c;       // reset
+    u += d;
   }
 
-  const I = parseFloat(document.getElementById("I").value);
-  const dt = parseFloat(document.getElementById("dt").value);
+  trace.shift();
+  trace.push(v);
+  t += dt;
 
-  document.getElementById("Ival").textContent = I;
-
-  state = {
-    v: c,
-    u: b*c,
-    a,b,c,d,
-    I,dt,
-    t:0,
-    spikes:0,
-    running:true,
-    trace: Array(W).fill(c)
-  };
-
-  drawTrace();
-}
-
-// ============= MAIN UPDATE LOOP =============
-function step() {
-  if (state && state.running) updateNeuron();
-  drawTrace();
+  draw();
   requestAnimationFrame(step);
 }
 
-function toggleRun() {
-  state.running = !state.running;
-  document.getElementById("toggle").textContent =
-    state.running ? "Pause" : "Resume";
-}
+// ==================== DRAW =========================
+function draw() {
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-// ============= IZHIKEVICH UPDATE =============
-function updateNeuron() {
-  const s = state;
-
-  const dv = (0.04*s.v*s.v + 5*s.v + 140 - s.u + s.I) * s.dt;
-  const du = (s.a*(s.b*s.v - s.u)) * s.dt;
-
-  s.v += dv;
-  s.u += du;
-
-  if (s.v >= 30) {
-    s.v = 30;
-    s.spikes++;
-    s.v = s.c;
-    s.u += s.d;
-  }
-
-  s.t += s.dt;
-
-  s.trace.shift();
-  s.trace.push(s.v);
-
-  document.getElementById("v").textContent = s.v.toFixed(1);
-  document.getElementById("u").textContent = s.u.toFixed(2);
-  document.getElementById("t").textContent = s.t.toFixed(1);
-  document.getElementById("spikes").textContent = s.spikes;
-}
-
-// ============= DRAW TRACE =============
-function drawTrace() {
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = "#05070b";
-  ctx.fillRect(0,0,W,H);
-
-  ctx.strokeStyle = "#9ad0ff";
+  ctx.strokeStyle = "#0f0";
   ctx.beginPath();
-
-  const baseline = H*0.75;
-  const scale = 2;
-
-  state.trace.forEach((v, x) => {
-    const y = baseline - (v + 65)*scale;
+  trace.forEach((val, x) => {
+    const y = 150 - (val + 65)*2;
     if (x === 0) ctx.moveTo(x,y);
     else ctx.lineTo(x,y);
   });
-
   ctx.stroke();
 }
+
+// ==================== UI ===========================
+document.getElementById("I").oninput = e =>
+  document.getElementById("Ival").textContent = e.target.value;
+
+document.getElementById("reset").onclick = () => reset();
+document.getElementById("pause").onclick = () => running = !running;
+
+// ==================== START ========================
+requestAnimationFrame(step);
 </script>
+
 </body>
 </html>
