@@ -1,5 +1,11 @@
 [
   {
+    "title": "Neuromorphic computing and Izhikevic neurons",
+    "date": "2025-12-7",
+    "file": "2025-11-7-neuromorph.html",
+    "tags": ["Izhikevic", "instabilities", "neuron", "neuromorphic"]
+  }  , 
+  {
     "title": "Turing instabilities and the Brusselator model",
     "date": "2025-11-28",
     "file": "2025-11-28-turing.html",

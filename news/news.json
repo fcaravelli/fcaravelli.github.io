@@ -1,4 +1,19 @@
 [
+    {
+    "title": "Seminar: I will be talking next week at the workshop on Neuromorphic Computing at the Santa Fe Institute",
+    "date": "2025-12-08",
+    "link": "https://https://www.santafe.edu//"
+  },
+    {
+    "title": "Neuromorphic computing and Izhikevic neurons",
+    "date": "2025-12-7",
+    "file": "blog/2025-11-7-neuromorph.html"
+  }  , 
+    {
+    "title": "Simulation: Izhikevich Neuron Model",
+    "date": "2025-12-7",
+    "link": "/simulations/Izhikevich.html"
+  },
   {
     "title": "Blog: Turing instabilities and the Brusselator model",
     "date": "2025-11-28",

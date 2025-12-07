@@ -121,63 +121,8 @@ u \leftarrow u + d.
   tonic spiking, bursting, fast spiking, resonating, chattering — all by adjusting $(a,b,c,d)$.
 </p>
 
-
-<h3>A Minimal Simulation of the Izhikevich Neuron</h3>
-
 <p>
-  To make things more concrete, here is a short Python script that simulates a regular-spiking Izhikevich neuron.
-  You can run this in any notebook. The model is integrated using Euler’s method for clarity.
-</p>
-
-<p><strong>Example code:</strong></p>
-
-<pre><code class="language-python">
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Parameters for a "regular spiking" neuron
-a = 0.02
-b = 0.2
-c = -65
-d = 8
-
-T = 200           # ms simulated
-dt = 0.1          # timestep (ms)
-steps = int(T/dt)
-
-v = -65 * np.ones(steps)
-u = b * v.copy()
-I = np.zeros(steps)
-
-# Inject a constant current after 20 ms
-I[200:] = 10
-
-for t in range(steps-1):
-    dv = (0.04*v[t]**2 + 5*v[t] + 140 - u[t] + I[t]) * dt
-    du = (a*(b*v[t] - u[t])) * dt
-
-    v[t+1] = v[t] + dv
-    u[t+1] = u[t] + du
-
-    # Spike & reset rule
-    if v[t+1] >= 30:
-        v[t] = 30      # show spike peak
-        v[t+1] = c
-        u[t+1] += d
-
-time = np.arange(steps) * dt
-
-plt.figure(figsize=(10,4))
-plt.plot(time, v, label='Membrane voltage v(t)')
-plt.xlabel('Time (ms)')
-plt.ylabel('Voltage (mV)')
-plt.title('Izhikevich Neuron: Regular Spiking Response')
-plt.show()
-</code></pre>
-
-
-<p>
-  The plot shows the classic spike train that emerges when the injected current is strong enough to push the
+  The plot below shows the classic spike train that emerges when the injected current is strong enough to push the
   neuron into its firing regime. One of the striking features of this model is how easily it switches between
   qualitatively different behaviors simply by changing $(a,b,c,d)$ — a property that neuromorphic hardware uses
   extensively when implementing different neuronal “species” on a chip.
@@ -480,6 +425,61 @@ v \rightarrow c,\qquad u \rightarrow u + d,
   But it’s one of the few areas where physics, biology, and computation genuinely meet, and that alone makes it worth paying attention to.
 </p>
 
+
+
+
+<h3>Appendix</h3>
+
+<p>
+  To make things more concrete, here is a short Python script that simulates a regular-spiking Izhikevich neuron.
+  You can run this in any notebook. The model is integrated using Euler’s method for clarity. You can play with the parameters below.
+</p>
+
+<p><strong>Example code:</strong></p>
+
+<pre><code class="language-python">
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters for a "regular spiking" neuron
+a = 0.02
+b = 0.2
+c = -65
+d = 8
+
+T = 200           # ms simulated
+dt = 0.1          # timestep (ms)
+steps = int(T/dt)
+
+v = -65 * np.ones(steps)
+u = b * v.copy()
+I = np.zeros(steps)
+
+# Inject a constant current after 20 ms
+I[200:] = 10
+
+for t in range(steps-1):
+    dv = (0.04*v[t]**2 + 5*v[t] + 140 - u[t] + I[t]) * dt
+    du = (a*(b*v[t] - u[t])) * dt
+
+    v[t+1] = v[t] + dv
+    u[t+1] = u[t] + du
+
+    # Spike & reset rule
+    if v[t+1] >= 30:
+        v[t] = 30      # show spike peak
+        v[t+1] = c
+        u[t+1] += d
+
+time = np.arange(steps) * dt
+
+plt.figure(figsize=(10,4))
+plt.plot(time, v, label='Membrane voltage v(t)')
+plt.xlabel('Time (ms)')
+plt.ylabel('Voltage (mV)')
+plt.title('Izhikevich Neuron: Regular Spiking Response')
+plt.show()
+</code></pre>
 
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
