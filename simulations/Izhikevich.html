@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Izhikevich Neuron Simulator (With Parameter Controls)</title>
+<title>Izhikevich Neuron Simulator</title>
 <style>
   body { font-family: sans-serif; background:#111; color:#eee; margin:20px; }
   .controls { margin-bottom:12px; }
@@ -12,39 +12,33 @@
 </head>
 
 <body>
-<h2>Izhikevich Neuron Simulator — Extended Version</h2>
+<h2>Izhikevich Neuron Simulator</h2>
 
 <div class="controls">
 
-  <!-- Preset selector -->
-  <label>
-    Mode:
-    <select id="mode">
-      <option value="rs">Regular Spiking</option>
-      <option value="fs">Fast Spiking</option>
-      <option value="ch">Chattering</option>
-      <option value="ib">Intrinsically Bursting</option>
-      <option value="rz">Resonator</option>
-      <option value="custom">Custom</option>
-    </select>
-  </label>
+  Mode:
+  <select id="mode">
+    <option value="rs">Regular Spiking</option>
+    <option value="fs">Fast Spiking</option>
+    <option value="ch">Chattering</option>
+    <option value="ib">Intrinsically Bursting</option>
+    <option value="rz">Resonator</option>
+    <option value="custom">Custom</option>
+  </select>
   <br><br>
 
-  <!-- Input current -->
-  I (current): 
+  I: 
   <input id="I" type="range" min="0" max="20" step="1" value="10">
   <span id="Ival">10</span>
   <br><br>
 
-  <!-- Time step -->
   dt: <input id="dt" type="number" value="0.1" step="0.01">
   <br><br>
 
-  <!-- Model parameters -->
-  <b>Model parameters:</b><br>
+  <b>Parameters:</b><br>
   a: <input id="a" type="number" step="0.01" value="0.02">
   b: <input id="b" type="number" step="0.01" value="0.20">
-  c: <input id="c" type="number" step="1" value="-65">
+  v_reset: <input id="v_reset" type="number" step="1" value="-65">
   d: <input id="d" type="number" step="0.5" value="8">
   <br><br>
 
@@ -53,69 +47,52 @@
 
 </div>
 
-<canvas id="c" width="800" height="300"></canvas>
+<canvas id="traceCanvas" width="800" height="300"></canvas>
 
 <script>
 // =====================================================
-// CANVAS
-// =====================================================
-const canvas = document.getElementById("c");
+const canvas = document.getElementById("traceCanvas");
 const ctx = canvas.getContext("2d");
 let running = true;
 let trace = [];
 
-// =====================================================
-// PRESET DEFINITIONS (from Izhi 2003)
-// =====================================================
+// Fixed presets — renamed "c" → "v_reset"
 const PRESETS = {
-  rs: {a:0.02, b:0.2,  c:-65, d:8},  // regular spiking
-  fs: {a:0.1,  b:0.2,  c:-65, d:2},  // fast spiking
-  ch: {a:0.02, b:0.2,  c:-50, d:2},  // chattering
-  ib: {a:0.01, b:0.2,  c:-55, d:4},  // intrinsically bursting
-  rz: {a:0.1,  b:0.26, c:-60, d:0},  // resonator
+  rs:{a:0.02,b:0.2,v_reset:-65,d:8},
+  fs:{a:0.1,b:0.2,v_reset:-65,d:2},
+  ch:{a:0.02,b:0.2,v_reset:-50,d:2},
+  ib:{a:0.01,b:0.2,v_reset:-55,d:4},
+  rz:{a:0.1,b:0.26,v_reset:-60,d:0},
 };
 
-// =====================================================
-// STATE VARIABLES
-// =====================================================
-let v, u, t;   // membrane voltage, recovery variable, time
+let v, u, t;
 
-// =====================================================
-// RESET FUNCTION
 // =====================================================
 function reset(applyPreset = true) {
   const mode = document.getElementById("mode").value;
 
-  // If preset mode chosen, update displayed a,b,c,d
   if (mode !== "custom" && applyPreset) {
     const p = PRESETS[mode];
     document.getElementById("a").value = p.a;
     document.getElementById("b").value = p.b;
-    document.getElementById("c").value = p.c;
+    document.getElementById("v_reset").value = p.v_reset;
     document.getElementById("d").value = p.d;
   }
 
-  // Read parameters
   const a = parseFloat(document.getElementById("a").value);
   const b = parseFloat(document.getElementById("b").value);
-  const c = parseFloat(document.getElementById("c").value);
+  const v_reset = parseFloat(document.getElementById("v_reset").value);
 
-  // Init neuron state
-  v = c;
+  v = v_reset;
   u = b * v;
   t = 0;
 
-  // Init trace buffer
   trace = new Array(canvas.width).fill(v);
-
   draw();
 }
 
-// Call reset at load
 reset();
 
-// =====================================================
-// NEURON UPDATE STEP
 // =====================================================
 function stepNeuron() {
   if (!running) {
@@ -123,15 +100,14 @@ function stepNeuron() {
     return;
   }
 
-  const I = parseFloat(document.getElementById("I").value);
-  const dt = parseFloat(document.getElementById("dt").value);
+  const I = +document.getElementById("I").value;
+  const dt = +document.getElementById("dt").value;
 
-  const a = parseFloat(document.getElementById("a").value);
-  const b = parseFloat(document.getElementById("b").value);
-  const c = parseFloat(document.getElementById("c").value);
-  const d = parseFloat(document.getElementById("d").value);
+  const a = +document.getElementById("a").value;
+  const b = +document.getElementById("b").value;
+  const v_reset = +document.getElementById("v_reset").value;
+  const d = +document.getElementById("d").value;
 
-  // Izhikevich equations
   let dv = (0.04*v*v + 5*v + 140 - u + I) * dt;
   let du = (a*(b*v - u)) * dt;
 
@@ -139,26 +115,20 @@ function stepNeuron() {
   u += du;
 
   if (v >= 30) {
-    // fire spike
     v = 30;
     draw();
-    // reset
-    v = c;
+    v = v_reset;
     u += d;
   }
 
-  // Scroll trace
   trace.shift();
   trace.push(v);
-
   t += dt;
 
   draw();
   requestAnimationFrame(stepNeuron);
 }
 
-// =====================================================
-// DRAW FUNCTION
 // =====================================================
 function draw() {
   ctx.fillStyle = "#000";
@@ -167,9 +137,8 @@ function draw() {
   ctx.strokeStyle = "#0f0";
   ctx.beginPath();
 
-  // draw trace as rolling waveform
-  trace.forEach((val,x) => {
-    let y = 150 - (val + 65) * 2; // simple scale
+  trace.forEach((val,x)=>{
+    const y = 150 - (val + 65) * 2;
     if (x===0) ctx.moveTo(x,y);
     else ctx.lineTo(x,y);
   });
@@ -178,8 +147,6 @@ function draw() {
 }
 
 // =====================================================
-// UI EVENTS
-// =====================================================
 document.getElementById("pause").onclick = () => {
   running = !running;
   document.getElementById("pause").textContent = running ? "Pause" : "Resume";
@@ -187,25 +154,18 @@ document.getElementById("pause").onclick = () => {
 
 document.getElementById("reset").onclick = () => reset(true);
 
-document.getElementById("I").oninput = (e) =>
+document.getElementById("I").oninput = e =>
   document.getElementById("Ival").textContent = e.target.value;
 
-// Changing preset updates a,b,c,d but does NOT freeze editing
-document.getElementById("mode").onchange = () => {
-  reset(true);
-};
+document.getElementById("mode").onchange = () => reset(true);
 
-// If user manually edits a,b,c,d → switch to custom mode
-["a","b","c","d"].forEach(id => {
-  document.getElementById(id).oninput = () => {
+["a","b","v_reset","d"].forEach(id=>{
+  document.getElementById(id).oninput = ()=>{
     document.getElementById("mode").value = "custom";
     reset(false);
-  }
+  };
 });
 
-// =====================================================
-// START LOOP
-// =====================================================
 requestAnimationFrame(stepNeuron);
 </script>
 
