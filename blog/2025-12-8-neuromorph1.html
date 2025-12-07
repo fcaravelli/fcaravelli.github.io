@@ -47,13 +47,13 @@
   recently wrote an article giving an excellent overview of the field
   (<a href="https://www.sciencedirect.com/science/article/pii/S0896627325007081" target="_blank">here</a>).
   In this post, I want to give a brief introduction to the origins of neuromorphic computing
-  and one of its most influential neuron models, from a technical standpoing: the <strong>Izhikevich's neuron</strong>.
+  and one of its most influential neuron models, from a technical standpoing: the <em>Izhikevich's neuron</em>.
 </p>
-  Unlike conventional digital computers, neuromorphic systems leverage <strong>spiking neurons</strong>,
+  Unlike conventional digital computers, neuromorphic systems leverage <em>spiking neurons</em>,
   event-driven processing, and analog computation to achieve remarkable efficiency and adaptability. I have my own opinion
   on the subject, which I will share at the end of this post.
 </p>
-  Neuromorphic computing traces its roots to a remarkable insight by <strong>Carver Mead</strong>, articulated in his
+  Neuromorphic computing traces its roots to a remarkable insight by <em>Carver Mead</em>, articulated in his
   celebrated 1989 book <em>Analog VLSI and Neural Systems</em>. Mead has worked for years on semiconductor physics and engineering at Caltech. 
   I've wanted to buy this book for some time, but as you can <a href="https://www.amazon.it/-/en/C-Mead/dp/B017TGUQ9W/ref=sr_1_1?crid=38PS87CKQTWY8&dib=eyJ2IjoiMSJ9.o7itGHC7T85cdam9cB_Y2w.5kXW_slpJcUxh02JulMZMmWLkpMgtPXTK50Wik8B7LE&dib_tag=se&keywords=carver+mead+1989&qid=1765109979&sprefix=carver+mead+1989%2Caps%2C108&sr=8-1"  target="_blank">here</a>
   it is quite expensive! The library of Santa Fe Institute has a copy, and a few visits ago I was able to skim through it.
@@ -68,7 +68,7 @@
   VLSI technology at the time (which is what modern microchips are made of)
   was just reaching the point where it could implement large-scale neural systems.
   Mead's idea was to use the physics of transistors, in analog mode, to mimic the dynamics of neurons and synapses directly.
-  One could say that Neuromorphic Computing is a specific form of <strong>physical or analog computing</strong>,
+  One could say that Neuromorphic Computing is a specific form of physical or analog computing,
   where the computation is not abstracted away from the hardware but emerges from its physical properties.
 </p> 
 <p>
@@ -187,6 +187,124 @@ You can play around also <a href="/simulations/Izhikevich.html" target="_blank">
 
 
 <img src="/blog/images/izhi/Izhi.png" alt="Izhikevich Neuron Simulation" style="max-width:100%;height:auto;"/>
+
+
+<h3>Phase Portrait and Nullclines</h3>
+
+<p>
+  Let us now try to understand why the model spikes.  The key is to analyze its phase portrait.
+  The subthreshold dynamics (before the reset kicks in) are that of a smooth 2D system.
+  The geometry becomes clear when plotting the nullclines:
+</p>
+
+<p class="math">
+\[
+\text{Voltage nullcline: } u = 0.04v^2 + 5v + 140 + I,
+\]
+\[
+\text{Recovery nullcline: } u = b v.
+\]
+</p>
+
+<p>
+  The $v$–nullcline is a parabola; the $u$–nullcline is a straight line. Their intersection
+  defines the fixed point $(v_*, u_*)$. For small input current $I$, this fixed point is
+  stable: all trajectories spiral into a quiescent state. Increasing $I$ shifts the
+  parabolic nullcline upward, moving the fixed point along its left branch.
+</p>
+
+<p>
+  The crucial observation is that the <em>trace of the Jacobian</em> at this fixed point
+  can change sign as $I$ varies. This produces a genuine Hopf bifurcation.
+</p>
+
+<p>
+  Linearizing the vector field about $(v_*,u_*)$ gives the Jacobian
+</p>
+
+<p class="math">
+\[
+J =
+\begin{pmatrix}
+0.08 v_* + 5 & -1 \\
+a b & -a
+\end{pmatrix}.
+\]
+</p>
+
+<p>
+  The eigenvalues of $J$ are governed by its trace and determinant:
+</p>
+
+<p class="math">
+\[
+\mathrm{tr}(J) = (0.08 v_* + 5) - a,\qquad
+\det(J) = a(0.08v_* + 5 + b).
+\]
+</p>
+
+<p>
+  As the input current $I$ increases, the equilibrium voltage $v_*$ increases, and therefore
+  the term $(0.08v_* + 5)$ grows. When
+</p>
+
+<p class="math">
+\[
+\mathrm{tr}(J) = 0 \qquad \text{and} \qquad \det(J) > 0,
+\]
+</p>
+
+<p>
+  the fixed point undergoes a Hopf bifurcation: its spiral sinks become spiral sources.
+  In other words, the quiescent equilibrium loses stability through a pair of complex
+  conjugate eigenvalues crossing the imaginary axis.
+</p>
+
+<p>
+  Just beyond this threshold, the system develops a stable subthreshold oscillation —
+  a small limit cycle — exactly as in classical models of excitability such as
+  FitzHugh–Nagumo. But here the oscillation does not grow indefinitely. Instead, once
+  $v$ reaches the artificial “spike detection” threshold (30 mV), the reset rule
+  kicks in:
+</p>
+
+<p class="math">
+\[
+v \rightarrow c,\qquad u \rightarrow u + d,
+\]
+</p>
+
+<p>
+  opening a discontinuity in phase space that replaces the continuous loop of a
+  traditional limit cycle with a hybrid orbit: continuous rise, discrete jump,
+  continuous relaxation. This hybrid geometry is what allows the model to mimic real
+  spiking with almost no computational overhead.
+</p>
+
+<h3>What the Bifurcation Looks Like in Practice</h3>
+
+<p>
+  When scanning the input current $I$ upward, one observes:
+</p>
+
+<ul>
+  <li><strong>Below the Hopf point:</strong> the neuron is silent. Perturbations decay.</li>
+  <li><strong>At the Hopf point:</strong> the neuron begins to oscillate — small, nearly harmonic
+  voltage fluctuations.</li>
+  <li><strong>Above the Hopf point:</strong> oscillations grow until the trajectory reaches the spike
+  threshold, at which point the reset injects the orbit back toward the left branch of the
+  nullcline. The oscillation is now a <em>spike train</em> — a limit cycle shaped by both the
+  differential equations and the reset discontinuity.</li>
+</ul>
+
+<p>
+  This is conceptually powerful: the spike is not an emergent property of the flow as in Hodgkin–Huxley,
+  but a controlled discontinuity placed on top of a classical Hopf mechanism. The subthreshold
+  dynamics are purely dynamical-systems–theoretic; the spike mechanism is a simple map.
+  Together they create a model that is both <em>biophysically expressive</em> and
+  <em>computationally minimal</em>.
+</p>
+
 
 <p>
   This combination of realism and simplicity is why neuromorphic chips like Intel’s
