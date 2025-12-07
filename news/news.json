@@ -2,12 +2,12 @@
   {
     "title": "Seminar: I will be talking next week at the workshop on Neuromorphic Computing at the Santa Fe Institute",
     "date": "2025-12-10",
-    "link": "http://https://www.santafe.edu/"
+    "link": "http://www.santafe.edu/"
   },
     {
     "title": "Blog: Neuromorphic computing and Izhikevic neurons",
     "date": "2025-12-7",
-    "file": "blog/2025-11-7-neuromorph1.html"
+    "link": "blog/2025-12-7-neuromorph1.html"
   }  , 
   {
     "title": "Simulation: Izhikevich Neuron Model",
