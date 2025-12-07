@@ -314,7 +314,137 @@ v \rightarrow c,\qquad u \rightarrow u + d,
 
 
  Interestingly, recently the model was studied from the point of view of Turing instabilities coupling neurons diffusively <a href="https://www.sciencedirect.com/science/article/pii/S0960077921007293" target="_blank">here</a>,
- showing interesting pattern formation dynamics when coupled in networks on the lattice.
+ showing interesting pattern formation dynamics when coupled in networks on the lattice. Let us now discuss why this model is important for neuromorphic computing.
+
+
+<h3>Spiking Neurons as Computational Primitives</h3>
+
+<p>
+  What makes models like Izhikevich’s especially relevant for neuromorphic engineering is not only
+  their biological realism, but their computational expressiveness. A population of spiking neurons
+  is not just a simulator of cortex — it is a <em>dynamical machine</em> capable of performing
+  optimization, signal encoding, and constraint satisfaction in continuous time.
+</p>
+
+<p>
+  This perspective comes from a simple but far-reaching idea: if the dynamics of a neural circuit
+  can be shaped so that its <em>energy landscape</em> encodes an objective function, then
+  the physical evolution of the system naturally “descends” toward an optimum. Unlike digital
+  algorithms, which require explicit iterations, an analog recurrent spiking network
+  performs the computation passively through its physics.
+</p>
+
+<p>
+  Consider a recurrent network of Izhikevich neurons receiving input currents and sending spikes
+  through weighted synapses. Because each neuron exhibits a Hopf-like transition from quiescence to
+  oscillation, the onset of spiking can be interpreted as a <em>thresholding operation</em>: neurons
+  fire only when their local field exceeds a stability boundary.
+</p>
+
+<p>
+  With appropriate synaptic weights, this creates a system whose collective dynamics implement
+  a gradient-descent–like computation on an implicit energy function. This is conceptually similar
+  to Hopfield networks, but with richer nonlinearities and temporal coding:
+</p>
+
+<ul>
+  <li><strong>Spike timing</strong> encodes analog values.</li>
+  <li><strong>Refractory dynamics</strong> regularize the search process.</li>
+  <li><strong>Subthreshold oscillations</strong> provide exploration around minima.</li>
+  <li><strong>Synaptic coupling</strong> integrates global constraints.</li>
+</ul>
+
+<p>
+  In this sense, the network behaves as an <em>optimization engine</em> that moves toward steady-state
+  spiking patterns representing solutions to a problem.
+</p>
+
+<p>
+  Many optimization problems — SAT, max-cut, community detection, clustering, routing — can be
+  reformulated as finding a configuration of binary or analog variables that minimizes an energy
+  function. A neuromorphic architecture can encode each variable as:
+</p>
+
+<ul>
+  <li>a single neuron (binary state: spiking vs. silent), or</li>
+  <li>a small motif of neurons encoding analog values via rate or timing.</li>
+</ul>
+
+<p>
+  Recurrent connectivity implements the cost function. Because Izhikevich neurons have built-in
+  adaptation and refractoriness, the network naturally avoids unstable states, suppresses local
+  noise, and moves toward a consistent assignment of states — effectively solving the constraints.
+</p>
+
+<p>
+  This mechanism is closely related to <em>physical annealing</em>:
+  the subthreshold oscillations act like a “temperature,” enabling exploration, while the reset
+  mechanism encourages convergence. As synaptic plasticity adjusts the coupling, the system can
+  perform online optimization continuously.
+</p>
+
+
+<p>
+  Unlike rate-based models, spiking networks can exploit <strong>spike timing</strong> as an analog
+  variable. The interspike interval of an Izhikevich neuron depends sensitively on the input current
+  and on where the system lies relative to the Hopf bifurcation. Near the bifurcation, small changes
+  in input produce large shifts in spike phase — a highly nonlinear transfer function useful for:
+</p>
+
+<ul>
+  <li>encoding continuous variables,</li>
+  <li>performing analog computations in phase space,</li>
+  <li>and constructing oscillatory neural networks that synchronize to solve tasks.</li>
+</ul>
+
+<p>
+  A group of such neurons forms an <strong>oscillatory computational substrate</strong> capable of
+  representing optimization variables through phase, locking patterns, or spike orderings. This
+  connects directly to modern neuromorphic optimization devices such as oscillator-based Ising
+  machines and memristive annealers.
+</p>
+
+<p>
+  The key conceptual bridge is that spiking neural dynamics can be interpreted in terms of
+  <em>effective potentials</em>. If one designs the synaptic matrix so that the network’s total
+  “energy” decreases when a solution becomes more consistent, then:
+</p>
+
+<p class="math">
+\[
+\frac{dE}{dt} \le 0
+\]
+</p>
+
+<p>
+  along almost all trajectories. The spikes act as discrete resets that project the system onto
+  lower-energy basins; subthreshold oscillations provide exploration; and the refractory mechanism
+  prevents the system from becoming trapped by spurious local minima.
+</p>
+
+<p>
+  In this way, a neuromorphic circuit of Izhikevich neurons behaves like a
+  <strong>continuous-time solver</strong>. The circuit does not “run an algorithm” in the digital
+  sense — instead, <em>the physics of the network</em> performs the computation for free.
+</p>
+
+<p>
+  The model is especially attractive for analog and neuromorphic hardware because:
+</p>
+
+<ul>
+  <li>it requires only multiplications and additions (no exponentials or gating kinetics),</li>
+  <li>it exhibits rich nonlinearities necessary for hard optimization problems,</li>
+  <li>the reset mechanism is easy to implement physically (charge redistribution, memristor reset, etc.),</li>
+  <li>and the Hopf bifurcation provides a tunable “switch” between computation modes.</li>
+</ul>
+
+<p>
+  Devices operating near this bifurcation regime behave as tunable excitable elements that can
+  synchronize, desynchronize, and self-organize into patterns that often correspond to optima of
+  embedded problems. In this sense, spiking neurons become <em>hardware primitives for optimization</em>.
+</p>
+
 
 <h3>Some final thoughts</h3>
 
@@ -334,7 +464,7 @@ v \rightarrow c,\qquad u \rightarrow u + d,
 <p>
   The field has now been evolving for well over thirty years, and the progress is impressive. 
   Neuromorphic systems can perform pattern recognition, sensory preprocessing, and motor control with remarkable efficiency. 
-  (A fun fact I only learned recently: the old computer mice with the rolling side-ball were essentially neuromorphic devices!)  
+  (A fun fact I only learned recently: computer mouses with the rolling side-ball were essentially neuromorphic devices!)  
   As the ecosystem matures, I’d like to see more emphasis on concrete benchmarks and head-to-head comparisons with conventional architectures. 
   I think the field is starting to move in that direction.
 </p>
