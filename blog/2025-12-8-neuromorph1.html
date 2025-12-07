@@ -189,8 +189,6 @@ You can play around also <a href="/simulations/Izhikevich.html" target="_blank">
 <img src="/blog/images/izhi/Izhi.png" alt="Izhikevich Neuron Simulation" style="max-width:100%;height:auto;"/>
 
 
-<h3>Phase Portrait and Nullclines</h3>
-
 <p>
   Let us now try to understand why the model spikes.  The key is to analyze its phase portrait.
   The subthreshold dynamics (before the reset kicks in) are that of a smooth 2D system.
@@ -261,8 +259,8 @@ a b & -a
 </p>
 
 <p>
-  Just beyond this threshold, the system develops a stable subthreshold oscillation —
-  a small limit cycle — exactly as in classical models of excitability such as
+  Just beyond this threshold, the system develops a stable subthreshold oscillation,
+  a "small" limit cycle,  exactly as in classical models of excitability such as
   FitzHugh–Nagumo. But here the oscillation does not grow indefinitely. Instead, once
   $v$ reaches the artificial “spike detection” threshold (30 mV), the reset rule
   kicks in:
@@ -281,15 +279,13 @@ v \rightarrow c,\qquad u \rightarrow u + d,
   spiking with almost no computational overhead.
 </p>
 
-<h3>What the Bifurcation Looks Like in Practice</h3>
-
 <p>
   When scanning the input current $I$ upward, one observes:
 </p>
 
 <ul>
   <li><strong>Below the Hopf point:</strong> the neuron is silent. Perturbations decay.</li>
-  <li><strong>At the Hopf point:</strong> the neuron begins to oscillate — small, nearly harmonic
+  <li><strong>At the Hopf point:</strong> the neuron begins to oscillate with small and nearly harmonic
   voltage fluctuations.</li>
   <li><strong>Above the Hopf point:</strong> oscillations grow until the trajectory reaches the spike
   threshold, at which point the reset injects the orbit back toward the left branch of the
@@ -298,16 +294,16 @@ v \rightarrow c,\qquad u \rightarrow u + d,
 </ul>
 
 <p>
-  This is conceptually powerful: the spike is not an emergent property of the flow as in Hodgkin–Huxley,
+  Thus, the spike is not an emergent property of the flow as in Hodgkin–Huxley,
   but a controlled discontinuity placed on top of a classical Hopf mechanism. The subthreshold
   dynamics are purely dynamical-systems–theoretic; the spike mechanism is a simple map.
-  Together they create a model that is both <em>biophysically expressive</em> and
-  <em>computationally minimal</em>.
+  Together they create a model that is
+  computationally minimal and simple to analyze.
 </p>
 
 
 <p>
-  This combination of realism and simplicity is why neuromorphic chips like Intel’s
+  Going back to the spiking hardware, which are emulators of models like this one, the combination of realism and simplicity is why neuromorphic chips like Intel’s
   <em>Loihi</em> and ETH Zürich’s <em>DYNAP</em> (among many others, SpiNNaker, TrueNorth, DeepSouth to mention a few) use variants of the Izhikevich equations.
   The hardware can run tens of thousands of neurons simultaneously with power budgets
   in the milliwatt range — because spikes, not clocks, drive the computation. Actually, energy budget is one of the 
@@ -316,12 +312,6 @@ v \rightarrow c,\qquad u \rightarrow u + d,
   (like I consider my work in memristors).
 </p>
 
-<p>
-  The plot shows the classic spike train that emerges when the injected current is strong enough to push the
-  neuron into its firing regime. One of the striking features of this model is how easily it switches between
-  qualitatively different behaviors simply by changing $(a,b,c,d)$ — a property that neuromorphic hardware uses
-  extensively when implementing different neuronal “species” on a chip.
-</p>
 
  Interestingly, recently the model was studied from the point of view of Turing instabilities coupling neurons diffusively <a href="https://www.sciencedirect.com/science/article/pii/S0960077921007293" target="_blank">here</a>,
  showing interesting pattern formation dynamics when coupled in networks on the lattice.
