@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta-size=device-width, initial-scale=1.0">
+  <title>The new wave of thermodynamic computing – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+
+<!-- In-article AdSense Ad -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="fluid"
+     data-ad-layout-key="-ef+6k-30-ac+ty"
+     data-ad-client="ca-pub-6719988103594554"
+     data-ad-slot="9710109684"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+      
+<h2> The second law, and thermodynamic computing</h2>
+<p class="post-date"><em>December 23, 2025</em></p>
+<br/>
+I did not have much time lately, as the end of the year is always busy, but I wanted to share some thoughts on a topic that has been on my mind recently: thermodynamic computing.
+A few weeks ago I attended a workshop at the Santa Fe Institute (SFI) — the second one I’ve been to this year — on the interplay between thermodynamics and computation.
+<br/><br/>
+
+It was organized by David Wolpert and Shantanu Chakrabarti, and it was a great chance to catch up with old friends and colleagues. 
+By now, I think this is the fourth (or fifth) SFI workshop I’ve attended on this theme, and it’s always a pleasure to be back. I have a soft spot for SFI: I spent a few months there during my PhD, and I still have many fond memories of that time. When I was in Los Alamos I visited often, and I always enjoyed the atmosphere. Over the years I’ve collaborated and interacted with several people there, including David Wolpert and Artemy Kolchinsky.
+<br/><br/>
+
+The workshop itself was genuinely stimulating. There were many talks on the thermodynamics of computation, 
+including several touching on the thermodynamics of machine learning — a topic I find particularly intriguing. I’ll likely return to some of those ideas in later posts.
+There were also discussions on the second law of thermodynamics in various contexts, including its implications for information processing and learning systems.
+<br/><br/>
+
+For now, I wanted to note something more personal: I seem to be (indirectly) connected to two companies working on what one might call <em>thermodynamic computing</em>: Extropic and Normal Computing. Both are exploring hardware that leverages physical (thermodynamic) principles to perform certain computations more efficiently. I find this area fascinating because it sits right at the intersection of physics, computer science, and engineering. (Relatedly, I have a paper with David Wolpert and Abhishek Yadav on the thermodynamics of computing systems that should appear soon.)
+<br/><br/>
+
+Let me emphasize: my connection to these companies is indirect — I have no direct collaborations with them. I do know some of the people involved, and I’ve discussed with them the potential of this approach. Below I’ll try to summarize, to the best of my understanding, what Normal Computing is doing and why I find it interesting.
+<br/><br/>
+
+<h3>Normal Computing</h3>
+
+Normal Computing is a startup pursuing energy-efficient computation by exploiting stochasticity and dissipation as <em>resources</em>, rather than treating them purely as nuisances to be suppressed.
+My connection to Normal is through some of my work, and I also know Patrick Coles, who used to be at Los Alamos, and he is now at Normal Computing. 
+It is interesting that Patrick who was doing quantum computing left LANL to join a "neuromorphic" (not really, but it is for the sake of the argument) computing startup, 
+while I left LANL to join a quantum computing startup (see my previous blog post), while I was working in neuromorphic computing.
+I also know, of course, of Crooks, from the Crooks fluctuation theorem in non-equilibrium statistical mechanics.  
+Their team includes several other people with strong backgrounds in statistical physics and thermodynamics.
+They’ve been selected as part of ARIA’s “Scaling Compute” programme (a £50M programme backing multiple teams), which is aimed at radically lowering the cost of AI compute.
+<br/><br/>
+
+At a high level, their technical story (as I understand it) is: encode linear-algebra problems into the energy landscape of a physical system, let the system relax and fluctuate, 
+and then read out the desired quantity from statistics of its steady state. In their “thermodynamic linear algebra” line of work, the key bridge is a Gaussian equilibrium measure: if you engineer a system whose equilibrium distribution over a state vector <span class="math">x</span> is Gaussian with an exponent of the form
+<span class="math">exp(-1/2 \vec x^t A \vec x + \vec b^t \vec x)</span>,
+then the mean of that Gaussian satisfies
+<span class="math">\vec x = A^{-1} b</span>,
+and the covariance carries information about <span class="math">A^{-1}</span>. 
+<br/><br/>
+
+This “Gaussian trick” is a standard fact in statistical physics / probabilistic inference, and it’s also the kind of identity I use in 
+my own notes (see, e.g., <a href="https://arxiv.org/abs/2509.05793">https://arxiv.org/abs/2509.05793</a>). 
+ What is distinctive here is the ambition to build specialized hardware that <em>directly</em> implements the relevant sampling dynamics 
+ (e.g., Langevin-type relaxation in an effectively quadratic energy landscape), while simultaneously tracking performance through a 
+ thermodynamic lens (dissipation, equilibration time, noise as a feature, etc.).
+<br/><br/>
+
+Two representative technical references from Normal’s team are:
+<ul>
+  <li>
+    <em>Thermodynamic linear algebra</em>, which makes the connection to sampling from the thermal equilibrium of coupled harmonic oscillators and develops algorithms for solving linear systems, estimating inverses and determinants, with predicted asymptotic advantages under assumptions they spell out. 
+  </li>
+  <li>
+    <em>Thermodynamic computing system for AI applications</em>, which reports an experimental “stochastic processing unit” (SPU) built from coupled circuit elements and demonstrates Gaussian sampling and (small-scale) matrix inversion on hardware. 
+</ul>
+
+<br/>
+<h4>A historical note: stochastic linear algebra goes back a long way</h4>
+
+It’s also worth saying explicitly that the broad idea of using stochastic interactions / random sampling for matrix inversion is not new. A classic starting point is the Monte Carlo matrix inversion method associated with von Neumann and Ulam (published as an exposition in 1950). 
+The core observation is simple:
+if you can write (or scale) your matrix so that
+<span class="math">A^{-1} = (I - B)^{-1} = \sum_{k=0}^{\infty} B^k</span>
+for a matrix <span class="math">B</span> with suitable convergence (e.g., spectral radius &lt; 1),
+then entries of <span class="math">A^{-1}</span> (or the solution <span class="math">x = A^{-1}b</span>) can be expressed as expectations over random walks whose transition probabilities are derived from the (normalized) entries of <span class="math">B</span>. Each random trajectory contributes a weighted product of step factors, and averaging many trajectories gives an estimator of the inverse (or of <span class="math">A^{-1}b</span>). 
+<br/><br/>
+
+In that sense, there’s a conceptual family resemblance between “digital Monte Carlo linear algebra” and the thermodynamic approach: both use stochasticity to estimate linear-algebraic quantities. The pitch from Normal (again, as I understand it) is that if the <em>physics itself</em> is doing the sampling in continuous time — in a device designed so the equilibrium distribution is the right Gaussian — then you might get speed/energy advantages that are hard to match when you simulate everything digitally.
+<br/><br/>
+
+<h4>Other approaches to physics-based linear algebra</h4>
+Normal’s approach is not the only route to physics-based linear algebra. For example, in our own work we’ve explored memristive arrays and in-memory analog dynamics for matrix operations beyond plain matrix–vector multiplication. 
+And in a different direction, we (and collaborators) have also used statistical-physics tools (e.g., cavity methods) to derive efficient estimators for quantities that are, at their core, linear-algebraic (resolvents, centrality measures, etc.). 
+<br/><br/>
+
+<h3>Extropic</h3>
+
+While Normal Computing was not present at the workshop, I did have a chance to chat with some folks from Extropic, another startup working on thermodynamic computing. Extropic is pursuing a different angle: instead of “compute by suppressing noise,” the idea is closer to “compute by embracing noise,” by building hardware whose native operation is to <em>sample</em> from probability distributions. In Extropic’s own framing, their hardware is a “thermodynamic sampling unit” built from large networks of probabilistic bits (p-bits), which output voltages that wander stochastically between two states and can be coupled together to implement useful probabilistic models. 
+<br/><br/>
+
+Based on what I understand (and what is publicly described online), a concrete route to implement these p-bits is to exploit the fact that CMOS circuits—especially when operated at very low currents—can be intrinsically stochastic. In particular, when transistors are biased in or near the <em>subthreshold</em> (weak-inversion) regime, the device physics is dominated by thermally activated carrier transport, and fluctuations become a feature rather than a bug. 
+<br/><br/>
+
+On a more personal note: I happened to know their CTO, Trevor McCourt, from before. We had invited him to speak about self-error-correcting systems at a workshop at Los Alamos National Laboratory (I think this was in 2023). I also recognized a few other researchers through overlapping circles, and I was already familiar with the p-bit literature more broadly. 
+
+<br/><br/>
+<h4>Why subthreshold CMOS is stochastic</h4>
+
+In “textbook” digital logic you operate MOSFETs in strong inversion, where currents are large and device behavior can be treated (to first approximation) as deterministic. In the subthreshold regime, by contrast, the channel is not strongly formed: the drain current is set by the <em>thermal</em> population of carriers and is exponentially sensitive to terminal voltages. That exponential dependence is exactly why subthreshold I–V curves look like straight lines on a semilog plot, and why tiny fluctuations in voltage (or charge) can translate into large <em>relative</em> fluctuations in current. 
+<br/><br/>
+
+Once you deliberately operate with such small currents, several noise sources stop being negligible:
+<ul>
+  <li><strong>Thermal (Johnson–Nyquist) noise</strong> from resistive elements and conductances: it is the circuit-level signature of microscopic thermal agitation.</li>
+  <li><strong>Shot noise</strong> from the discreteness of charge carriers, which becomes more prominent when currents are tiny.</li>
+  <li><strong>Device-level fluctuations</strong> (e.g., trapping/detrapping events) that can matter more when signals are small.</li>
+</ul>
+The punchline is simple: in subthreshold, you are much closer to the “thermal scale” of the device, so randomness is not merely present—it can be harvested as a controlled computational primitive. 
+
+<br/><br/>
+<h4>Why you end up modeling circuits as diffusion of electrical charge</h4>
+
+At the circuit level, what you really track are node voltages, and node voltages are just charge on capacitors: <span class="math">Q = C V</span>. Kirchoff then tells you that charge evolves by current balance:
+<span class="math">\[
+\frac{dQ}{dt} = \sum_k I_k(\text{voltages}) .
+\]</span>
+If each current has both a deterministic part and a fluctuating part (because of the noise mechanisms above), then the node charge (and hence the voltage) performs a kind of <em>biased random walk</em>: a drift term plus a noise term. In other words, you naturally arrive at a Langevin-style stochastic differential equation for the circuit state, and equivalently a Fokker–Planck description for how the probability distribution over voltages evolves in time.
+<br/><br/>
+
+<br/><br/>
+<h4>p-bits, Ising models, and optimization</h4>
+
+So where do p-bits come in, concretely, for optimization? The short version is: a network of coupled p-bits can be engineered so that its long-time behavior resembles sampling from an <em>Ising</em> (or QUBO) energy function, and then “solving” an optimization problem becomes “finding low-energy states” of that model.
+<br/><br/>
+
+A p-bit is a stochastic binary variable (often represented as <span class="math">m_i \in \{-1,+1\}</span>) whose instantaneous value fluctuates, but whose <em>mean</em> (or switching bias) can be controlled by an input field. When you connect many p-bits with programmable couplings <span class="math">W_{ij}</span> and biases <span class="math">h_i</span>, and update them stochastically (often asynchronously), you can realize dynamics of the kind used in probabilistic Ising machines. 
+<br/><br/>
+
+The energy function is the standard Ising Hamiltonian
+<span class="math">\[
+E(m) = -\sum_{i<j} J_{ij} m_i m_j \;-\; \sum_i h_i m_i,
+\]</span>
+and, under the usual conditions (e.g., Glauber-like stochastic updates), the stationary distribution is Boltzmann-like,
+<span class="math">\[
+P(m) \propto e^{-\beta E(m)}.
+\]</span>
+That’s the bridge to optimization: many hard combinatorial problems can be mapped to minimizing an Ising/QUBO cost function (Max-Cut, SAT variants, scheduling, etc.). If your hardware naturally samples <span class="math">P(m)</span>, you get a physical implementation of stochastic optimization.
+<br/><br/>
+
+A standard way to bias the system toward good solutions is the statistical-physics idea of <em>annealing</em>: start “hot” (small <span class="math">\beta</span>, lots of exploration), then gradually cool (increase <span class="math">\beta</span>) so the distribution concentrates on low-energy configurations. That is essentially simulated annealing / stochastic descent in energy landscapes, just realized by a network whose native behavior is thermal-like sampling. 
+
+<h4>A (related) spin-ice perspective</h4>
+
+This general viewpoint—use an interacting physical medium with many metastable states, steer it with constraints, and read out computation from its collective state—also connects to “frustrated matter” approaches to computing. For example, in work with Cristiano Nisoli we discussed how artificial spin-ice (arrays of interacting nanoislands) can embed logical gates and, in principle, perform computation within an interacting magnetic memory, where the physical relaxation dynamics does part of the work. 
+
+
+<h4>Why this is (also) a generalized Landauer story</h4>
+
+One way to look at all of this is as a modern, generalized Landauer analysis. In the usual textbook narrative, Landauer’s principle tells us that <em>logically irreversible</em> operations (most famously, erasing a bit) come with a minimum thermodynamic cost: if you compress phase space—turn many possible microstates into one—you must dissipate at least on the order of <span class="math">k_B T \ln 2</span> of heat per erased bit, in the idealized limit. In conventional digital hardware we typically operate far above that scale, and noise is treated as an enemy: we spend energy to create clean voltage margins and suppress fluctuations.
+<br/><br/>
+
+Thermodynamic / stochastic computing flips the emphasis. Here, the computational primitive is not “a perfectly stable bit,” but rather a <em>noisy degree of freedom</em> that explores states under thermal agitation, with couplings that bias that exploration toward useful answers. In that regime, the relevant question is not just “what is the cost of erasing a bit?”, but more broadly: <em>what thermodynamic resources are required to bias a stochastic physical system so that it reliably produces a desired distribution (or a desired low-energy configuration), at a given speed and accuracy?</em> That is exactly the kind of question addressed by generalized Landauer viewpoints: they connect information processing to changes in entropy, free energy, and dissipation, but now for tasks like sampling, inference, and optimization rather than only Boolean logic.
+<br/><br/>
+
+This is also why subthreshold CMOS (and related low-energy devices) are so central to the pitch: when the relevant signal energies are comparable to the thermal scale, fluctuations are no longer a small perturbation on top of deterministic dynamics. Thermal noise is “close to the scale of the computation.” In that setting, insisting on strict determinism can be expensive, because you must pay energy to maintain large separations between logical states. By contrast, if the algorithm you want is inherently probabilistic (e.g., sampling from a distribution, exploring an energy landscape, approximating a MAP solution), then it can be more natural to <em>let</em> the physics do what it wants to do anyway—diffuse, fluctuate, relax—and pay only for the biasing and readout needed to turn that stochastic motion into a useful computational output.
+<br/><br/>
+
+In other words: these devices can be viewed as purpose-built physical systems operating near the thermal regime, where computation is implemented by controlled drift-and-diffusion dynamics. Landauer then becomes less a “hard lower bound you never reach” and more a conceptual accounting tool: it tells you where the fundamental costs must appear (biasing, resetting, constraining, measuring), and it provides the language—entropy production, free-energy budgets, and dissipation vs. reliability—to compare stochastic hardware designs on the same footing.
+
+<img src="/blog/images/dan.jpg" alt="A scene from the movie 'Fatal Attraction' where the actress Glenn Close says 'I'm not going to be ignored, Dan.'" style="max-width:100%; height:auto;"/>
+
+<h4>“I’m not going to be ignored, Dan.”</h4>
+
+To borrow (and slightly abuse) a line from pop culture: <em>“I’m not going to be ignored, Dan.”</em>. In many ways that’s how thermal noise has re-entered the computing conversation. For decades, mainstream digital design has largely been about <em>fighting</em> fluctuations—paying energy to make dynamics crisp and deterministic. But as we run into the “energy wall” (and the reality that suppressing stochasticity itself has a cost), it becomes increasingly natural to ask the opposite question: can we build machines that make fluctuations do useful work—sampling, inference, optimization—rather than treating them purely as errors? 
+<br/><br/>
+
+This is part of why thermodynamic / stochastic / analog approaches feel timely: they are not a distant moonshot in the way fault-tolerant quantum computing still is, but a pragmatic family of accelerators that can, in principle, live next to CPUs/GPUs and target the “right” classes of problems (probabilistic workloads, energy-landscape search, certain linear-algebra and inference primitives). 
+ Quantum computers remain an extraordinary scientific and engineering challenge, and even their long-term story is tightly entangled with thermodynamics (noise, thermalization, error correction overheads, and energy/heat management). 
+  In that sense, thermodynamic computing isn’t a rival to quantum—it’s a near-term shift in how we think about computation on physical substrates, and very plausibly a big part of “what comes next” before scalable quantum becomes routine.
+
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6719988103594554"
+     data-ad-slot="2406334732"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById('sidebar');
+      const response = await fetch('../partials/sidebar.html');
+      const html = await response.text();
+      sidebarContainer.innerHTML = html;
+
+      const currentPath = window.location.pathname.split('/').pop();
+      const links = sidebarContainer.querySelectorAll('a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('active');
+        }
+      });
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
