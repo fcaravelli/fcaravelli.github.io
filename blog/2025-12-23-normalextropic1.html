@@ -49,18 +49,20 @@ It was organized by David Wolpert and Shantanu Chakrabarti, and it was a great c
 By now, I think this is the fourth (or fifth) SFI workshop I’ve attended on this theme, and it’s always a pleasure to be back. I have a soft spot for SFI: I spent a few months there during my PhD, and I still have many fond memories of that time. When I was in Los Alamos I visited often, and I always enjoyed the atmosphere. Over the years I’ve collaborated and interacted with several people there, including David Wolpert and Artemy Kolchinsky.
 <br/><br/>
 
-The workshop itself was genuinely stimulating. There were many talks on the thermodynamics of computation, 
-including several touching on the thermodynamics of machine learning — a topic I find particularly intriguing. I’ll likely return to some of those ideas in later posts.
+The workshop itself was genuinely stimulating. There were many talks on the thermodynamics of computation (see this paper <a href="https://arxiv.org/abs/2311.17166" target="_blank">here</a> by Wolpert et al for an introduction)
+ including several touching on the thermodynamics of machine learning — a topic I find particularly intriguing. I’ll likely return to some of those ideas in later posts.
 There were also discussions on the second law of thermodynamics in various contexts, including its implications for information processing and learning systems.
 <br/><br/>
 
-For now, I wanted to note something more personal: I seem to be (indirectly) connected to two companies working on what one might call <em>thermodynamic computing</em>: Extropic and Normal Computing. Both are exploring hardware that leverages physical (thermodynamic) principles to perform certain computations more efficiently. I find this area fascinating because it sits right at the intersection of physics, computer science, and engineering. (Relatedly, I have a paper with David Wolpert and Abhishek Yadav on the thermodynamics of computing systems that should appear soon.)
+For now, I wanted to note something more personal: I seem to be (indirectly) connected to two companies
+ working on what one might call <em>thermodynamic computing</em>: Extropic and Normal Computing. Both are exploring hardware that leverages physical (thermodynamic) principles to perform certain computations more efficiently. I find this area fascinating because it sits right at the intersection of physics, computer science, and engineering. (Relatedly, I have a paper with David Wolpert and Abhishek Yadav on the <a href="https://arxiv.org/abs/2411.16088" target="_blank"> thermodynamics of computing systems</a> that should appear soon.)
 <br/><br/>
 
-Let me emphasize: my connection to these companies is indirect — I have no direct collaborations with them. I do know some of the people involved, and I’ve discussed with them the potential of this approach. Below I’ll try to summarize, to the best of my understanding, what Normal Computing is doing and why I find it interesting.
+Let me emphasize: my connection to these companies is indirect — I have no direct collaborations with them. 
+I do know some of the people involved, and I’ve discussed with them the potential of this approach. Below I’ll try to summarize, to the best of my understanding, what Normal Computing is doing and why I find it interesting.
 <br/><br/>
 
-<h3>Normal Computing</h3>
+<h3><a href="https://www.normalcomputing.com/" target="_blank">Normal Computing</a></h3>
 
 Normal Computing is a startup pursuing energy-efficient computation by exploiting stochasticity and dissipation as <em>resources</em>, rather than treating them purely as nuisances to be suppressed.
 My connection to Normal is through some of my work, and I also know Patrick Coles, who used to be at Los Alamos, and he is now at Normal Computing. 
@@ -89,10 +91,10 @@ my own notes (see, e.g., <a href="https://arxiv.org/abs/2509.05793">https://arxi
 Two representative technical references from Normal’s team are:
 <ul>
   <li>
-    <em>Thermodynamic linear algebra</em>, which makes the connection to sampling from the thermal equilibrium of coupled harmonic oscillators and develops algorithms for solving linear systems, estimating inverses and determinants, with predicted asymptotic advantages under assumptions they spell out. 
+    <em><a href="https://arxiv.org/abs/2308.05660" target="_blank">Thermodynamic linear algebra</a></em>, which makes the connection to sampling from the thermal equilibrium of coupled harmonic oscillators and develops algorithms for solving linear systems, estimating inverses and determinants, with predicted asymptotic advantages under assumptions they spell out. 
   </li>
   <li>
-    <em>Thermodynamic computing system for AI applications</em>, which reports an experimental “stochastic processing unit” (SPU) built from coupled circuit elements and demonstrates Gaussian sampling and (small-scale) matrix inversion on hardware. 
+    <em><a href="https://arxiv.org/abs/2312.04836" target="_blank">Thermodynamc computing system for AI applications</a></em>, which reports an experimental “stochastic processing unit” (SPU) built from coupled circuit elements and demonstrates Gaussian sampling and (small-scale) matrix inversion on hardware. 
 </ul>
 
 <br/>
@@ -114,7 +116,7 @@ Normal’s approach is not the only route to physics-based linear algebra. For e
 And in a different direction, we (and collaborators) have also used statistical-physics tools (e.g., cavity methods) to derive efficient estimators for quantities that are, at their core, linear-algebraic (resolvents, centrality measures, etc.). 
 <br/><br/>
 
-<h3>Extropic</h3>
+<h3><a href="https://extropic.ai/" target="_blank">Extropic</a></h3>
 
 While Normal Computing was not present at the workshop, I did have a chance to chat with some folks from Extropic, another startup working on thermodynamic computing. Extropic is pursuing a different angle: instead of “compute by suppressing noise,” the idea is closer to “compute by embracing noise,” by building hardware whose native operation is to <em>sample</em> from probability distributions. In Extropic’s own framing, their hardware is a “thermodynamic sampling unit” built from large networks of probabilistic bits (p-bits), which output voltages that wander stochastically between two states and can be coupled together to implement useful probabilistic models. 
 <br/><br/>
@@ -122,7 +124,12 @@ While Normal Computing was not present at the workshop, I did have a chance to c
 Based on what I understand (and what is publicly described online), a concrete route to implement these p-bits is to exploit the fact that CMOS circuits—especially when operated at very low currents—can be intrinsically stochastic. In particular, when transistors are biased in or near the <em>subthreshold</em> (weak-inversion) regime, the device physics is dominated by thermally activated carrier transport, and fluctuations become a feature rather than a bug. 
 <br/><br/>
 
-On a more personal note: I happened to know their CTO, Trevor McCourt, from before. We had invited him to speak about self-error-correcting systems at a workshop at Los Alamos National Laboratory (I think this was in 2023). I also recognized a few other researchers through overlapping circles, and I was already familiar with the p-bit literature more broadly. 
+On a more personal note: I happened to know their CTO, Trevor McCourt, from before. 
+We had invited him to speak about self-error-correcting systems at a workshop at Los Alamos National Laboratory 
+(I think this was in 2023). I also recognized a few other researchers through overlapping circles, and 
+I was already familiar with the p-bit literature more broadly. I knew of the work by Freitas, Delvenne and 
+Esposito <a href="https://arxiv.org/abs/2008.10578" target="_blank">(Thermodynamics of CMOS)</a>, 
+which connects CMOS operations in the subthreshold regime to stochastic thermodynamics (see also <a href="https://arxiv.org/abs/2205.12659" target="_blank">this</a> more recent with large deviation theory).
 
 <br/><br/>
 <h4>Why subthreshold CMOS is stochastic</h4>
@@ -154,7 +161,9 @@ If each current has both a deterministic part and a fluctuating part (because of
 So where do p-bits come in, concretely, for optimization? The short version is: a network of coupled p-bits can be engineered so that its long-time behavior resembles sampling from an <em>Ising</em> (or QUBO) energy function, and then “solving” an optimization problem becomes “finding low-energy states” of that model.
 <br/><br/>
 
-A p-bit is a stochastic binary variable (often represented as <span class="math">m_i \in \{-1,+1\}</span>) whose instantaneous value fluctuates, but whose <em>mean</em> (or switching bias) can be controlled by an input field. When you connect many p-bits with programmable couplings <span class="math">W_{ij}</span> and biases <span class="math">h_i</span>, and update them stochastically (often asynchronously), you can realize dynamics of the kind used in probabilistic Ising machines. 
+A p-bit is a stochastic binary variable (often represented as <span class="math">m_i \in \{-1,+1\}</span>) whose instantaneous value 
+fluctuates, but whose <em>mean</em> (or switching bias) can be controlled by an input field. 
+When you connect many p-bits with programmable couplings <span class="math">W_{ij}</span> and biases <span class="math">h_i</span>, and update them stochastically (often asynchronously), you can realize dynamics of the kind used in probabilistic Ising machines or more complicated models like Potts. 
 <br/><br/>
 
 The energy function is the standard Ising Hamiltonian
