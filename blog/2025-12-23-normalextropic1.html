@@ -158,24 +158,31 @@ If each current has both a deterministic part and a fluctuating part (because of
 <br/><br/>
 <h4>p-bits, Ising models, and optimization</h4>
 
-So where do p-bits come in, concretely, for optimization? The short version is: a network of coupled p-bits can be engineered so that its long-time behavior resembles sampling from an <em>Ising</em> (or QUBO) energy function, and then “solving” an optimization problem becomes “finding low-energy states” of that model.
+So where do p-bits come in, concretely, for optimization? The short version is: a network of coupled p-bits can be engineered so that its long-time behavior resembles sampling from an <em>Ising</em> (or QUBO) energy function. In that case, “solving” an optimization problem becomes “finding low-energy states” of that model.
 <br/><br/>
 
-A p-bit is a stochastic binary variable (often represented as <span class="math">m_i \in \{-1,+1\}</span>) whose instantaneous value 
-fluctuates, but whose <em>mean</em> (or switching bias) can be controlled by an input field. 
-When you connect many p-bits with programmable couplings <span class="math">W_{ij}</span> and biases <span class="math">h_i</span>, and update them stochastically (often asynchronously), you can realize dynamics of the kind used in probabilistic Ising machines or more complicated models like Potts. 
-<br/><br/>
-
-The energy function is the standard Ising Hamiltonian
+A p-bit is a stochastic binary variable (often written as <span class="math">m_i \in \{-1,+1\}</span>) whose instantaneous value fluctuates in time, but whose <em>bias</em> can be controlled by an input signal. In an Ising-machine setting one typically defines an effective local field
 <span class="math">\[
-E(m) = -\sum_{i<j} J_{ij} m_i m_j \;-\; \sum_i h_i m_i,
+H_i(m) \equiv h_i + \sum_{j\neq i} J_{ij}\, m_j,
 \]</span>
-and, under the usual conditions (e.g., Glauber-like stochastic updates), the stationary distribution is Boltzmann-like,
+and then updates each p-bit stochastically so that it tends to align with <span class="math">H_i</span> on average (often via an asynchronous “Glauber-like” rule such as
+<span class="math">\[
+\Pr(m_i=+1 \mid m_{\backslash i}) = \sigma\!\big(2\beta H_i(m)\big),
+\]</span>
+with <span class="math">\(\sigma\)</span> a logistic function). This is the basic mechanism behind probabilistic Ising machines; with multi-state variables one can generalize to models such as Potts.
+<br/><br/>
+
+With symmetric couplings (<span class="math">J_{ij}=J_{ji}</span>) and appropriate stochastic updates, the dynamics has (or approximates) a Boltzmann stationary distribution for the standard Ising energy
+<span class="math">\[
+E(m) = -\frac{1}{2}\sum_{i\neq j} J_{ij}\, m_i m_j \;-\; \sum_i h_i\, m_i,
+\]</span>
+so that
 <span class="math">\[
 P(m) \propto e^{-\beta E(m)}.
 \]</span>
-That’s the bridge to optimization: many hard combinatorial problems can be mapped to minimizing an Ising/QUBO cost function (Max-Cut, SAT variants, scheduling, etc.). If your hardware naturally samples <span class="math">P(m)</span>, you get a physical implementation of stochastic optimization.
+That’s the bridge to optimization: many hard combinatorial problems can be mapped to minimizing an Ising/QUBO cost function (Max-Cut, SAT variants, scheduling, etc.). If your hardware samples <span class="math">P(m)</span>, then low-energy configurations appear with higher probability, and one can use annealing-style strategies (slowly increasing <span class="math">\(\beta\)</span>) to concentrate mass near good solutions.
 <br/><br/>
+In principle, this is also what quantum annealers (e.g., D-Wave) try to do, but with quantum tunneling playing a role in exploring the energy landscape. Here, by contrast, the exploration is purely thermal/stochastic.
 
 A standard way to bias the system toward good solutions is the statistical-physics idea of <em>annealing</em>: start “hot” (small <span class="math">\beta</span>, lots of exploration), then gradually cool (increase <span class="math">\beta</span>) so the distribution concentrates on low-energy configurations. That is essentially simulated annealing / stochastic descent in energy landscapes, just realized by a network whose native behavior is thermal-like sampling. 
 
