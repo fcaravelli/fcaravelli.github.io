@@ -40,6 +40,7 @@
       
 <h2> The second law, and thermodynamic computing</h2>
 <p class="post-date"><em>December 23, 2025</em></p>
+(Corrected Dec 25th, 2025 — see text for details.)
 <br/>
 I did not have much time lately, as the end of the year is always busy, but I wanted to share some thoughts on a topic that has been on my mind recently: thermodynamic computing.
 A few weeks ago I attended a workshop at the Santa Fe Institute (SFI) — the second one I’ve been to this year — on the interplay between thermodynamics and computation.
@@ -59,48 +60,54 @@ For now, I wanted to note something more personal: I seem to be (indirectly) con
 <br/><br/>
 
 Let me emphasize: my connection to these companies is indirect — I have no direct collaborations with them. 
-I do know some of the people involved, and I’ve discussed with them the potential of this approach. Below I’ll try to summarize, to the best of my understanding, what Normal Computing is doing and why I find it interesting.
+I do know some of the people involved, and I’ve discussed with them the potential of this approach. Below I’ll try to summarize, to the best of my understanding, what Normal and Extropic are doing and why I find it interesting.
 <br/><br/>
 
 <h3><a href="https://www.normalcomputing.com/" target="_blank">Normal Computing</a></h3>
 
 Normal Computing is a startup pursuing energy-efficient computation by exploiting stochasticity and dissipation as <em>resources</em>, rather than treating them purely as nuisances to be suppressed.
-My connection to Normal is through some of my work, and I also know Patrick Coles, who used to be at Los Alamos, and he is now at Normal Computing. 
-It is interesting that Patrick who was doing quantum computing left LANL to join a "neuromorphic" (not really, but it is for the sake of the argument) computing startup, 
-while I left LANL to join a quantum computing startup (see my previous blog post), while I was working in neuromorphic computing.
-I also know, of course, of Crooks, from the Crooks fluctuation theorem in non-equilibrium statistical mechanics.  
+My connection to Normal is through some of my work, and I also know Patrick Coles, who used to be at Los Alamos, and he is now at Normal Computing.
+I also know, of course, of Crooks, from the Crooks fluctuation theorem in non-equilibrium statistical mechanics.
 Their team includes several other people with strong backgrounds in statistical physics and thermodynamics.
-They’ve been selected as part of ARIA’s “Scaling Compute” programme (a £50M programme backing multiple teams), which is aimed at radically lowering the cost of AI compute.
+They’ve been selected as part of ARIA’s “Scaling Compute” programme (a £50M programme backing multiple teams), which is aimed at radicallyly lowering the cost of AI compute.
 <br/><br/>
 
-At a high level, their technical story (as I understand it) is: encode linear-algebra problems into the energy landscape of a physical system, let the system relax and fluctuate, 
-and then read out the desired quantity from statistics of its steady state. In their “thermodynamic linear algebra” line of work, the key bridge is a Gaussian equilibrium measure: if you engineer a system whose equilibrium distribution over a state vector <span class="math">x</span> is Gaussian with an exponent of the form
+<strong>Correction / update:</strong> In the first iteration of this blog post, I described Normal’s approach in a way that emphasized “physical stochastic systems relaxing in an engineered energy landscape.”
+After that draft went out, Faris Sbahi contacted me to point out an important part of their story that I had under-emphasized.
+Based on my reading of Faris’ slides, a major element of their hardware direction is also explicitly <em>CMOS-based</em>, including operating transistors in low-voltage / subthreshold regimes where noise and device non-idealities become prominent—and then treating that stochasticity as something to be harnessed rather than eliminated.
+This doesn’t negate the “thermodynamic / statistical-physics” framing; it complements it by making clear that they view existing CMOS (run in unusual regimes) as a key substrate for scaling.
+<br/><br/>
+
+At a high level, their technical story (as I understand it, incorporating that update) is: express useful randomized algorithms as stochastic dynamics, implement those dynamics efficiently in hardware that naturally exhibits the right kind of fluctuations, and then read out the desired quantities from statistics of the resulting steady state.
+In their “thermodynamic linear algebra” line of work, the key bridge is a Gaussian equilibrium measure: if you engineer a system whose equilibrium distribution over a state vector <span class="math">x</span> is Gaussian of the form
 <span class="math">exp(-1/2 \vec x^t A \vec x + \vec b^t \vec x)</span>,
 then the mean of that Gaussian satisfies
 <span class="math">\vec x = A^{-1} b</span>,
-and the covariance carries information about <span class="math">A^{-1}</span>. 
+and the covariance carries information about <span class="math">A^{-1}</span>.
 <br/><br/>
 
-This “Gaussian trick” is a standard fact in statistical physics / probabilistic inference, and it’s also the kind of identity I use in 
-my own notes (see, e.g., <a href="https://arxiv.org/abs/2509.05793">https://arxiv.org/abs/2509.05793</a>). 
- What is distinctive here is the ambition to build specialized hardware that <em>directly</em> implements the relevant sampling dynamics 
- (e.g., Langevin-type relaxation in an effectively quadratic energy landscape), while simultaneously tracking performance through a 
- thermodynamic lens (dissipation, equilibration time, noise as a feature, etc.).
+This “Gaussian” identity is a standard fact in statistical physics / probabilistic inference, and it’s also the kind of identity I use in my own notes (see, e.g., <a href="https://arxiv.org/abs/2509.05793">https://arxiv.org/abs/2509.05793</a>).
+What is distinctive here is the ambition to build specialized hardware that <em>directly</em> implements the relevant sampling dynamics
+(e.g., Langevin-type relaxation / SDE-style dynamics in an effectively quadratic energy landscape),
+while simultaneously tracking performance through a thermodynamic lens (dissipation, equilibration time, noise as a feature, etc.).
+On the hardware side, and again based on Faris’ slides, this includes an explicit focus on CMOS implementations that can run at lower-than-normal voltages and exploit circuit-level non-determinism as part of the computation.
 <br/><br/>
 
 Two representative technical references from Normal’s team are:
 <ul>
   <li>
-    <em><a href="https://arxiv.org/abs/2308.05660" target="_blank">Thermodynamic linear algebra</a></em>, which makes the connection to sampling from the thermal equilibrium of coupled harmonic oscillators and develops algorithms for solving linear systems, estimating inverses and determinants, with predicted asymptotic advantages under assumptions they spell out. 
+    <em><a href="https://arxiv.org/abs/2308.05660" target="_blank">Thermodynamic linear algebra</a></em>, which makes the connection to sampling from the thermal equilibrium of coupled harmonic oscillators and develops algorithms for solving linear systems, estimating inverses and determinants, with predicted asymptotic advantages under assumptions they spell out.
   </li>
   <li>
-    <em><a href="https://arxiv.org/abs/2312.04836" target="_blank">Thermodynamc computing system for AI applications</a></em>, which reports an experimental “stochastic processing unit” (SPU) built from coupled circuit elements and demonstrates Gaussian sampling and (small-scale) matrix inversion on hardware. 
+    <em><a href="https://arxiv.org/abs/2312.04836" target="_blank">Thermodynamic computing system for AI applications</a></em>, which reports an experimental “stochastic processing unit” (SPU) built from coupled circuit elements and demonstrates Gaussian sampling and (small-scale) matrix inversion on hardware.
+  </li>
 </ul>
 
 <br/>
-<h4>A historical note: stochastic linear algebra goes back a long way</h4>
+<h4>A side quest/historical note: stochastic linear algebra goes back a long way</h4>
 
-It’s also worth saying explicitly that the broad idea of using stochastic interactions / random sampling for matrix inversion is not new. A classic starting point is the Monte Carlo matrix inversion method associated with von Neumann and Ulam (published as an exposition in 1950). 
+It’s also worth saying explicitly that the broad idea of using stochastic interactions / random sampling for matrix inversion is not new. 
+A classic starting point is the Monte Carlo matrix inversion method associated with von Neumann and Ulam (published as an exposition in 1950). 
 The core observation is simple:
 if you can write (or scale) your matrix so that
 <span class="math">A^{-1} = (I - B)^{-1} = \sum_{k=0}^{\infty} B^k</span>
@@ -125,7 +132,7 @@ Based on what I understand (and what is publicly described online), a concrete r
 <br/><br/>
 
 On a more personal note: I happened to know their CTO, Trevor McCourt, from before. 
-We had invited him to speak about self-error-correcting systems at a workshop at Los Alamos National Laboratory 
+We had invited him to speak about self-error-correcting biological systems at a workshop at Los Alamos National Laboratory 
 (I think this was in 2023). I also recognized a few other researchers through overlapping circles, and 
 I was already familiar with the p-bit literature more broadly. I knew of the work by Freitas, Delvenne and 
 Esposito <a href="https://arxiv.org/abs/2008.10578" target="_blank">(Thermodynamics of CMOS)</a>, 
