@@ -69,7 +69,7 @@ Normal Computing is a startup pursuing energy-efficient computation by exploitin
 My connection to Normal is through some of my work, and I also know Patrick Coles, who used to be at Los Alamos, and he is now at Normal Computing.
 I also know, of course, of Crooks, from the Crooks fluctuation theorem in non-equilibrium statistical mechanics.
 Their team includes several other people with strong backgrounds in statistical physics and thermodynamics.
-They’ve been selected as part of ARIA’s “Scaling Compute” programme (a £50M programme backing multiple teams), which is aimed at radicallyly lowering the cost of AI compute.
+They’ve been selected as part of ARIA’s “Scaling Compute” programme (a £50M programme backing multiple teams), which is aimed at radically lowering the cost of AI compute.
 <br/><br/>
 
 <strong>Correction / update:</strong> In the first iteration of this blog post, I described Normal’s approach in a way that emphasized “physical stochastic systems relaxing in an engineered energy landscape.”
@@ -79,11 +79,14 @@ This doesn’t negate the “thermodynamic / statistical-physics” framing; it 
 <br/><br/>
 
 At a high level, their technical story (as I understand it, incorporating that update) is: express useful randomized algorithms as stochastic dynamics, implement those dynamics efficiently in hardware that naturally exhibits the right kind of fluctuations, and then read out the desired quantities from statistics of the resulting steady state.
-In their “thermodynamic linear algebra” line of work, the key bridge is a Gaussian equilibrium measure: if you engineer a system whose equilibrium distribution over a state vector <span class="math">x</span> is Gaussian of the form
-<span class="math">exp(-1/2 \vec x^t A \vec x + \vec b^t \vec x)</span>,
+In their “thermodynamic linear algebra” line of work, the key bridge is a Gaussian equilibrium measure: if you engineer a system whose equilibrium distribution over a state vector
+<span class="math">\( \vec{x} \)</span>
+is Gaussian of the form
+<span class="math">\( \exp\!\left(-\tfrac{1}{2}\,\vec{x}^{\mathsf T} A \vec{x} + \vec{b}^{\mathsf T}\vec{x}\right) \)</span>,
 then the mean of that Gaussian satisfies
-<span class="math">\vec x = A^{-1} b</span>,
-and the covariance carries information about <span class="math">A^{-1}</span>.
+<span class="math">\( \langle \vec{x} \rangle = A^{-1}\vec{b} \)</span>,
+and the covariance carries information about
+<span class="math">\( A^{-1} \)</span>.
 <br/><br/>
 
 This “Gaussian” identity is a standard fact in statistical physics / probabilistic inference, and it’s also the kind of identity I use in my own notes (see, e.g., <a href="https://arxiv.org/abs/2509.05793">https://arxiv.org/abs/2509.05793</a>).
@@ -102,6 +105,8 @@ Two representative technical references from Normal’s team are:
     <em><a href="https://arxiv.org/abs/2312.04836" target="_blank">Thermodynamic computing system for AI applications</a></em>, which reports an experimental “stochastic processing unit” (SPU) built from coupled circuit elements and demonstrates Gaussian sampling and (small-scale) matrix inversion on hardware.
   </li>
 </ul>
+Thus, the core idea is to build physical systems that naturally relax to distributions encoding solutions to problems in the relaxational dynamics, 
+and to read out those solutions from statistics of the system’s state.
 
 <br/>
 <h4>A side quest/historical note: stochastic linear algebra goes back a long way</h4>
@@ -123,6 +128,8 @@ Normal’s approach is not the only route to physics-based linear algebra. For e
 And in a different direction, we (and collaborators) have also used statistical-physics tools (e.g., cavity methods) to derive efficient estimators for quantities that are, at their core, linear-algebraic (resolvents, centrality measures, etc.). 
 <br/><br/>
 
+(Note: I did not correct the rest, but it is clear that both companies are using subthreshold CMOS as a substrate for thermodynamic computing.)
+<br/><br/>
 <h3><a href="https://extropic.ai/" target="_blank">Extropic</a></h3>
 
 While Normal Computing was not present at the workshop, I did have a chance to chat with some folks from Extropic, another startup working on thermodynamic computing. Extropic is pursuing a different angle: instead of “compute by suppressing noise,” the idea is closer to “compute by embracing noise,” by building hardware whose native operation is to <em>sample</em> from probability distributions. In Extropic’s own framing, their hardware is a “thermodynamic sampling unit” built from large networks of probabilistic bits (p-bits), which output voltages that wander stochastically between two states and can be coupled together to implement useful probabilistic models. 
