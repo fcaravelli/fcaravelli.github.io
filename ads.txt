@@ -7,4 +7,3 @@
 # Google AdSense / Google Ad Manager
 # ------------------------------
 google.com, pub-6719988103594554, DIRECT, f08c47fec0942fa0
-
