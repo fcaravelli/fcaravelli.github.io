@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resistive Circuit Graph Editor + Solver (Vanilla JS)</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    body { margin: 0; height: 100vh; display: grid; grid-template-rows: auto 1fr; }
+
+    .topbar { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-bottom: 1px solid #ddd; }
+    .topbar .spacer { flex: 1; }
+
+    .btn { padding: 6px 10px; border: 1px solid #ccc; background: #fff; border-radius: 8px; cursor: pointer; }
+    .btn.active { border-color: #000; font-weight: 700; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .main { display: grid; grid-template-columns: 1fr 360px; min-height: 0; }
+    .canvasWrap { position: relative; min-height: 0; }
+    .side { border-left: 1px solid #ddd; overflow: auto; padding: 12px; }
+
+    .row { display: grid; grid-template-columns: 110px 1fr; gap: 8px; align-items: center; margin: 10px 0; }
+    input, select { width: 100%; padding: 6px 8px; border: 1px solid #ccc; border-radius: 8px; }
+    h3 { margin: 6px 0 10px; }
+    .hint { color: #444; font-size: 13px; line-height: 1.35; }
+
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; border: 1px solid #ccc; padding: 1px 6px; border-radius: 6px; background: #f8f8f8; }
+
+    svg { width: 100%; height: 100%; display: block; background: #fafafa; }
+
+    /* Base selectable geometry */
+    .edge { stroke: #222; stroke-width: 2.2; }
+    .edge.selected { stroke-width: 4; }
+
+    /* Nodes */
+    .node { fill: #fff; stroke: #222; stroke-width: 2; cursor: grab; }
+    .node.selected { stroke-width: 4; }
+
+    /* Labels */
+    .label { font-size: 12px; user-select: none; }
+    .badge { font-size: 11px; opacity: 0.9; }
+
+    /* Symbols should not steal clicks */
+    .symbol { stroke: #111; stroke-width: 2.2; fill: #fff; pointer-events: none; }
+    .symbolText { font-size: 12px; user-select: none; pointer-events: none; }
+
+    pre {
+      white-space: pre-wrap;
+      font-size: 12px;
+      background: #f7f7f7;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #eee;
+      overflow: auto;
+      max-height: 240px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <button id="modeSelect" class="btn active">Select</button>
+    <button id="modeAddNode" class="btn">Add node</button>
+    <button id="modeAddEdge" class="btn">Add edge</button>
+    <span class="hint">Tip: <span class="kbd">Del</span> deletes selected. Add edge: click start node then end node.</span>
+    <div class="spacer"></div>
+    <button id="btnSolve" class="btn">Solve</button>
+    <button id="btnExport" class="btn">Export JSON</button>
+    <button id="btnImport" class="btn">Import JSON</button>
+    <input id="fileInput" type="file" accept="application/json" style="display:none" />
+  </div>
+
+  <div class="main">
+    <div class="canvasWrap">
+      <svg id="svg" viewBox="0 0 1200 700" aria-label="circuit editor canvas"></svg>
+    </div>
+
+    <div class="side">
+      <h3>Inspector</h3>
+      <div id="inspectorEmpty" class="hint">
+        Click a node or edge to edit it.<br/>
+        Ground is just a node flag (single ground enforced).
+      </div>
+
+      <div id="inspectorNode" style="display:none">
+        <div class="row"><div><b>Type</b></div><div>Node</div></div>
+        <div class="row"><div><b>ID</b></div><div id="nodeId"></div></div>
+        <div class="row">
+          <div>Label</div>
+          <input id="nodeLabel" type="text" />
+        </div>
+        <div class="row">
+          <div>Ground</div>
+          <input id="nodeGround" type="checkbox" style="width:auto; justify-self:start" />
+        </div>
+        <button id="deleteNode" class="btn">Delete node</button>
+      </div>
+
+      <div id="inspectorEdge" style="display:none">
+        <div class="row"><div><b>Type</b></div><div>Edge</div></div>
+        <div class="row"><div><b>ID</b></div><div id="edgeId"></div></div>
+        <div class="row"><div>From</div><div id="edgeFrom"></div></div>
+        <div class="row"><div>To</div><div id="edgeTo"></div></div>
+
+        <div class="row">
+          <div>Kind</div>
+          <select id="edgeKind">
+            <option value="wire">wire</option>
+            <option value="resistor">resistor</option>
+            <option value="vsource">vsource</option>
+            <option value="isource">isource</option>
+          </select>
+        </div>
+
+        <div class="row" id="edgeValueRow" style="display:none">
+          <div>Value</div>
+          <input id="edgeValue" type="number" step="any" />
+        </div>
+
+        <div class="row" id="edgeUnitRow" style="display:none">
+          <div>Unit</div>
+          <input id="edgeUnit" type="text" disabled />
+        </div>
+
+        <div class="row" id="edgeOrientRow" style="display:none">
+          <div>Orient</div>
+          <select id="edgeOrient">
+            <option value="from->to">from → to</option>
+            <option value="to->from">to → from</option>
+          </select>
+        </div>
+
+        <button id="deleteEdge" class="btn">Delete edge</button>
+      </div>
+
+      <hr style="margin: 14px 0; border: 0; border-top: 1px solid #eee;" />
+
+      <h3 style="margin-top:0">Solution</h3>
+      <div id="solveStatus" class="hint">Not solved yet.</div>
+      <pre id="solveOut"></pre>
+
+      <hr style="margin: 14px 0; border: 0; border-top: 1px solid #eee;" />
+
+      <div class="hint">
+        <b>Notes</b><br/>
+        • Wires are handled by merging nodes (union-find).<br/>
+        • Currents reported are positive from edge.from → edge.to (and arrows follow orientation for sources).<br/>
+        • Edit anything → solution is cleared until you press Solve again.
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // -------------------------
+  // State
+  // -------------------------
+  const state = {
+    mode: "select", // select | addNode | addEdge
+    doc: {
+      meta: { version: 1, title: "Untitled Circuit" },
+      nodes: [
+        { id: "gnd", x: 180, y: 380, label: "GND", isGround: true },
+        { id: "n1",  x: 420, y: 220, label: "1",   isGround: false },
+      ],
+      edges: [
+        { id: "e1", from: "n1", to: "gnd", kind: "resistor", value: 1000, unit: "ohm" },
+      ],
+    },
+    selection: { type: "none" }, // none | node | edge
+    pendingFromNodeId: null,
+    dragging: null, // { nodeId, dx, dy }
+    solution: null,
+  };
+
+  // -------------------------
+  // Helpers
+  // -------------------------
+  const svg = document.getElementById("svg");
+  const $ = (id) => document.getElementById(id);
+
+  const newId = (prefix) => `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now()}`;
+
+  const unitForKind = (kind) => {
+    if (kind === "resistor") return "ohm";
+    if (kind === "vsource") return "V";
+    if (kind === "isource") return "A";
+    return "";
+  };
+
+  function invalidateSolution() {
+    state.solution = null;
+    $("solveStatus").textContent = "Not solved yet.";
+    $("solveOut").textContent = "";
+  }
+
+  function ensureOneGround() {
+    const grounds = state.doc.nodes.filter(n => n.isGround);
+    if (grounds.length === 0 && state.doc.nodes.length) state.doc.nodes[0].isGround = true;
+    if (grounds.length > 1) {
+      const keep = grounds[0].id;
+      state.doc.nodes.forEach(n => n.isGround = (n.id === keep));
+    }
+  }
+
+  function getNode(id) { return state.doc.nodes.find(n => n.id === id); }
+  function getEdge(id) { return state.doc.edges.find(e => e.id === id); }
+
+  function clearSelection() {
+    state.selection = { type: "none" };
+    render();
+  }
+
+  function setMode(mode) {
+    state.mode = mode;
+    state.pendingFromNodeId = null;
+    $("modeSelect").classList.toggle("active", mode === "select");
+    $("modeAddNode").classList.toggle("active", mode === "addNode");
+    $("modeAddEdge").classList.toggle("active", mode === "addEdge");
+    render();
+  }
+
+  function toSvgPoint(clientX, clientY) {
+    const pt = svg.createSVGPoint();
+    pt.x = clientX; pt.y = clientY;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return { x: clientX, y: clientY };
+    const sp = pt.matrixTransform(ctm.inverse());
+    return { x: sp.x, y: sp.y };
+  }
+
+  function fmt(x) {
+    if (!Number.isFinite(x)) return String(x);
+    const ax = Math.abs(x);
+    if (ax === 0) return "0";
+    if (ax < 1e-3 || ax >= 1e4) return x.toExponential(3);
+    return x.toPrecision(5);
+  }
+
+  // -------------------------
+  // SVG defs (arrow markers)
+  // -------------------------
+  function appendDefs() {
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+    const makeMarker = (id, fill, w, h) => {
+      const m = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+      m.setAttribute("id", id);
+      m.setAttribute("viewBox", "0 0 10 10");
+      m.setAttribute("refX", "9");
+      m.setAttribute("refY", "5");
+      m.setAttribute("markerWidth", String(w));
+      m.setAttribute("markerHeight", String(h));
+      m.setAttribute("orient", "auto");
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", "M 0 0 L 10 5 L 0 10 z");
+      p.setAttribute("fill", fill);
+      m.appendChild(p);
+      return m;
+    };
+
+    defs.appendChild(makeMarker("arrow", "#111", 7, 7));
+    defs.appendChild(makeMarker("arrowSelected", "#111", 9, 9));
+    svg.appendChild(defs);
+  }
+
+  // -------------------------
+  // Symbol drawing helpers
+  // -------------------------
+  function unitLabel(e) {
+    if (e.kind === "resistor") return "Ω";
+    if (e.kind === "vsource") return "V";
+    if (e.kind === "isource") return "A";
+    return "";
+  }
+
+  // Oriented direction vector (for symbols/arrows) based on edge orientation for sources.
+  function orientedVecAndEnds(a, b, e) {
+    // base endpoints are a(from)->b(to)
+    let x1 = a.x, y1 = a.y, x2 = b.x, y2 = b.y;
+
+    // For sources, flip arrow direction if orientation is to->from
+    if ((e.kind === "vsource" || e.kind === "isource") && (e.orientation ?? "from->to") === "to->from") {
+      [x1, y1, x2, y2] = [x2, y2, x1, y1];
+    }
+
+    const dx = x2 - x1, dy = y2 - y1;
+    const L = Math.hypot(dx, dy) || 1;
+    const ux = dx / L, uy = dy / L;
+    return { x1, y1, x2, y2, dx, dy, ux, uy };
+  }
+
+  function drawResistorSymbol(mx, my, dx, dy, length = 44, amp = 8, zigs = 6) {
+    const poly = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    poly.setAttribute("class", "symbol");
+
+    const L = Math.hypot(dx, dy) || 1;
+    const ux = dx / L, uy = dy / L;
+    const px = -uy, py = ux;
+
+    const pts = [];
+    const step = length / (zigs * 2);
+    let t = -length / 2;
+
+    pts.push([mx + ux * t, my + uy * t]);
+
+    for (let i = 1; i <= zigs * 2 - 1; i++) {
+      t += step;
+      const sgn = (i % 2 === 0) ? -1 : 1;
+      pts.push([mx + ux * t + px * amp * sgn, my + uy * t + py * amp * sgn]);
+    }
+
+    t = length / 2;
+    pts.push([mx + ux * t, my + uy * t]);
+
+    poly.setAttribute("points", pts.map(p => `${p[0]},${p[1]}`).join(" "));
+    svg.appendChild(poly);
+  }
+
+  function drawSourceSymbol(mx, my, kind, ux, uy, radius = 14) {
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("class", "symbol");
+    circle.setAttribute("cx", mx);
+    circle.setAttribute("cy", my);
+    circle.setAttribute("r", radius);
+    svg.appendChild(circle);
+
+    if (kind === "vsource") {
+      // plus on arrow direction side, minus opposite
+      const txp = mx + ux * 8, typ = my + uy * 8;
+      const txm = mx - ux * 8, tym = my - uy * 8;
+
+      const plus = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      plus.setAttribute("class", "symbolText");
+      plus.setAttribute("x", txp - 3);
+      plus.setAttribute("y", typ + 4);
+      plus.textContent = "+";
+      svg.appendChild(plus);
+
+      const minus = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      minus.setAttribute("class", "symbolText");
+      minus.setAttribute("x", txm - 3);
+      minus.setAttribute("y", tym + 4);
+      minus.textContent = "−";
+      svg.appendChild(minus);
+    }
+
+    if (kind === "isource") {
+      const x1 = mx - ux * 8, y1 = my - uy * 8;
+      const x2 = mx + ux * 8, y2 = my + uy * 8;
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("class", "symbol");
+      line.setAttribute("x1", x1); line.setAttribute("y1", y1);
+      line.setAttribute("x2", x2); line.setAttribute("y2", y2);
+      line.setAttribute("marker-end", "url(#arrow)");
+      svg.appendChild(line);
+    }
+  }
+
+  // -------------------------
+  // Render
+  // -------------------------
+  function render() {
+    ensureOneGround();
+    svg.innerHTML = "";
+    appendDefs();
+
+    // --- edges first ---
+    for (const e of state.doc.edges) {
+      const a = getNode(e.from), b = getNode(e.to);
+      if (!a || !b) continue;
+
+      const isSel = (state.selection.type === "edge" && state.selection.id === e.id);
+
+      // Base line for selection/hit testing (always from->to geometry)
+      const base = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      base.setAttribute("x1", a.x); base.setAttribute("y1", a.y);
+      base.setAttribute("x2", b.x); base.setAttribute("y2", b.y);
+      base.setAttribute("class", "edge" + (isSel ? " selected" : ""));
+      base.dataset.kind = "edge";
+      base.dataset.id = e.id;
+      svg.appendChild(base);
+
+      const { x1, y1, x2, y2, dx, dy, ux, uy } = orientedVecAndEnds(a, b, e);
+
+      // Orientation arrow (sources only)
+      if (e.kind === "vsource" || e.kind === "isource") {
+        // shorten so arrowhead doesn't sit inside node circle
+        const shrink = 18;
+        const ax1 = x1 + ux * shrink;
+        const ay1 = y1 + uy * shrink;
+        const ax2 = x2 - ux * shrink;
+        const ay2 = y2 - uy * shrink;
+
+        const arrow = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        arrow.setAttribute("x1", ax1); arrow.setAttribute("y1", ay1);
+        arrow.setAttribute("x2", ax2); arrow.setAttribute("y2", ay2);
+        arrow.setAttribute("class", "edge" + (isSel ? " selected" : ""));
+        arrow.setAttribute("marker-end", isSel ? "url(#arrowSelected)" : "url(#arrow)");
+        arrow.dataset.kind = "edge";
+        arrow.dataset.id = e.id;
+        svg.appendChild(arrow);
+      }
+
+      // Midpoint
+      const mx = (a.x + b.x) / 2;
+      const my = (a.y + b.y) / 2;
+
+      // Symbols
+      if (e.kind === "resistor") {
+        drawResistorSymbol(mx, my, dx, dy);
+      } else if (e.kind === "vsource" || e.kind === "isource") {
+        drawSourceSymbol(mx, my, e.kind, ux, uy);
+      }
+
+      // Label offset perpendicular
+      const px = -uy, py = ux;
+      const labelOffset = 24;
+
+      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      label.setAttribute("x", mx + px * labelOffset);
+      label.setAttribute("y", my + py * labelOffset);
+      label.setAttribute("class", "label badge");
+      label.dataset.kind = "edge";
+      label.dataset.id = e.id;
+
+      const baseText =
+        e.kind === "wire" ? "wire" :
+        `${e.kind === "resistor" ? "R" : (e.kind === "vsource" ? "V" : "I")}=${e.value ?? "?"}${unitLabel(e)}`;
+
+      const I = state.solution?.edgeCurrents?.[e.id];
+      label.textContent = (I === undefined) ? baseText : `${baseText} | I=${fmt(I)}A`;
+
+      svg.appendChild(label);
+    }
+
+    // --- nodes ---
+    for (const n of state.doc.nodes) {
+      const isSel = (state.selection.type === "node" && state.selection.id === n.id);
+
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", n.x);
+      circle.setAttribute("cy", n.y);
+      circle.setAttribute("r", 14);
+      circle.setAttribute("class", "node" + (isSel ? " selected" : ""));
+      circle.dataset.kind = "node";
+      circle.dataset.id = n.id;
+      svg.appendChild(circle);
+
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", n.x + 18);
+      text.setAttribute("y", n.y + 4);
+      text.setAttribute("class", "label");
+      text.dataset.kind = "node";
+      text.dataset.id = n.id;
+
+      const v = state.solution ? (state.solution.nodeVoltages?.[n.id] ?? 0) : null;
+      const vtxt = (v === null) ? "" : ` (${fmt(v)}V)`;
+
+      text.textContent = (n.isGround ? "⏚ " : "") + (n.label ?? n.id) + vtxt;
+      svg.appendChild(text);
+    }
+
+    renderInspector();
+  }
+
+  // -------------------------
+  // Inspector
+  // -------------------------
+  function show(el, on) { el.style.display = on ? "" : "none"; }
+
+  function renderInspector() {
+    const empty = $("inspectorEmpty");
+    const nodePanel = $("inspectorNode");
+    const edgePanel = $("inspectorEdge");
+
+    if (state.selection.type === "none") {
+      show(empty, true); show(nodePanel, false); show(edgePanel, false);
+      empty.innerHTML = `
+        <div class="hint">
+          Click a node or edge to edit it.<br/>
+          ${state.mode === "addEdge" && state.pendingFromNodeId ? `Edge tool: pick target node (from <b>${state.pendingFromNodeId}</b>)…<br/>` : ""}
+          Ground is just a node flag (single ground enforced).
+        </div>`;
+      return;
+    }
+
+    if (state.selection.type === "node") {
+      const n = getNode(state.selection.id);
+      if (!n) { show(empty, true); show(nodePanel, false); show(edgePanel, false); return; }
+      show(empty, false); show(nodePanel, true); show(edgePanel, false);
+
+      $("nodeId").textContent = n.id;
+      $("nodeLabel").value = n.label ?? "";
+      $("nodeGround").checked = !!n.isGround;
+      return;
+    }
+
+    if (state.selection.type === "edge") {
+      const e = getEdge(state.selection.id);
+      if (!e) { show(empty, true); show(nodePanel, false); show(edgePanel, false); return; }
+      show(empty, false); show(nodePanel, false); show(edgePanel, true);
+
+      $("edgeId").textContent = e.id;
+      $("edgeFrom").textContent = e.from;
+      $("edgeTo").textContent = e.to;
+
+      $("edgeKind").value = e.kind;
+
+      const showValue = e.kind !== "wire";
+      const showOrient = (e.kind === "vsource" || e.kind === "isource");
+      show($("edgeValueRow"), showValue);
+      show($("edgeUnitRow"), showValue);
+      show($("edgeOrientRow"), showOrient);
+
+      $("edgeUnit").value = e.unit ?? unitForKind(e.kind);
+      if (showValue) $("edgeValue").value = (e.value ?? (e.kind === "resistor" ? 1000 : 1));
+      if (showOrient) $("edgeOrient").value = e.orientation ?? "from->to";
+      return;
+    }
+  }
+
+  // -------------------------
+  // Modes
+  // -------------------------
+  $("modeSelect").addEventListener("click", () => setMode("select"));
+  $("modeAddNode").addEventListener("click", () => setMode("addNode"));
+  $("modeAddEdge").addEventListener("click", () => setMode("addEdge"));
+
+  // -------------------------
+  // Solve hook
+  // -------------------------
+  function formatSolution(result) {
+    const lines = [];
+    lines.push("Node voltages (V):");
+    for (const id of Object.keys(result.nodeVoltages).sort()) {
+      lines.push(`  ${id}: ${fmt(result.nodeVoltages[id])}`);
+    }
+    lines.push("");
+    lines.push("Edge currents (A) (positive edge.from -> edge.to):");
+    for (const id of Object.keys(result.edgeCurrents).sort()) {
+      lines.push(`  ${id}: ${fmt(result.edgeCurrents[id])}`);
+    }
+    return lines.join("\n");
+  }
+
+  $("btnSolve").addEventListener("click", () => {
+    try {
+      const result = solveCircuitMNA(state.doc);
+      state.solution = result;
+      $("solveStatus").textContent = "Solved.";
+      $("solveOut").textContent = formatSolution(result);
+      render();
+      console.log("Solve result:", result);
+    } catch (err) {
+      const msg = (err && err.message) ? err.message : String(err);
+      state.solution = null;
+      $("solveStatus").textContent = "Solve failed.";
+      $("solveOut").textContent = msg;
+      console.error(err);
+      alert("Solve failed: " + msg);
+      render();
+    }
+  });
+
+  // -------------------------
+  // Inspector events
+  // -------------------------
+  $("nodeLabel").addEventListener("input", (ev) => {
+    if (state.selection.type !== "node") return;
+    const n = getNode(state.selection.id);
+    if (!n) return;
+    n.label = ev.target.value;
+    invalidateSolution();
+    render();
+  });
+
+  $("nodeGround").addEventListener("change", () => {
+    if (state.selection.type !== "node") return;
+    const n = getNode(state.selection.id);
+    if (!n) return;
+    if (!n.isGround) {
+      state.doc.nodes.forEach(m => m.isGround = false);
+      n.isGround = true;
+    } else {
+      n.isGround = false;
+      ensureOneGround();
+    }
+    invalidateSolution();
+    render();
+  });
+
+  $("deleteNode").addEventListener("click", () => {
+    if (state.selection.type !== "node") return;
+    const nodeId = state.selection.id;
+    state.doc.nodes = state.doc.nodes.filter(n => n.id !== nodeId);
+    state.doc.edges = state.doc.edges.filter(e => e.from !== nodeId && e.to !== nodeId);
+    state.selection = { type: "none" };
+    ensureOneGround();
+    invalidateSolution();
+    render();
+  });
+
+  $("edgeKind").addEventListener("change", (ev) => {
+    if (state.selection.type !== "edge") return;
+    const e = getEdge(state.selection.id);
+    if (!e) return;
+
+    e.kind = ev.target.value;
+
+    if (e.kind === "wire") {
+      delete e.value; delete e.unit; delete e.orientation;
+    } else {
+      e.unit = unitForKind(e.kind);
+      if (e.value === undefined) e.value = (e.kind === "resistor" ? 1000 : 1);
+      if (e.kind === "vsource" || e.kind === "isource") e.orientation = e.orientation ?? "from->to";
+      else delete e.orientation;
+    }
+    invalidateSolution();
+    render();
+  });
+
+  $("edgeValue").addEventListener("input", (ev) => {
+    if (state.selection.type !== "edge") return;
+    const e = getEdge(state.selection.id);
+    if (!e) return;
+    const v = ev.target.value;
+    e.value = (v === "" ? undefined : Number(v));
+    invalidateSolution();
+    render();
+  });
+
+  $("edgeOrient").addEventListener("change", (ev) => {
+    if (state.selection.type !== "edge") return;
+    const e = getEdge(state.selection.id);
+    if (!e) return;
+    e.orientation = ev.target.value;
+    invalidateSolution();
+    render();
+  });
+
+  $("deleteEdge").addEventListener("click", () => {
+    if (state.selection.type !== "edge") return;
+    const edgeId = state.selection.id;
+    state.doc.edges = state.doc.edges.filter(e => e.id !== edgeId);
+    state.selection = { type: "none" };
+    invalidateSolution();
+    render();
+  });
+
+  // -------------------------
+  // Canvas interactions
+  // -------------------------
+  svg.addEventListener("pointerdown", (ev) => {
+    const target = ev.target;
+    if (!(target instanceof SVGElement)) return;
+
+    const kind = target.dataset.kind;
+    const id = target.dataset.id;
+
+    // empty canvas
+    if (!kind) {
+      if (state.mode === "addNode") {
+        const p = toSvgPoint(ev.clientX, ev.clientY);
+        const nid = newId("n");
+        state.doc.nodes.push({ id: nid, x: p.x, y: p.y, label: nid, isGround: false });
+        state.selection = { type: "node", id: nid };
+        invalidateSolution();
+        render();
+        return;
+      }
+      if (state.mode === "addEdge") state.pendingFromNodeId = null;
+      clearSelection();
+      return;
+    }
+
+    if (kind === "node") {
+      if (state.mode === "addEdge") {
+        if (!state.pendingFromNodeId) {
+          state.pendingFromNodeId = id;
+          state.selection = { type: "none" };
+          render();
+          return;
+        } else {
+          if (state.pendingFromNodeId !== id) {
+            const eid = newId("e");
+            state.doc.edges.push({ id: eid, from: state.pendingFromNodeId, to: id, kind: "wire" });
+            state.selection = { type: "edge", id: eid };
+            invalidateSolution();
+          }
+          state.pendingFromNodeId = null;
+          render();
+          return;
+        }
+      }
+
+      // select + drag
+      state.selection = { type: "node", id };
+      const n = getNode(id);
+      if (n) {
+        const p = toSvgPoint(ev.clientX, ev.clientY);
+        state.dragging = { nodeId: id, dx: n.x - p.x, dy: n.y - p.y };
+        svg.setPointerCapture(ev.pointerId);
+      }
+      render();
+      return;
+    }
+
+    if (kind === "edge") {
+      state.selection = { type: "edge", id };
+      render();
+      return;
+    }
+  });
+
+  svg.addEventListener("pointermove", (ev) => {
+    if (!state.dragging) return;
+    const n = getNode(state.dragging.nodeId);
+    if (!n) return;
+    const p = toSvgPoint(ev.clientX, ev.clientY);
+    n.x = p.x + state.dragging.dx;
+    n.y = p.y + state.dragging.dy;
+    invalidateSolution();
+    render();
+  });
+
+  svg.addEventListener("pointerup", () => {
+    state.dragging = null;
+  });
+
+  // -------------------------
+  // Keyboard delete
+  // -------------------------
+  window.addEventListener("keydown", (ev) => {
+    if (ev.key !== "Delete" && ev.key !== "Backspace") return;
+
+    if (state.selection.type === "node") {
+      const nodeId = state.selection.id;
+      state.doc.nodes = state.doc.nodes.filter(n => n.id !== nodeId);
+      state.doc.edges = state.doc.edges.filter(e => e.from !== nodeId && e.to !== nodeId);
+      state.selection = { type: "none" };
+      ensureOneGround();
+      invalidateSolution();
+      render();
+      ev.preventDefault();
+    }
+
+    if (state.selection.type === "edge") {
+      const edgeId = state.selection.id;
+      state.doc.edges = state.doc.edges.filter(e => e.id !== edgeId);
+      state.selection = { type: "none" };
+      invalidateSolution();
+      render();
+      ev.preventDefault();
+    }
+  });
+
+  // -------------------------
+  // Import/Export
+  // -------------------------
+  function downloadJson(doc) {
+    const blob = new Blob([JSON.stringify(doc, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "circuit.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  $("btnExport").addEventListener("click", () => downloadJson(state.doc));
+  $("btnImport").addEventListener("click", () => $("fileInput").click());
+
+  $("fileInput").addEventListener("change", async (ev) => {
+    const f = ev.target.files && ev.target.files[0];
+    if (!f) return;
+    const text = await f.text();
+    const doc = JSON.parse(text);
+
+    if (!doc || !Array.isArray(doc.nodes) || !Array.isArray(doc.edges)) {
+      alert("Invalid JSON format (expected {nodes:[], edges:[]})");
+      ev.target.value = "";
+      return;
+    }
+    state.doc = doc;
+    state.selection = { type: "none" };
+    state.pendingFromNodeId = null;
+    ensureOneGround();
+    invalidateSolution();
+    render();
+    ev.target.value = "";
+  });
+
+  // -------------------------
+  // Init
+  // -------------------------
+  render();
+})();
+
+// ============================================================
+// Solver: Modified Nodal Analysis (MNA) + wire merging
+// ============================================================
+function solveCircuitMNA(doc) {
+  class UF {
+    constructor(items) {
+      this.p = new Map(items.map(x => [x, x]));
+      this.r = new Map(items.map(x => [x, 0]));
+    }
+    find(x) {
+      const p = this.p.get(x);
+      if (p === x) return x;
+      const root = this.find(p);
+      this.p.set(x, root);
+      return root;
+    }
+    union(a, b) {
+      a = this.find(a); b = this.find(b);
+      if (a === b) return;
+      const ra = this.r.get(a), rb = this.r.get(b);
+      if (ra < rb) this.p.set(a, b);
+      else if (ra > rb) this.p.set(b, a);
+      else { this.p.set(b, a); this.r.set(a, ra + 1); }
+    }
+  }
+
+  const nodeIds = doc.nodes.map(n => n.id);
+  if (nodeIds.length === 0) throw new Error("No nodes.");
+
+  const uf = new UF(nodeIds);
+  for (const e of doc.edges) if (e.kind === "wire") uf.union(e.from, e.to);
+  const repOf = (id) => uf.find(id);
+
+  const groundNodes = doc.nodes.filter(n => n.isGround);
+  if (groundNodes.length === 0) throw new Error("No ground node.");
+  const gndRep = repOf(groundNodes[0].id);
+
+  const reps = new Set(nodeIds.map(repOf));
+  reps.delete(gndRep);
+  const repList = Array.from(reps);
+  const nodeIndex = new Map(repList.map((rid, i) => [rid, i]));
+  const N = repList.length;
+
+  const edges = [];
+  for (const e of doc.edges) {
+    if (e.kind === "wire") continue;
+    const a = repOf(e.from), b = repOf(e.to);
+    if (a === b) continue;
+    edges.push({ ...e, from: a, to: b });
+  }
+
+  const vsrc = edges.filter(e => e.kind === "vsource");
+  const M = vsrc.length;
+  const size = N + M;
+
+  if (size === 0) {
+    const nodeVoltages = {};
+    for (const n of doc.nodes) nodeVoltages[n.id] = 0;
+    const edgeCurrents = {};
+    for (const e of doc.edges) edgeCurrents[e.id] = 0;
+    return { nodeVoltages, edgeCurrents, vsrcCurrents: {} };
+  }
+
+  const A = Array.from({ length: size }, () => Array(size).fill(0));
+  const z = Array(size).fill(0);
+
+  const idx = (nodeRep) => (nodeRep === gndRep ? -1 : nodeIndex.get(nodeRep));
+
+  // Resistors + current sources
+  for (const e of edges) {
+    const ia = idx(e.from);
+    const ib = idx(e.to);
+
+    if (e.kind === "resistor") {
+      const R = Number(e.value);
+      if (!(R > 0)) throw new Error(`Bad resistor value on ${e.id}`);
+      const g = 1 / R;
+
+      if (ia !== -1) A[ia][ia] += g;
+      if (ib !== -1) A[ib][ib] += g;
+      if (ia !== -1 && ib !== -1) {
+        A[ia][ib] -= g;
+        A[ib][ia] -= g;
+      }
+    }
+
+    if (e.kind === "isource") {
+      const I = Number(e.value ?? 0);
+      const orient = e.orientation ?? "from->to";
+      let from = e.from, to = e.to;
+      if (orient === "to->from") { from = e.to; to = e.from; }
+
+      const ifrom = idx(from);
+      const ito = idx(to);
+      if (ifrom !== -1) z[ifrom] += -I;
+      if (ito !== -1) z[ito] += +I;
+    }
+  }
+
+  // Voltage sources
+  vsrc.forEach((e, k) => {
+    const orient = e.orientation ?? "from->to";
+    let from = e.from, to = e.to;
+    if (orient === "to->from") { from = e.to; to = e.from; }
+
+    const ia = idx(from);
+    const ib = idx(to);
+    const row = N + k;
+
+    // B
+    if (ia !== -1) A[ia][N + k] += 1;
+    if (ib !== -1) A[ib][N + k] -= 1;
+
+    // C
+    if (ia !== -1) A[row][ia] += 1;
+    if (ib !== -1) A[row][ib] -= 1;
+
+    // RHS: v(from) - v(to) = V
+    z[row] += Number(e.value ?? 0);
+  });
+
+  const x = gaussianSolve(A, z);
+
+  const vRep = new Map();
+  vRep.set(gndRep, 0);
+  repList.forEach((rid, i) => vRep.set(rid, x[i]));
+
+  const nodeVoltages = {};
+  for (const n of doc.nodes) nodeVoltages[n.id] = vRep.get(repOf(n.id)) ?? 0;
+
+  const vsrcCurrents = {};
+  vsrc.forEach((e, k) => { vsrcCurrents[e.id] = x[N + k]; });
+
+  const edgeCurrents = {};
+  for (const e0 of doc.edges) {
+    if (e0.kind === "wire") { edgeCurrents[e0.id] = 0; continue; }
+
+    const va = nodeVoltages[e0.from] ?? 0;
+    const vb = nodeVoltages[e0.to] ?? 0;
+
+    if (e0.kind === "resistor") {
+      const R = Number(e0.value);
+      if (!(R > 0)) throw new Error(`Bad resistor value on ${e0.id}`);
+      edgeCurrents[e0.id] = (va - vb) / R;
+    } else if (e0.kind === "isource") {
+      const I = Number(e0.value ?? 0);
+      edgeCurrents[e0.id] = (e0.orientation ?? "from->to") === "from->to" ? I : -I;
+    } else if (e0.kind === "vsource") {
+      const I = vsrcCurrents[e0.id] ?? 0;
+      edgeCurrents[e0.id] = (e0.orientation ?? "from->to") === "from->to" ? I : -I;
+    } else {
+      edgeCurrents[e0.id] = 0;
+    }
+  }
+
+  return { nodeVoltages, edgeCurrents, vsrcCurrents };
+}
+
+function gaussianSolve(A, b) {
+  const n = A.length;
+  const M = A.map(row => row.slice());
+  const x = b.slice();
+
+  for (let k = 0; k < n; k++) {
+    let pivotRow = k;
+    let pivotVal = Math.abs(M[k][k]);
+    for (let r = k + 1; r < n; r++) {
+      const v = Math.abs(M[r][k]);
+      if (v > pivotVal) { pivotVal = v; pivotRow = r; }
+    }
+    if (pivotVal === 0) throw new Error("Singular matrix (circuit may be ill-posed).");
+
+    if (pivotRow !== k) {
+      [M[k], M[pivotRow]] = [M[pivotRow], M[k]];
+      [x[k], x[pivotRow]] = [x[pivotRow], x[k]];
+    }
+
+    for (let r = k + 1; r < n; r++) {
+      const f = M[r][k] / M[k][k];
+      if (f === 0) continue;
+      for (let c = k; c < n; c++) M[r][c] -= f * M[k][c];
+      x[r] -= f * x[k];
+    }
+  }
+
+  const sol = Array(n).fill(0);
+  for (let i = n - 1; i >= 0; i--) {
+    let s = x[i];
+    for (let j = i + 1; j < n; j++) s -= M[i][j] * sol[j];
+    sol[i] = s / M[i][i];
+  }
+  return sol;
+}
+</script>
+</body>
+</html>
