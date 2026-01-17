@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Rydberg-like blockade via capacitive ZZ coupling – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- Optional: nice spacing for display-math blocks -->
+  <style>
+    p.math { margin: 1rem 0; }
+  </style>
+
+  <!-- AdSense: load ONCE per page -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <!-- KaTeX (fast TeX rendering) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    function renderKatexIn(el) {
+      if (!el || typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false,
+        // Helps if you use \mathbbm{1} somewhere; KaTeX doesn't ship bbm by default
+        macros: {
+          "\\mathbbm": "\\mathbb"
+        },
+        ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderKatexIn(document.querySelector("main.content"));
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <!-- In-article AdSense Ad -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+<section id="author-perspective-zz-blockade">
+
+  <h3>Engineering a Rydberg-like blockade with superconducting qubits and capacitive coupling</h3>
+
+  <p>
+    Let me step back from the formal presentation of the results and explain, from a more personal and technical
+    point of view, what we were really trying to achieve in this work, and why we think it matters.
+    At its core, this project is about taking an idea that is extremely natural in atomic physics — the Rydberg
+    blockade — and asking whether the same <em>interaction-dominated logic</em> can be realized in a solid-state
+    superconducting platform.
+  </p>
+
+  <p>
+    In Rydberg arrays, the blockade is almost a gift from nature: exciting one atom to a high-lying Rydberg state
+    shifts the energy levels of its neighbors so strongly that further excitations are suppressed.
+    This single mechanism underlies fast multi-qubit gates, constrained Hilbert spaces, and globally driven
+    many-body dynamics. In superconducting circuits, by contrast, we usually live in the opposite regime:
+    interactions are weak, perturbative, and carefully engineered <em>not</em> to interfere with local control.
+  </p>
+
+  <p>
+    The central question we asked ourselves was therefore very concrete:
+    <strong>can we deliberately push superconducting qubits into a regime where interactions dominate the driven dynamics,
+    rather than being a small correction?</strong>
+    And if so, can we do it in a way that is scalable and compatible with realistic hardware constraints?
+  </p>
+
+  <p>
+    The answer turned out to be yes — but only if one takes the longitudinal (ZZ) interaction seriously as a
+    resource, rather than treating it as an unwanted parasitic effect.
+  </p>
+
+  <p>
+    In most circuit-QED architectures, the ZZ coupling between qubits is something to be minimized.
+    It shows up as residual phase accumulation, crosstalk, or gate errors, and entire coupler designs are built
+    to cancel it as effectively as possible.
+    Here, we did the opposite: we asked how large the ZZ interaction can be made using nothing more exotic than
+    careful capacitive engineering between transmon qubits.
+  </p>
+
+  <p>
+    What we found — both theoretically and experimentally — is that by working close to resonance and exploiting
+    the weak anharmonicity of transmons, the ZZ interaction can be enhanced by more than an order of magnitude
+    compared to previously reported capacitively coupled devices.
+    In the strongest regime we explored, the ZZ coupling reached hundreds of MHz, becoming the largest energy
+    scale in the driven dynamics, larger than typical Rabi frequencies and comparable to the qubit anharmonicity.
+  </p>
+
+  <p>
+    From a physical point of view, this interaction has a very simple interpretation:
+    it is an energy penalty for occupying the <code>|11⟩</code> state.
+    When one qubit is excited, the transition frequency of its neighbor is shifted so far that a resonant drive
+    simply cannot excite it anymore.
+    This is exactly the same logic that underlies the Rydberg blockade, but implemented here in a fully engineered,
+    solid-state system.
+  </p>
+
+  <p>
+    The key difference — and also the opportunity — is that in superconducting circuits the interaction strength,
+    the detuning, and the drive parameters are all tunable in situ.
+    This allows us to smoothly interpolate between weakly interacting, gate-based operation and a genuinely
+    interaction-dominated regime where global drives and constrained dynamics become natural.
+  </p>
+
+  <p>
+    From the technology side, this project was not a short effort.
+    It took several years of iterative design, modeling, fabrication, and measurement to reach a regime where
+    the ZZ interaction was both strong and clean enough to demonstrate a true dynamical blockade.
+    A crucial ingredient was the tight feedback loop between theory, circuit quantization, and experiment inside
+    the Planckian team: we were able to predict the interaction strength from black-box quantization, design the
+    capacitive coupling accordingly, and then verify quantitatively that the measured spectra and dynamics matched
+    those predictions.
+  </p>
+
+  <p>
+    What I personally find most exciting is not the two-qubit blockade itself, but what it points to.
+    Once you can engineer a strong, local energy penalty for simultaneous excitations, you open the door to
+    globally controlled architectures, collective quantum dynamics, and constrained many-body Hamiltonians
+    that are extremely hard to realize in standard gate-based superconducting processors.
+    In this sense, the experiment is best seen as a proof of principle that superconducting circuits can access
+    the same interaction-driven physics that has made Rydberg platforms so powerful — but with the speed,
+    integrability, and flexibility of solid-state hardware.
+  </p>
+
+  <p>
+    This work sits at the intersection of condensed matter, quantum optics, and quantum engineering, and reflects
+    a broader direction we are pursuing at Planckian: using carefully engineered interactions, rather than ever
+    more complex control stacks, as the foundation for scalable quantum architectures.
+  </p>
+
+</section>
+
+
+      <!-- Second ad block (NO second AdSense script include) -->
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById('sidebar');
+      const response = await fetch('../partials/sidebar.html');
+      const html = await response.text();
+      sidebarContainer.innerHTML = html;
+
+      const currentPath = window.location.pathname.split('/').pop();
+      const links = sidebarContainer.querySelectorAll('a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('active');
+        }
+      });
+
+      // Re-render KaTeX in case the injected sidebar contains math
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.querySelector("main.content"), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false,
+          macros: { "\\mathbbm": "\\mathbb" },
+          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+        });
+      }
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
