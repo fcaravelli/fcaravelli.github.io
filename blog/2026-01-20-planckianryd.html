@@ -82,7 +82,7 @@
     it will be hard to excite the other one using a drive pulse (etc, what is usually called a Rabi pi-pulse.)
   </p>
 
-  <h4>Transmons, in one paragraph</h4>
+  <h4>Transmons, in a paragraph</h4>
 
   <p>
     A <strong>transmon</strong> is the workhorse superconducting qubit used in most circuit-QED processors.
@@ -94,7 +94,7 @@
     but it also means higher levels matter whenever you couple qubits strongly.
   </p>
 
-  <h4>Why “capacitive coupling” matters</h4>
+  <h4>What is “capacitive coupling”</h4>
 
   <p>
     When you place two transmons near each other, you can couple them in different ways.
@@ -113,7 +113,7 @@
     state of qubit B.
   </p>
 
-  <h4>Detuning: what “high detuning” means and why it normally suppresses interactions</h4>
+  <h4>What “high detuning” meanss</h4>
 
   <p>
     A basic knob in two-qubit physics is the <strong>detuning</strong>, the difference between the bare qubit
@@ -135,6 +135,129 @@
     We wanted a regime where the conditional shift is not a nuisance but the main resource — strong enough that the
     system’s response to a drive depends qualitatively on whether a neighboring qubit is excited.
   </p>
+<h4>Effective Hamiltonian description from circuit QED</h4>
+
+<p>
+  The right way to understand what happens outside the perturbative, large-detuning regime is through an
+  <strong>effective Hamiltonian</strong> description derived from circuit QED.
+  Even though we often speak loosely about “two-level qubits”, transmons are not true two-level systems,
+  and the higher excited states play a central role in generating conditional interactions.
+</p>
+
+<p>
+  At the circuit level, two capacitively coupled transmons can be modeled as two weakly anharmonic oscillators
+  with an exchange-type coupling. A minimal Hamiltonian reads
+</p>
+
+<p class="math">
+\[
+  H
+  =
+  \sum_{i=1}^2
+  \left(
+    \omega_i a_i^\dagger a_i
+    + \frac{\alpha_i}{2} a_i^{\dagger 2} a_i^2
+  \right)
+  +
+  g\left(a_1^\dagger a_2 + a_1 a_2^\dagger\right),
+\]
+</p>
+
+<p>
+  where <code>ωi</code> are the bare qubit frequencies, <code>αi</code> are the (negative) transmon anharmonicities,
+  and <code>g</code> is the capacitive exchange coupling.
+  Importantly, there is no explicit ZZ term written here: the longitudinal interaction is not put in by hand,
+  but emerges from the combination of coupling and anharmonicity.
+</p>
+
+<p>
+  To see this, one performs a controlled elimination of the non-computational states, keeping track of virtual
+  transitions involving the <code>|20⟩</code> and <code>|02⟩</code> manifolds.
+  At second order in the coupling, this procedure generates an effective interaction in the computational
+  subspace whose diagonal part can be written as
+</p>
+
+<p class="math">
+\[
+  H_{\mathrm{eff}}
+  =
+  \frac{\tilde\omega_1}{2}\sigma_z^{(1)}
+  +
+  \frac{\tilde\omega_2}{2}\sigma_z^{(2)}
+  +
+  \frac{J}{2}
+  \left(
+    \sigma_x^{(1)}\sigma_x^{(2)}
+    +
+    \sigma_y^{(1)}\sigma_y^{(2)}
+  \right)
+  +
+  \frac{\zeta}{4}\sigma_z^{(1)}\sigma_z^{(2)}.
+\]
+</p>
+
+<p>
+  The key term for our purposes is the last one: the <strong>ZZ interaction</strong>.
+  Its strength can be written, in the dispersive regime, as
+</p>
+
+<p class="math">
+\[
+  \zeta
+  \simeq
+  2g^2
+  \left(
+    \frac{1}{\Delta + |\alpha_2|}
+    -
+    \frac{1}{\Delta - |\alpha_1|}
+  \right),
+\]
+</p>
+
+<p>
+  where <code>Δ = ω1 − ω2</code> is the detuning.
+  This expression makes two points immediately clear.
+</p>
+
+<p>
+  First, the ZZ interaction is entirely a <em>many-level effect</em>: it originates from virtual excursions into
+  higher excited states and vanishes in a strict two-level truncation.
+  Second, while at very large detuning it scales as <code>g²/Δ</code> and is therefore small, it can become
+  dramatically enhanced as the detuning is reduced toward the scale set by the anharmonicities.
+</p>
+
+<p>
+  Operationally, the ZZ term means that the energy of the doubly excited state <code>|11⟩</code> is shifted relative
+  to the sum of single-qubit energies:
+</p>
+
+<p class="math">
+\[
+  \zeta
+  =
+  E_{11} - E_{10} - E_{01} + E_{00}.
+\]
+</p>
+
+<p>
+  Equivalently, each qubit’s transition frequency becomes conditional on the state of its neighbor.
+  If qubit 2 is in <code>|1⟩</code> rather than <code>|0⟩</code>, qubit 1’s resonance is shifted by an amount
+  <code>ζ</code>, and vice versa.
+  This conditional shift is exactly what is measured spectroscopically and via Ramsey-type experiments.
+</p>
+
+<p>
+  In most superconducting architectures, one tries to stay in a regime where <code>|ζ|</code> is small compared
+  to typical Rabi frequencies, so that it can be refocused or treated as a minor correction.
+  In this work, we deliberately engineered the opposite limit:
+  a regime where <code>|ζ|</code> becomes the dominant energy scale in the driven dynamics.
+</p>
+
+<p>
+  Once this happens, the effective Hamiltonian is no longer best thought of as “two weakly interacting qubits”,
+  but rather as a system with an intrinsic energetic constraint on double excitation.
+  That constraint is the foundation of the dynamical blockade physics discussed next.
+</p>
 
   <h4>What is the ZZ interaction, physically?</h4>
 
@@ -170,8 +293,6 @@
     globally driven, constrained dynamics, and it’s what we wanted to bring into superconducting hardware.
   </p>
 
-  <h4>Now the author perspective: what we actually achieved</h4>
-
   <p>
     So what did we manage to do, concretely?
     We designed and experimentally realized a capacitively coupled transmon device where the effective ZZ interaction
@@ -201,7 +322,7 @@
   <p>
     If the first wave of superconducting quantum computing has been about making gates cleaner and cleaner, I see this
     direction as complementary: using engineered interactions to make <em>the physics</em> do more of the work.
-    That’s the broader motivation behind what we did here.
+    That’s the broader motivation behind what we did here, connected to how some of our architectures work.
   </p>
 
 
