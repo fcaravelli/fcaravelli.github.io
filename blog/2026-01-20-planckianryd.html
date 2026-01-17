@@ -69,92 +69,142 @@
 <section id="author-perspective-zz-blockade">
 
   <h3>Engineering a Rydberg-like blockade with superconducting qubits and capacitive coupling</h3>
+    <p><em>January 20, 2026</em></p>
+  <p>
+    Recently the Planckian team (a joint effort of the hardware and theory teams) released a preprint
+    describing a new way to engineer strong longitudinal interactions between superconducting qubits using only capacitive coupling.
+    Literally, it means getting two pieces of superconductive metal close to each other.
+    Before I talk about what we achieved (and why I’m excited about it), let me set the technical stage in a way
+    that is hopefully useful even if you don’t live and breathe superconducting circuits.
+    The short version is: we engineered a <em>very large</em> longitudinal two-qubit interaction (a ZZ coupling) using
+    a purely capacitive design, and we pushed it into a regime where it directly produces a dynamical blockade —
+    essentially the superconducting-circuit analogue of a Rydberg blockade. This means that if one of the qubits is excited, 
+    it will be hard to excite the other one using a drive pulse (etc, what is usually called a Rabi pi-pulse.)
+  </p>
+
+  <h4>Transmons, in one paragraph</h4>
 
   <p>
-    Let me step back from the formal presentation of the results and explain, from a more personal and technical
-    point of view, what we were really trying to achieve in this work, and why we think it matters.
-    At its core, this project is about taking an idea that is extremely natural in atomic physics — the Rydberg
-    blockade — and asking whether the same <em>interaction-dominated logic</em> can be realized in a solid-state
-    superconducting platform.
+    A <strong>transmon</strong> is the workhorse superconducting qubit used in most circuit-QED processors.
+    Technically, it’s a weakly anharmonic oscillator built from a Josephson junction shunted by a capacitance.
+    The two lowest energy levels define the computational states <code>|0⟩</code> and <code>|1⟩</code>, but unlike an ideal
+    two-level atom the spectrum continues: there is a <code>|2⟩</code>, <code>|3⟩</code>, etc.
+    The crucial parameter is the <strong>anharmonicity</strong>, i.e. how much the <code>|1⟩→|2⟩</code> transition differs
+    from the <code>|0⟩→|1⟩</code> transition. Transmons are <em>weakly</em> anharmonic: this makes them robust to charge noise,
+    but it also means higher levels matter whenever you couple qubits strongly.
+  </p>
+
+  <h4>Why “capacitive coupling” matters</h4>
+
+  <p>
+    When you place two transmons near each other, you can couple them in different ways.
+    <strong>Capacitive coupling</strong> means you literally engineer an electric-field interaction via a designed
+    capacitance between the qubit islands. In the language of effective Hamiltonians, the dominant “exchange” term
+    looks like an XY interaction: it tends to swap excitations between qubits (schematically, it connects
+    <code>|10⟩</code> and <code>|01⟩</code>).
   </p>
 
   <p>
-    In Rydberg arrays, the blockade is almost a gift from nature: exciting one atom to a high-lying Rydberg state
-    shifts the energy levels of its neighbors so strongly that further excitations are suppressed.
-    This single mechanism underlies fast multi-qubit gates, constrained Hilbert spaces, and globally driven
-    many-body dynamics. In superconducting circuits, by contrast, we usually live in the opposite regime:
-    interactions are weak, perturbative, and carefully engineered <em>not</em> to interfere with local control.
+    So why is capacitive coupling interesting here? Because even if you start with an exchange-type interaction,
+    the <em>combination</em> of coupling + weak anharmonicity + near-resonant level structure generates a sizeable
+    <strong>effective longitudinal interaction</strong> of the form
+    <code>ZZ</code>: an energy shift that depends on whether both qubits are excited.
+    In practice, this shows up as a conditional frequency shift: the transition frequency of qubit A depends on the
+    state of qubit B.
+  </p>
+
+  <h4>Detuning: what “high detuning” means and why it normally suppresses interactions</h4>
+
+  <p>
+    A basic knob in two-qubit physics is the <strong>detuning</strong>, the difference between the bare qubit
+    frequencies. If qubit 1 has frequency <code>ω1</code> and qubit 2 has <code>ω2</code>, the detuning is
+    <code>Δ = ω1 − ω2</code>.
+    When <code>|Δ|</code> is large compared to the coupling strength, the qubits are said to be “highly detuned”.
   </p>
 
   <p>
-    The central question we asked ourselves was therefore very concrete:
-    <strong>can we deliberately push superconducting qubits into a regime where interactions dominate the driven dynamics,
-    rather than being a small correction?</strong>
-    And if so, can we do it in a way that is scalable and compatible with realistic hardware constraints?
+    In that regime, the exchange interaction is effectively turned off (because energy conservation suppresses
+    swapping), and the qubits behave almost independently.
+    This is often where people like to operate when they want to minimize crosstalk.
+    The trade-off is that large detuning also tends to make conditional interactions like ZZ <em>small</em> and
+    perturbative — useful for small phase gates, but not strong enough to dominate the driven dynamics.
   </p>
 
   <p>
-    The answer turned out to be yes — but only if one takes the longitudinal (ZZ) interaction seriously as a
-    resource, rather than treating it as an unwanted parasitic effect.
+    Our goal in this work was essentially the opposite of the “keep everything perturbative” philosophy.
+    We wanted a regime where the conditional shift is not a nuisance but the main resource — strong enough that the
+    system’s response to a drive depends qualitatively on whether a neighboring qubit is excited.
+  </p>
+
+  <h4>What is the ZZ interaction, physically?</h4>
+
+  <p>
+    The <strong>ZZ coupling</strong> is easiest to understand operationally:
+    it is the statement that the energy of the two-qubit state <code>|11⟩</code> is shifted relative to what you would
+    expect from adding the two single-qubit energies.
+    Equivalently, it means the transition frequency of one qubit is different depending on whether the other qubit is
+    in <code>|0⟩</code> or <code>|1⟩</code>. This is a conditional energy penalty (or conditional Stark shift) for double
+    excitation.
   </p>
 
   <p>
-    In most circuit-QED architectures, the ZZ coupling between qubits is something to be minimized.
-    It shows up as residual phase accumulation, crosstalk, or gate errors, and entire coupler designs are built
-    to cancel it as effectively as possible.
-    Here, we did the opposite: we asked how large the ZZ interaction can be made using nothing more exotic than
-    careful capacitive engineering between transmon qubits.
+    In many superconducting designs, residual ZZ is treated as an error channel.
+    Here we deliberately engineered it to be large, stable, and predictable — and we did it in a minimalist way
+    using capacitive coupling rather than adding a tunable coupler element.
+  </p>
+
+  <h4>Connecting to the Rydberg blockade</h4>
+
+  <p>
+    With that picture in mind, the connection to the <strong>Rydberg blockade</strong> becomes very concrete.
+    In a Rydberg array, one excitation shifts neighbors so strongly that subsequent excitations are pushed out of
+    resonance. In our circuit setting, a large ZZ shift does the same thing:
+    once one transmon is in <code>|1⟩</code>, the neighbor’s transition is shifted by an amount that can exceed the drive
+    bandwidth or the achievable Rabi frequency, so that a resonant global drive cannot excite it.
+    That is the blockade, in the simplest operational sense.
   </p>
 
   <p>
-    What we found — both theoretically and experimentally — is that by working close to resonance and exploiting
-    the weak anharmonicity of transmons, the ZZ interaction can be enhanced by more than an order of magnitude
-    compared to previously reported capacitively coupled devices.
-    In the strongest regime we explored, the ZZ coupling reached hundreds of MHz, becoming the largest energy
-    scale in the driven dynamics, larger than typical Rabi frequencies and comparable to the qubit anharmonicity.
+    The conceptual punchline is that the blockade is not “a gate” — it is a dynamical constraint produced by the
+    interaction spectrum itself. That’s exactly the ingredient that makes Rydberg platforms so powerful for
+    globally driven, constrained dynamics, and it’s what we wanted to bring into superconducting hardware.
+  </p>
+
+  <h4>Now the author perspective: what we actually achieved</h4>
+
+  <p>
+    So what did we manage to do, concretely?
+    We designed and experimentally realized a capacitively coupled transmon device where the effective ZZ interaction
+    becomes an <em>order-one energy scale</em> in the dynamics, rather than a small perturbation.
+    This required going beyond the usual comfort zone of “large detuning, weak coupling” and instead engineering a
+    regime where the circuit parameters and level structure amplify the conditional shift while maintaining
+    experimental control and coherence.
   </p>
 
   <p>
-    From a physical point of view, this interaction has a very simple interpretation:
-    it is an energy penalty for occupying the <code>|11⟩</code> state.
-    When one qubit is excited, the transition frequency of its neighbor is shifted so far that a resonant drive
-    simply cannot excite it anymore.
-    This is exactly the same logic that underlies the Rydberg blockade, but implemented here in a fully engineered,
-    solid-state system.
+    From the engineering side, this was not a one-shot design. It took sustained iteration — circuit modeling,
+    electromagnetic design, fabrication constraints, packaging realities, and then the hard part: getting the device
+    to behave quantitatively like the model in the lab.
+    A big part of what made the project work was the tight feedback loop within the Planckian team between theory and
+    experiment: we weren’t just “observing a large shift”, we were targeting a parameter regime and checking that the
+    measured spectra and driven dynamics match what the quantization and effective-Hamiltonian analysis predicts.
   </p>
 
   <p>
-    The key difference — and also the opportunity — is that in superconducting circuits the interaction strength,
-    the detuning, and the drive parameters are all tunable in situ.
-    This allows us to smoothly interpolate between weakly interacting, gate-based operation and a genuinely
-    interaction-dominated regime where global drives and constrained dynamics become natural.
+    What I personally like about this result is that it reframes a familiar superconducting-circuit quantity
+    (ZZ crosstalk) as a resource for a different operating mode.
+    Once ZZ becomes large, you can do things that look much closer to the Rydberg playbook:
+    global drives, interaction-induced constraints, blockade-based selectivity, and eventually many-body dynamics in
+    constrained Hilbert spaces — but in a platform that is fast, lithographically scalable, and naturally integrable.
   </p>
 
   <p>
-    From the technology side, this project was not a short effort.
-    It took several years of iterative design, modeling, fabrication, and measurement to reach a regime where
-    the ZZ interaction was both strong and clean enough to demonstrate a true dynamical blockade.
-    A crucial ingredient was the tight feedback loop between theory, circuit quantization, and experiment inside
-    the Planckian team: we were able to predict the interaction strength from black-box quantization, design the
-    capacitive coupling accordingly, and then verify quantitatively that the measured spectra and dynamics matched
-    those predictions.
+    If the first wave of superconducting quantum computing has been about making gates cleaner and cleaner, I see this
+    direction as complementary: using engineered interactions to make <em>the physics</em> do more of the work.
+    That’s the broader motivation behind what we did here.
   </p>
 
-  <p>
-    What I personally find most exciting is not the two-qubit blockade itself, but what it points to.
-    Once you can engineer a strong, local energy penalty for simultaneous excitations, you open the door to
-    globally controlled architectures, collective quantum dynamics, and constrained many-body Hamiltonians
-    that are extremely hard to realize in standard gate-based superconducting processors.
-    In this sense, the experiment is best seen as a proof of principle that superconducting circuits can access
-    the same interaction-driven physics that has made Rydberg platforms so powerful — but with the speed,
-    integrability, and flexibility of solid-state hardware.
-  </p>
 
-  <p>
-    This work sits at the intersection of condensed matter, quantum optics, and quantum engineering, and reflects
-    a broader direction we are pursuing at Planckian: using carefully engineered interactions, rather than ever
-    more complex control stacks, as the foundation for scalable quantum architectures.
-  </p>
 
 </section>
 
