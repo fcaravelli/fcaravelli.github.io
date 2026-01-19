@@ -71,9 +71,19 @@
   <h3>Engineering a Rydberg-like blockade with superconducting qubits and capacitive coupling</h3>
     <p><em>January 20, 2026</em></p>
   <p>
-    Recently the Planckian team (a joint effort of the hardware and theory teams) released a preprint
+    Today one of our preprints got posted on arXiv: <a href="https://arxiv.org/abs/2601.07821">Engineering a
+    strong longitudinal interaction and dynamical blockade with capacitively coupled transmon qubits</a>.
+    The Planckian team (a joint effort of the hardware and theory teams) released a preprint
     describing a new way to engineer strong longitudinal interactions between superconducting qubits using only capacitive coupling.
-    Literally, it means getting two pieces of superconductive metal close to each other.
+    This is the first manuscript Planckian puts out since I joined the team with experimental results - mostly conducted by Marco Riccardi, Aviv Glezher Moshe under 
+    the supervision of Daniel Szombati for Planckian, and the collaboration with Francesco Tafuri and his group at the University of Naples. Planckian has now quite a few pre-prints 
+    on ZZ-based superconducting architectures, see for instanc <a href="https://arxiv.org/abs/2510.25996">here</a> and <a href="https://arxiv.org/abs/2509.09271">here</a>, 
+    and <a href="https://arxiv.org/abs/2412.11782">here</a> and here <a href="https://arxiv.org/abs/2407.01182">here</a>, and also a previous blog post. 
+    Vittorio Giovannetti and Marco Polini have led the theory side of these works - based on ideas of globally controlled architectures.
+    I should mention a lot of people have contributed to this work over the last few years - 
+    but the list of authors reflects that group of people in this respect.
+  </p>
+   <p>Capacitive coupling means getting two pieces of superconductive metal close to each other between two transmon qubits.
     Before I talk about what we achieved (and why I’m excited about it), let me set the technical stage in a way
     that is hopefully useful even if you don’t live and breathe superconducting circuits.
     The short version is: we engineered a <em>very large</em> longitudinal two-qubit interaction (a ZZ coupling) using
@@ -86,7 +96,8 @@
 
   <p>
     A <strong>transmon</strong> is the workhorse superconducting qubit used in most circuit-QED processors.
-    Technically, it’s a weakly anharmonic oscillator built from a Josephson junction shunted by a capacitance.
+    Technically, it’s a weakly anharmonic oscillator built from a Josephson junction shunted by a capacitance. In most superconducting architectures,
+    transmons are actually tunable in frequency using a SQUID loop, but for simplicity let’s think of fixed-frequency transmons here.
     The two lowest energy levels define the computational states <code>|0⟩</code> and <code>|1⟩</code>, but unlike an ideal
     two-level atom the spectrum continues: there is a <code>|2⟩</code>, <code>|3⟩</code>, etc.
     The crucial parameter is the <strong>anharmonicity</strong>, i.e. how much the <code>|1⟩→|2⟩</code> transition differs
@@ -94,12 +105,11 @@
     but it also means higher levels matter whenever you couple qubits strongly.
   </p>
 
-  <h4>What is “capacitive coupling”</h4>
-
   <p>
     When you place two transmons near each other, you can couple them in different ways.
     <strong>Capacitive coupling</strong> means you literally engineer an electric-field interaction via a designed
-    capacitance between the qubit islands. In the language of effective Hamiltonians, the dominant “exchange” term
+    capacitance between the qubit islands. Over the last few months we have developed a software that helps us design the circuit and
+    extract the interaction terms of the Hamiltonian. Specifically, in the language of effective Hamiltonians, the dominant “exchange” term
     looks like an XY interaction: it tends to swap excitations between qubits (schematically, it connects
     <code>|10⟩</code> and <code>|01⟩</code>).
   </p>
@@ -108,13 +118,10 @@
     So why is capacitive coupling interesting here? Because even if you start with an exchange-type interaction,
     the <em>combination</em> of coupling + weak anharmonicity + near-resonant level structure generates a sizeable
     <strong>effective longitudinal interaction</strong> of the form
-    <code>ZZ</code>: an energy shift that depends on whether both qubits are excited.
+    <code>ZZ</code>: an energy shift that depends on whether both qubits are excited. This is typically thought of as a spurious interaction.
     In practice, this shows up as a conditional frequency shift: the transition frequency of qubit A depends on the
     state of qubit B.
   </p>
-
-  <h4>What “high detuning” meanss</h4>
-
   <p>
     A basic knob in two-qubit physics is the <strong>detuning</strong>, the difference between the bare qubit
     frequencies. If qubit 1 has frequency <code>ω1</code> and qubit 2 has <code>ω2</code>, the detuning is
@@ -125,7 +132,7 @@
   <p>
     In that regime, the exchange interaction is effectively turned off (because energy conservation suppresses
     swapping), and the qubits behave almost independently.
-    This is often where people like to operate when they want to minimize crosstalk.
+    This is often where people like to operate when they want to minimize crosstalk and make good swap interactions.
     The trade-off is that large detuning also tends to make conditional interactions like ZZ <em>small</em> and
     perturbative — useful for small phase gates, but not strong enough to dominate the driven dynamics.
   </p>
@@ -135,18 +142,17 @@
     We wanted a regime where the conditional shift is not a nuisance but the main resource — strong enough that the
     system’s response to a drive depends qualitatively on whether a neighboring qubit is excited.
   </p>
+
 <h4>Effective Hamiltonian description from circuit QED</h4>
 
 <p>
   The right way to understand what happens outside the perturbative, large-detuning regime is through an
   <strong>effective Hamiltonian</strong> description derived from circuit QED.
-  Even though we often speak loosely about “two-level qubits”, transmons are not true two-level systems,
-  and the higher excited states play a central role in generating conditional interactions.
-</p>
+  p>
 
 <p>
-  At the circuit level, two capacitively coupled transmons can be modeled as two weakly anharmonic oscillators
-  with an exchange-type coupling. A minimal Hamiltonian reads
+  It has been known for quite a long time that two capacitively coupled transmons can be modeled as two weakly anharmonic oscillators
+  with an exchange-type coupling (there are plenty of good reviews out there, see those we cite in the manuscript). A minimal Hamiltonian reads
 </p>
 
 <p class="math">
@@ -172,7 +178,7 @@
 
 <p>
   To see this, one performs a controlled elimination of the non-computational states, keeping track of virtual
-  transitions involving the <code>|20⟩</code> and <code>|02⟩</code> manifolds.
+  transitions involving the <code>|20⟩</code> and <code>|02⟩</code> manifolds. This was shown by Di Carlo and collaborators.
   At second order in the coupling, this procedure generates an effective interaction in the computational
   subspace whose diagonal part can be written as
 </p>
@@ -259,8 +265,6 @@
   That constraint is the foundation of the dynamical blockade physics discussed next.
 </p>
 
-  <h4>What is the ZZ interaction, physically?</h4>
-
   <p>
     The <strong>ZZ coupling</strong> is easiest to understand operationally:
     it is the statement that the energy of the two-qubit state <code>|11⟩</code> is shifted relative to what you would
@@ -271,9 +275,11 @@
   </p>
 
   <p>
-    In many superconducting designs, residual ZZ is treated as an error channel.
+    In many superconducting designs, residual ZZ is treated as an error channel. One wants to make a good iSWAP gate for instance, but the ZZ 
+    coupling perturbs the resonance condition and reduces gate fidelity, thus the gate has a lower fidelity.
     Here we deliberately engineered it to be large, stable, and predictable — and we did it in a minimalist way
-    using capacitive coupling rather than adding a tunable coupler element.
+    using capacitive coupling rather than adding a tunable coupler element. The reason is that some of the architectures we work on, based on global 
+    drive, depend on this effective Rydberg-like blockade.
   </p>
 
   <h4>Connecting to the Rydberg blockade</h4>
@@ -305,7 +311,8 @@
   <p>
     From the engineering side, this was not a one-shot design. It took sustained iteration — circuit modeling,
     electromagnetic design, fabrication constraints, packaging realities, and then the hard part: getting the device
-    to behave quantitatively like the model in the lab.
+    to behave quantitatively like the model in the lab. It took multiple design-fabrication-measurement cycles from the last few years, even before
+    I arrived.
     A big part of what made the project work was the tight feedback loop within the Planckian team between theory and
     experiment: we weren’t just “observing a large shift”, we were targeting a parameter regime and checking that the
     measured spectra and driven dynamics match what the quantization and effective-Hamiltonian analysis predicts.
@@ -317,12 +324,6 @@
     Once ZZ becomes large, you can do things that look much closer to the Rydberg playbook:
     global drives, interaction-induced constraints, blockade-based selectivity, and eventually many-body dynamics in
     constrained Hilbert spaces — but in a platform that is fast, lithographically scalable, and naturally integrable.
-  </p>
-
-  <p>
-    If the first wave of superconducting quantum computing has been about making gates cleaner and cleaner, I see this
-    direction as complementary: using engineered interactions to make <em>the physics</em> do more of the work.
-    That’s the broader motivation behind what we did here, connected to how some of our architectures work.
   </p>
 
 
