@@ -1,7 +1,12 @@
 [
     {
+    "title": "Blog post: Dynamical Rydberg blockade",
+    "date": "2026-01-21",
+    "link": "blog/2026-01-21-planckianryd.html"
+  },
+    {
     "title": "Planckian paper out: Dynamical Rydberg blockade in capacitively coupled transmon qubits",
-    "date": "2026-01-20",
+    "date": "2026-01-21",
     "link": "https://arxiv.org/abs/2601.11714"
   },  
     {
