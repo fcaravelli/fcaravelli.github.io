@@ -86,7 +86,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
       I remember spending days reading Kasteleyn's original papers and trying to understand how to implement the solution for arbitrary models.
       I finally discovered that there was a paper by Montroll that described it, in a book which is very hard to find that is called Combinatorial Mathematics.
       One day I was wondering in the Santa Fe Library and found the book there, casually sitting in between two graph theory books (the Santa Fe Library is one of the best small libraries I have seen.)
-      Two of the problems I solved there (including a one parameter subfamily of the 16 vertex model is there) used the Kasteleyn mapping of the Ising model,
+      Two of the problems I solved there (including a one parameter subfamily of the 16 vertex model) used the Kasteleyn mapping of the Ising model,
       initially introduced by Michael Fisher for the 2D Ising model. 
       However, in problem I worked on was an extension of the Ising model, an interpolation between the 2D Ising model and the fully frustrated Villain model, called the piled-up dominoes (PUD) model.
       I did not know of the existence of the solution of this model to 1979, after Villain's solution of the fully frustrated model in 1977. Pratik actually found the paper only a few months before we finished the draft of the D-Wave paper.
@@ -100,12 +100,13 @@ still in Los Alamos. I must say that I was very excited to see it published, and
 <section id="ising-to-dimers">
   <h4>Solving a planar 2D Ising model via the dimer (Pfaffian) mapping</h4>
   <p class="note">
-    This is the Fisher–Dubédat decoration + Kasteleyn/Pfaffian route used in the Physica A paper, but there are lots of papers doing this. Here we go.
+    First, one needs to map the Ising model to a dimer model. I used  the (Fisher–)Dubédat decoration + Kasteleyn/Pfaffian route, which generates a lattice smaller than the original Fisher one. 
+    This is what I used in the Physica A paper, but there are lots of papers doing this. Here we go.
   </p>
 
   <h5>0) Start from a planar Ising model</h5>
   <p>
-    Take a planar graph <span class="math">\(G=(V,E)\)</span> with spins <span class="math">\(\sigma_v\in\{\pm1\}\)</span> and couplings
+    First, take a planar graph <span class="math">\(G=(V,E)\)</span> with spins <span class="math">\(\sigma_v\in\{\pm1\}\)</span> and couplings
     <span class="math">\(J_e\)</span> on edges <span class="math">\(e\in E\)</span>:
   </p>
   <p class="math">
@@ -216,7 +217,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   </p>
 </section>
 
-<section> id="dwave-ising-criticality">
+<section id="dwave-ising-criticality">
   <p>I wrote that paper essentially for fun. Whose business is not research, does not find. The next step was the mapping to D-Wave. I actually knew
     about this because of papers that Carleton Coffrin, Marc Vuffray, Sidhant Misra and Andrey Lokhov had written in the past about this (and others).
     What we did not know was how to tune the temperature for Gibbs sampling.
@@ -233,9 +234,10 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   <p>
     A D-Wave machine is a bunch of superconducting flux qubits wired up so you can program an Ising Hamiltonian.
     The “quantum annealing” protocol starts from an easy initial Hamiltonian (basically a big transverse field),
-    then slowly morphs into your problem Hamiltonian, and finally you measure all qubits in the $Z$ basis to get
-    a classical spin configuration $\\{\\sigma_i = \\pm 1\\}$.
+    then slowly morphs into your problem Hamiltonian, and finally you measure all qubits in the \(Z\) basis to get
+    a classical spin configuration \(\{\sigma_i = \pm 1\}\).
   </p>
+
   <p>
     In the idealized story, you’d stay adiabatically in the ground state and solve optimization problems.
     But here’s the twist: if you run in the <strong>incoherent / long-anneal regime</strong>
@@ -244,6 +246,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
     for the programmed classical Ising model. In this regime, D-Wave annealers can be used for sampling, e.g. generating spin configurations to perform
     averages, as in Monte Carlo.
   </p>
+
   <p class="note">
     This “D-Wave behaves like a Gibbs sampler in the microsecond regime” viewpoint is not a vibes-based claim —
     it has a real literature (effective-temperature estimation, noisy Gibbs sampling, and explicit high-quality Gibbs sampling
@@ -255,6 +258,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
     (critical points, exponents, universality class), you usually do Markov-chain Monte Carlo and then run the finite-size machinery:
     Binder cumulants, scaling collapse, susceptibility peaks moving with size, etc.
   </p>
+
   <p>
     The annoying part is that near critical points, lots of classical samplers slow down (critical slowing down),
     and frustrated systems make everything worse. So the question becomes:
@@ -270,48 +274,61 @@ still in Los Alamos. I must say that I was very excited to see it published, and
     <li>the ferromagnetic 2D Ising model (which has a thermal phase transition), and</li>
     <li>Villain’s fully-frustrated “odd model” (which, in this family, does not show a standard transition in the same way).</li>
   </ul>
+
   <p>
-    This is exactly the model I was describing earlier. The interpolation parameter is $s$. The Hamiltonian, specifically, can be written as
+    This is exactly the model I was describing earlier. The interpolation parameter is \(s\). The Hamiltonian, specifically, can be written as
   </p>
+
   <p class="math">
     $$
-    H(s) = (1-s) H_{\\text{2D Ising}} + s H_{\\text{Villain}}.
+    H(s) = (1-s) H_{\text{2D Ising}} + s H_{\text{Villain}}.
     $$
   </p>
+
   <p>
     In practice, this just means “two types of nearest-neighbor couplers” on the square grid:
-    most are ferromagnetic, and one set of vertical columns has coupling $1-2s$,
-    so as you dial $s$ you dial frustration.
+    most are ferromagnetic, and one set of vertical columns has coupling \(1-2s\),
+    so as you dial \(s\) you dial frustration.
   </p>
+
   <p>
     A quantum annealer has some physical temperature, but you don’t get to turn a knob labeled “set temperature to 1.73”.
     So we do something else: we scale the energy of the programmed Hamiltonian.
   </p>
+
   <p>
     If the device samples (approximately) from
-    $p(\\sigma) \\propto e^{-\\beta_{\\text{sampler}} H_{\\text{input}}(\\sigma)}$,
+    \(p(\sigma) \propto e^{-\beta_{\text{sampler}} H_{\text{input}}(\sigma)}\),
     and you program
   </p>
-  <p class="math">$$H_{\\text{input}} = J\\, H,$$</p>
+
+  <p class="math">$$H_{\text{input}} = J\, H,$$</p>
+
   <p>
-    then the effective inverse temperature for the model $H$ is
+    then the effective inverse temperature for the model \(H\) is
   </p>
-  <p class="math">$$\\beta_{\\text{eff}} = J\\,\\beta_{\\text{sampler}} \\quad\\Rightarrow\\quad T_{\\text{eff}} \\propto J^{-1}.$$</p>
+
+  <p class="math">$$\beta_{\text{eff}} = J\,\beta_{\text{sampler}} \quad\Rightarrow\quad T_{\text{eff}} \propto J^{-1}.$$</p>
+
   <p>
-    Translation: <strong>scan $J$ and you scan temperature</strong>. That’s what let us map a phase diagram on hardware.
+    Translation: <strong>scan \(J\) and you scan temperature</strong>. That’s what let us map a phase diagram on hardware.
   </p>
 
   <p>
     To sanity-check everything, we first look at the usual order parameters.
-    For a configuration with $N$ spins:
+    For a configuration with \(N\) spins:
   </p>
-  <p class="math">$$m = \\frac{1}{N}\\sum_i \\sigma_i,$$</p>
+
+  <p class="math">$$m = \frac{1}{N}\sum_i \sigma_i,$$</p>
+
   <p>
     and for the antiferromagnetic/staggered one:
   </p>
-  <p class="math">$$m_{\\text{AFM}} = \\frac{1}{N}\\sum_i (-1)^{x_i+y_i}\\,\\sigma_i.$$</p>
+
+  <p class="math">$$m_{\text{AFM}} = \frac{1}{N}\sum_i (-1)^{x_i+y_i}\,\sigma_i.$$</p>
+
   <p>
-    Sweeping $(s, J^{-1})$ gives you the expected “ferro / para / AFM” regions
+    Sweeping \((s, J^{-1})\) gives you the expected “ferro / para / AFM” regions
     (for us this was on a periodic 12×12 torus as a headline plot),
     with boundaries that line up nicely with the exact solution.
   </p>
@@ -320,45 +337,53 @@ still in Los Alamos. I must say that I was very excited to see it published, and
     Order parameters are nice for pictures, but if you want to locate critical points robustly on finite systems,
     you use Binder cumulants. The one we used is
   </p>
+
   <p class="math">
     $$
-    U = 1 - \\frac{\\langle m^4 \\rangle}{3\\langle m^2 \\rangle^2}.
+    U = 1 - \frac{\langle m^4 \rangle}{3\langle m^2 \rangle^2}.
     $$
   </p>
+
   <p>
-    In Monte Carlo, you plot $U(T)$ for different system sizes and look for the crossing.
-    We did exactly that on the annealer — except our “temperature axis” is $J^{-1}$.
-    For each $s$ we ran multiple sizes (tori and skew-tori), generated lots of samples, computed moments,
-    and extracted the crossing point $J_c$.
+    In Monte Carlo, you plot \(U(T)\) for different system sizes and look for the crossing.
+    We did exactly that on the annealer — except our “temperature axis” is \(J^{-1}\).
+    For each \(s\) we ran multiple sizes (tori and skew-tori), generated lots of samples, computed moments,
+    and extracted the crossing point \(J_c\).
   </p>
+
   <p>
-    Then we compared those extracted critical points against the exact $T_c(s)$ of the PUD model and checked
-    the self-consistency of the linear relation $T \\propto J^{-1}$.
+    Then we compared those extracted critical points against the exact \(T_c(s)\) of the PUD model and checked
+    the self-consistency of the linear relation \(T \propto J^{-1}\).
     That’s the boring-but-important part: it’s how you justify that your “temperature knob” is real.
   </p>
 
   <p>
     The next layer is finite-size scaling (FSS). Near a continuous transition you have a diverging correlation length
-    $\\xi$ and susceptibility $\\chi$, and critical exponents $\\nu$ and $\\gamma$.
+    \(\xi\) and susceptibility \(\chi\), and critical exponents \(\nu\) and \(\gamma\).
     On finite systems, you look at how peak locations shift with system size and how peak heights scale.
   </p>
+
   <p>
-    On hardware, there’s a practical nuisance: we don’t directly know $\\beta$ and thus we can’t report $\\chi$ in
+    On hardware, there’s a practical nuisance: we don’t directly know \(\beta\) and thus we can’t report \(\chi\) in
     absolute physical units. But we can compute things like
   </p>
-  <p class="math">$$\\frac{\\chi}{\\beta} = N\\left(\\langle m^2\\rangle - \\langle m\\rangle^2\\right),$$</p>
+
+  <p class="math">$$\frac{\chi}{\beta} = N\left(\langle m^2\rangle - \langle m\rangle^2\right),$$</p>
+
   <p>
-    and do the scaling analysis with those peak features (plus some care about how the $T\\leftrightarrow J^{-1}$ mapping enters).
-    We find that extracting exponents is noticeably more delicate than locating $J_c$,
+    and do the scaling analysis with those peak features (plus some care about how the \(T\leftrightarrow J^{-1}\) mapping enters).
+    We find that extracting exponents is noticeably more delicate than locating \(J_c\),
     because these quantities depend on <em>fourth moments</em> and are more sensitive to experimental imperfections.
   </p>
 
   <h4>Calibration refinement (“shimming”): unsexy, mandatory, and totally worth it</h4>
+
   <p>
     Quantum annealers are analog devices. That means small biases, coupler errors, crosstalk, and noise are always lurking.
     If you’re just doing “find low energies”, you can sometimes brute-force around it.
     If you’re doing Binder cumulants and susceptibilities, you don’t get that luxury.
   </p>
+
   <p>
     So we used calibration refinement (a.k.a. shimming): adjust flux-bias offsets and coupler shims with an adaptive procedure,
     and smooth the corrections across energy scales.
@@ -366,15 +391,18 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   </p>
 
   <h4>The fun part: no critical slowing down (at least in the way MCMC suffers)</h4>
+
   <p>
-    Here’s one of my favorite conceptual points. In single-spin-flip MCMC, near $T_c$ you get long autocorrelation times:
+    Here’s one of my favorite conceptual points. In single-spin-flip MCMC, near \(T_c\) you get long autocorrelation times:
     consecutive samples are very correlated, so you need tons of updates to get independent data.
   </p>
+
   <p>
     On the annealer, each sample is generated by reinitializing the device and running a fresh anneal.
     That “reset” means samples are <em>designed</em> to be (approximately) independent,
     and any residual correlations are mostly device-level artifacts rather than algorithmic slow mixing.
   </p>
+
   <p>
     We explicitly compared an autocorrelation function for QA samples against Metropolis MCMC near criticality
     (for the largest QA size we used, 12×12). The MCMC autocorrelation decays slowly (as expected);
@@ -382,30 +410,20 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   </p>
 
   <ul>
-    <li>
-      Thus, a quantum annealer can reproduce a <strong>full finite-temperature phase diagram</strong> of a nontrivial frustrated Ising family,
-      not just ground states.
-    </li>
-    <li>
-      You can do <strong>Binder cumulant crossings</strong> and extract critical points on hardware.
-    </li>
-    <li>
-      With enough care (including calibration refinement), you can push toward <strong>finite-size scaling</strong> analyses
-      of critical behavior.
-    </li>
-    <li>
-      The sampling workflow shows <strong>no classical-style critical slowing down</strong> in the time-series sense
-      that plagues basic MCMC near second-order transitions.
-    </li>
+    <li>Thus, a quantum annealer can reproduce a <strong>full finite-temperature phase diagram</strong> of a nontrivial frustrated Ising family, not just ground states.</li>
+    <li>You can do <strong>Binder cumulant crossings</strong> and extract critical points on hardware.</li>
+    <li>With enough care (including calibration refinement), you can push toward <strong>finite-size scaling</strong> analyses of critical behavior.</li>
+    <li>The sampling workflow shows <strong>no classical-style critical slowing down</strong> in the time-series sense that plagues basic MCMC near second-order transitions.</li>
   </ul>
 
   <p>
     If we can reliably treat annealers as temperature-tunable samplers for programmable Ising models,
     then you can start using them as experimental platforms for equilibrium statistical mechanics — especially where
-    classical sampling gets painful (frustration, glassiness, huge degeneracy, awkward constraints). To be honest, there was also a paper that 
-    came shortly after ours by G. Teza et al, doing some similar work but only for the 2D ferromagnetic Ising model. They actually find better critical 
+    classical sampling gets painful (frustration, glassiness, huge degeneracy, awkward constraints). To be honest, there was also a paper that
+    came shortly after ours by G. Teza et al, doing some similar work but only for the 2D ferromagnetic Ising model. They actually find better critical
     exponents than us (more precise), but we show a full phase diagram reconstruction quite precisely.
   </p>
+
   <p>
     The obvious bottlenecks right now are (i) device size/connectivity and (ii) the cost of the calibration refinement loop.
     But hardware is moving fast, and the methodology is now pretty concrete:
@@ -417,8 +435,8 @@ still in Los Alamos. I must say that I was very excited to see it published, and
     the key ingredients are (1) periodic boundary conditions (tori / skew-tori), (2) lots of samples per point,
     (3) careful temperature-by-energy-scale sweeps, and (4) shimming when you’re using high-order moments.
   </p>
-
 </section>
+
 
       <!-- Second ad block (NO second AdSense script include) -->
       <ins class="adsbygoogle"

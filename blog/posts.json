@@ -1,4 +1,10 @@
 [
+      {
+    "title": "Gibbs sampling using quantum computers",
+    "date": "2026-01-27",
+    "file": "2026-01-27-onceuponatime.html",
+    "tags": ["annealers", "dimer models", "PUD model", "statistical mechanics"]
+  }  , 
     {
     "title": "Dynamical Rydberg blockade in capacitively coupled transmon qubits",
     "date": "2026-01-20",
