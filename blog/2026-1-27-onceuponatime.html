@@ -164,7 +164,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
 
   <h5>5) Kasteleyn orientation and the antisymmetric matrix \(A\)</h5>
   <p>
-    Because <span class="math">\(G^{FD}\)</span> is planar, choose a Kasteleyn orientation (every face has an odd number of clockwise-oriented edges).
+    Because <span class="math">\(G^{FD}\)</span> is planar, you can choose a Kasteleyn orientation (every face has an odd number of clockwise-oriented edges).
     Then define an antisymmetric “Kasteleyn matrix” <span class="math">\(A\)</span> by
     <span class="math">\(A_{ij}=+\nu_{ij}\)</span> if <span class="math">\(i\to j\)</span> is oriented, and
     <span class="math">\(A_{ij}=-\nu_{ij}\)</span> if <span class="math">\(j\to i\)</span> is oriented (and <span class="math">\(A_{ii}=0\)</span>).
@@ -193,7 +193,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
 
   <h5>7) Partition function / free energy from \(\det A(\theta,\phi)\)</h5>
   <p>
-    In the thermodynamic limit, the log-determinant per unit cell becomes a Brillouin-zone integral. In the paper’s notation,
+    In the thermodynamic limit, the log-determinant per unit cell becomes a Brillouin-zone integral. In my paper’s notation,
     one writes the dimer contribution as an integral of <span class="math">\(\log\det A(\theta,\phi)\)</span> over <span class="math">\([0,2\pi]^2\)</span>. 
     A clean way to state it is in terms of the free energy density:
   </p>
@@ -218,21 +218,23 @@ still in Los Alamos. I must say that I was very excited to see it published, and
 </section>
 
 <section id="dwave-ising-criticality">
-  <p>I wrote that paper essentially for fun. Whose business is not research, does not find. The next step was the mapping to D-Wave. I actually knew
-    about this because of papers that Carleton Coffrin, Marc Vuffray, Sidhant Misra and Andrey Lokhov had written in the past about this (and others).
+  <p>I wrote that Physica A paper essentially for fun: whose business is not research, does not find. 
+    The next step was the mapping to D-Wave. I actually knew about this possibility because of papers that Carleton Coffrin, Marc Vuffray, Sidhant Misra and Andrey Lokhov had written in the past about this (and others).
     What we did not know was how to tune the temperature for Gibbs sampling.
   </p>
 
   <div class="hr"></div>
 
   <p>
-    Essentially, that is what we did. We used a D-Wave quantum annealer as a <em>statistical physics engine</em> to reconstruct a full
-    finite-temperature phase diagram and to do honest-to-goodness finite-size scaling —
-    including Binder cumulant crossings — for a frustrated Ising model that has an exact solution as described above.
+    Essentially, that is what we did, but it took a lot of work to do that, which is why I think that without Pratik we would have not been able. 
+    We essentially used a D-Wave quantum annealer as a <em>statistical physics engine</em>, or rather a sample generator, 
+    to reconstruct a full finite-temperature phase diagram and to do honest-to-goodness finite-size scaling —
+    including Binder cumulant crossings — for a frustrated Ising model that has an exact solution as described above and for which we 
+    see whether the hardware reproduces textbook critical exponents and phase diagrams.
   </p>
 
   <p>
-    A D-Wave machine is a bunch of superconducting flux qubits wired up so you can program an Ising Hamiltonian.
+    It has to be said that in principle there is no reason why this should work. A D-Wave machine is a bunch of superconducting flux qubits wired up so you can program an Ising Hamiltonian.
     The “quantum annealing” protocol starts from an easy initial Hamiltonian (basically a big transverse field),
     then slowly morphs into your problem Hamiltonian, and finally you measure all qubits in the \(Z\) basis to get
     a classical spin configuration \(\{\sigma_i = \pm 1\}\).
