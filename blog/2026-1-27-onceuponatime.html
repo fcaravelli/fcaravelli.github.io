@@ -121,13 +121,13 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   <p>
     Use <span class="math">\(e^{J\sigma_u\sigma_v}=\cosh(J)\big(1+\sigma_u\sigma_v\tanh(J)\big)\)</span>.
     Expanding the product over edges forces an even number of selected incident edges at each vertex (closed loops / even subgraphs).
-    The whole point of the decoration is to turn those even-subgraph constraints into perfect matchings (dimers). :contentReference[oaicite:1]{index=1}
+    The whole point of the decoration is to turn those even-subgraph constraints into perfect matchings (dimers). 
   </p>
 
   <h5>2) Fisher–Dubédat decoration: map the Ising graph to a planar dimer graph</h5>
   <p>
     Build a decorated planar graph <span class="math">\(G^{FD}\)</span> by replacing each Ising vertex of degree <span class="math">\(D\)</span>
-    with a planar gadget made of <span class="math">\(D\)</span> triangles (Dubédat’s variant; see the decoration discussion/figures in the paper). :contentReference[oaicite:2]{index=2}
+    with a planar gadget made of <span class="math">\(D\)</span> triangles (Dubédat’s variant; see the decoration discussion/figures in the Physica A paper). 
     Edges of <span class="math">\(G^{FD}\)</span> come in two types:
   </p>
   <ul>
@@ -137,7 +137,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
 
   <h5>3) Assign dimer weights \(\nu_e\)</h5>
   <p>
-    Give each edge <span class="math">\(e\)</span> in the decorated graph a weight <span class="math">\(\nu_e\)</span> as: :contentReference[oaicite:3]{index=3}
+    Give each edge <span class="math">\(e\)</span> in the decorated graph a weight <span class="math">\(\nu_e\)</span> as: 
   </p>
   <p class="math">
     $$
@@ -152,7 +152,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
 
   <h5>4) Ising ↔ dimer partition functions</h5>
   <p>
-    With this construction, the Ising partition function factorizes into a simple product times a weighted dimer partition function: :contentReference[oaicite:4]{index=4}
+    With this construction, the Ising partition function factorizes into a simple product times a weighted dimer partition function:
   </p>
   <p class="math">
     $$
@@ -176,7 +176,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   <p>
     If the decorated lattice is periodic (torus) and built by repeating one motif (unit cell), reorder vertices so that
     <span class="math">\(A\)</span> becomes block-circulant. Then the Fourier transform block-diagonalizes it, yielding a small matrix
-    <span class="math">\(A(\theta,\phi)\)</span> (size = number of vertices in the motif). The dependence is: :contentReference[oaicite:5]{index=5}
+    <span class="math">\(A(\theta,\phi)\)</span> (size = number of vertices in the motif). The dependence is:
   </p>
   <p class="math">
     $$
@@ -188,13 +188,13 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   <p>
     Here <span class="math">\(A_0\)</span> encodes edges entirely inside the motif, while
     <span class="math">\(A_x^{\pm}\)</span> and <span class="math">\(A_y^{\pm}\)</span> encode edges crossing to the right/left and up/down neighboring motifs,
-    with the appropriate oriented weights <span class="math">\(\pm\nu_e\)</span>. :contentReference[oaicite:6]{index=6}
+    with the appropriate oriented weights <span class="math">\(\pm\nu_e\)</span>. 
   </p>
 
   <h5>7) Partition function / free energy from \(\det A(\theta,\phi)\)</h5>
   <p>
     In the thermodynamic limit, the log-determinant per unit cell becomes a Brillouin-zone integral. In the paper’s notation,
-    one writes the dimer contribution as an integral of <span class="math">\(\log\det A(\theta,\phi)\)</span> over <span class="math">\([0,2\pi]^2\)</span>. :contentReference[oaicite:7]{index=7}
+    one writes the dimer contribution as an integral of <span class="math">\(\log\det A(\theta,\phi)\)</span> over <span class="math">\([0,2\pi]^2\)</span>. 
     A clean way to state it is in terms of the free energy density:
   </p>
   <p class="math">
@@ -207,7 +207,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   </p>
   <p>
     where the factor <span class="math">\(\tfrac12\)</span> is the “Pfaffian square-root” (since <span class="math">\(Z_{\text{dimer}}=\sqrt{\det A}\)</span> up to the standard boundary-condition subtleties on the torus).
-    This is exactly the workflow used in the paper: decorate → orient (Kasteleyn) → build motif matrix → Fourier reduce → integrate <span class="math">\(\log\det\)</span>. :contentReference[oaicite:8]{index=8}
+    This is exactly the workflow used in the paper: decorate → orient (Kasteleyn) → build motif matrix → Fourier reduce → integrate <span class="math">\(\log\det\)</span>. 
   </p>
 
   <div class="hr"></div>
@@ -276,7 +276,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   </ul>
 
   <p>
-    This is exactly the model I was describing earlier. The interpolation parameter is \(s\). The Hamiltonian, specifically, can be written as
+    This is exactly the model I was describing earlier. Here, the interpolation parameter is \(s\). The Hamiltonian, specifically, can be written as
   </p>
 
   <p class="math">
@@ -288,12 +288,12 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   <p>
     In practice, this just means “two types of nearest-neighbor couplers” on the square grid:
     most are ferromagnetic, and one set of vertical columns has coupling \(1-2s\),
-    so as you dial \(s\) you dial frustration.
+    so as you dial \(s\) you "dial" or tune frustration.
   </p>
 
   <p>
-    A quantum annealer has some physical temperature, but you don’t get to turn a knob labeled “set temperature to 1.73”.
-    So we do something else: we scale the energy of the programmed Hamiltonian.
+    Now, while a quantum annealer has some physical temperature, but you don’t get to turn a knob labeled “set temperature to 1.73”.
+    So we do something else: we scale the energy of the programmed Hamiltonian which dimensionally has the same effect.
   </p>
 
   <p>
@@ -311,7 +311,8 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   <p class="math">$$\beta_{\text{eff}} = J\,\beta_{\text{sampler}} \quad\Rightarrow\quad T_{\text{eff}} \propto J^{-1}.$$</p>
 
   <p>
-    Translation: <strong>scan \(J\) and you scan temperature</strong>. That’s what let us map a phase diagram on hardware.
+    Translation: <strong>scan \(J\) and you scan temperature</strong>. That’s what let us map a phase diagram on hardware, but up to a single point that you need to use for scale.
+    What we do in the paper we set the value of the \(s=0) point which corresponds to Onsager's temperature, and check the consistency of the others.
   </p>
 
   <p>
@@ -330,12 +331,12 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   <p>
     Sweeping \((s, J^{-1})\) gives you the expected “ferro / para / AFM” regions
     (for us this was on a periodic 12×12 torus as a headline plot),
-    with boundaries that line up nicely with the exact solution.
+    with boundaries that line up nicely with the exact solution. 
   </p>
 
   <p>
-    Order parameters are nice for pictures, but if you want to locate critical points robustly on finite systems,
-    you use Binder cumulants. The one we used is
+    Notice that while order parameters are nice for pictures, but if you want to locate critical points robustly on finite systems,
+    you use Binder cumulants. There are multiple versions of this, the one we used is
   </p>
 
   <p class="math">
@@ -345,16 +346,16 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   </p>
 
   <p>
-    In Monte Carlo, you plot \(U(T)\) for different system sizes and look for the crossing.
+    In Monte Carlo, typically you plot \(U(T)\) for different system sizes and look for the crossing.
     We did exactly that on the annealer — except our “temperature axis” is \(J^{-1}\).
     For each \(s\) we ran multiple sizes (tori and skew-tori), generated lots of samples, computed moments,
-    and extracted the crossing point \(J_c\).
+    and extracted the crossing point \(J_c\). 
   </p>
 
   <p>
-    Then we compared those extracted critical points against the exact \(T_c(s)\) of the PUD model and checked
+    Long story short, we compared those extracted critical points against the exact \(T_c(s)\) of the PUD model and checked
     the self-consistency of the linear relation \(T \propto J^{-1}\).
-    That’s the boring-but-important part: it’s how you justify that your “temperature knob” is real.
+    That’s one of the important part:s it’s how we justify that the “temperature knob” is real and meaningful.
   </p>
 
   <p>
@@ -379,9 +380,9 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   <h4>Calibration refinement (“shimming”): unsexy, mandatory, and totally worth it</h4>
 
   <p>
-    Quantum annealers are analog devices. That means small biases, coupler errors, crosstalk, and noise are always lurking.
+    This is an underrated but important point. Quantum annealers are analog devices. That means small biases, coupler errors, crosstalk, and noise are always lurking.
     If you’re just doing “find low energies”, you can sometimes brute-force around it.
-    If you’re doing Binder cumulants and susceptibilities, you don’t get that luxury.
+    If you’re doing Binder cumulants and susceptibilities, you don’t get that luxury - Andrew King is the one who introduced this technique and couched us quite a lot on this.
   </p>
 
   <p>
@@ -390,10 +391,10 @@ still in Los Alamos. I must say that I was very excited to see it published, and
     The practical takeaway is simple: <strong>if you want clean critical behavior out, you need to fight the hardware a bit.</strong>
   </p>
 
-  <h4>The fun part: no critical slowing down (at least in the way MCMC suffers)</h4>
+  <h4>Why is this relevant at all? No critical slowing down (at least in the way MCMC suffers)</h4>
 
   <p>
-    Here’s one of my favorite conceptual points. In single-spin-flip MCMC, near \(T_c\) you get long autocorrelation times:
+    Here’s one of my favorite conceptual points which was actually also one of the selling aspects of this work. In single-spin-flip MCMC, near \(T_c\) you get long autocorrelation times:
     consecutive samples are very correlated, so you need tons of updates to get independent data.
   </p>
 
