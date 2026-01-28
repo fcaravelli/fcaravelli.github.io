@@ -73,9 +73,9 @@
   <img class="hero" src="images/onceuponatime.png" alt="Once upon a time hero image">
 
  <p>Recently Nature Communications published <a href="https://www.nature.com/articles/s41467-025-67568-w">online</a> a manuscript that we started when I was 
-still in Los Alamos. I must say that I was very excited to see it published, and I'm proud of the work we did together. In particular, I need to praise a lot Pratik Sathe, who incidentally is now working at D-Wave.</p>
+still in Los Alamos. I must say that I was very excited to see it published. In particular, I need to praise a lot the first author, Pratik Sathe, who incidentally is now working a scientist at D-Wave.</p>
 
-<p>I am inspired in writing this blog post in the style of the Once upon a time in America style.. this is essentially a post about old friends.</p>
+<p>I am inspired in writing this blog post in the style of the Once upon a time in America style.. this is essentially a post about my old (LANL) friends.</p>
   <p>
     The paper I want to discuss about is titled <a href="https://www.nature.com/articles/s41467-025-67568-w">Classical criticality via quantum annealing</a>, and it describes how we used a D-Wave quantum annealer
     to reconstruct a full finite-temperature phase diagram and do finite-size scaling for a frustrated Ising model with an exact solution.  
@@ -83,15 +83,28 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   </p>
   <p> In many ways, the paper is a continuation (and yet also not) of previous work I had done <a href="https://arxiv.org/pdf/2201.11598">here</a>, in a paper published in Physica A.
       Around 2020 I wanted to learn how to solve statistical mechanics problems in 2D using the Kasteleyn solution. 
+
       I remember spending days reading Kasteleyn's original papers and trying to understand how to implement the solution for arbitrary models.
       I finally discovered that there was a paper by Montroll that described it, in a book which is very hard to find that is called Combinatorial Mathematics.
       One day I was wondering in the Santa Fe Library and found the book there, casually sitting in between two graph theory books (the Santa Fe Library is one of the best small libraries I have seen.)
       Two of the problems I solved there (including a one parameter subfamily of the 16 vertex model) used the Kasteleyn mapping of the Ising model,
       initially introduced by Michael Fisher for the 2D Ising model. 
-      However, in problem I worked on was an extension of the Ising model, an interpolation between the 2D Ising model and the fully frustrated Villain model, called the piled-up dominoes (PUD) model.
-      I did not know of the existence of the solution of this model to 1979, after Villain's solution of the fully frustrated model in 1977. Pratik actually found the paper only a few months before we finished the draft of the D-Wave paper.
-      That problem was actually inspired by a conversation that Yigit Subasi and I had in 2018 with Helmut Katzgraber while visiting Los Alamos, who told us that we should focus
-      on that Villain's problem for D-Wave (we were working on something else then). Long story short, I mapped the problem to dimers, solved it, and then looked for nonanalytical points of the partition function.
+      The problem I worked on was an extension of the Ising model, an interpolation between the 2D ferromagnetic Ising model and the fully frustrated Ising model solved by Villain in 1977. This particular interpolation is
+       called the piled-up dominoes (PUD) model. In my Physica A I called it Onsager-Villain.
+             </p>
+
+      It is defined by the Hamiltonian: 
+
+    <p class="math">
+      $$
+      H(s) = (1-s) H_{\text{2D Ising}} + s H_{\text{Villain}}.
+      $$
+    </p>
+      where \(H_{\text{2D Ising}}\) is the standard ferromagnetic Ising Hamiltonian on the square lattice and \(H_{\text{Villain}}\) is the fully frustrated Ising model solved by Villain in 1977. Solving this problem means finding the partition function (or the free energy).
+
+      In fact, I did not know of the existence of the solution of this model to 1979, after Villain's solution of the fully frustrated model in 1977. Pratik actually found the paper only a few months before we finished the draft of the D-Wave paper.
+      That problem was actually inspired by a conversation that Yigit Subasi and I had in 2018 with Helmut Katzgraber while he was visiting Los Alamos, who told us that we should focus
+      on that Villain's problem (we were working on something else then). Long story short, I mapped the problem to dimers, solved it, and then looked for nonanalytical points of the partition function.
       I have sent the interpolating parameter s (between 0 and 1 in my paper in Physica A) and found Onsager's 2D critical temperature and called it a victory.
       I actually never bothered to check the solution with Monte Carlo (I did with mathematica though from the exact solution at that time) until I suggested to Pratik
       to attempt to do it with D-Wave. I just wanted to briefly describe how this mapping works.
@@ -291,7 +304,7 @@ still in Los Alamos. I must say that I was very excited to see it published, and
   <p>
     In practice, this just means “two types of nearest-neighbor couplers” on the square grid:
     most are ferromagnetic, and one set of vertical columns has coupling \(1-2s\),
-    so as you dial \(s\) you "dial" or tune frustration.
+    so as you dial s you "dial" or tune frustration.
   </p>
 
   <p>
