@@ -264,13 +264,14 @@ still in Los Alamos. I must say that I was very excited to see it published. In 
   </p>
 
   <p class="note">
-    This “D-Wave behaves like a Gibbs sampler in the microsecond regime” viewpoint is not a vibes-based claim —
+    Note: I am convinced that the “D-Wave behaves like a Gibbs sampler in the microsecond regime” viewpoint is not a loose-based claim —
     it has a real literature (effective-temperature estimation, noisy Gibbs sampling, and explicit high-quality Gibbs sampling
-    demonstrations are all in the references).
+    demonstrations are all in the references). In fact, the fact itself that the Binder cumulants (see below) cross is a strong evidence that this 
+    viewpoint is indeed true.
   </p>
 
   <p>
-    In statistical mechanics, if you want to locate a second-order phase transition and extract universal quantities
+    Now, in statistical mechanics, if you want to locate a second-order phase transition and extract universal quantities
     (critical points, exponents, universality class), you usually do Markov-chain Monte Carlo and then run the finite-size machinery:
     Binder cumulants, scaling collapse, susceptibility peaks moving with size, etc.
   </p>
@@ -287,19 +288,12 @@ still in Los Alamos. I must say that I was very excited to see it published. In 
     whose couplings are arranged so that you can continuously interpolate between:
   </p>
   <ul>
-    <li>the ferromagnetic 2D Ising model (which has a thermal phase transition), and</li>
-    <li>Villain’s fully-frustrated “odd model” (which, in this family, does not show a standard transition in the same way).</li>
+    <li>the ferromagnetic 2D Ising model (which has a thermal phase transition), and no frustration, and the</li>
+    <li>Villain’s fully-frustrated “odd model” (which, in this family, does not show a standard transition in the same way). This is not a "spin glass" model per se, but the ground state has a volume scaling degeneracy.</li>
   </ul>
 
   <p>
-    This is exactly the model I was describing earlier. Here, the interpolation parameter is \(s\). The Hamiltonian, specifically, can be written as
-  </p>
-
-  <p class="math">
-    $$
-    H(s) = (1-s) H_{\text{2D Ising}} + s H_{\text{Villain}}.
-    $$
-  </p>
+    Here, the interpolation parameter is \(s\).
 
   <p>
     In practice, this just means “two types of nearest-neighbor couplers” on the square grid:
@@ -327,19 +321,19 @@ still in Los Alamos. I must say that I was very excited to see it published. In 
   <p class="math">$$\beta_{\text{eff}} = J\,\beta_{\text{sampler}} \quad\Rightarrow\quad T_{\text{eff}} \propto J^{-1}.$$</p>
 
   <p>
-    Translation: <strong>scan \(J\) and you scan temperature</strong>. That’s what let us map a phase diagram on hardware, but up to a single point that you need to use for scale.
+    In practice: <strong>scan \(J\) and you scan temperature</strong>. That’s what let us map a phase diagram on hardware, but up to a single point that you need to use for scale.
     What we do in the paper we set the value of the \(s=0) point which corresponds to Onsager's temperature, and check the consistency of the others.
   </p>
 
   <p>
-    To sanity-check everything, we first look at the usual order parameters.
+    To sanity-check everything, we first looked at the usual order parameters. 
     For a configuration with \(N\) spins:
   </p>
 
   <p class="math">$$m = \frac{1}{N}\sum_i \sigma_i,$$</p>
 
   <p>
-    and for the antiferromagnetic/staggered one:
+    and for the antiferromagnetic/staggered one (for \(s>1\), the model is antiferromagnetic, as in the paper by Andre et al):
   </p>
 
   <p class="math">$$m_{\text{AFM}} = \frac{1}{N}\sum_i (-1)^{x_i+y_i}\,\sigma_i.$$</p>
@@ -351,8 +345,8 @@ still in Los Alamos. I must say that I was very excited to see it published. In 
   </p>
 
   <p>
-    Notice that while order parameters are nice for pictures, but if you want to locate critical points robustly on finite systems,
-    you use Binder cumulants. There are multiple versions of this, the one we used is
+    While order parameters are nice for pictures, if you want to locate critical points robustly on finite systems,
+    you use Binder cumulants, mentioned in the note above. There are multiple versions of this, the one we used is
   </p>
 
   <p class="math">
@@ -365,13 +359,13 @@ still in Los Alamos. I must say that I was very excited to see it published. In 
     In Monte Carlo, typically you plot \(U(T)\) for different system sizes and look for the crossing.
     We did exactly that on the annealer — except our “temperature axis” is \(J^{-1}\).
     For each \(s\) we ran multiple sizes (tori and skew-tori), generated lots of samples, computed moments,
-    and extracted the crossing point \(J_c\). 
+    and extracted the crossing point \(J_c\).  The crossing point is a finite-size estimate of the critical point. This is however true up to a global rescaling,
+    so we use the known \(T_c\) at \(s=0\) to fix the proportionality constant between \(T\) and \(J^{-1}\).
   </p>
 
   <p>
     Long story short, we compared those extracted critical points against the exact \(T_c(s)\) of the PUD model and checked
     the self-consistency of the linear relation \(T \propto J^{-1}\).
-    That’s one of the important part:s it’s how we justify that the “temperature knob” is real and meaningful.
   </p>
 
   <p>
@@ -393,7 +387,7 @@ still in Los Alamos. I must say that I was very excited to see it published. In 
     because these quantities depend on <em>fourth moments</em> and are more sensitive to experimental imperfections.
   </p>
 
-  <h4>Calibration refinement (“shimming”): unsexy, mandatory, and totally worth it</h4>
+  <h4>An important step was the calibration refinement ( or “shimming”): unsexy, mandatory, but totally worth it</h4>
 
   <p>
     This is an underrated but important point. Quantum annealers are analog devices. That means small biases, coupler errors, crosstalk, and noise are always lurking.
@@ -425,20 +419,17 @@ still in Los Alamos. I must say that I was very excited to see it published. In 
     (for the largest QA size we used, 12×12). The MCMC autocorrelation decays slowly (as expected);
     QA sits near a small, roughly flat value — i.e., no obvious diverging correlation time in the sampling stream.
   </p>
-
-  <ul>
-    <li>Thus, a quantum annealer can reproduce a <strong>full finite-temperature phase diagram</strong> of a nontrivial frustrated Ising family, not just ground states.</li>
-    <li>You can do <strong>Binder cumulant crossings</strong> and extract critical points on hardware.</li>
-    <li>With enough care (including calibration refinement), you can push toward <strong>finite-size scaling</strong> analyses of critical behavior.</li>
-    <li>The sampling workflow shows <strong>no classical-style critical slowing down</strong> in the time-series sense that plagues basic MCMC near second-order transitions.</li>
-  </ul>
-
+  <p>
+    This is not to say that quantum annealers are magic samplers that solve everything instantly.
+    But it does suggest that they can sidestep some of the classical critical slowing down issues
+    that plague local-update MCMC near phase transitions.
   <p>
     If we can reliably treat annealers as temperature-tunable samplers for programmable Ising models,
     then you can start using them as experimental platforms for equilibrium statistical mechanics — especially where
     classical sampling gets painful (frustration, glassiness, huge degeneracy, awkward constraints). To be honest, there was also a paper that
-    came shortly after ours by G. Teza et al, doing some similar work but only for the 2D ferromagnetic Ising model. They actually find better critical
-    exponents than us (more precise), but we show a full phase diagram reconstruction quite precisely.
+    came shortly after ours (indipendently) by <a href="https://arxiv.org/abs/2507.07167">G. Teza et al</a>, doing some similar work but only for the 2D ferromagnetic Ising model. They actually find better critical
+    exponents than us (more precise), but we show a full phase diagram reconstruction quite precisely which incorporates both a ferromagnetic and a ferromagnetic model. I think that the two papers are 
+    complementary in that sense.
   </p>
 
   <p>
