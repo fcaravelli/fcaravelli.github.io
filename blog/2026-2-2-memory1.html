@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Classical memory in quantum mechanics – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+  </style>
+
+  <!-- AdSense: load ONCE per page -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    function renderKatexIn(el) {
+      if (!el || typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false,
+        macros: { "\\mathbbm": "\\mathbb" },
+        ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderKatexIn(document.querySelector("main.content"));
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <!-- In-article AdSense Ad -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+<section id="classical-memory-qm">
+
+  <h3>Classical memory in quantum mechanics</h3>
+  <p><em>February 1, 2026</em></p>
+
+  <img class="hero" src="images/classical-memory-qm.png" alt="Classical memory in quantum mechanics hero image">
+
+  <p>
+    This post is based on my recent preprint
+    <a href="https://arxiv.org/abs/2601.20287">Fingerprints of classical memory in quantum hysteresis</a>.
+    This paper was inspired by recent results on annealer machines lead by Nisoli and collaborators.
+    The pitch is quite simple: you can get memory-like hysteresis in a <em>perfectly unitary</em> quantum system
+    if the control field that reaches the chip is not the waveform you think you sent.
+  </p>
+
+  <p class="note">
+    In what follows, I’ll be annoyingly explicit about what is classical and what is quantum.
+    The point is not philosophical, but it is a bookkeeping exercise.
+  </p>
+
+  <div class="hr"></div>
+
+
+  <p>
+    Suppose you can control (e.g.  command) a waveform <span class="math">\(u(t)\)</span> at room temperature.
+    This what you think your quantum Hamiltonian <span class="math">\(\H(t)\)</span> will receive. Because the physics is not as simple,
+    your (otherwise) theoretical device will actually
+    see a <em>realized</em> field <span class="math">\(\Phi(t)\)</span> produced by a causal filter, e.g. in practice your cables will induce a sort of delay or memory function 
+    <span class="math">K(\tau)</span>, e.g.
+  </p>
+
+  <p class="math">
+    $$
+    \Phi(t) = \Phi_0 + (K*u)(t)
+    = \Phi_0 + \int_{-\infty}^{t} K(t-s)\,u(s)\,ds,
+    \qquad K(\tau)=0\ \text{for}\ \tau<0.
+    $$
+  </p>
+  Now this should not be surprising.
+  <p>
+    Now pick an observable <span class="math">\(O(t)=\langle\psi(t)|\hat O|\psi(t)\rangle\)</span> and run a cycle
+    <span class="math">\(t\in[0,T]\)</span>. You can draw three parametric loops:
+  </p>
+  <ul>
+    <li><span class="math">\((u,\Phi)\)</span>: the control-channel loop</li>
+    <li><span class="math">\((\Phi,O)\)</span>: the device’s loop vs the realized drive</li>
+    <li><span class="math">\((u,O)\)</span>: the “what you plot in the lab” loop</li>
+  </ul>
+
+  <p>
+    A compact way to quantify these loops is by oriented areas (line integrals):
+  </p>
+
+  <p class="math">
+    $$
+    A_{u\Phi}=\oint \Phi\,du,\qquad
+    A_{\Phi O}=\oint O\,d\Phi,\qquad
+    A_{uO}=\oint O\,du.
+    $$
+  </p>
+
+  <p>
+    Here’s the trap: even if the device has <span class="math">\(A_{\Phi O}=0\)</span> (no hysteresis with respect to the
+    realized field), you can still have <span class="math">\(A_{uO}\neq 0\)</span> purely because
+    <span class="math">\(u\mapsto \Phi\)</span> has memory.
+  </p>
+
+  <p>
+    The cleanest cartoon is a pure lag kernel:
+  </p>
+
+  <p class="math">
+    $$
+    K(\tau)=\delta(\tau-t_{\rm lag})
+    \quad\Rightarrow\quad
+    \Phi(t)=u(t-t_{\rm lag}).
+    $$
+  </p>
+
+  <p>
+    If <span class="math">\(O(t)=f(\Phi(t))\)</span> is single-valued in <span class="math">\(\Phi\)</span>,
+    then the loop in <span class="math">\((\Phi,O)\)</span> is not a loop at all, but the curve
+    <span class="math">\(O=f(\Phi)\)</span>. Yet the loop in <span class="math">\((u,O)\)</span> generally encloses area
+    because <span class="math">\(O(t)=f(u(t-t_{\rm lag}))\)</span>.
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>b) Unitarity with a “memoryful” drive</h4>
+
+  <p>
+    The quantum system itself is still driven by an ordinary Schrödinger equation. A standard model is:
+  </p>
+
+  <p class="math">
+    $$
+    i\frac{d}{dt}\,|\psi(t)\rangle
+    =
+    \big(\hat H_A+\Phi(t)\,\hat M\big)\,|\psi(t)\rangle,
+    \qquad
+    \hat U(t)=\mathcal T \exp\!\left(-i\int_0^t \hat H(\tau)\,d\tau\right).
+    $$
+  </p>
+
+  <p>
+    The important point is: once <span class="math">\(\Phi(t)\)</span> is specified, the evolution is unitary
+    as long as <span class="math">\(\hat H(t)\)</span> is Hermitian.
+    The “memory” lives in the classical map <span class="math">\(u(\cdot)\mapsto \Phi(\cdot)\)</span>, not in
+    the state evolution.
+  </p>
+
+</section>
+
+<section id="part1-classical-rc">
+
+  <h3>Part 1 — Classical control memory: RC ladders as “memristive-like” state-space filters</h3>
+
+  <p>
+    The control stack is often well captured (at the envelope frequencies that matter for pulses) by passive, lossy,
+    relaxational dynamics — in other words: RC physics.
+    The punchline is that an RC ladder gives you a <em>finite-dimensional dynamical system</em> whose internal states
+    store the past. That is exactly the structural role played by internal variables in circuit elements with memory.
+  </p>
+
+  <h4>1) The discrete RC ladder: the chain of equations</h4>
+
+  <p>
+    Consider an <span class="math">\(N\)</span>-stage ladder: the input is <span class="math">\(V_0(t)=u(t)\)</span>,
+    node voltages are <span class="math">\(V_j(t)\)</span>, and the device node is
+    <span class="math">\(\Phi(t)=V_N(t)\)</span>.
+  </p>
+
+  <p class="math">
+    $$
+    \Phi(t)=V_N(t).
+    $$
+  </p>
+
+  <p>
+    Kirchhoff’s current law at node <span class="math">\(j\)</span> gives a chain of first-order ODEs. For example,
+    the interior nodes satisfy
+  </p>
+
+  <p class="math">
+    $$
+    C_j \dot V_j(t)
+    =
+    \frac{V_{j-1}(t)-V_j(t)}{R_j}
+    -
+    \frac{V_j(t)-V_{j+1}(t)}{R_{j+1}},
+    \qquad j=2,\dots,N-1,
+    $$
+  </p>
+
+  <p>
+    with the appropriate boundary forms at <span class="math">\(j=1\)</span> and <span class="math">\(j=N\)</span>.
+    In the uniform case <span class="math">\(R_j\equiv R\)</span>, <span class="math">\(C_j\equiv C\)</span> this reduces to a
+    discrete diffusion equation along the line.
+  </p>
+
+  <p>
+    Collecting <span class="math">\(\vec V(t)=(V_1(t),\dots,V_N(t))^T\)</span>, the ladder is a linear time-invariant
+    state-space system:
+  </p>
+
+  <p class="math">
+    $$
+    \dot{\vec V}(t)=A\,\vec V(t)+\vec b\,u(t),
+    \qquad
+    \Phi(t)=\vec e_N^{\,T}\vec V(t).
+    $$
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>2) From ladders to kernels: poles → exponentials</h4>
+
+  <p>
+    Any finite ladder has a rational transfer function
+    <span class="math">\(G(s)=\Phi(s)/u(s)\)</span>, and passivity puts the poles on the negative real axis.
+    The natural consequence is a sum of relaxational modes:
+  </p>
+
+  <p class="math">
+    $$
+    G(s)=g_\infty+\sum_{k=1}^{K}\frac{c_k}{s+\nu_k},
+    \qquad \nu_k>0,
+    $$
+  </p>
+
+  <p class="math">
+    $$
+    K(\tau)=g_\infty\,\delta(\tau)+\sum_{k=1}^{K}c_k e^{-\nu_k\tau}\,\Theta(\tau).
+    $$
+  </p>
+
+  <p>
+    This is the place where the “memory kernel” stops being mystical and becomes circuit theory:
+    a hierarchy of decay rates <span class="math">\(\{\nu_k\}\)</span> is literally the ladder’s internal relaxation spectrum.
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>3) The ODE embedding: classical memory states + unitary quantum evolution</h4>
+
+  <p>
+    Introduce auxiliary “filter modes”
+  </p>
+
+  <p class="math">
+    $$
+    \Phi_k(t):=\int_{-\infty}^t c_k\,e^{-\nu_k(t-s)}u(s)\,ds,
+    \qquad
+    \Phi(t)=g_\infty u(t)+\sum_{k=1}^{K}\Phi_k(t).
+    $$
+  </p>
+
+  <p>
+    Then each mode obeys a simple first-order decay+drive ODE:
+  </p>
+
+  <p class="math">
+    $$
+    \dot \Phi_k(t)=-\nu_k \Phi_k(t)+c_k u(t),
+    \qquad k=1,\dots,K.
+    $$
+  </p>
+
+  <p>
+    Pair that with the Schrödinger equation:
+  </p>
+
+  <p class="math">
+    $$
+    i\frac{d}{dt}|\psi(t)\rangle
+    =
+    \left(\hat H_A+\Big[g_\infty u(t)+\sum_{k=1}^K \Phi_k(t)\Big]\hat M\right)|\psi(t)\rangle.
+    $$
+  </p>
+
+  <p class="note">
+    This is the structural analogy to “memristive / memory circuit” descriptions: a set of internal classical state
+    variables <span class="math">\(\{\Phi_k\}\)</span> stores history and feeds back into the input–output map,
+    while the controlled system (here: quantum) evolves under a time-local equation once those states are included.
+  </p>
+
+  <p>
+    The minimal example is the single-RC element:
+  </p>
+
+  <p class="math">
+    $$
+    \tau_c \dot \Phi(t)+\Phi(t)=u(t),
+    \qquad \tau_c=RC,
+    $$
+  </p>
+
+  <p>
+    which already produces phase lag, loop area in <span class="math">\((u,\Phi)\)</span>, and therefore “apparent hysteresis”
+    in <span class="math">\((u,O)\)</span>.
+  </p>
+
+</section>
+
+<section id="part2-kubo">
+
+  <h3>Part 2 — The same structure from quantum mechanics: Kubo + Born–Oppenheimer + tracing</h3>
+
+  <p>
+    Now for the punchline I actually care about: you can derive the same filtered-control structure starting from a
+    microscopic quantum model of the control hardware.
+    In the paper this is done in Appendix H, and the message is:
+    <em>the kernel is a retarded susceptibility</em>.
+  </p>
+
+  <h4>1) Split the world into “device” and “control channel”</h4>
+
+  <p>
+    Let <span class="math">\(A\)</span> be the device (qubit, transmon subspace, etc.) and
+    <span class="math">\(B\)</span> be the control channel (wiring + filters + attenuators + packaging, in the most microscopic view).
+    Write a bipartite Hamiltonian (setting <span class="math">\(\hbar=1\)</span>):
+  </p>
+
+  <p class="math">
+    $$
+    \hat H(t)
+    =
+    \hat H_A\otimes \mathbb I_B
+    +
+    \mathbb I_A\otimes \hat H_B
+    +
+    g\,\hat M\otimes \hat L
+    -
+    u(t)\,\mathbb I_A\otimes \hat F.
+    $$
+  </p>
+
+  <p>
+    Interpretation:
+  </p>
+  <ul>
+    <li><span class="math">\(u(t)\)</span> is a <em>classical</em> source applied at the input port (conjugate to <span class="math">\(\hat F\)</span>).</li>
+    <li><span class="math">\(\hat L\)</span> is the output-port operator: the “field” delivered at the device node.</li>
+    <li><span class="math">\(g\)</span> is the (assumed weak) loading / backaction of the device onto the channel.</li>
+  </ul>
+
+  <div class="hr"></div>
+
+  <h4>2) Born–Oppenheimer (weak loading): the channel sets the drive</h4>
+
+  <p>
+    Take <span class="math">\(g\)</span> small enough that, to leading order, the channel dynamics is driven primarily by
+    <span class="math">\(\hat H_B - u(t)\hat F\)</span> and only weakly perturbed by the device.
+    This is the “Born/Oppenheimer” logic in the paper: the channel is big, lossy, and fast to equilibrate compared to the
+    device’s coherent evolution, so you treat the channel as generating a (possibly history-dependent) classical control field.
+  </p>
+
+  <p>
+    Concretely, define the realized field as the channel expectation value
+  </p>
+
+  <p class="math">
+    $$
+    \Phi(t) := \langle \hat L \rangle_t.
+    $$
+  </p>
+
+  <p>
+    Then to leading order in <span class="math">\(g\)</span> you replace
+    <span class="math">\(\hat L \approx \Phi(t)\mathbb I_B\)</span> in the device Hamiltonian, and the device sees
+  </p>
+
+  <p class="math">
+    $$
+    \hat H_{\rm eff}(t)=\hat H_A + g\,\Phi(t)\,\hat M.
+    $$
+  </p>
+
+  <p class="note">
+    Any “genuine open-system memory” for the device comes from the fluctuations
+    <span class="math">\(\delta\hat L=\hat L-\langle \hat L\rangle_t\)</span> and appears at higher order (as dissipative / Lindblad-like terms).
+    But the leading-order story is already enough to create hysteresis in <span class="math">\((u,O)\)</span>.
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>3) Kubo: the kernel is a retarded susceptibility</h4>
+
+  <p>
+    Now compute <span class="math">\(\Phi(t)=\langle\hat L\rangle_t\)</span> produced by the classical forcing <span class="math">\(-u(t)\hat F\)</span>.
+    In linear response (small-signal regime), Kubo tells you that the response of the output observable is a causal convolution:
+  </p>
+
+  <p class="math">
+    $$
+    \Phi(t)
+    =
+    \Phi_0 + \int_{-\infty}^{t}\chi_{LF}(t-s)\,u(s)\,ds,
+    $$
+  </p>
+
+  <p>
+    where the retarded susceptibility is
+  </p>
+
+  <p class="math">
+    $$
+    \chi_{LF}(t)
+    =
+    -i\,\Theta(t)\,
+    \langle[\hat L(t),\hat F(0)]\rangle_{\rho_B},
+    $$
+  </p>
+
+  <p>
+    with Heisenberg evolution under the unforced channel Hamiltonian and the expectation taken in the channel’s
+    stationary (typically thermal) state <span class="math">\(\rho_B\)</span>.
+    Identifying <span class="math">\(K=\chi_{LF}\)</span>, you get exactly the phenomenological kernel model from the top of the post,
+    but now it is “earned” from microscopic quantum mechanics.
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>4) Tracing out the channel: where dissipation would enter (but doesn’t have to dominate)</h4>
+
+  <p>
+    If you now actually trace out the channel degrees of freedom,
+    <span class="math">\(\rho_A(t)=\mathrm{Tr}_B\,\rho_{AB}(t)\)</span>,
+    then:
+  </p>
+  <ul>
+    <li>the <strong>mean field</strong> <span class="math">\(\Phi(t)=\langle \hat L\rangle_t\)</span> gives the coherent drive term
+      <span class="math">\(-i[\hat H_{\rm eff}(t),\rho_A]\)</span>;</li>
+    <li>the <strong>fluctuations</strong> of <span class="math">\(\hat L\)</span> generate additional (typically weak) dissipative terms
+      controlled by channel correlation functions.</li>
+  </ul>
+
+  <p>
+    For the purpose of “classical memory fingerprints”, it’s precisely the leading term that matters:
+    even if the reduced dynamics is <em>approximately unitary</em>, the classical convolution
+    <span class="math">\(\Phi=\chi_{LF}*u\)</span> is enough to generate large geometric hysteresis in the commanded plane.
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>5) Why this matches the RC story</h4>
+
+  <p>
+    If the driven channel’s susceptibility has relaxational poles (lossy, overdamped response),
+    then <span class="math">\(\chi_{LF}(t)\)</span> is a sum (or mixture) of decaying exponentials — exactly like an RC ladder’s impulse response.
+    That is the bridge between the two “derivations of the same object”:
+    circuit theory gives you the kernel by synthesis; Kubo gives you the kernel by response theory.
+  </p>
+
+  <p class="note">
+    Same math object, two physical viewpoints: (i) passive network modes, (ii) retarded susceptibilities of a driven channel.
+    And in both cases the device can remain unitary once the realized field is specified.
+  </p>
+
+</section>
+
+
+      <!-- Second ad block (NO second AdSense script include) -->
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById('sidebar');
+      const response = await fetch('../partials/sidebar.html');
+      const html = await response.text();
+      sidebarContainer.innerHTML = html;
+
+      const currentPath = window.location.pathname.split('/').pop();
+      const links = sidebarContainer.querySelectorAll('a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('active');
+        }
+      });
+
+      // Re-render KaTeX in case the injected sidebar contains math
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.querySelector("main.content"), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false,
+          macros: { "\\mathbbm": "\\mathbb" },
+          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+        });
+      }
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
