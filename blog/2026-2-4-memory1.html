@@ -68,16 +68,19 @@
 <section id="classical-memory-qm">
 
   <h3>Classical memory in quantum mechanics</h3>
-  <p><em>February 1, 2026</em></p>
+  <p><em>February 4, 2026</em></p>
 
   <img class="hero" src="images/classical-memory-qm.png" alt="Classical memory in quantum mechanics hero image">
 
   <p>
     This post is based on my recent preprint
     <a href="https://arxiv.org/abs/2601.20287">Fingerprints of classical memory in quantum hysteresis</a>.
-    This paper was inspired by recent results on annealer machines lead by Nisoli and collaborators.
-    The pitch is quite simple: you can get memory-like hysteresis in a <em>perfectly unitary</em> quantum system
-    if the control field that reaches the chip is not the waveform you think you sent.
+    This paper was inspired by recent results on annealer machines lead by Nisoli and collaborators, but during the literature review I discovered
+    various papers by David Cory that had the filtered Hamiltonian picture I described.
+    It is different however in the sense that the paper's pitch is quite different, as I focus on hysteresis: you can get memory-like hysteresis in a <em>perfectly unitary</em> quantum system
+    if the control field that reaches the chip is not the waveform you think you sent. It leads to a set of coupled ODEs that is structurally identical to memristive circuits, 
+    except that one has unitary dynamics replacing the Ohm's law. In the paper I had two derivations of the filtered Hamiltonian picture: one phenomenological, and one from first 
+    principles using Kubo linear response. I think both are useful, so I reproduce them here. And in addition, I had not seen the Kubo version presented in this way before.
   </p>
 
   <p class="note">
@@ -339,134 +342,436 @@
     In the paper this is done in Appendix H, and the message is:
     <em>the kernel is a retarded susceptibility</em>.
   </p>
+<section id="part2-kubo-derivation">
 
-  <h4>1) Split the world into “device” and “control channel”</h4>
+  <h3>Part 2 — A proper derivation: tracing + Born–Oppenheimer + Kubo (as in the Appendix)</h3>
+
+  <p class="note">
+    This section follows Appendix H of the paper: start from a microscopic bipartite model, derive an effective
+    filtered-control Hamiltonian for the device, and identify the memory kernel as a retarded susceptibility. 
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>1) Split the world: bipartite Hilbert space + driven channel</h4>
 
   <p>
-    Let <span class="math">\(A\)</span> be the device (qubit, transmon subspace, etc.) and
-    <span class="math">\(B\)</span> be the control channel (wiring + filters + attenuators + packaging, in the most microscopic view).
-    Write a bipartite Hamiltonian (setting <span class="math">\(\hbar=1\)</span>):
+    Let the total Hilbert space factor as <span class="math">\( \mathcal H = \mathcal H_A \otimes \mathcal H_B \)</span>,
+    where <span class="math">\(A\)</span> is the device and <span class="math">\(B\)</span> is the control channel (filters/wiring/etc.).
+    We assume the commanded classical waveform <span class="math">\(u(t)\)</span> drives the channel at an input port,
+    and the device couples to an output-port field operator. The total Hamiltonian is (setting <span class="math">\(\hbar=1\)</span>):
   </p>
 
   <p class="math">
     $$
     \hat H(t)
     =
-    \hat H_A\otimes \mathbb I_B
+    \hat H_A \otimes \mathbb I_B
     +
-    \mathbb I_A\otimes \hat H_B
+    \mathbb I_A \otimes \hat H_B
     +
-    g\,\hat M\otimes \hat L
+    g\,\hat M \otimes \hat L
     -
-    u(t)\,\mathbb I_A\otimes \hat F.
+    u(t)\,\mathbb I_A \otimes \hat F .
     $$
   </p>
 
   <p>
-    Interpretation:
+    Here <span class="math">\(\hat F\)</span> is the channel operator conjugate to the applied drive,
+    <span class="math">\(\hat L\)</span> is the channel “delivered field” at the device node
+    (the paper notes <span class="math">\(\hat L \equiv \hat B\)</span> in other sections),
+    <span class="math">\(\hat M\)</span> is the device coupling operator, and <span class="math">\(g\)</span> quantifies loading/backaction. 
   </p>
-  <ul>
-    <li><span class="math">\(u(t)\)</span> is a <em>classical</em> source applied at the input port (conjugate to <span class="math">\(\hat F\)</span>).</li>
-    <li><span class="math">\(\hat L\)</span> is the output-port operator: the “field” delivered at the device node.</li>
-    <li><span class="math">\(g\)</span> is the (assumed weak) loading / backaction of the device onto the channel.</li>
-  </ul>
 
   <div class="hr"></div>
 
-  <h4>2) Born–Oppenheimer (weak loading): the channel sets the drive</h4>
+  <h4>2) Joint density matrix, unitary evolution, and the reduced state</h4>
 
   <p>
-    Take <span class="math">\(g\)</span> small enough that, to leading order, the channel dynamics is driven primarily by
-    <span class="math">\(\hat H_B - u(t)\hat F\)</span> and only weakly perturbed by the device.
-    This is the “Born/Oppenheimer” logic in the paper: the channel is big, lossy, and fast to equilibrate compared to the
-    device’s coherent evolution, so you treat the channel as generating a (possibly history-dependent) classical control field.
-  </p>
-
-  <p>
-    Concretely, define the realized field as the channel expectation value
+    Assume an initial product state at time <span class="math">\(t_0\)</span>:
   </p>
 
   <p class="math">
     $$
-    \Phi(t) := \langle \hat L \rangle_t.
+    \hat\rho(t_0)=\hat\rho_A(t_0)\otimes \hat\rho_B,
+    \qquad [\hat\rho_B,\hat H_B]=0.
     $$
   </p>
 
   <p>
-    Then to leading order in <span class="math">\(g\)</span> you replace
-    <span class="math">\(\hat L \approx \Phi(t)\mathbb I_B\)</span> in the device Hamiltonian, and the device sees
+    The exact evolution is unitary:
   </p>
 
   <p class="math">
     $$
-    \hat H_{\rm eff}(t)=\hat H_A + g\,\Phi(t)\,\hat M.
+    \hat\rho(t)=\hat U(t,t_0)\,\hat\rho(t_0)\,\hat U^\dagger(t,t_0),
+    \qquad
+    \hat U(t,t_0)=\mathcal T\exp\!\left(-i\int_{t_0}^{t}\hat H(s)\,ds\right).
+    $$
+  </p>
+
+  <p>
+    The reduced device state is the partial trace:
+    <span class="math">\(\hat\rho_A(t):=\mathrm{Tr}_B[\hat\rho(t)]\)</span>. 
+  </p>
+
+  <p>
+    To be explicit, fix an orthonormal basis <span class="math">\(\{|n\rangle\}\)</span> of <span class="math">\(\mathcal H_B\)</span>.
+    Then by definition
+  </p>
+
+  <p class="math">
+    $$
+    \mathrm{Tr}_B[\hat X]
+    :=
+    \sum_{n}
+    \big(\mathbb I_A\otimes\langle n|\big)\,\hat X\,\big(\mathbb I_A\otimes|n\rangle\big),
+    \qquad
+    \hat X\in\mathcal B(\mathcal H_A\otimes\mathcal H_B).
+    $$
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>3) Differentiate under the trace: exact reduced equation</h4>
+
+  <p>
+    Start from the Liouville–von Neumann equation
+    <span class="math">\(\dot{\hat\rho}(t)=-i[\hat H(t),\hat\rho(t)]\)</span> and differentiate under the partial trace:
+  </p>
+
+  <p class="math">
+    $$
+    \dot{\hat\rho}_A(t)
+    =
+    \mathrm{Tr}_B[\dot{\hat\rho}(t)]
+    =
+    -i\,\mathrm{Tr}_B\!\left([\hat H(t),\hat\rho(t)]\right).
+    $$
+  </p>
+
+  <p>
+    Now we use the standard partial-trace identities (pull-through and cyclicity on subsystem <span class="math">\(B\)</span>):
+    
+  </p>
+
+  <p class="math">
+    $$
+    \mathrm{Tr}_B\big[(\hat A\otimes\mathbb I_B)\hat X\big]=\hat A\,\mathrm{Tr}_B[\hat X],
+    \qquad
+    \mathrm{Tr}_B\big[\hat X(\hat A\otimes\mathbb I_B)\big]=\mathrm{Tr}_B[\hat X]\,\hat A,
+    $$
+    $$
+    \mathrm{Tr}_B\big[(\mathbb I_A\otimes \hat Z)\hat X\big]=\mathrm{Tr}_B\big[\hat X(\mathbb I_A\otimes \hat Z)\big].
+    $$
+  </p>
+
+  <p>
+    Insert the Hamiltonian decomposition and treat terms one by one. 
+  </p>
+
+  <h5>(i) The device self-Hamiltonian gives the usual commutator</h5>
+
+  <p class="math">
+    $$
+    -i\,\mathrm{Tr}_B\!\left([\hat H_A\otimes\mathbb I_B,\hat\rho]\right)
+    =
+    -i\,[\hat H_A,\hat\rho_A].
+    $$
+  </p>
+
+  <h5>(ii) Anything acting only on <span class="math">\(B\)</span> vanishes <em>directly</em> under the trace</h5>
+
+  <p>
+    Using cyclicity on <span class="math">\(B\)</span>, one has
+    <span class="math">\(\mathrm{Tr}_B([\mathbb I_A\otimes \hat Z,\hat\rho])=0\)</span>
+    for any <span class="math">\(\hat Z\)</span> on <span class="math">\(B\)</span>. This applies to
+    <span class="math">\(\mathbb I_A\otimes \hat H_B\)</span> and also to the classical drive term
+    <span class="math">\(-u(t)\mathbb I_A\otimes \hat F\)</span> at this stage: they influence
+    <span class="math">\(\dot{\hat\rho}_A\)</span> only indirectly through how they shape the full joint state <span class="math">\(\hat\rho(t)\)</span>. 
+  </p>
+
+  <h5>(iii) The coupling term produces an operator-valued “field”</h5>
+
+  <p>
+    Consider <span class="math">\(\mathrm{Tr}_B([\hat M\otimes \hat L,\hat\rho])\)</span>.
+    Writing the commutator explicitly and using pull-through/cyclicity as in the appendix, you obtain the exact identity: 
+  </p>
+
+  <p class="math">
+    $$
+    \mathrm{Tr}_B\!\left([\hat M\otimes \hat L,\hat\rho]\right)
+    =
+    \left[\hat M,\ \mathrm{Tr}_B\!\big((\mathbb I_A\otimes \hat L)\hat\rho\big)\right].
+    $$
+  </p>
+
+  <p>
+    Define the operator-valued field on the device Hilbert space:
+  </p>
+
+  <p class="math">
+    $$
+    \hat X_L(t)
+    :=
+    \mathrm{Tr}_B\!\big((\mathbb I_A\otimes \hat L)\hat\rho(t)\big)
+    \in \mathcal B(\mathcal H_A).
+    $$
+  </p>
+
+  <p>
+    Putting (i)–(iii) together gives the <em>exact</em> reduced equation:
+    
+  </p>
+
+  <p class="math">
+    $$
+    \dot{\hat\rho}_A(t)
+    =
+    -i[\hat H_A,\hat\rho_A(t)]
+    -ig\,[\hat M,\hat X_L(t)].
     $$
   </p>
 
   <p class="note">
-    Any “genuine open-system memory” for the device comes from the fluctuations
-    <span class="math">\(\delta\hat L=\hat L-\langle \hat L\rangle_t\)</span> and appears at higher order (as dissipative / Lindblad-like terms).
-    But the leading-order story is already enough to create hysteresis in <span class="math">\((u,O)\)</span>.
+    Up to here, nothing has been approximated: all the complexity is buried in <span class="math">\(\hat X_L(t)\)</span>,
+    which depends on the full correlated state <span class="math">\(\hat\rho(t)\)</span>. 
   </p>
 
   <div class="hr"></div>
 
-  <h4>3) Kubo: the kernel is a retarded susceptibility</h4>
+  <h4>4) Born–Oppenheimer / weak loading: factorize the joint state to leading order in <span class="math">\(g\)</span></h4>
 
   <p>
-    Now compute <span class="math">\(\Phi(t)=\langle\hat L\rangle_t\)</span> produced by the classical forcing <span class="math">\(-u(t)\hat F\)</span>.
-    In linear response (small-signal regime), Kubo tells you that the response of the output observable is a causal convolution:
+    Now impose the weak-loading (Born–Oppenheimer) assumption: there is a regime where the device perturbs the channel only weakly,
+    so to leading order the joint state factorizes as
+    
+  </p>
+
+  <p class="math">
+    $$
+    \hat\rho(t)
+    =
+    \hat\rho_A(t)\otimes \hat\rho_B^{(u)}(t) + \mathcal O(g),
+    $$
+  </p>
+
+  <p>
+    where <span class="math">\(\hat\rho_B^{(u)}(t)\)</span> is the channel state produced by the drive in the absence of the device,
+    i.e. evolved under the driven channel Hamiltonian
+    
+  </p>
+
+  <p class="math">
+    $$
+    \hat H_B^{(u)}(t)=\hat H_B - u(t)\hat F.
+    $$
+  </p>
+
+  <p>
+    Under this factorization,
+    
+  </p>
+
+  <p class="math">
+    $$
+    \hat X_L(t)
+    =
+    \mathrm{Tr}_B\!\big((\mathbb I_A\otimes \hat L)\,\hat\rho_A\otimes \hat\rho_B^{(u)}\big)
+    +\mathcal O(g)
+    =
+    \hat\rho_A(t)\,\Phi(t)+\mathcal O(g),
+    $$
+  </p>
+
+  <p class="math">
+    $$
+    \Phi(t) := \mathrm{Tr}_B\!\left(\hat\rho_B^{(u)}(t)\hat L\right).
+    $$
+  </p>
+
+  <p>
+    Plugging back into the exact reduced equation gives, to leading order in <span class="math">\(g\)</span>,
+    a purely Hamiltonian (unitary) evolution for the device with a <em>c-number</em> realized field:
+    
+  </p>
+
+  <p class="math">
+    $$
+    \dot{\hat\rho}_A(t)
+    =
+    -i\,[\hat H_A + g\,\Phi(t)\hat M,\ \hat\rho_A(t)]
+    +\mathcal O(g^2).
+    $$
+  </p>
+
+  <p class="note">
+    This is the core “filtered Hamiltonian” result: the device remains unitary once <span class="math">\(\Phi(t)\)</span> is specified.
+    Any genuine dissipative/Lindblad contribution arises at higher order from channel fluctuations (not needed for the main memory mechanism). 
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>5) Kubo step: compute <span class="math">\(\Phi(t)\)</span> in linear response to <span class="math">\(u(t)\)</span></h4>
+
+  <p>
+    We now derive the convolution form for <span class="math">\(\Phi(t)\)</span>.
+    Fix an initial time <span class="math">\(t_0\)</span> where the drive is specified and prepare the channel in a stationary
+    reference state for the unforced Hamiltonian:
+  </p>
+
+  <p class="math">
+    $$
+    \hat\rho_B^{(u)}(t_0)=\hat\rho_B,
+    \qquad
+    [\hat\rho_B,\hat H_B]=0.
+    $$
+  </p>
+
+  <p>
+    Work in the interaction picture with respect to the unforced channel Hamiltonian <span class="math">\(\hat H_B\)</span>:
+  </p>
+
+  <p class="math">
+    $$
+    \hat O_I(t)=e^{i\hat H_B(t-t_0)}\,\hat O\,e^{-i\hat H_B(t-t_0)},
+    \qquad
+    \hat\rho_I(t)=e^{i\hat H_B(t-t_0)}\,\hat\rho_B^{(u)}(t)\,e^{-i\hat H_B(t-t_0)}.
+    $$
+  </p>
+
+  <p>
+    Since the driven channel Hamiltonian is <span class="math">\(\hat H_B^{(u)}(t)=\hat H_B-u(t)\hat F\)</span>, the interaction-picture
+    density operator obeys (this is the standard Kubo starting point):
+  </p>
+
+  <p class="math">
+    $$
+    \frac{d}{dt}\hat\rho_I(t)
+    =
+    i\,u(t)\,[\hat F_I(t),\hat\rho_I(t)],
+    \qquad
+    \hat\rho_I(t_0)=\hat\rho_B.
+    $$
+  </p>
+
+  <h5>First-order (linear response) solution</h5>
+
+  <p>
+    Integrate once and iterate (Dyson expansion). To first order in the drive amplitude:
+  </p>
+
+  <p class="math">
+    $$
+    \hat\rho_I(t)
+    =
+    \hat\rho_B
+    +
+    i\int_{t_0}^{t} ds\,u(s)\,[\hat F_I(s),\hat\rho_B]
+    +\mathcal O(u^2).
+    $$
+  </p>
+
+  <p>
+    The realized field is the channel expectation of <span class="math">\(\hat L\)</span>:
+    <span class="math">\(\Phi(t)=\mathrm{Tr}_B(\hat\rho_B^{(u)}(t)\hat L)\)</span>.
+    In the interaction picture, this is
+    <span class="math">\(\Phi(t)=\mathrm{Tr}_B(\hat\rho_I(t)\hat L_I(t))\)</span>.
+  </p>
+
+  <p>
+    Plug the first-order expansion of <span class="math">\(\hat\rho_I(t)\)</span> into <span class="math">\(\Phi(t)\)</span>:
   </p>
 
   <p class="math">
     $$
     \Phi(t)
     =
-    \Phi_0 + \int_{-\infty}^{t}\chi_{LF}(t-s)\,u(s)\,ds,
+    \underbrace{\mathrm{Tr}_B(\hat\rho_B\hat L_I(t))}_{\Phi_0}
+    +
+    i\int_{t_0}^{t} ds\,u(s)\,
+    \mathrm{Tr}_B\!\Big([\hat F_I(s),\hat\rho_B]\hat L_I(t)\Big)
+    +\mathcal O(u^2).
     $$
   </p>
 
   <p>
-    where the retarded susceptibility is
+    Use trace cyclicity to rewrite the integrand in commutator form:
+    <span class="math">\(\mathrm{Tr}_B([\hat F_I(s),\hat\rho_B]\hat L_I(t))
+    =\mathrm{Tr}_B(\hat\rho_B[\hat L_I(t),\hat F_I(s)])\)</span>.
+    This yields
   </p>
 
   <p class="math">
     $$
-    \chi_{LF}(t)
+    \Phi(t)
     =
-    -i\,\Theta(t)\,
-    \langle[\hat L(t),\hat F(0)]\rangle_{\rho_B},
+    \Phi_0
+    +
+    \int_{t_0}^{t} ds\ \chi_{LF}(t-s)\,u(s)
+    +\mathcal O(u^2),
     $$
   </p>
 
   <p>
-    with Heisenberg evolution under the unforced channel Hamiltonian and the expectation taken in the channel’s
-    stationary (typically thermal) state <span class="math">\(\rho_B\)</span>.
-    Identifying <span class="math">\(K=\chi_{LF}\)</span>, you get exactly the phenomenological kernel model from the top of the post,
-    but now it is “earned” from microscopic quantum mechanics.
+    with the retarded susceptibility (causality enforced by the integration domain, equivalently by a Heaviside step):
+  </p>
+
+  <p class="math">
+    $$
+    \chi_{LF}(\tau)
+    :=
+    i\,\Theta(\tau)\,
+    \langle[\hat L_I(\tau),\hat F_I(0)]\rangle_B,
+    \qquad
+    \langle \cdot \rangle_B := \mathrm{Tr}_B(\hat\rho_B\,\cdot).
+    $$
+  </p>
+
+  <p>
+    Identifying the control kernel as <span class="math">\(K(\tau)\equiv \chi_{LF}(\tau)\)</span>, we get the promised causal filter:
+  </p>
+
+  <p class="math">
+    $$
+    \Phi(t)=\Phi_0+\int_{-\infty}^{t} K(t-s)\,u(s)\,ds
+    \qquad
+    (K\ \text{retarded}).
+    $$
   </p>
 
   <div class="hr"></div>
 
-  <h4>4) Tracing out the channel: where dissipation would enter (but doesn’t have to dominate)</h4>
+  <h4>6) Put it together: filtered Hamiltonian for the device</h4>
 
   <p>
-    If you now actually trace out the channel degrees of freedom,
-    <span class="math">\(\rho_A(t)=\mathrm{Tr}_B\,\rho_{AB}(t)\)</span>,
-    then:
+    Combine the weak-loading reduction with the Kubo expression for <span class="math">\(\Phi(t)\)</span>.
+    To leading order in <span class="math">\(g\)</span> (and linear response in the drive),
+    the device evolves unitarily under
+    
   </p>
-  <ul>
-    <li>the <strong>mean field</strong> <span class="math">\(\Phi(t)=\langle \hat L\rangle_t\)</span> gives the coherent drive term
-      <span class="math">\(-i[\hat H_{\rm eff}(t),\rho_A]\)</span>;</li>
-    <li>the <strong>fluctuations</strong> of <span class="math">\(\hat L\)</span> generate additional (typically weak) dissipative terms
-      controlled by channel correlation functions.</li>
-  </ul>
 
-  <p>
-    For the purpose of “classical memory fingerprints”, it’s precisely the leading term that matters:
-    even if the reduced dynamics is <em>approximately unitary</em>, the classical convolution
-    <span class="math">\(\Phi=\chi_{LF}*u\)</span> is enough to generate large geometric hysteresis in the commanded plane.
+  <p class="math">
+    $$
+    \dot{\hat\rho}_A(t)
+    =
+    -i\left[
+      \hat H_A + g\,\Phi(t)\hat M,\ \hat\rho_A(t)
+    \right]
+    +\mathcal O(g^2),
+    \qquad
+    \Phi(t)=\Phi_0+(K*u)(t).
+    $$
   </p>
+
+  <p class="note">
+    This is the “classical memory in quantum mechanics” mechanism in one line: the quantum part is unitary once
+    <span class="math">\(\Phi(t)\)</span> is given, while the <em>memory</em> enters through the retarded kernel
+    <span class="math">\(K(\tau)=\chi_{LF}(\tau)\)</span> of the channel. 
+  </p>
+
+</section>
+
 
   <div class="hr"></div>
 
