@@ -155,9 +155,7 @@
   </p>
 
   <div class="hr"></div>
-
-  <h4>b) Unitarity with a “memoryful” drive</h4>
-
+  
   <p>
     The quantum system itself is still driven by an ordinary Schrödinger equation. A standard model is:
   </p>
@@ -192,7 +190,6 @@
     store the past. That is exactly the structural role played by internal variables in circuit elements with memory.
   </p>
 
-  <h4>1) The discrete RC ladder: the chain of equations</h4>
 
   <p>
     Consider an <span class="math">\(N\)</span>-stage ladder: the input is <span class="math">\(V_0(t)=u(t)\)</span>,
@@ -243,8 +240,6 @@
 
   <div class="hr"></div>
 
-  <h4>2) From ladders to kernels: poles → exponentials</h4>
-
   <p>
     Any finite ladder has a rational transfer function
     <span class="math">\(G(s)=\Phi(s)/u(s)\)</span>, and passivity puts the poles on the negative real axis.
@@ -271,10 +266,8 @@
 
   <div class="hr"></div>
 
-  <h4>3) The ODE embedding: classical memory states + unitary quantum evolution</h4>
-
   <p>
-    Introduce auxiliary “filter modes”
+    To understand where memory is coming from, introduce the auxiliary “filter modes”
   </p>
 
   <p class="math">
@@ -334,26 +327,21 @@
 
 <section id="part2-kubo">
 
-  <h3>Part 2 — The same structure from quantum mechanics: Kubo + Born–Oppenheimer + tracing</h3>
+  <h3>Part 2 — The same structure from quantum mechanics: Kubo + Born–Oppenheimer + tracing out</h3>
 
   <p>
     Now for the punchline I actually care about: you can derive the same filtered-control structure starting from a
     microscopic quantum model of the control hardware.
     In the paper this is done in Appendix H, and the message is:
-    <em>the kernel is a retarded susceptibility</em>.
+    <em>the kernel K(t) that I introduced earlier can be interpreted quantum mechanically as a retarded susceptibility</em>.
   </p>
-<section id="part2-kubo-derivation">
-
-  <h3>Part 2 — A proper derivation: tracing + Born–Oppenheimer + Kubo (as in the Appendix)</h3>
 
   <p class="note">
-    This section follows Appendix H of the paper: start from a microscopic bipartite model, derive an effective
+    This section follows closely Appendix H of the paper: start from a microscopic bipartite model, derive an effective
     filtered-control Hamiltonian for the device, and identify the memory kernel as a retarded susceptibility. 
   </p>
 
   <div class="hr"></div>
-
-  <h4>1) Split the world: bipartite Hilbert space + driven channel</h4>
 
   <p>
     Let the total Hilbert space factor as <span class="math">\( \mathcal H = \mathcal H_A \otimes \mathcal H_B \)</span>,
@@ -385,7 +373,6 @@
 
   <div class="hr"></div>
 
-  <h4>2) Joint density matrix, unitary evolution, and the reduced state</h4>
 
   <p>
     Assume an initial product state at time <span class="math">\(t_0\)</span>:
@@ -433,10 +420,9 @@
 
   <div class="hr"></div>
 
-  <h4>3) Differentiate under the trace: exact reduced equation</h4>
 
   <p>
-    Start from the Liouville–von Neumann equation
+    We now start from the Liouville–von Neumann equation
     <span class="math">\(\dot{\hat\rho}(t)=-i[\hat H(t),\hat\rho(t)]\)</span> and differentiate under the partial trace:
   </p>
 
@@ -540,10 +526,8 @@
 
   <div class="hr"></div>
 
-  <h4>4) Born–Oppenheimer / weak loading: factorize the joint state to leading order in <span class="math">\(g\)</span></h4>
-
   <p>
-    Now impose the weak-loading (Born–Oppenheimer) assumption: there is a regime where the device perturbs the channel only weakly,
+    Now impose the weak-loading  (or Born–Oppenheimer in the Breuer-Petruccione) assumption: there is a regime where the device perturbs the channel only weakly,
     so to leading order the joint state factorizes as
     
   </p>
@@ -611,8 +595,6 @@
   </p>
 
   <div class="hr"></div>
-
-  <h4>5) Kubo step: compute <span class="math">\(\Phi(t)\)</span> in linear response to <span class="math">\(u(t)\)</span></h4>
 
   <p>
     We now derive the convolution form for <span class="math">\(\Phi(t)\)</span>.
@@ -742,10 +724,8 @@
 
   <div class="hr"></div>
 
-  <h4>6) Put it together: filtered Hamiltonian for the device</h4>
-
   <p>
-    Combine the weak-loading reduction with the Kubo expression for <span class="math">\(\Phi(t)\)</span>.
+    Combine now the weak-loading reduction with the Kubo expression for <span class="math">\(\Phi(t)\)</span>.
     To leading order in <span class="math">\(g\)</span> (and linear response in the drive),
     the device evolves unitarily under
     
@@ -775,7 +755,7 @@
 
   <div class="hr"></div>
 
-  <h4>5) Why this matches the RC story</h4>
+  <h4>5) The "dissipative" Kubo matches the RC story</h4>
 
   <p>
     If the driven channel’s susceptibility has relaxational poles (lossy, overdamped response),
@@ -786,7 +766,7 @@
 
   <p class="note">
     Same math object, two physical viewpoints: (i) passive network modes, (ii) retarded susceptibilities of a driven channel.
-    And in both cases the device can remain unitary once the realized field is specified.
+    And in both cases the device can remain unitary once the realized field is specified. Thanks for reading!
   </p>
 
 </section>
