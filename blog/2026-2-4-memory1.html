@@ -641,10 +641,8 @@
     $$
   </p>
 
-  <h5>First-order (linear response) solution</h5>
-
   <p>
-    Integrate once and iterate (Dyson expansion). To first order in the drive amplitude:
+    We now need to see how this is connected to a Kubo retarded kernel. Integrate once and iterate (Dyson expansion). To first order in the drive amplitude:
   </p>
 
   <p class="math">
@@ -759,17 +757,20 @@
 
   <div class="hr"></div>
 
-  <h4>5) The "dissipative" Kubo matches the RC story</h4>
+  <h4>5) Back to the beginning: why the "dissipative" Kubo matches the RC story</h4>
 
   <p>
     If the driven channel’s susceptibility has relaxational poles (lossy, overdamped response),
-    then <span class="math">\(\chi_{LF}(t)\)</span> is a sum (or mixture) of decaying exponentials — exactly like an RC ladder’s impulse response.
+    then <span class="math">\(\chi_{LF}(t)\)</span> is a sum (or mixture) of decaying exponentials — exactly like an RC ladder’s 
+    impulse response.
     That is the bridge between the two “derivations of the same object”:
-    circuit theory gives you the kernel by synthesis; Kubo gives you the kernel by response theory.
+    circuit theory gives you the kernel by synthesis; Kubo gives you the kernel by response theory. So, a posteriori, the same structure would emerge 
+    and we could map the dissipative channel to a "classical" RC filter. This is actually known from network synthesis theory, but I find it nice to see 
+    it emerge from quantum mechanics as well - with all the due attention due to the fact that the Kubo approach is not the Lindblad approach that derives this more cleanly.
   </p>
 
   <p class="note">
-    Same math object, two physical viewpoints: (i) passive network modes, (ii) retarded susceptibilities of a driven channel.
+    So.. same math object, two physical viewpoints: (i) passive network modes, (ii) retarded susceptibilities of a driven channel.
     And in both cases the device can remain unitary once the realized field is specified. Thanks for reading!
   </p>
 
