@@ -75,8 +75,7 @@
   <h3>The hidden power of resistive networks</h3>
   <p><em>February 2026</em></p>
 
-  <!-- Replace with your own image -->
-  <img class="hero" src="images/omegalearning/omega-learning-hero.png" alt="Hero image: schematic of two-phase vs projector-based learning">
+  <img class="hero" src="images/omegalearning/resist.png" alt="Resist!">
  <p>
     Recently I called some old friends from Los Alamos who now live in Colorado. She had a t-shirt with the word "Resist!"
     printed on it. I immediately thought that I could make a t-shirt with "Resist(ance)!" and a schematic of a resistor on it.
@@ -125,7 +124,7 @@
   <h4>Why analog learning is hard: locality vs gradients</h4>
 
     <p>
-    A lot of modern digital ML training quietly assumes <em>global</em> access: you form a loss at the outputs, backpropagate an error signal through the entire model, and update parameters everywhere.
+    A lot of modern digital ML training quietly assumes <em>local</em> access: you form a loss at the outputs, backpropagate an error signal through the entire model, and update parameters everywhere.
     In a physical substrate (circuits, mechanical networks, etc.) you usually don’t have that luxury — you can poke and read <em>locally</em> (voltages/currents, forces/displacements), but you can’t reliably “broadcast” a global gradient signal through the hardware.
     </p>
 
@@ -139,7 +138,7 @@
 
     <p>
     EP is not the only route, though. A closely related family of approaches uses <strong>two coupled copies</strong> of the system rather than a single system run twice in time.
-    In particular, work by Andrea J. Liu’s group and collaborators introduced <em>coupled learning</em>, where two replicas are weakly coupled and the learning signal is extracted from their steady-state relationship (instead of a temporal free/nudged contrast). See, e.g.,
+    In particular, work by Andrea Liu’s group and collaborators introduced <em>coupled learning</em>, where two replicas are weakly coupled and the learning signal is extracted from their steady-state relationship (instead of a temporal free/nudged contrast). See, e.g.,
     <a href="https://www.pnas.org/doi/10.1073/pnas.1820672116">Stern, Dillavou, Goodrich, Liu, “Learning a force law from a scalar potential” (PNAS, 2019)</a>.
     Conceptually, the “two-copies” trick trades a second phase in time for a second physical instance running in parallel.
     </p>
@@ -299,7 +298,7 @@
   </p>
 
   <p>
-    <img class="hero" src="images/fig-two-phase-vs-omega.png" alt="Schematic: two-phase vs projector-based (Ω) learning">
+    <img class="hero" src="images/omegalearning/fig1.png" alt="Schematic: two-phase vs projector-based (Ω) learning">
   </p>
 
   <div class="hr"></div>
@@ -320,6 +319,11 @@
     <li><strong>Noisy targets</strong>: the analytical gradient stays unbiased under zero-mean noise, while the two-phase current-squared estimator acquires a noise-induced bias for any finite $\beta$.</li>
     <li><strong>Limited edge access</strong>: if you freeze a random fraction of tunable edges, Ω-learning degrades more gracefully.</li>
   </ul>
+
+  <p>
+    <img class="hero" src="images/omegalearning/fig2.png" alt="Schematic: two-phase vs projector-based (Ω) learning">
+  </p>
+
 
   <p class="note">
     If you want one clean soundbite: two-phase learning is a perturbative estimator that becomes delicate when nudges are finite or data is noisy;
