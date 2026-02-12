@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>The hidden power of resistive networks: GEP + Analytical Ω-Learning – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+  </style>
+
+  <!-- AdSense: load ONCE per page -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    function renderKatexIn(el) {
+      if (!el || typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false,
+        macros: { "\\mathbbm": "\\mathbb" },
+        ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+      });
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      renderKatexIn(document.querySelector("main.content"));
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <!-- In-article AdSense Ad -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+<section id="top">
+
+  <p class="kicker">Analog learning • circuits • locality</p>
+  <h3>The hidden power of resistive networks</h3>
+  <p><em>February 2026</em></p>
+
+  <!-- Replace with your own image -->
+  <img class="hero" src="images/omegalearning/omega-learning-hero.png" alt="Hero image: schematic of two-phase vs projector-based learning">
+ <p>
+    Recently I called some old friends from Los Alamos who now live in Colorado. She had a t-shirt with the word "Resist!"
+    printed on it. I immediately thought that I could make a t-shirt with "Resist(ance)!" and a schematic of a resistor on it.
+ </p>
+  <p>
+    Let me remain on this theme. I recently posted a paper on arXiv: <strong><em>How to Train Your Resistive Network: Generalized Equilibrium Propagation and Analytical Learning</em></strong>.
+    The paper is in collaboration with my coauthors at LANL, Jonathan Lin (who's now doing a PhD at USC) and who started this while at Los Alamos, and Aman Desai and Frank Barrows who are at LANL.
+     The paper explores how to train physical resistive networks optimally. 
+    The short version: if your “model” is a physical resistive network (or a memristive / programmable-impedance mesh),
+    you can compute <em>exact</em> gradients using Kirchhoff + graph theory — without running a second “nudged” phase or having to guess the 
+    finite-perturbation bias to <em> estimate the gradient</em>.
+  </p>
+
+  <div class="callout">
+    <p class="note">
+      The punchline is an operator (a weighted cycle-space projector) that the circuit implements at steady state:
+      $$v = -\Omega_{A/R}\, s,$$
+      and once you write the response like that, the learning rule becomes a clean analytical expression involving
+      $\Omega_{A/R}$ and its adjoint $\Omega_{A/R}^\top$. (This is the core of the paper.)  I have not talked about these projector operators
+      yet in this blog, which is rather suprising because I spent quite a lot of time studying them in the context of my previous life
+      in neuromorphic computing. Now, resistive networks are quite fun objects to work with. Essentially because they are boring and not boring at the same time.
+      Jonathan has actually a great visualizing <a href="https://jlin1212.github.io/circuit.html">tool on his website</a>, that you can play with, add currents, resistors, etc etc,
+      and see how current rearranges. Below I will try to give a high-level overview of the paper, and then I will post a 
+      follow-up with more details on the math and the physics of these projectors later on (unlike previous posts.. I have a content list).
+
+    </p>
+  </div>
+
+  <div class="toc">
+    <strong>Contents</strong>
+    <ul>
+      <li><a href="#why">Why analog learning is hard (locality)</a></li>
+      <li><a href="#vanilla">Vanilla Two-Phase learning (EP-style) and what it estimates</a></li>
+      <li><a href="#gep">Generalized Equilibrium Propagation (GEP): EP vs CL in one perturbative picture</a></li>
+      <li><a href="#omega">Analytical Ω-learning: exact gradients via projectors</a></li>
+      <li><a href="#protocols">Practical protocols: what you measure, what you inject</a></li>
+      <li><a href="#results">What changes in practice (stability, noise, partial control)</a></li>
+      <li><a href="#takeaways">When to use which</a></li>
+    </ul>
+  </div>
+
+  <div class="hr"></div>
+</section>
+
+<section id="why">
+  <h4>Why analog learning is hard: locality vs gradients</h4>
+
+    <p>
+    A lot of modern digital ML training quietly assumes <em>global</em> access: you form a loss at the outputs, backpropagate an error signal through the entire model, and update parameters everywhere.
+    In a physical substrate (circuits, mechanical networks, etc.) you usually don’t have that luxury — you can poke and read <em>locally</em> (voltages/currents, forces/displacements), but you can’t reliably “broadcast” a global gradient signal through the hardware.
+    </p>
+
+    <p>
+    That tension is exactly why <strong>Equilibrium Propagation</strong> became such an influential idea:
+    in the framework introduced by Scellier and Bengio,
+    you run the same dynamical system twice — a free phase and a gently nudged (I will also use clamped interchangingly) phase — and extract learning updates from the difference of local measurements.
+    See the original paper:
+    <a href="https://arxiv.org/abs/1602.05179">Scellier &amp; Bengio, “Equilibrium Propagation: Bridging the Gap Between Energy-Based Models and Backpropagation”</a>.
+    </p>
+
+    <p>
+    EP is not the only route, though. A closely related family of approaches uses <strong>two coupled copies</strong> of the system rather than a single system run twice in time.
+    In particular, work by Andrea J. Liu’s group and collaborators introduced <em>coupled learning</em>, where two replicas are weakly coupled and the learning signal is extracted from their steady-state relationship (instead of a temporal free/nudged contrast). See, e.g.,
+    <a href="https://www.pnas.org/doi/10.1073/pnas.1820672116">Stern, Dillavou, Goodrich, Liu, “Learning a force law from a scalar potential” (PNAS, 2019)</a>.
+    Conceptually, the “two-copies” trick trades a second phase in time for a second physical instance running in parallel.
+    </p>
+
+
+    <p> 
+        In all these works, <em>you need to have access to each single variable that you plan to modify</em>, e.g. the resistance. 
+        The direction in which you modify it has to do with a gradient of a certain figure of merit you need to minimize/maximize, 
+        which is usually a function of the output variables. The output variable(s) could be output currents, node voltages, or similar. 
+        The setup has the flexibility to differ. In general, you <em>estimate such gradient</em> by looking at a free copy of the system, and a nudged version. This means applying a certain voltage here and there to see how the voltage drops change, or the currents change. 
+        In the work by Scellier and Bengio, they show that a good estimator is the difference of the currents squared between the free and nudged copies.
+        In the work by Liu et al they use the voltage difference.
+    </p>
+
+
+  <p class="note">
+    In our paper, we set this up in a linear-response language: the gradient comes from how the steady state shifts under a weak perturbation.  
+    This is the bridge to Equilibrium Propagation (EP) and Coupled Learning (CL), and we focused on a resistor network, although this framework is more general than that.
+    Both these methods are <em>two-phase update rules</em>, e.g. you need to have the contrast between a free and a nudged phase, either sequentially or in parallel with copy of the system being nudged.
+    What we show in the paper is <em>(a)</em> sometimes these estimates can go parallel to the true gradient <em>(b)</em> they need continuous measurement. This is not a problem <em>per se</em>,
+    let me be clear about this  <em>(c)</em> they need to modify every single parameter to work. 
+    A lot of methods use (a) as a resource. Instead, (b) and (c) can be problematic in physical implementations. Let's discuss what we suggest in our manuscript.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="vanilla">
+  <h4>“Vanilla Two-Phase” learning in resistor networks (EP-style)</h4>
+
+  <p>
+    As mentioned, we specialize to a passive resistor network on a graph. You apply an input by setting some edge voltage sources,
+    read outputs on selected edges, then do a second run where you add a small output error as an extra source.
+  </p>
+
+  <p>
+    In this setting, the classic two-phase update becomes a <strong>difference of squared currents</strong> per edge:
+  </p>
+
+  <p class="math">
+    $$
+    \frac{\partial J}{\partial r}
+    = \lim_{\beta\to 0}\frac{1}{2\beta}\Big(i_C^{\odot 2}-i_F^{\odot 2}\Big),
+    $$
+  </p>
+
+  <p>
+    where $i_F$ and $i_C$ are the free- and clamped-phase steady-state edge currents, and $\odot$ is elementwise power.
+    (This is the “vanilla” two-phase estimator we compare against.)  
+  </p>
+
+  <p class="note">
+    Two important caveats show up immediately in this physical setting:
+    (i) for any finite nudge $\beta$, you incur estimation bias;  
+    (ii) with noisy targets, the current-squared contrastive estimator becomes statistically biased in addition to the finite-$\beta$ issue.  
+    (Both are discussed explicitly in the paper’s analysis of two-phase learning in circuits.)  
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="gep">
+  <h4>GEP: a single framework that contains EP and CL</h4>
+
+  <p>
+    A big conceptual part of the paper is to reframe “two-phase learning” as a perturbation theory statement.
+    You write a nudged energy
+    $$F(\beta,\theta,y)=E_\theta(y)+n(\beta,\theta,y),$$
+    where the second phase corresponds to applying a small training field of strength $\beta$.
+  </p>
+
+  <p>
+    The key distinction becomes the <strong>order</strong> of the perturbation:
+  </p>
+  <ul>
+    <li><strong>EP</strong>: the nudge is linear, $n_{EP}=\beta\,C$ (first order in $\beta$).</li>
+    <li><strong>CL</strong>: the “nudge” arises from clamping / state-shifting inside the same energy, and the leading change is quadratic (second order in $\beta$).</li>
+  </ul>
+
+  <p class="note">
+    In the paper, this becomes a generalized identity where a $k$-th order finite difference recovers the gradient of a corresponding objective:
+    $$\lim_{\beta\to 0}\frac{1}{\beta^k}\Big[\partial_\theta F(\beta,\theta,y_\beta)-\partial_\theta F(0,\theta,y_0)\Big]=\partial_\theta \ell(\theta).$$
+    EP is $k=1$, CL is $k=2$. This is the “unification” that we suggest in the manuscript, e.g. both methods emerge from a unique framework.  
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="omega">
+  <h4>The analytical route: Ω-learning (exact gradients via graph theory)</h4>
+
+  <p>
+    Now for the main result: in a passive linear resistor network, the steady-state map can be written in a closed-form. I worked on this quite a lot 
+    for memristive networks, where there is a framework to understand how memristors interact in a network thereof.
+    Using a cycle-space formulation (Kirchhoff constraints + dissipation minimization),
+    the network implements an edge-space linear operator:
+  </p>
+
+  <p class="math">
+    $$
+    v = -\Omega_{A/R}\, s,\qquad
+    \Omega_{A/R} := R A^\top(ARA^\top)^{-1}A.
+    $$
+  </p>
+
+  <p>
+    $\Omega_{A/R}$ is an <strong>oblique projector</strong> ($\Omega^2=\Omega$), and it is the natural “response operator” of the circuit.
+    Once you write the physics this way, you can differentiate it and get the Jacobian:
+  </p>
+
+  <p class="math">
+    $$
+    \frac{\partial v}{\partial r}
+    = (I-\Omega_{A/R})\,\mathrm{diag}(i).
+    $$
+  </p>
+
+  <p>
+    For least squares on output edges (selector $P_o$),
+    $$L(v,y)=\tfrac12\|P_ოვ-y\|^2,$$
+    the chain rule gives an <strong>analytical gradient</strong>:
+  </p>
+
+  <p class="math">
+    $$
+    \nabla_r L
+    = \mathrm{diag}(i)\,(I-\Omega_{A/R}^\top)\,P_o^\top(P_o v-y).
+    $$
+  </p>
+
+  <p class="callout note">
+    Conceptually: two-phase learning estimates something like a projector action via a finite perturbation.
+    Ω-learning just computes the projector gradient exactly — but still in a way that can be implemented with local measurements,
+    provided you can realize $\Omega^\top$ (via reciprocity / current-mode probing).
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="protocols">
+  <h4>What do you actually need to do on hardware?</h4>
+
+  <p>
+    The paper compares two “measurement protocols” that correspond to (a) two-phase contrastive learning and
+    (b) Ω-based analytical gradients. The difference is the following: both require you to measure free-phase currents $i_F$ and apply a small nudge $\beta$ at the output, but the second phase differs:
+  </p>
+
+  <ul>
+    <li><strong>Two-phase</strong>: run the network twice (either series or parallel, free + nudged), measure edge currents twice, update with $i_F^{\odot 2}-i_C^{\odot 2}$.</li>
+    <li><strong>Ω-learning</strong>: run once in voltage-mode to get $v$ and store $i_F$, then do one adjoint probe to realize $\Omega^\top$,
+        and update with a local Hadamard product $i_F \odot \Delta$.</li>
+  </ul>
+
+  <p class="note">
+    This is exactly the “Algorithm 1 vs Algorithm 2” story in the paper:
+    two-phase uses purely voltage-mode biasing, while Ω-learning mixes voltage-mode and a reciprocal/current-mode step to access the adjoint projector action.  
+  </p>
+
+  <p>
+    <img class="hero" src="images/fig-two-phase-vs-omega.png" alt="Schematic: two-phase vs projector-based (Ω) learning">
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="results">
+  <h4>What changes in practice</h4>
+
+  <p>
+    In simulation, both methods can reach similar accuracy on a simple classification task,
+    but the two-phase estimator is visibly more unstable during training.
+  </p>
+
+  <p>
+    The bigger separation appears when you add realism:
+  </p>
+  <ul>
+    <li><strong>Noisy targets</strong>: the analytical gradient stays unbiased under zero-mean noise, while the two-phase current-squared estimator acquires a noise-induced bias for any finite $\beta$.</li>
+    <li><strong>Limited edge access</strong>: if you freeze a random fraction of tunable edges, Ω-learning degrades more gracefully.</li>
+  </ul>
+
+  <p class="note">
+    If you want one clean soundbite: two-phase learning is a perturbative estimator that becomes delicate when nudges are finite or data is noisy;
+    Ω-learning is an exact circuit gradient that avoids the finite-$\beta$ approximation and behaves better in those regimes.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="takeaways">
+  <h4>When should you use which?</h4>
+
+  <ul>
+    <li><strong>If you can’t implement reciprocity / current-mode probing</strong>, two-phase is the simplest “pure voltage-mode” training scheme.</li>
+    <li><strong>If you care about bias (finite nudges) or noisy supervision</strong>, Ω-learning is the clean solution: exact gradients and better statistical behavior.</li>
+    <li><strong>If you want a conceptual unifier</strong>, GEP tells you what EP/CL are doing as perturbation theory — and makes the comparisons precise.</li>
+  </ul>
+
+  <p class="note">
+    The broader point (and where I think this gets interesting) is that once you express the physical system as an operator
+    that it implements at equilibrium, learning becomes “just” differentiating that operator — and then figuring out which
+    physical primitives can implement the adjoint needed by the gradient.
+  </p>
+
+  <p><a href="../blog.html">← Back to Blog</a></p>
+</section>
+
+
+      <!-- Second ad block (NO second AdSense script include) -->
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById('sidebar');
+      const response = await fetch('../partials/sidebar.html');
+      const html = await response.text();
+      sidebarContainer.innerHTML = html;
+
+      const currentPath = window.location.pathname.split('/').pop();
+      const links = sidebarContainer.querySelectorAll('a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('active');
+        }
+      });
+
+      // Re-render KaTeX in case injected sidebar contains math
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.querySelector("main.content"), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false,
+          macros: { "\\mathbbm": "\\mathbb" },
+          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+        });
+      }
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
