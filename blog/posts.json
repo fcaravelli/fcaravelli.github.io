@@ -1,4 +1,10 @@
 [
+          {
+    "title": "The hidden power of resistive networks",
+    "date": "2026-02-12",
+    "file": "2026-2-12-resistors1.html",
+    "tags": ["resistive networks", "learning", "omega learning", "equilibrium propagation"]
+  }  , 
         {
     "title": "Classical memory in quantum mechanics",
     "date": "2026-02-04",
@@ -13,8 +19,8 @@
   }  , 
     {
     "title": "Dynamical Rydberg blockade in capacitively coupled transmon qubits",
-    "date": "2026-01-20",
-    "file": "2026-01-20-planckianryd.html",
+    "date": "2026-01-21",
+    "file": "2026-01-21-planckianryd.html",
     "tags": ["superconducting qubits", "capacitive coupling", "Rydberg blockade"]
   }  , 
     {
