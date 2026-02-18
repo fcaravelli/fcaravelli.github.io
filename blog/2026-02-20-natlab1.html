@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>The need for national labs in Europe – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+  </style>
+
+  <!-- AdSense: load ONCE per page -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    function renderKatexIn(el) {
+      if (!el || typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false,
+        macros: { "\\mathbbm": "\\mathbb" },
+        ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+      });
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      renderKatexIn(document.querySelector("main.content"));
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <!-- In-article AdSense Ad -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+<section id="top">
+  <p class="kicker">Science policy • institutions • scale</p>
+  <h3>The need for national labs in Europe</h3>
+  <p><em>February 18th, 2026</em></p>
+
+  <p>
+    Europe produces astonishing science. Yet whenever the conversation turns from “papers” to <em>platforms</em>—chips, energy systems,
+    AI infrastructure, biomanufacturing, quantum hardware, resilient supply chains—we often act as if excellent universities
+    plus competitive grants are the full story.
+  </p>
+
+  <p>
+    They are not. The missing piece is an institutional layer that is boring, expensive, and absolutely decisive:
+    <strong>mission-oriented national laboratories</strong> (and, in Europe’s case, a coherent <em>network</em> of them).
+  </p>
+
+  <img class="hero" src="images/nationallabs/europe-lab.png" alt="A schematic of a European national lab network">
+
+  <div class="callout">
+    <p class="note">
+      Thesis: Europe’s research ecosystem is strong at discovery and training, but structurally weaker at
+      (i) sustaining long-horizon, high-fixed-cost programs,
+      (ii) building shared platforms that industry can reliably sit on,
+      and (iii) turning “use-inspired basic research” into durable capability.
+      This is exactly the niche national labs were built to occupy.
+    </p>
+  </div>
+
+  <div class="toc">
+    <strong>Contents</strong>
+    <ul>
+      <li><a href="#history">A short origin story: Vannevar Bush and the post-war bargain</a></li>
+      <li><a href="#quadrant">Pasteur’s Quadrant: escaping the basic vs applied cartoon</a></li>
+      <li><a href="#what">What a national lab is (and isn’t)</a></li>
+      <li><a href="#europe">Europe today: excellence, fragmentation, and the “valley of platforms”</a></li>
+      <li><a href="#why-now">Why now: energy, security, compute, and industrial sovereignty</a></li>
+      <li><a href="#design">A design sketch for Europe: principles, not bureaucracy</a></li>
+      <li><a href="#takeaways">Takeaways</a></li>
+    </ul>
+  </div>
+
+  <div class="hr"></div>
+</section>
+
+<section id="history">
+  <h4>A short origin story: Vannevar Bush and the post-war bargain</h4>
+
+  <p>
+    In July 1945, Vannevar Bush—then Director of the U.S. Office of Scientific Research and Development—delivered
+    <em>Science, the Endless Frontier</em>, a report to President Truman that shaped modern science policy.
+    Bush argued that publicly supported research is a pillar of health, security, and prosperity, and that government
+    should sustain the “upstream” research pipeline in peacetime, not only during emergencies.
+    (The report is now canonical; it is also surprisingly readable.) 
+    See the report itself: <a href="https://www.pi.infn.it/~giorgio/INFN/3M/SciencetheEndlessFrontier.pdf">Bush (1945), PDF</a>,
+    or NSF’s 75th anniversary edition: <a href="https://nsf-gov-resources.nsf.gov/2023-04/EndlessFrontier75th_w.pdf">NSF edition</a>.
+  </p>
+
+  <p>
+    The key point for this post is not “basic science good” (everyone says that). It’s the <strong>institutional response</strong>:
+    large-scale research capacity requires stable organizations with stable funding, able to run big machines, maintain facilities,
+    keep teams together, and pursue missions that outlive a single grant cycle.
+  </p>
+
+  <p class="note">
+    In the U.S., the post-war era produced a layered ecosystem: universities, agencies, and a network of national laboratories.
+    In the 1940s–1950s the Atomic Energy Commission built a lab system to host large machines and long-horizon nuclear science;
+    DOE’s historical summary captures that logic well:
+    <a href="https://www.energy.gov/science/history">DOE Office of Science history</a>.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="quadrant">
+  <h4>Pasteur’s Quadrant: escaping the “basic vs applied” cartoon</h4>
+
+  <p>
+    The Bush-era story is often retold as a neat dichotomy:
+    “basic research” in universities, “applied research” in industry. It’s a useful simplification—until it becomes policy dogma.
+  </p>
+
+  <p>
+    Donald Stokes’ book <em>Pasteur’s Quadrant</em> (1997) pushed back on this.
+    His point is that some of the most powerful research is <strong>use-inspired</strong> and still deeply fundamental:
+    Pasteur is the emblem—basic insights driven by concrete societal needs.
+    (Brookings has a clean overview page for the book: <a href="https://www.brookings.edu/books/pasteurs-quadrant/">Pasteur’s Quadrant</a>.)
+  </p>
+
+  <div class="callout">
+    <p class="note">
+      If you buy Stokes’ framing, you immediately see the institutional gap:
+      use-inspired basic research needs places where (i) the “use” is real and persistent (missions), and (ii) the “basic”
+      is not punished for being long-horizon. National labs are one way to hold that tension productively.
+    </p>
+  </div>
+
+  <div class="hr"></div>
+</section>
+
+<section id="what">
+  <h4>What a national lab is (and isn’t)</h4>
+
+  <p>
+    A national lab is not “a university but bigger,” and not “an industrial R&amp;D department owned by the state.”
+    In the best case, it is a <strong>platform institution</strong>:
+  </p>
+
+  <ul>
+    <li><strong>Runs shared, high-fixed-cost infrastructure</strong> (cleanrooms, accelerators, testbeds, HPC, metrology, field sites).</li>
+    <li><strong>Keeps long-lived engineering teams</strong> that can iterate hardware and processes over years, not semesters.</li>
+    <li><strong>Turns prototypes into reproducible capability</strong> (standards, reference designs, validation pipelines).</li>
+    <li><strong>Bridges sectors</strong>: universities ↔ industry ↔ government, with rules that make collaboration routine.</li>
+    <li><strong>Holds missions</strong> that are too cross-cutting (or too unsexy) for single-PI grants.</li>
+  </ul>
+
+  <p class="note">
+    The “boring” parts matter: procurement, QA, safety, security, uptime, documentation, and institutional memory.
+    Scientific revolutions are often enabled by reliable plumbing.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="europe">
+  <h4>Europe today: excellence, fragmentation, and the “valley of platforms”</h4>
+
+  <p>
+    Europe already has world-class intergovernmental labs and infrastructures—CERN is the obvious flagship—
+    and strong national institutes in several countries (France’s CEA is a good example of a mission-oriented organization:
+    <a href="https://www.cea.fr/english/Pages/Welcome.aspx">CEA overview</a>).
+  </p>
+
+  <p>
+    But the continent-wide picture is still fragmented along borders, ministries, and funding instruments.
+    That fragmentation is not just a governance annoyance—it shapes what kinds of technical work are feasible.
+  </p>
+
+  <p>
+    Here is the pattern I keep seeing:
+  </p>
+
+  <ul>
+    <li>We fund discovery well.</li>
+    <li>We fund “projects” well.</li>
+    <li>We underfund the <strong>platform phase</strong>: building and operating the shared capabilities that many projects depend on.</li>
+  </ul>
+
+  <p class="note">
+    Call this the “valley of platforms.” It’s adjacent to the valley of death, but different:
+    you can have brilliant science and even good startups, and still lack stable testbeds, pilot lines, validation frameworks,
+    and compute/measurement infrastructure that make an ecosystem compound.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="why-now">
+  <h4>Why now: energy, security, compute, and industrial sovereignty</h4>
+
+  <p>
+    The argument for labs becomes sharper under three pressures that are hard to solve with short, competitive grants alone:
+  </p>
+
+  <ul>
+    <li><strong>Energy transition</strong>: grids, storage, materials, reactors, and industrial heat require testbeds and standards.</li>
+    <li><strong>Security and resilience</strong>: dual-use tech, supply chains, cyber-physical infrastructure, and trusted manufacturing.</li>
+    <li><strong>Compute as infrastructure</strong>: AI training/validation, scientific HPC, and sovereign capability are now strategic.</li>
+  </ul>
+
+  <p>
+    These are not just “research questions.” They are <em>systems</em>. Systems need places that can integrate components, run
+    long experiments, maintain facilities, and keep engineering talent attached to the mission.
+  </p>
+
+  <div class="callout">
+    <p class="note">
+      The moment you say “pilot line,” “certification,” “reference implementation,” “national testbed,” or “24/7 facility,”
+      you are already describing lab-shaped work.
+    </p>
+  </div>
+
+  <div class="hr"></div>
+</section>
+
+<section id="design">
+  <h4>A design sketch for Europe: principles, not bureaucracy</h4>
+
+  <p>
+    If Europe wants “national labs,” it probably shouldn’t copy-paste a single-country model. The scale is continental,
+    the governance is plural, and the strength of Europe is diversity. So I’d suggest principles:
+  </p>
+
+  <ul>
+    <li><strong>Networked, not monolithic</strong>: a federation of labs with shared roadmaps and interoperability, not one mega-agency.</li>
+    <li><strong>Platform metrics</strong>: measure uptime, access, throughput, and validated capability—not just publications.</li>
+    <li><strong>Porous boundaries</strong>: joint appointments, visiting engineer programs, industrial resident teams.</li>
+    <li><strong>Mission clarity</strong>: pick a few areas where scale and sovereignty matter (energy systems, compute, biosecurity, advanced manufacturing).</li>
+    <li><strong>Procurement and IP that enable collaboration</strong>: make it easy to build with industry without turning labs into vendors.</li>
+    <li><strong>Training as a first-class output</strong>: staff scientists and engineers mentoring the next cohort, not only PhD pipelines.</li>
+  </ul>
+
+  <p class="note">
+    Europe already knows how to do parts of this (shared infrastructures, cross-border facilities, scientific governance).
+    The opportunity is to extend that competence from “big science instruments” to “big technology platforms.”
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="takeaways">
+  <h4>Takeaways</h4>
+
+  <ul>
+    <li>Vannevar Bush’s 1945 bargain was not just about funding science—it was about building institutions that can sustain capability. (<a href="https://nsf-gov-resources.nsf.gov/2023-04/EndlessFrontier75th_w.pdf">Bush/NSF edition</a>)</li>
+    <li>Stokes’ <em>Pasteur’s Quadrant</em> is a reminder that the best research is often use-inspired and fundamental—lab-shaped work. (<a href="https://www.brookings.edu/books/pasteurs-quadrant/">Brookings page</a>)</li>
+    <li>Europe’s excellence is real, but fragmentation makes platform-building harder than it needs to be.</li>
+    <li>A network of mission-oriented labs (national + European) is one of the most practical ways to make European innovation compound.</li>
+  </ul>
+
+  <p>
+    I’ll likely follow this with a more concrete proposal: what specific “platform missions” make sense for Europe in 2026,
+    and what an actually workable governance/funding split could look like (without creating a new cathedral of paperwork).
+  </p>
+
+  <p><a href="../blog.html">← Back to Blog</a></p>
+</section>
+
+      <!-- Second ad block (NO second AdSense script include) -->
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById('sidebar');
+      const response = await fetch('../partials/sidebar.html');
+      const html = await response.text();
+      sidebarContainer.innerHTML = html;
+
+      const currentPath = window.location.pathname.split('/').pop();
+      const links = sidebarContainer.querySelectorAll('a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('active');
+        }
+      });
+
+      // Re-render KaTeX in case injected sidebar contains math
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.querySelector("main.content"), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false,
+          macros: { "\\mathbbm": "\\mathbb" },
+          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+        });
+      }
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
