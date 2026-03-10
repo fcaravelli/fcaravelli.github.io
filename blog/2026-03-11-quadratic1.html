@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Quadratic fixed points, trees, and background fields – Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+  </style>
+
+  <!-- AdSense: load ONCE per page -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    function renderKatexIn(el) {
+      if (!el || typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false,
+        macros: { "\\mathbbm": "\\mathbb" },
+        ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+      });
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      renderKatexIn(document.querySelector("main.content"));
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <!-- In-article AdSense Ad -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+<section id="top">
+  <p class="kicker">nonlinear algebra • diagrammatics • mean field</p>
+  <h3>Quadratic fixed points, trees, and background fields</h3>
+  <p><em>March 10th, 2026</em></p>
+
+  <p>
+    A deceptively simple equation can teach you most of what you need to know about perturbation theory,
+    diagram expansions, and why “multiple solutions” are not a bug but a feature.
+  </p>
+
+  <p>
+    This post starts with a one-dimensional quadratic fixed-point equation. We will:
+  </p>
+
+  <ul>
+    <li>derive the tree expansion (Catalan numbers show up immediately),</li>
+    <li>explain why that expansion selects only one of the two quadratic roots,</li>
+    <li>recover the other root by expanding around a different background,</li>
+    <li>generalize the story to an $N$-dimensional quadratic system,</li>
+    <li>and connect “multiple branches” to mean-field / background-field approximations.</li>
+  </ul>
+
+  <img class="hero" src="images/trees/quadratic-trees.png" alt="Quadratic recursion and rooted trees (schematic)">
+
+  <div class="toc">
+    <strong>Contents</strong>
+    <ul>
+      <li><a href="#scalar">1. The scalar quadratic fixed point</a></li>
+      <li><a href="#trees">2. Tree expansion and the analytic branch</a></li>
+      <li><a href="#other-root">3. Where is the second solution hiding?</a></li>
+      <li><a href="#nd">4. The $N$-dimensional quadratic system</a></li>
+      <li><a href="#nd-trees">5. Generic tree expansion in small $\\chi$</a></li>
+      <li><a href="#many">6. Multiple solutions and why you should expect them</a></li>
+      <li><a href="#mf">7. Mean field and the background-field expansion</a></li>
+      <li><a href="#takeaways">Takeaways</a></li>
+    </ul>
+  </div>
+
+  <div class="hr"></div>
+</section>
+
+<section id="scalar">
+  <h4>1. The scalar quadratic fixed point</h4>
+
+  <p>
+    Consider the fixed-point equation
+  </p>
+
+  <p class="math">
+    $$ C = S + \\chi C^2. $$
+  </p>
+
+  <p>
+    Rearranging gives a quadratic polynomial:
+  </p>
+
+  <p class="math">
+    $$ \\chi C^2 - C + S = 0. $$
+  </p>
+
+  <p>
+    As everyone learns in school, there are two solutions:
+  </p>
+
+  <p class="math">
+    $$ C_{\\pm}(\\chi) = \\frac{1 \\pm \\sqrt{1 - 4\\chi S}}{2\\chi}. $$
+  </p>
+
+  <p class="note">
+    The important point for what follows is not the formula—it’s the branch structure.
+    The two solutions behave very differently as $\\chi \\to 0$.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="trees">
+  <h4>2. Tree expansion and the analytic branch</h4>
+
+  <p>
+    Suppose we want a small-$\\chi$ expansion. Make the ansatz
+  </p>
+
+  <p class="math">
+    $$ C(\\chi) = \\sum_{n\\ge 0} \\chi^n C^{(n)}, \\qquad C^{(0)} = S. $$
+  </p>
+
+  <p>
+    Plugging into $C = S + \\chi C^2$ yields the recursion
+  </p>
+
+  <p class="math">
+    $$ C^{(n)} = \\sum_{m=0}^{n-1} C^{(m)} C^{(n-1-m)}, \\qquad n\\ge 1. $$
+  </p>
+
+  <p>
+    The first few coefficients are:
+  </p>
+
+  <p class="math">
+    $$ C = S + \\chi S^2 + 2\\chi^2 S^3 + 5\\chi^3 S^4 + 14\\chi^4 S^5 + \\cdots $$
+  </p>
+
+  <p>
+    The integers $1,1,2,5,14,\\dots$ are the Catalan numbers: they count rooted binary trees.
+    Diagrammatically, each factor of $\\chi$ corresponds to adding one branching vertex, and each leaf contributes a factor of $S$.
+  </p>
+
+  <div class="callout">
+    <p class="note">
+      This is the key reconciliation: the rooted-tree sum is not “the” solution.
+      It is the solution that is analytic at $\\chi=0$ and satisfies $C \\to S$ as $\\chi \\to 0$.
+    </p>
+  </div>
+
+  <p>
+    Indeed, the tree series is exactly the Taylor expansion of
+  </p>
+
+  <p class="math">
+    $$ C_{-}(\\chi) = \\frac{1 - \\sqrt{1 - 4\\chi S}}{2\\chi}, $$
+  </p>
+
+  <p>
+    because this is the branch with $C_-(\\chi)\\to S$ as $\\chi\\to 0$.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="other-root">
+  <h4>3. Where is the second solution hiding?</h4>
+
+  <p>
+    The other quadratic root behaves like $C_+(\\chi) \\sim 1/\\chi$ for small $\\chi$,
+    so it cannot be represented as a power series in $\\chi$ with a finite $\\chi\\to 0$ limit.
+  </p>
+
+  <p>
+    To recover it, you must expand around a <em>different background</em>.
+    This is the simplest version of a background-field approximation:
+    pick a reference solution and expand in fluctuations around it.
+  </p>
+
+  <p class="math">
+    $$ C = C^0 + \\delta. $$
+  </p>
+
+  <p>
+    If $C^0$ is an exact root, it satisfies $C^0 = S + \\chi (C^0)^2$.
+    Plugging $C=C^0+\\delta$ into the equation gives
+  </p>
+
+  <p class="math">
+    $$ \\delta = 2\\chi C^0\\,\\delta + \\chi\\,\\delta^2. $$
+  </p>
+
+  <p>
+    Rearranging,
+  </p>
+
+  <p class="math">
+    $$ (1 - 2\\chi C^0)\\,\\delta = \\chi\\,\\delta^2. $$
+  </p>
+
+  <p class="note">
+    Around an <em>exact</em> root there is no constant forcing term, so the only small solution is $\\delta=0$.
+    That is exactly what you want: you are already at the chosen branch.
+  </p>
+
+  <p>
+    The right way to generate a nontrivial perturbation is to deform the problem slightly.
+    For example, let $S \\mapsto S + \\varepsilon \\Delta S$ and expand $\\delta$ in $\\varepsilon$.
+    Then the linear operator $(1-2\\chi C^0)$ plays the role of a propagator around the chosen branch.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="nd">
+  <h4>4. The $N$-dimensional quadratic system</h4>
+
+  <p>
+    Now replace the scalar $C$ by a vector $C\\in\\mathbb{R}^N$ and consider
+  </p>
+
+  <p class="math">
+    $$ C_i = S_i + \\chi \\sum_{j,k=1}^N T_{ijk}\\,C_j C_k. $$
+  </p>
+
+  <p>
+    It is useful to package the quadratic term as a bilinear map
+  </p>
+
+  <p class="math">
+    $$ (B(u,v))_i := \\sum_{j,k} T_{ijk}\\,u_j v_k. $$
+  </p>
+
+  <p>
+    Then the fixed point reads
+  </p>
+
+  <p class="math">
+    $$ C = S + \\chi\\,B(C,C). $$
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="nd-trees">
+  <h4>5. Generic tree expansion in small $\\chi$</h4>
+
+  <p>
+    As in the scalar case, assume a series
+  </p>
+
+  <p class="math">
+    $$ C(\\chi) = \\sum_{n\\ge 0} \\chi^n C^{(n)}, \\qquad C^{(0)}=S. $$
+  </p>
+
+  <p>
+    Plugging into $C=S+\\chi B(C,C)$ gives the coefficient recursion
+  </p>
+
+  <p class="math">
+    $$ C^{(n)} = \\sum_{m=0}^{n-1} B\\big(C^{(m)},\\,C^{(n-1-m)}\\big), \\qquad n\\ge 1. $$
+  </p>
+
+  <p>
+    The first two corrections are
+  </p>
+
+  <p class="math">
+    $$ C^{(1)} = B(S,S), \\qquad C^{(2)} = B\\big(S, C^{(1)}\\big) + B\\big(C^{(1)}, S\\big). $$
+  </p>
+
+  <p>
+    If $T_{ijk}$ is symmetric in $j \\leftrightarrow k$, the two terms coincide and $C^{(2)} = 2B(S,C^{(1)})$.
+  </p>
+
+  <p class="note">
+    Combinatorially, $C^{(n)}$ is a sum over rooted binary trees with $n$ internal vertices:
+    each internal vertex contributes a tensor $T_{ijk}$, each leaf contributes a source $S$, and indices are contracted along edges.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="many">
+  <h4>6. Multiple solutions and why you should expect them</h4>
+
+  <p>
+    The scalar equation has two roots. The $N$-dimensional system is $N$ coupled quadratic equations.
+    Over the complex numbers, a generic quadratic system has up to $2^N$ isolated solutions (counting multiplicity).
+  </p>
+
+  <p class="note">
+    Over the reals the number can be anywhere between $0$ and $2^N$, and in special (degenerate) cases solutions can form continua.
+    The moral is simply: <em>branch structure is the rule, not the exception</em>.
+  </p>
+
+  <p>
+    The small-$\\chi$ tree series constructs the branch that satisfies $C(\\chi)\\to S$ as $\\chi\\to 0$.
+    Other branches need other choices of background.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="mf">
+  <h4>7. Mean field and the background-field expansion</h4>
+
+  <p>
+    The background-field idea is straightforward:
+    choose a reference solution (exact or approximate) and expand around it.
+  </p>
+
+  <p class="math">
+    $$ C = C^0 + \\delta. $$
+  </p>
+
+  <p>
+    Here $C^0$ is chosen to solve the full equation (or a mean-field approximation to it):
+  </p>
+
+  <p class="math">
+    $$ C^0 = S + \\chi B(C^0, C^0). $$
+  </p>
+
+  <p>
+    Plugging $C^0+\\delta$ into the full equation and using bilinearity gives
+  </p>
+
+  <p class="math">
+    $$ \\delta = \\chi\\big(B(C^0,\\delta)+B(\\delta,C^0)\\big) + \\chi B(\\delta,\\delta). $$
+  </p>
+
+  <p>
+    Define the Jacobian at the background $C^0$:
+  </p>
+
+  <p class="math">
+    $$ J := I - \\chi\\big(B(C^0,\\cdot)+B(\\cdot,C^0)\\big). $$
+  </p>
+
+  <p>
+    Then the fluctuation equation is
+  </p>
+
+  <p class="math">
+    $$ J\\,\\delta = \\chi B(\\delta,\\delta). $$
+  </p>
+
+  <p>
+    If $J$ is invertible, define the propagator $G := J^{-1}$, giving the fixed-point form
+  </p>
+
+  <p class="math">
+    $$ \\delta = \\chi\\,G\\,B(\\delta,\\delta). $$
+  </p>
+
+  <div class="callout">
+    <p class="note">
+      Different choices of background $C^0$ correspond to different branches—exactly like choosing $C_-$ vs $C_+$ in the scalar quadratic.
+      The linear operator $G=J^{-1}$ is the multi-dimensional analogue of the scalar denominator $(1-2\\chi C^0)^{-1}$.
+    </p>
+  </div>
+
+  <p>
+    To generate a nontrivial tree expansion around a chosen branch, deform the problem (e.g. perturb the source $S\\mapsto S+\\varepsilon\\Delta S$)
+    and expand $\\delta$ in powers of $\\varepsilon$. Each internal line carries $G$, each vertex carries $T$, each leaf carries $\\Delta S$:
+    a rooted-tree expansion <em>around the background field</em>.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="takeaways">
+  <h4>Takeaways</h4>
+
+  <ul>
+    <li>The scalar fixed point $C=S+\\chi C^2$ has two roots; the small-$\\chi$ tree expansion selects the branch analytic at $\\chi=0$.</li>
+    <li>The $N$-dimensional quadratic system admits many branches; a generic quadratic system can have up to $2^N$ complex solutions.</li>
+    <li>Tree expansions are best understood as perturbation theory around a chosen background (mean field / saddle / branch).</li>
+    <li>The background-field Jacobian $J$ and its inverse $G$ play the role of propagator; they encode which branch you are expanding around.</li>
+  </ul>
+
+  <p>
+    Next: what happens when $T$ has structure (e.g. induced by projectors / eigenvectors), and how that structure simplifies the bilinear map
+    $B(u,v)$ and the diagrammatics.
+  </p>
+
+  <p><a href="../blog.html">← Back to Blog</a></p>
+</section>
+
+      <!-- Second ad block (NO second AdSense script include) -->
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById('sidebar');
+      const response = await fetch('../partials/sidebar.html');
+      const html = await response.text();
+      sidebarContainer.innerHTML = html;
+
+      const currentPath = window.location.pathname.split('/').pop();
+      const links = sidebarContainer.querySelectorAll('a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('active');
+        }
+      });
+
+      // Re-render KaTeX in case injected sidebar contains math
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.querySelector("main.content"), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false,
+          macros: { "\\mathbbm": "\\mathbb" },
+          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+        });
+      }
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
