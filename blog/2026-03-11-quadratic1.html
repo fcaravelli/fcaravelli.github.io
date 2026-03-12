@@ -401,72 +401,123 @@
 </section>
 
  <section id="nd-trees">
-  <h4>4. Diagrammatics: the $\chi$-expansion as rooted-tree Feynman diagrams</h4>
+  <h4>4. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
 
   <p>
-    The fixed point
-    $$ C = S + \chi\,B(C,C) $$
-    can be solved perturbatively in $\chi$ exactly like a tree-level Feynman expansion:
-    at order $k$ you get diagrams with $k$ interaction vertices and no loops.
-  </p>
-
-  <p>
-    Assume a formal series
+    Instead of expanding directly around $\chi=0$, it is often cleaner (and conceptually sharper) to first pick a
+    <em>background</em> and then expand in fluctuations. Concretely, we split
   </p>
 
   <p class="math">
-    $$ C(\chi) = \sum_{n\ge 0} \chi^n C^{(n)}, \qquad C^{(0)} = S. $$
+    $$ C_i = C_0 + \delta C_i, $$
   </p>
 
   <p>
-    Plugging into $C=S+\chi B(C,C)$ and matching powers of $\chi$ gives the recursion
+    where $C_0$ is taken to be independent of $i$ (a “mean field”), and $\delta C_i$ carries the residual structure.
+    Plug this into the fixed point equation
+    $$ C_i = S_i + \chi \sum_{j,k} T_{ijk}\,C_j C_k. $$
+  </p>
+
+  <p>
+    To extract an equation for the constant background, apply a projection/averaging functional that kills fluctuations
+    (for instance an average over $i$, or more generally a projector onto the span of the uniform vector).
+    Denote this projection by $\langle\cdot\rangle$, with $\langle \delta C\rangle = 0$.
+    Applying it to both sides yields a self-consistency equation for $C_0$:
   </p>
 
   <p class="math">
-    $$ C^{(n)} = \sum_{m=0}^{n-1} B\!\big(C^{(m)},\,C^{(n-1-m)}\big), \qquad n\ge 1. $$
+    $$ C_0
+       = \langle S\rangle
+       + \chi\,\Big\langle \sum_{j,k} T_{ijk}\,(C_0+\delta C_j)(C_0+\delta C_k)\Big\rangle. $$
   </p>
 
   <p>
-    The first terms look like
+    At the pure mean-field level (drop fluctuation contributions inside the average), this closes to a scalar quadratic:
   </p>
 
   <p class="math">
-    $$ C^{(1)} = B(S,S), \qquad
-       C^{(2)} = B\big(S, B(S,S)\big) + B\big(B(S,S), S\big), \quad \dots $$
+    $$ C_0 = \bar S + \chi\,\bar T\,C_0^2, \qquad
+       \bar S := \langle S\rangle, \qquad
+       \bar T := \Big\langle \sum_{j,k} T_{ijk}\Big\rangle. \tag{$\star$} $$
+  </p>
+
+  <p class="note">
+    The exact definitions of $\bar S$ and $\bar T$ depend on your choice of projection, but the structure is universal:
+    a constant background reduces the $N$-dimensional quadratic system to a <em>scalar quadratic fixed point</em>.
   </p>
 
   <p>
-    If the interaction tensor is symmetric in the two “incoming legs” ($T_{ijk}=T_{ikj}$),
-    the two order-$\chi^2$ diagrams coincide and you simply get a factor of $2$.
+    Equation ($\star$) has two solutions whenever the discriminant is positive:
+  </p>
+
+  <p class="math">
+    $$ C_0^{\pm}(\chi)
+       = \frac{1 \pm \sqrt{1-4\chi\,\bar T\,\bar S}}{2\chi\,\bar T}. $$
+  </p>
+
+  <p>
+    This is the same branching phenomenon as in the scalar toy model: one branch is analytic in $\chi$ and matches
+    $C_0\to \bar S$ as $\chi\to 0$, while the other behaves like $C_0\sim 1/(\chi\bar T)$.
+    Picking a background $C_0$ is therefore <em>already</em> picking a branch.
+  </p>
+
+  <p>
+    Now keep $C_0$ fixed (choose either $C_0^-$ or $C_0^+$) and derive the fluctuation equation.
+    Expand the quadratic term:
+  </p>
+
+  <p class="math">
+    $$ (C_0+\delta C_j)(C_0+\delta C_k)
+       = C_0^2 + C_0(\delta C_j+\delta C_k) + \delta C_j\,\delta C_k. $$
+  </p>
+
+  <p>
+    Subtract the background equation ($\star$) from the full fixed point. What remains is an equation for $\delta C_i$:
+  </p>
+
+  <p class="math">
+    $$ \delta C_i
+       = \big(S_i-\bar S\big)
+       + \chi\,C_0 \sum_{j,k} T_{ijk}\,(\delta C_j+\delta C_k)
+       + \chi \sum_{j,k} T_{ijk}\,\delta C_j\,\delta C_k. \tag{$\dagger$} $$
+  </p>
+
+  <p>
+    The key point is that the <em>linearized operator</em> in ($\dagger$) depends on the chosen root $C_0$.
+    Define the Jacobian around the background (written as a linear map acting on $\delta C$):
+  </p>
+
+  <p class="math">
+    $$ (J_{C_0}\,\delta C)_i
+       := \delta C_i
+       - \chi\,C_0 \sum_{j,k} T_{ijk}\,(\delta C_j+\delta C_k). $$
+  </p>
+
+  <p>
+    Then ($\dagger$) becomes the background-field form
+  </p>
+
+  <p class="math">
+    $$ J_{C_0}\,\delta C
+       = (S-\bar S) + \chi\,B(\delta C,\delta C). \tag{$\ddagger$} $$
   </p>
 
   <div class="callout">
     <p class="note">
-      <strong>Tree-level Feynman rules (rooted binary trees):</strong>
-      each coefficient $C^{(k)}$ is a sum over rooted binary trees with exactly $k$ internal vertices.
-      <br><br>
-      • Each internal vertex is a quadratic interaction tensor $T_{ijk}$: two incoming indices $(j,k)$ combine into an outgoing index $i$.<br>
-      • Each leaf carries a source factor $S_a$ (with its own index $a$).<br>
-      • Each edge carries an index, and all internal indices are summed/contracted along the tree.<br>
-      • The root edge is the external leg: its index is the output component $i$ of $C_i^{(k)}$.
+      <strong>Branch dependence in one line:</strong>
+      choosing $C_0^-$ versus $C_0^+$ changes $J_{C_0}$, hence changes the propagator $G_{C_0}=J_{C_0}^{-1}$ (when it exists),
+      hence changes every coefficient in the diagram expansion for $\delta C$.
     </p>
   </div>
 
   <p>
-    Concretely, writing $B$ in components,
-    $$ (B(u,v))_i = \sum_{j,k} T_{ijk}\,u_j v_k, $$
-    the order-$k$ contribution $C_i^{(k)}$ is a sum of terms of the form
-    “product of $k$ tensors $T$” times “product of $(k+1)$ sources $S$,”
-    with indices contracted according to a rooted binary tree.
-    In other words: <em>at order $\chi^k$ you have $k$ interaction nodes and $k+1$ leaves.</em>
+    Once $G_{C_0}$ is defined, you can iterate ($\ddagger$) exactly like before:
+    the expansion of $\delta C$ is again a rooted-tree (tree-level Feynman) sum, but now
+    <em>internal lines carry $G_{C_0}$</em>, vertices carry $T_{ijk}$, and leaves carry the inhomogeneity $(S-\bar S)$.
+    Same diagrams, different weights—set by the background root you chose.
   </p>
 
-  <p>
-    This is the exact analogue of a perturbative expansion in a cubic field theory at tree level:
-    vertices encode the interaction, leaves are external insertions of the source, and the combinatorics is tree combinatorics.
-  </p>
-
-  <img class="hero" src="images/rootedtree.png" alt="Rooted binary tree diagrams for the quadratic fixed point">
+  <img class="hero" src="images/rootedtree.png" alt="Rooted binary trees for the background-field expansion">
 
   <div class="hr"></div>
 </section>
