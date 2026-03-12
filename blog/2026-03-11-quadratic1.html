@@ -112,15 +112,19 @@
         <p>
           <img src="images/ferraraabbey.jpg" alt="Ferrara Abbey (photo from Wikipedia)" style="width:100%; border-radius:12px; margin:1rem 0;">
           The image above is the Ferrara Abbey, a beautiful historical site in Italy.  It is known for the invention of the modern musical notes by the friar Guido d'Arezzo, 
-          who developed the solfège system that we still use today (do-re-mi-fa-sol-la-ti). 
-          The abbey here represents the fact that quadratic fixed points and their perturbation expansions are a very old and classical topic in mathematics, 
+          who developed the solfège system that we still use today (do-re-mi-fa-sol-la-ti). It is also the reason why the abbey is often used as a symbol of the origins of 
+          music theory and notation (it is for instance in Lucio Dalla's music video 
+          <em><a href="https://www.youtube.com/watch?v=ThA3luuqefg">Com'è profondo il mare</a></em>, a masterpiece).
+          The abbey here represents the fact that quadratic fixed points are quite archaic object. The study of their perturbation expansions 
+          are a very old and classical topic in mathematics, 
           with roots that go back to the very origins of algebra, yet they still hold many surprises and connections to modern physics and computation.
-          In fact, I don't want you to focus on the abbey, but on the tree next to it. 
+          In fact, I don't want you to focus on the abbey in the picture, but on the tree next to it. 
           It really seems close to rooted binary tree, which is exactly what we will see emerges from the perturbation expansion of a quadratic fixed point.
         </p>
 
         <p> The origin of this post is that recently I've been looking at the behavior of quadratic fixed points 
             in the context of perturbation theory and diagrammatic expansions in memristive networks, together with a student, and previously with a colleague.
+            I thought that some of the points we uncovered were interesting and not widely appreciated, so I decided to write them down in a more general and accessible way.
             The goal is to discuss and study vector quadratic equations of this form:
         </p>
         <p class="math">
@@ -147,12 +151,6 @@
   in the vector case.
 </p>
 
-<p class="note">
-  If you’ve seen QFT perturbation theory, this should ring a bell: a quadratic nonlinearity behaves like an interaction vertex,
-  iterating the fixed point builds tree-level diagrams, and “summing the diagrams” means contracting indices (here) instead of integrating over momenta (there).
-  The extra algebraic twist is branch structure: different solutions correspond to different backgrounds, and changing the background changes the propagator,
-  hence the whole expansion.
-</p>
 
 <ul>
   <li>start with the scalar quadratic and derive its rooted-tree expansion,</li>
@@ -168,7 +166,8 @@
         <li><a href="#other-root">2. Where is the second solution hiding?</a></li>
         <li><a href="#nd">3. The $N$-dimensional quadratic system (from a projector decomposition)</a></li>
         <li><a href="#trees-formula">4. Tree formula: one branch as a sum over rooted binary trees</a></li>
-        <li><a href="#nd-trees">5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</a></li>
+        <li><a href="#sd">5. Schwinger–Dyson viewpoint: a self-consistent equation for the fluctuations</a></li>
+        <li><a href="#nd-trees">6. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</a></li>
         <li><a href="#closing">Takeaway</a></li>
     </ul>
     </div>
@@ -410,6 +409,8 @@
     $$ C = S + \chi\,B(C,C). $$
   </p>
   <p> Let's now discuss how to write the solution of this in a series form.</p>
+
+  
   <div class="hr"></div>
 </section>
 <section id="trees-formula">
@@ -447,7 +448,11 @@
   </ul>
 
   <p class="note">
-    This is the same combinatorics as tree-level Feynman diagrams: a quadratic interaction generates binary trees,
+      If you’ve seen QFT perturbation theory, this should ring a bell: a quadratic nonlinearity behaves like an interaction vertex,
+     iterating the fixed point builds tree-level diagrams, and “summing the diagrams” means contracting indices (here) instead of integrating over momenta (there).
+     The extra algebraic twist is branch structure: different solutions correspond to different backgrounds, and changing the background changes the propagator,
+     hence the whole expansion.
+    This is in fact the same combinatorics as tree-level Feynman diagrams: a quadratic interaction generates binary trees,
     and the Catalan numbers count the underlying shapes. But here we also have indices, so each tree shape comes with
     a sum over index assignments (contractions) dictated by $T_{ijk}$.
   </p>
@@ -502,11 +507,14 @@
   <p class="note">
     If you strip away the indices and set $T_{ijk}\equiv 1$, the only remaining information is the number of tree shapes.
     Then $C^{(n)}$ is proportional to the Catalan number $C_n$, recovering the familiar scalar story.
-    The tensor $T$ is what turns “counting trees” into “contracting a diagram”.
+    The tensor $T$ is what turns “counting trees” into “contracting a diagram”. This is the type of structure
+    that I typically love in physics: a universal combinatorial skeleton dressed with model-specific weights. 
+    Both statistical physics and quantum field theory are full of this kind of structure, and it is one of the things 
+    that makes them so powerful and beautiful.
   </p>
 
   <p>
-    The beauty of the formula is that it separates <em>universals</em> from <em>model-specific content</em>:
+    Also, the beauty of the formula is that it separates <em>universals</em> from <em>model-specific content</em>:
     the universals are the rooted binary trees (pure combinatorics), while the model-specific content sits entirely in the
     vertex weights $T_{ijk}$ and the leaf insertions $S_i$. This is exactly what a good diagrammatic expansion should do.
   </p>
@@ -514,9 +522,118 @@
   <div class="hr"></div>
 </section>
 
+<section id="sd">
+  <h4>5. Schwinger–Dyson viewpoint: a self-consistent equation for the fluctuations</h4>
+
+  <p>
+    The background split $C_i=C_0+\delta C_i$ does more than reorganize perturbation theory: it also produces a
+    Schwinger–Dyson–type self-consistency equation. In QFT language, it is the statement that the “full propagator”
+    (here: the linear response of $\delta C$) differs from the bare one by a self-energy generated by the interaction.
+    In our setting it is purely algebraic, but the structure is the same.
+  </p>
+
+  <p>
+    Start from the fluctuation equation in operator form
+  </p>
+
+  <p class="math">
+    $$ J_{C_0}\,\delta C = (S-\bar S) + \chi\,B(\delta C,\delta C), $$
+  </p>
+
+  <p>
+    where $J_{C_0}$ is the background Jacobian and $G_{C_0}:=J_{C_0}^{-1}$ (when it exists) is the background propagator.
+    Apply $G_{C_0}$ to both sides to get the fixed-point form
+  </p>
+
+  <p class="math">
+    $$ \delta C = G_{C_0}(S-\bar S) + \chi\,G_{C_0}\,B(\delta C,\delta C). \tag{SD0} $$
+  </p>
+
+  <p>
+    Now introduce the (connected) two-point response of the fluctuations to the source. A convenient definition is the
+    derivative with respect to the source components:
+  </p>
+
+  <p class="math">
+    $$ \mathcal{G}_{ia} \;:=\; \frac{\partial\,\delta C_i}{\partial S_a}. $$
+  </p>
+
+  <p>
+    Differentiate (SD0) with respect to $S_a$. The first term gives the “bare” response $G_{C_0}$,
+    while the second term generates a contribution proportional to $\mathcal{G}$ itself (this is the Schwinger–Dyson closure):
+  </p>
+
+  <p class="math">
+    $$ \mathcal{G}_{ia}
+       = (G_{C_0})_{ia}
+       + \chi \sum_{m} (G_{C_0})_{im}\;
+          \frac{\partial}{\partial S_a}\Big(B(\delta C,\delta C)\Big)_m. \tag{SD1} $$
+  </p>
+
+  <p>
+    Using bilinearity,
+    $$ \frac{\partial}{\partial S_a} B(\delta C,\delta C)
+       = B\!\Big(\frac{\partial \delta C}{\partial S_a},\delta C\Big)
+       + B\!\Big(\delta C,\frac{\partial \delta C}{\partial S_a}\Big)
+       = B(\mathcal{G}_{\cdot a},\delta C)+B(\delta C,\mathcal{G}_{\cdot a}), $$
+    where $\mathcal{G}_{\cdot a}$ denotes the vector with components $\mathcal{G}_{ja}$.
+    Plugging this into (SD1) gives
+  </p>
+
+  <p class="math">
+    $$ \mathcal{G}_{ia}
+       = (G_{C_0})_{ia}
+       + \chi \sum_m (G_{C_0})_{im}\Big(
+           B(\mathcal{G}_{\cdot a},\delta C)_m
+           + B(\delta C,\mathcal{G}_{\cdot a})_m
+         \Big). \tag{SD2} $$
+  </p>
+
+  <p class="note">
+    (SD2) is the finite-dimensional Schwinger–Dyson equation: the response $\mathcal{G}$ appears on both sides because
+    changing the source changes the background solution through the interaction. Diagrammatically, (SD2) resums an infinite
+    family of tree insertions (“dressed propagators”).
+  </p>
+
+  <p>
+    If $T_{ijk}$ is symmetric in the two incoming legs, $B(u,v)=B(v,u)$, the two terms coincide and (SD2) simplifies to
+  </p>
+
+  <p class="math">
+    $$ \mathcal{G}_{ia}
+       = (G_{C_0})_{ia}
+       + 2\chi \sum_m (G_{C_0})_{im}\;B(\mathcal{G}_{\cdot a},\delta C)_m. \tag{SD2'} $$
+  </p>
+
+  <p>
+    You can also package this in the more familiar “Dyson form”. Define the (background-dependent) linear operator
+  </p>
+
+  <p class="math">
+    $$ (\Sigma_{\delta})\,u \;:=\; \chi\Big(B(u,\delta C)+B(\delta C,u)\Big). $$
+  </p>
+
+  <p>
+    Then (SD2) is equivalent to
+  </p>
+
+  <p class="math">
+    $$ \mathcal{G} = G_{C_0} + G_{C_0}\,\Sigma_{\delta}\,\mathcal{G},
+       \qquad\text{so}\qquad
+       \mathcal{G} = (I - G_{C_0}\Sigma_{\delta})^{-1}G_{C_0}. \tag{Dyson} $$
+  </p>
+
+  <p class="note">
+    This is exactly the usual story: $G_{C_0}$ is the “bare” propagator around the chosen branch $C_0$,
+    and $\Sigma_{\delta}$ plays the role of a self-energy induced by the interaction and the actual fluctuation field $\delta C$.
+    Changing the branch (changing $C_0$) changes $G_{C_0}$, and therefore changes the full response $\mathcal{G}$.
+  </p>
+
+  <div class="hr"></div>
+</section>
 
 <section id="nd-trees">
-  <h4>5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
+  <h4>6. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
 
   <p>
     Let us now see how to organize an expansion around <em>either</em> branch (not just the one analytic at $\chi=0$).
@@ -664,7 +781,7 @@
   <p>
     This started as a toy fixed point, but the point is general.
     Quadratic self-consistency equations show up everywhere (mean field, message passing, closures),
-    and they almost never have a single “the” solution. They have branches.
+    and they almost never have a single “the” solution. They have <em>analytical</em> branches.
   </p>
 
   <p class="note">
