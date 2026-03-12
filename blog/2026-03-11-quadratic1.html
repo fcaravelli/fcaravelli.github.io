@@ -306,36 +306,101 @@
 
   <div class="hr"></div>
 </section>
+<section id="nd">
+  <h4>3. The $N$-dimensional quadratic system (from a projector decomposition)</h4>
 
-      <section id="nd">
-        <h4>3. The $N$-dimensional quadratic system</h4>
+  <p>
+    In many problems the scalar quadratic fixed point is really a <em>mode-reduced</em> version of a higher-dimensional equation:
+    you have a vector unknown $x$ (a field, a profile, a mean, …), a source $S$, and a quadratic interaction,
+    but you only “keep” the part of the dynamics that lives in a finite-dimensional subspace.
+    A convenient way to express that is with a projector $\Omega$.
+  </p>
 
-        <p>
-          Now replace the scalar $C$ by a vector $C\in\mathbb{R}^N$ and consider
-        </p>
+  <p class="math">
+    $$ x \;=\; S \;+\; \chi\,\Omega\,\mathcal{Q}(x,x), $$
+  </p>
 
-        <p class="math">
-          $$ C_i = S_i + \chi \sum_{j,k=1}^N T_{ijk}\,C_j C_k. $$
-        </p>
+  <p>
+    where $\mathcal{Q}(\cdot,\cdot)$ is bilinear (the quadratic part of your model) and $\Omega$ is a projector:
+    $\Omega^2=\Omega$. Assume the source lives in the range of the projector, i.e. $S=\Omega S$.
+    Then the fixed point necessarily satisfies $x=\Omega x$ as well, so the whole problem closes on the projected subspace.
+  </p>
 
-        <p>
-          It is useful to package the quadratic term as a bilinear map
-        </p>
+  <p>
+    Choose an orthonormal basis $\{\xi_i\}_{i=1}^N$ for $\mathrm{Range}(\Omega)$.
+    Since $\Omega$ is a projector, it admits the spectral/basis representation
+  </p>
 
-        <p class="math">
-          $$ (B(u,v))_i := \sum_{j,k} T_{ijk}\,u_j v_k. $$
-        </p>
+  <p class="math">
+    $$ \Omega \;=\; \sum_{i=1}^N \xi_i\,\xi_i^{\mathsf T}. $$
+  </p>
 
-        <p>
-          Then the fixed point reads
-        </p>
+  <p>
+    Now expand both the unknown and the source in that basis:
+  </p>
 
-        <p class="math">
-          $$ C = S + \chi\,B(C,C). $$
-        </p>
+  <p class="math">
+    $$ x = \sum_{i=1}^N C_i\,\xi_i, 
+       \qquad
+       S = \sum_{i=1}^N S_i\,\xi_i, 
+       \qquad
+       S_i := \xi_i^{\mathsf T} S. $$
+  </p>
 
-        <div class="hr"></div>
-      </section>
+  <p>
+    Plug this into the fixed point equation and project onto the $i$th mode by multiplying on the left by $\xi_i^{\mathsf T}$.
+    Using $\xi_i^{\mathsf T}\Omega=\xi_i^{\mathsf T}$ (because $\xi_i$ lies in the range of $\Omega$), we get
+  </p>
+
+  <p class="math">
+    $$ C_i \;=\; S_i \;+\; \chi\,\xi_i^{\mathsf T}\,\mathcal{Q}\!\Big(\sum_{j} C_j\xi_j,\;\sum_{k} C_k\xi_k\Big). $$
+  </p>
+
+  <p>
+    Bilinearity of $\mathcal{Q}$ expands the quadratic term into pairwise couplings:
+  </p>
+
+  <p class="math">
+    $$ \xi_i^{\mathsf T}\,\mathcal{Q}\!\Big(\sum_{j} C_j\xi_j,\;\sum_{k} C_k\xi_k\Big)
+       \;=\;
+       \sum_{j,k} C_j C_k\,\underbrace{\xi_i^{\mathsf T}\mathcal{Q}(\xi_j,\xi_k)}_{=:~T_{ijk}}. $$
+  </p>
+
+  <p>
+    This is where the “interaction tensor” comes from: it is just the quadratic operation expressed in the chosen mode basis.
+    Defining
+  </p>
+
+  <p class="math">
+    $$ T_{ijk} \;:=\; \xi_i^{\mathsf T}\,\mathcal{Q}(\xi_j,\xi_k), $$
+  </p>
+
+  <p>
+    we arrive at the $N$ coupled quadratic fixed-point equations
+  </p>
+
+  <p class="math">
+    $$ C_i \;=\; S_i \;+\; \chi\sum_{j,k=1}^N T_{ijk}\,C_j C_k. $$
+  </p>
+
+  <p>
+    Finally, it is convenient to repackage the tensor contraction as a bilinear map $B:\mathbb{R}^N\times\mathbb{R}^N\to\mathbb{R}^N$:
+  </p>
+
+  <p class="math">
+    $$ (B(u,v))_i := \sum_{j,k} T_{ijk}\,u_j v_k. $$
+  </p>
+
+  <p>
+    In this notation the fixed point is the direct vector analogue of the scalar quadratic equation:
+  </p>
+
+  <p class="math">
+    $$ C = S + \chi\,B(C,C). $$
+  </p>
+
+  <div class="hr"></div>
+</section>
 
       <section id="nd-trees">
         <h4>4. Generic tree expansion in small $\chi$</h4>
