@@ -151,16 +151,17 @@
         </ul>
 
 
-        <div class="toc">
-          <strong>Contents</strong>
-          <ul>
-            <li><a href="#scalar">1. The scalar quadratic fixed point</a></li>
-            <li><a href="#other-root">2. Where is the second solution hiding?</a></li>
-            <li><a href="#nd">3. The $N$-dimensional quadratic system</a></li>
-            <li><a href="#nd-trees">4. Generic tree expansion in small $\chi$</a></li>
-            <li><a href="#many">5. Multiple solutions and why you should expect them</a></li>
-          </ul>
-        </div>
+    <div class="toc">
+    <strong>Contents</strong>
+    <ul>
+        <li><a href="#scalar">1. The scalar quadratic fixed point</a></li>
+        <li><a href="#other-root">2. Where is the second solution hiding?</a></li>
+        <li><a href="#nd">3. The $N$-dimensional quadratic system (from a projector decomposition)</a></li>
+        <li><a href="#trees-formula">4. Tree formula: one branch as a sum over rooted binary trees</a></li>
+        <li><a href="#nd-trees">5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</a></li>
+        <li><a href="#closing">Takeaway</a></li>
+    </ul>
+    </div>
 
         <div class="hr"></div>
       </section>
@@ -504,13 +505,12 @@
 </section>
 
 
-
- <section id="nd-trees">
+<section id="nd-trees">
   <h4>5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
 
   <p>
-    Let us now discuss how to recover expansion over other roots, instead of expanding directly around $\chi=0$, it is often cleaner (and conceptually sharper) to first pick a
-    <em>background</em> and then expand in fluctuations. Concretely, we split
+    Let us now see how to organize an expansion around <em>either</em> branch (not just the one analytic at $\chi=0$).
+    The clean way is to pick a background (mean field) and expand in fluctuations:
   </p>
 
   <p class="math">
@@ -518,41 +518,75 @@
   </p>
 
   <p>
-    where $C_0$ is taken to be independent of $i$ (a “mean field”), and $\delta C_i$ carries the residual structure.
-    Plug this into the fixed point equation
-    $$ C_i = S_i + \chi \sum_{j,k} T_{ijk}\,C_j C_k. $$
+    with $C_0$ independent of $i$ and fluctuations chosen to have zero mean,
+    $$ \frac{1}{N}\sum_{i=1}^N \delta C_i = 0. $$
+    Insert this into the fixed point
+    $$ C_i = S_i + \chi \sum_{j,k=1}^N T_{ijk}\,C_j C_k. $$
   </p>
 
   <p>
-    To extract an equation for the constant background, apply a projection/averaging functional that kills fluctuations
-    (for instance an average over $i$, or more generally a projector onto the span of the uniform vector).
-    Denote this projection by $\langle\cdot\rangle$, with $\langle \delta C\rangle = 0$.
-    Applying it to both sides yields a self-consistency equation for $C_0$:
+    The background equation should not depend on $i$, so we extract it by <em>summing over $i$</em>.
+    Define the averages
   </p>
 
   <p class="math">
-    $$ C_0
-       = \langle S\rangle
-       + \chi\,\Big\langle \sum_{j,k} T_{ijk}\,(C_0+\delta C_j)(C_0+\delta C_k)\Big\rangle. $$
+    $$ \bar C := \frac{1}{N}\sum_{i=1}^N C_i,\qquad
+       \bar S := \frac{1}{N}\sum_{i=1}^N S_i. $$
   </p>
 
   <p>
-    At the pure mean-field level (drop fluctuation contributions inside the average), this closes to a scalar quadratic:
+    With our split $C_i=C_0+\delta C_i$ and zero-mean fluctuations, we have $\bar C = C_0$.
+    Now sum the fixed point over $i$ and divide by $N$:
   </p>
 
   <p class="math">
-    $$ C_0 = \bar S + \chi\,\bar T\,C_0^2, \qquad
-       \bar S := \langle S\rangle, \qquad
-       \bar T := \Big\langle \sum_{j,k} T_{ijk}\Big\rangle. \tag{$\star$} $$
+    $$ \frac{1}{N}\sum_i C_i
+       = \frac{1}{N}\sum_i S_i
+       + \chi\,\frac{1}{N}\sum_{i,j,k} T_{ijk}\,C_j C_k, $$
+    i.e.
+    $$ C_0 = \bar S + \chi\,\frac{1}{N}\sum_{i,j,k} T_{ijk}\,C_j C_k. \tag{$\star$} $$
+  </p>
+
+  <p>
+    Expand $C_jC_k=(C_0+\delta C_j)(C_0+\delta C_k)$:
+  </p>
+
+  <p class="math">
+    $$ C_jC_k = C_0^2 + C_0(\delta C_j+\delta C_k) + \delta C_j\,\delta C_k. $$
+  </p>
+
+  <p>
+    Plugging into ($\star$) gives the exact identity
+  </p>
+
+  <p class="math">
+    \[
+      C_0
+      = \bar S
+      + \chi\Bigg[
+        C_0^2\,\underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}}_{=:~\bar T}
+        + C_0\,\underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}(\delta C_j+\delta C_k)}_{=:~L(\delta C)}
+        + \underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}\,\delta C_j\delta C_k}_{=:~Q(\delta C)}
+      \Bigg]. \tag{$\star\star$}
+    \]
   </p>
 
   <p class="note">
-    The exact definitions of $\bar S$ and $\bar T$ depend on your choice of projection, but the structure is universal:
-    a constant background reduces the $N$-dimensional quadratic system to a <em>scalar quadratic fixed point</em>.
+    This makes the bookkeeping honest: the background equation is obtained by summing over $i$, and the resulting scalar
+    self-consistency condition still contains fluctuation corrections through $L(\delta C)$ and $Q(\delta C)$.
+    The “pure mean-field” closure is the approximation where you drop those fluctuation-dependent terms.
   </p>
 
   <p>
-    Equation ($\star$) has two solutions whenever the discriminant is positive:
+    At the pure mean-field level (set $L(\delta C)\approx 0$ and $Q(\delta C)\approx 0$) the background closes to a scalar quadratic:
+  </p>
+
+  <p class="math">
+    $$ C_0 = \bar S + \chi\,\bar T\,C_0^2. \tag{$\mathrm{MF}$} $$
+  </p>
+
+  <p>
+    This has the two familiar branches (when the discriminant is positive):
   </p>
 
   <p class="math">
@@ -561,41 +595,32 @@
   </p>
 
   <p>
-    This is the same branching phenomenon as in the scalar toy model: one branch is analytic in $\chi$ and matches
-    $C_0\to \bar S$ as $\chi\to 0$, while the other behaves like $C_0\sim 1/(\chi\bar T)$.
-    Picking a background $C_0$ is therefore <em>already</em> picking a branch.
+    Choosing $C_0=C_0^-$ or $C_0=C_0^+$ is therefore already a choice of branch/background.
+    Once that choice is made, the remaining content of the problem is an equation for the fluctuations $\delta C_i$.
   </p>
 
   <p>
-    Now keep $C_0$ fixed (choose either $C_0^-$ or $C_0^+$) and derive the fluctuation equation.
-    Expand the quadratic term:
-  </p>
-
-  <p class="math">
-    $$ (C_0+\delta C_j)(C_0+\delta C_k)
-       = C_0^2 + C_0(\delta C_j+\delta C_k) + \delta C_j\,\delta C_k. $$
-  </p>
-
-  <p>
-    Subtract the background equation ($\star$) from the full fixed point. What remains is an equation for $\delta C_i$:
+    To derive it, return to the full fixed point, insert $C_i=C_0+\delta C_i$, and subtract the (mean-field) background equation
+    componentwise. Using $(\mathrm{MF})$ to eliminate the $C_0^2$ term, one finds
   </p>
 
   <p class="math">
     $$ \delta C_i
-       = \big(S_i-\bar S\big)
-       + \chi\,C_0 \sum_{j,k} T_{ijk}\,(\delta C_j+\delta C_k)
-       + \chi \sum_{j,k} T_{ijk}\,\delta C_j\,\delta C_k. \tag{$\dagger$} $$
+       = (S_i-\bar S)
+       + \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k)
+       + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k
+       \;+\; \text{(terms enforcing }\tfrac1N\sum_i\delta C_i=0\text{)}. \tag{$\dagger$} $$
   </p>
 
   <p>
-    The key point is that the <em>linearized operator</em> in ($\dagger$) depends on the chosen root $C_0$.
-    Define the Jacobian around the background (written as a linear map acting on $\delta C$):
+    The crucial point is that the <em>linearized operator</em> depends on the chosen root $C_0$.
+    Define the Jacobian around the background:
   </p>
 
   <p class="math">
     $$ (J_{C_0}\,\delta C)_i
        := \delta C_i
-       - \chi\,C_0 \sum_{j,k} T_{ijk}\,(\delta C_j+\delta C_k). $$
+       - \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k). $$
   </p>
 
   <p>
@@ -604,7 +629,7 @@
 
   <p class="math">
     $$ J_{C_0}\,\delta C
-       = (S-\bar S) + \chi\,B(\delta C,\delta C). \tag{$\ddagger$} $$
+       = (S-\bar S) + \chi\,B(\delta C,\delta C) \quad (\text{with } \tfrac1N\sum_i\delta C_i=0). $$
   </p>
 
   <div class="callout">
@@ -616,56 +641,60 @@
   </div>
 
   <p>
-    Once $G_{C_0}$ is defined, you can iterate ($\ddagger$) exactly like before:
-    the expansion of $\delta C$ is again a rooted-tree (tree-level Feynman) sum, but now
-    <em>internal lines carry $G_{C_0}$</em>, vertices carry $T_{ijk}$, and leaves carry the inhomogeneity $(S-\bar S)$.
+    Once $G_{C_0}$ is defined, you iterate exactly as before: the expansion of $\delta C$ is again a rooted-tree sum,
+    but now <em>internal lines carry $G_{C_0}$</em>, vertices carry $T_{ijk}$, and leaves carry the inhomogeneity $(S-\bar S)$.
     Same diagrams, different weights—set by the background root you chose.
   </p>
 
-
   <div class="hr"></div>
 </section>
-
 <section id="closing">
-  <h4>Takeaway: perturbation theory is a choice of branch</h4>
+  <h4>Takeaway: perturbation theory picks a branch</h4>
 
   <p>
-    At the start this looked like a toy fixed point. By the end it should feel like a template.
-    Quadratic self-consistency equations are everywhere: mean-field closures, message passing, diagrammatics,
-    implicit-function tricks. And the first lesson is the one people keep relearning the hard way:
-    the equation does not come with “the” solution. It comes with <em>branches</em>.
+    This started as a toy fixed point, but the point is general.
+    Quadratic self-consistency equations show up everywhere (mean field, message passing, closures),
+    and they almost never have a single “the” solution. They have branches.
   </p>
 
   <p class="note">
-    A perturbative series is not an innocent approximation; it is a commitment.
-    When you expand, you have already picked the branch that is analytic in your small parameter
-    (here: the one with $C(\chi)\to S$ as $\chi\to 0$). The rooted trees are the combinatorics of that choice.
+    A perturbative expansion is therefore not neutral. Expanding in $\chi$ automatically selects the branch that is analytic in $\chi$
+    (here the one with $C(\chi)\to S$ as $\chi\to 0$). The rooted trees are just the bookkeeping for that choice.
   </p>
 
   <p>
-    The background-field rewrite makes this explicit. You choose a background $C^0$—ideally a solution of
-    $$ C^0 = S + \chi\,B(C^0,C^0) $$
-    and then study fluctuations $\delta$ via
+    The background-field rewrite makes the choice explicit. Pick a background $C^0$ (ideally an actual solution)
+    $$ C^0 = S + \chi\,B(C^0,C^0), $$
+    write $C=C^0+\delta$, and you get
     $$ J\,\delta = \chi\,B(\delta,\delta), \qquad
        J = I - \chi\big(B(C^0,\cdot)+B(\cdot,C^0)\big). $$
-    If $J$ is invertible, the propagator $G=J^{-1}$ is the “linear physics” of the chosen branch.
-    Change $C^0$ and you change $J$, $G$, and the entire diagram expansion.
+    If $J$ is invertible, $G=J^{-1}$ is the linear response around that background. Different $C^0$ give different $J$ and $G$,
+    so the whole expansion changes with the branch.
   </p>
 
   <p>
-    That is the unifying picture: <em>tree diagrams are what you get when you iterate a quadratic interaction, and the propagator tells you which branch you’re expanding around.</em>
-    Everything else—Catalan numbers, missing roots, mean-field stability, “why did my series converge to the wrong thing?”—is a corollary.
+    This is also why the diagrams look like QFT diagrams. Same objects: vertices, propagators, trees.
+    The difference is what you do with an internal line: in QFT you integrate over a momentum; here you sum over an index.
+    So it’s “Feynman diagrams”, but with sums instead of integrals.
   </p>
 
   <p>
-    Next up (if you want to push this further): what happens when $T_{ijk}$ has structure (symmetries, projectors, low rank, eigenmodes).
-    Then the diagrammatics doesn’t just count trees—it starts to simplify, factorize, and sometimes even close.
+    One last structural point: we simplified the reduction to the $N$-dimensional system by using that $\Omega$ is a projector,
+    so the relevant subspace is clean and the decomposition is straightforward.
+    You can generalize this: instead of a projector you can work with a spectral decomposition (a sum over eigenvalues/eigenmodes),
+    or even drop symmetry and deal with non-normal/non-symmetric operators. The same basic ideas still apply,
+    but the bookkeeping gets messier (left/right eigenvectors, non-orthogonal modes, Jordan blocks), and the branch structure can become harder to track.
   </p>
+
+  <p>
+    If you want a next step: impose structure on $T_{ijk}$ (symmetries, projectors, low rank, eigenmodes).
+    Then many of these tree sums simplify a lot, sometimes enough to compute them in closed form.
+  </p>
+</section>
 
   <p><a href="../blog.html">← Back to Blog</a></p>
 
   <div class="hr"></div>
-</section> 
 
 
       <!-- Second ad block (NO second AdSense script include) -->
