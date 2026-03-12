@@ -113,9 +113,10 @@
           <img src="images/ferraraabbey.jpg" alt="Ferrara Abbey (photo from Wikipedia)" style="width:100%; border-radius:12px; margin:1rem 0;">
           The image above is the Ferrara Abbey, a beautiful historical site in Italy.  It is known for the invention of the modern musical notes by the friar Guido d'Arezzo, 
           who developed the solfège system that we still use today (do-re-mi-fa-sol-la-ti). 
-          The abbey is a symbol of creativity, origins and innovation, which is fitting for the topic of this post: how a simple quadratic equation can reveal deep 
-          insights about perturbation theory, diagrammatic expansions, and the nature of multiple solutions in nonlinear systems. In fact, I don't want you to focus on the abbey,
-          but on the tree next to it. It really seems close to rooted binary tree, which is exactly what we will see emerges from the perturbation expansion of a quadratic fixed point.
+          The abbey here represents the fact that quadratic fixed points and their perturbation expansions are a very old and classical topic in mathematics, 
+          with roots that go back to the very origins of algebra, yet they still hold many surprises and connections to modern physics and computation.
+          In fact, I don't want you to focus on the abbey, but on the tree next to it. 
+          It really seems close to rooted binary tree, which is exactly what we will see emerges from the perturbation expansion of a quadratic fixed point.
         </p>
 
         <p> The origin of this post is that recently I've been looking at the behavior of quadratic fixed points 
@@ -158,8 +159,6 @@
             <li><a href="#nd">3. The $N$-dimensional quadratic system</a></li>
             <li><a href="#nd-trees">4. Generic tree expansion in small $\chi$</a></li>
             <li><a href="#many">5. Multiple solutions and why you should expect them</a></li>
-            <li><a href="#mf">6. Mean field and the background-field expansion</a></li>
-            <li><a href="#takeaways">Takeaways</a></li>
           </ul>
         </div>
 
@@ -402,7 +401,7 @@
 </section>
 
  <section id="nd-trees">
-  <h4>5. Diagrammatics: the $\chi$-expansion as rooted-tree Feynman diagrams</h4>
+  <h4>4. Diagrammatics: the $\chi$-expansion as rooted-tree Feynman diagrams</h4>
 
   <p>
     The fixed point
@@ -471,120 +470,47 @@
 
   <div class="hr"></div>
 </section>
-<section id="many">
-  <h4>6. Multiple solutions, branches, and the background-field expansion</h4>
+<section id="closing">
+  <h4>Takeaway: perturbation theory is a choice of branch</h4>
 
   <p>
-    The scalar fixed point had two roots. The vector problem is $N$ coupled quadratic equations, so “multiple solutions”
-    is not a pathology—it is the generic situation. Over the complex numbers, a generic quadratic system can have up to
-    $2^N$ isolated solutions (counting multiplicity); over the reals the number can range from $0$ to $2^N$, and in
-    degenerate cases solutions can even come in continua.
+    At the start this looked like a toy fixed point. By the end it should feel like a template.
+    Quadratic self-consistency equations are everywhere: mean-field closures, message passing, diagrammatics,
+    implicit-function tricks. And the first lesson is the one people keep relearning the hard way:
+    the equation does not come with “the” solution. It comes with <em>branches</em>.
   </p>
 
   <p class="note">
-    The moral is simply: <em>branch structure is the rule, not the exception</em>.
-    A perturbation series is not “the solution”: it is the solution on the branch singled out by the assumptions built into the expansion.
+    A perturbative series is not an innocent approximation; it is a commitment.
+    When you expand, you have already picked the branch that is analytic in your small parameter
+    (here: the one with $C(\chi)\to S$ as $\chi\to 0$). The rooted trees are the combinatorics of that choice.
   </p>
 
   <p>
-    In particular, the small-$\chi$ rooted-tree series implicitly selects the branch that stays finite and satisfies
-    $C(\chi)\to S$ as $\chi\to 0$. If you want any other branch, you must reorganize perturbation theory around a different
-    reference configuration—this is exactly the background-field (mean-field) idea.
-  </p>
-
-  <p class="math">
-    $$ C = C^0 + \delta. $$
-  </p>
-
-  <p>
-    Here $C^0$ is a chosen <em>background</em>. The cleanest choice is to take $C^0$ to solve the full fixed point,
-  </p>
-
-  <p class="math">
-    $$ C^0 = S + \chi\,B(C^0,C^0). $$
-  </p>
-
-  <p class="note">
-    This step is where branch selection happens: different solutions $C^0$ correspond to different branches—exactly like
-    choosing $C_-$ versus $C_+$ in the scalar quadratic.
+    The background-field rewrite makes this explicit. You choose a background $C^0$—ideally a solution of
+    $$ C^0 = S + \chi\,B(C^0,C^0) $$
+    and then study fluctuations $\delta$ via
+    $$ J\,\delta = \chi\,B(\delta,\delta), \qquad
+       J = I - \chi\big(B(C^0,\cdot)+B(\cdot,C^0)\big). $$
+    If $J$ is invertible, the propagator $G=J^{-1}$ is the “linear physics” of the chosen branch.
+    Change $C^0$ and you change $J$, $G$, and the entire diagram expansion.
   </p>
 
   <p>
-    Now plug $C^0+\delta$ into the equation $C=S+\chi B(C,C)$ and use bilinearity:
-  </p>
-
-  <p class="math">
-    $$ C^0+\delta
-       = S + \chi\Big(B(C^0,C^0)+B(C^0,\delta)+B(\delta,C^0)+B(\delta,\delta)\Big). $$
+    That is the unifying picture: <em>tree diagrams are what you get when you iterate a quadratic interaction, and the propagator tells you which branch you’re expanding around.</em>
+    Everything else—Catalan numbers, missing roots, mean-field stability, “why did my series converge to the wrong thing?”—is a corollary.
   </p>
 
   <p>
-    Subtract the background equation. The constant terms cancel and we get the fluctuation equation
+    Next up (if you want to push this further): what happens when $T_{ijk}$ has structure (symmetries, projectors, low rank, eigenmodes).
+    Then the diagrammatics doesn’t just count trees—it starts to simplify, factorize, and sometimes even close.
   </p>
 
-  <p class="math">
-    $$ \delta = \chi\big(B(C^0,\delta)+B(\delta,C^0)\big) + \chi\,B(\delta,\delta). $$
-  </p>
-
-  <p>
-    Define the Jacobian (linearized operator) at the background:
-  </p>
-
-  <p class="math">
-    $$ J := I - \chi\big(B(C^0,\cdot)+B(\cdot,C^0)\big). $$
-  </p>
-
-  <p>
-    Then the fluctuation equation can be written as
-  </p>
-
-  <p class="math">
-    $$ J\,\delta = \chi\,B(\delta,\delta). $$
-  </p>
-
-  <p>
-    If $J$ is invertible, define the propagator $G:=J^{-1}$ and rewrite it in fixed-point form:
-  </p>
-
-  <p class="math">
-    $$ \delta = \chi\,G\,B(\delta,\delta). $$
-  </p>
-
-  <div class="callout">
-    <p class="note">
-      The dependence on the branch is now explicit: the “propagator” $G$ depends on $C^0$.
-      This is the multi-dimensional analogue of the scalar factor $(1-2\chi C^0)^{-1}$.
-      Changing $C^0$ changes $J$, hence $G$, hence the entire perturbative expansion.
-    </p>
-  </div>
-
-  <p>
-    To generate a nontrivial diagrammatic expansion around a chosen branch, one typically deforms the problem,
-    e.g. perturb the source $S\mapsto S+\varepsilon\,\Delta S$ and expand the response $\delta(\varepsilon)$.
-    Then each internal line carries $G$, each vertex carries $T_{ijk}$, and each leaf carries $\Delta S$:
-    a rooted-tree (tree-level Feynman) expansion <em>around the background field</em>.
-  </p>
+  <p><a href="../blog.html">← Back to Blog</a></p>
 
   <div class="hr"></div>
-</section>
+</section> 
 
-      <section id="takeaways">
-        <h4>Takeaways</h4>
-
-        <ul>
-          <li>The scalar fixed point $C=S+\chi C^2$ has two roots; the small-$\chi$ tree expansion selects the branch analytic at $\chi=0$.</li>
-          <li>The $N$-dimensional quadratic system admits many branches; a generic quadratic system can have up to $2^N$ complex solutions.</li>
-          <li>Tree expansions are best understood as perturbation theory around a chosen background (mean field / saddle / branch).</li>
-          <li>The background-field Jacobian $J$ and its inverse $G$ play the role of propagator; they encode which branch you are expanding around.</li>
-        </ul>
-
-        <p>
-          Next: what happens when $T$ has structure (e.g. induced by projectors / eigenvectors), and how that structure simplifies the bilinear map
-          $B(u,v)$ and the diagrammatics.
-        </p>
-
-        <p><a href="../blog.html">← Back to Blog</a></p>
-      </section>
 
       <!-- Second ad block (NO second AdSense script include) -->
       <ins class="adsbygoogle"
