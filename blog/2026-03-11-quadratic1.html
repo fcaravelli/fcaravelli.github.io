@@ -467,99 +467,106 @@
     vertices encode the interaction, leaves are external insertions of the source, and the combinatorics is tree combinatorics.
   </p>
 
-  <img class="hero" src="images/rootedtrees.png" alt="Rooted binary tree diagrams for the quadratic fixed point">
+  <img class="hero" src="images/rootedtree.png" alt="Rooted binary tree diagrams for the quadratic fixed point">
 
   <div class="hr"></div>
 </section>
+<section id="many">
+  <h4>6. Multiple solutions, branches, and the background-field expansion</h4>
 
-      <section id="many">
-        <h4>5. Multiple solutions and why you should expect them</h4>
+  <p>
+    The scalar fixed point had two roots. The vector problem is $N$ coupled quadratic equations, so “multiple solutions”
+    is not a pathology—it is the generic situation. Over the complex numbers, a generic quadratic system can have up to
+    $2^N$ isolated solutions (counting multiplicity); over the reals the number can range from $0$ to $2^N$, and in
+    degenerate cases solutions can even come in continua.
+  </p>
 
-        <p>
-          The scalar equation has two roots. The $N$-dimensional system is $N$ coupled quadratic equations.
-          Over the complex numbers, a generic quadratic system has up to $2^N$ isolated solutions (counting multiplicity).
-        </p>
+  <p class="note">
+    The moral is simply: <em>branch structure is the rule, not the exception</em>.
+    A perturbation series is not “the solution”: it is the solution on the branch singled out by the assumptions built into the expansion.
+  </p>
 
-        <p class="note">
-          Over the reals the number can be anywhere between $0$ and $2^N$, and in special (degenerate) cases solutions can form continua.
-          The moral is simply: <em>branch structure is the rule, not the exception</em>.
-        </p>
+  <p>
+    In particular, the small-$\chi$ rooted-tree series implicitly selects the branch that stays finite and satisfies
+    $C(\chi)\to S$ as $\chi\to 0$. If you want any other branch, you must reorganize perturbation theory around a different
+    reference configuration—this is exactly the background-field (mean-field) idea.
+  </p>
 
-        <p>
-          The small-$\chi$ tree series constructs the branch that satisfies $C(\chi)\to S$ as $\chi\to 0$.
-          Other branches need other choices of background.
-        </p>
+  <p class="math">
+    $$ C = C^0 + \delta. $$
+  </p>
 
-        <div class="hr"></div>
-      </section>
+  <p>
+    Here $C^0$ is a chosen <em>background</em>. The cleanest choice is to take $C^0$ to solve the full fixed point,
+  </p>
 
-      <section id="mf">
-        <h4>6. Mean field and the background-field expansion</h4>
+  <p class="math">
+    $$ C^0 = S + \chi\,B(C^0,C^0). $$
+  </p>
 
-        <p>
-          The background-field idea is straightforward:
-          choose a reference solution (exact or approximate) and expand around it.
-        </p>
+  <p class="note">
+    This step is where branch selection happens: different solutions $C^0$ correspond to different branches—exactly like
+    choosing $C_-$ versus $C_+$ in the scalar quadratic.
+  </p>
 
-        <p class="math">
-          $$ C = C^0 + \delta. $$
-        </p>
+  <p>
+    Now plug $C^0+\delta$ into the equation $C=S+\chi B(C,C)$ and use bilinearity:
+  </p>
 
-        <p>
-          Here $C^0$ is chosen to solve the full equation (or a mean-field approximation to it):
-        </p>
+  <p class="math">
+    $$ C^0+\delta
+       = S + \chi\Big(B(C^0,C^0)+B(C^0,\delta)+B(\delta,C^0)+B(\delta,\delta)\Big). $$
+  </p>
 
-        <p class="math">
-          $$ C^0 = S + \chi B(C^0, C^0). $$
-        </p>
+  <p>
+    Subtract the background equation. The constant terms cancel and we get the fluctuation equation
+  </p>
 
-        <p>
-          Plugging $C^0+\delta$ into the full equation and using bilinearity gives
-        </p>
+  <p class="math">
+    $$ \delta = \chi\big(B(C^0,\delta)+B(\delta,C^0)\big) + \chi\,B(\delta,\delta). $$
+  </p>
 
-        <p class="math">
-          $$ \delta = \chi\big(B(C^0,\delta)+B(\delta,C^0)\big) + \chi B(\delta,\delta). $$
-        </p>
+  <p>
+    Define the Jacobian (linearized operator) at the background:
+  </p>
 
-        <p>
-          Define the Jacobian at the background $C^0$:
-        </p>
+  <p class="math">
+    $$ J := I - \chi\big(B(C^0,\cdot)+B(\cdot,C^0)\big). $$
+  </p>
 
-        <p class="math">
-          $$ J := I - \chi\big(B(C^0,\cdot)+B(\cdot,C^0)\big). $$
-        </p>
+  <p>
+    Then the fluctuation equation can be written as
+  </p>
 
-        <p>
-          Then the fluctuation equation is
-        </p>
+  <p class="math">
+    $$ J\,\delta = \chi\,B(\delta,\delta). $$
+  </p>
 
-        <p class="math">
-          $$ J\,\delta = \chi B(\delta,\delta). $$
-        </p>
+  <p>
+    If $J$ is invertible, define the propagator $G:=J^{-1}$ and rewrite it in fixed-point form:
+  </p>
 
-        <p>
-          If $J$ is invertible, define the propagator $G := J^{-1}$, giving the fixed-point form
-        </p>
+  <p class="math">
+    $$ \delta = \chi\,G\,B(\delta,\delta). $$
+  </p>
 
-        <p class="math">
-          $$ \delta = \chi\,G\,B(\delta,\delta). $$
-        </p>
+  <div class="callout">
+    <p class="note">
+      The dependence on the branch is now explicit: the “propagator” $G$ depends on $C^0$.
+      This is the multi-dimensional analogue of the scalar factor $(1-2\chi C^0)^{-1}$.
+      Changing $C^0$ changes $J$, hence $G$, hence the entire perturbative expansion.
+    </p>
+  </div>
 
-        <div class="callout">
-          <p class="note">
-            Different choices of background $C^0$ correspond to different branches—exactly like choosing $C_-$ vs $C_+$ in the scalar quadratic.
-            The linear operator $G=J^{-1}$ is the multi-dimensional analogue of the scalar denominator $(1-2\chi C^0)^{-1}$.
-          </p>
-        </div>
+  <p>
+    To generate a nontrivial diagrammatic expansion around a chosen branch, one typically deforms the problem,
+    e.g. perturb the source $S\mapsto S+\varepsilon\,\Delta S$ and expand the response $\delta(\varepsilon)$.
+    Then each internal line carries $G$, each vertex carries $T_{ijk}$, and each leaf carries $\Delta S$:
+    a rooted-tree (tree-level Feynman) expansion <em>around the background field</em>.
+  </p>
 
-        <p>
-          To generate a nontrivial tree expansion around a chosen branch, deform the problem (e.g. perturb the source $S\mapsto S+\varepsilon\Delta S$)
-          and expand $\delta$ in powers of $\varepsilon$. Each internal line carries $G$, each vertex carries $T$, each leaf carries $\Delta S$:
-          a rooted-tree expansion <em>around the background field</em>.
-        </p>
-
-        <div class="hr"></div>
-      </section>
+  <div class="hr"></div>
+</section>
 
       <section id="takeaways">
         <h4>Takeaways</h4>
