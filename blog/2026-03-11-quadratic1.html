@@ -227,8 +227,10 @@
         </p>
 
         <p>
-          The integers $1,1,2,5,14,\dots$ are the Catalan numbers: they count rooted binary trees.
-          Diagrammatically, each factor of $\chi$ corresponds to adding one branching vertex, and each leaf contributes a factor of $S$.
+          The integers $1,1,2,5,14,\dots$ are the Catalan numbers: they count rooted binary trees. We already see that at the level of the single scalar quadratic equations,
+          trees are hidden in the perturbation expansion. Let's try to see why :)  
+          Diagrammatically, each factor of $\chi$ corresponds to adding one branching vertex, and each leaf contributes a factor of $S$. We will see this later in this post when we discuss
+          the $N$-dimensional case.
         </p>
 
         <div class="callout">
@@ -253,54 +255,58 @@
         <div class="hr"></div>
       </section>
 
-      <section id="other-root">
-        <h4>2. Where is the second solution hiding?</h4>
+<section id="other-root">
+  <h4>2. Where is the second solution hiding?</h4>
 
-        <p>
-          The other quadratic root behaves like $C_+(\chi) \sim 1/\chi$ for small $\chi$,
-          so it cannot be represented as a power series in $\chi$ with a finite $\chi\to 0$ limit.
-        </p>
+  <p>
+    The tree expansion we built is a perfectly ordinary Taylor series in $\chi$ around $\chi=0$,
+    so it can only land on branches that stay finite in that limit. That is exactly what happens for
+    $C_-(\chi)$, which satisfies $C_-(\chi)\to S$ as $\chi\to 0$.
+  </p>
 
-        <p>
-          To recover it, you must expand around a <em>different background</em>.
-          This is the simplest version of a background-field approximation:
-          pick a reference solution and expand in fluctuations around it.
-        </p>
+  <p>
+    The other root, however, is genuinely different:
+    $$ C_+(\chi)=\frac{1+\sqrt{1-4\chi S}}{2\chi} \sim \frac{1}{\chi}-S-\chi S^2-\cdots \quad (\chi\to 0). $$
+    So it <em>does</em> admit an expansion—just not a power series with nonnegative powers of $\chi$.
+    It is a <em>Laurent / asymptotic</em> expansion with a leading $1/\chi$ divergence.
+    This is why the rooted-tree/Taylor machinery “misses” it: the analytic assumption $C(\chi)=\sum_{n\ge0}\chi^n C^{(n)}$
+    has already excluded $C_+$.
+  </p>
 
-        <p class="math">
-          $$ C = C^0 + \delta. $$
-        </p>
+  <p>
+    A clean way to see the same point without solving the quadratic is to change viewpoint.
+    Instead of expanding around the $\chi\to 0$ background $C\approx S$,
+    expand around a different <em>background field</em> $C^0$:
+  </p>
 
-        <p>
-          If $C^0$ is an exact root, it satisfies $C^0 = S + \chi (C^0)^2$.
-          Plugging $C=C^0+\delta$ into the equation gives
-        </p>
+  <p class="math">
+    $$ C = C^0 + \delta. $$
+  </p>
 
-        <p class="math">
-          $$ \delta = 2\chi C^0\,\delta + \chi\,\delta^2. $$
-        </p>
+  <p>
+    If $C^0$ is an exact solution of the undeformed equation, $C^0=S+\chi (C^0)^2$, then inserting
+    $C=C^0+\delta$ gives
+  </p>
 
-        <p>
-          Rearranging,
-        </p>
+  <p class="math">
+    $$ \delta = 2\chi C^0\,\delta + \chi\,\delta^2, \qquad\text{or}\qquad (1-2\chi C^0)\,\delta = \chi\,\delta^2. $$
+  </p>
 
-        <p class="math">
-          $$ (1 - 2\chi C^0)\,\delta = \chi\,\delta^2. $$
-        </p>
+  <p class="note">
+    Around an <em>exact</em> root there is no constant forcing term, so the only small solution is $\delta=0$:
+    you are already sitting on that branch. In other words, “choosing a background” is literally “choosing a branch”.
+  </p>
 
-        <p class="note">
-          Around an <em>exact</em> root there is no constant forcing term, so the only small solution is $\delta=0$.
-          That is exactly what you want: you are already at the chosen branch.
-        </p>
+  <p>
+    To get a nontrivial perturbation theory you then deform the problem.
+    For instance, perturb the source $S\mapsto S+\varepsilon \Delta S$ and solve for the response $\delta(\varepsilon)$.
+    The linear factor $(1-2\chi C^0)^{-1}$ plays the role of the propagator around the chosen background.
+    If you pick $C^0=C_-(\chi)$ you recover the familiar analytic expansion; if you pick $C^0=C_+(\chi)$ you obtain a
+    consistent expansion on the other branch (typically organized as an asymptotic/Laurent series in $\chi$).
+  </p>
 
-        <p>
-          The right way to generate a nontrivial perturbation is to deform the problem slightly.
-          For example, let $S \mapsto S + \varepsilon \Delta S$ and expand $\delta$ in $\varepsilon$.
-          Then the linear operator $(1-2\chi C^0)$ plays the role of a propagator around the chosen branch.
-        </p>
-
-        <div class="hr"></div>
-      </section>
+  <div class="hr"></div>
+</section>
 
       <section id="nd">
         <h4>3. The $N$-dimensional quadratic system</h4>
