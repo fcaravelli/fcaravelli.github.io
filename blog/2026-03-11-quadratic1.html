@@ -381,6 +381,8 @@
     $$ C_i \;=\; S_i \;+\; \chi\sum_{j,k=1}^N T_{ijk}\,C_j C_k. $$
   </p>
 
+  
+
   <p>
     Finally, it is convenient to repackage the tensor contraction as a bilinear map $B:\mathbb{R}^N\times\mathbb{R}^N\to\mathbb{R}^N$:
   </p>
@@ -399,12 +401,115 @@
   <p> Let's now discuss how to write the solution of this in a series form.</p>
   <div class="hr"></div>
 </section>
-
- <section id="nd-trees">
-  <h4>4. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
+<section id="trees-formula">
+  <h4>4. Tree formula: why one branch is literally a sum over rooted binary trees</h4>
 
   <p>
-    Instead of expanding directly around $\chi=0$, it is often cleaner (and conceptually sharper) to first pick a
+    There is a precise sense in which “the perturbative branch” of
+    $$ C = S + \chi\,B(C,C) $$
+    <em>is</em> a sum over rooted binary trees. This is not a metaphor: it is the closed-form combinatorial solution
+    obtained by iterating the fixed point map and bookkeeping the contractions.
+    It is also the cleanest way to see why Catalan numbers, Feynman diagrams, and branch selection all show up together.
+  </p>
+
+  <p>
+    Write the equation in components:
+    $$ C_i = S_i + \chi \sum_{j,k} T_{ijk}\,C_j C_k, \qquad (B(u,v))_i := \sum_{j,k} T_{ijk}\,u_j v_k. $$
+    Assume we want the branch that is analytic at $\chi=0$ and satisfies $C(\chi)\to S$ as $\chi\to 0$.
+    So we look for a formal power series
+    $$ C(\chi) = \sum_{n\ge 0}\chi^n C^{(n)}, \qquad C^{(0)}=S. $$
+    Substituting and matching powers of $\chi$ gives the universal recursion
+    $$ C^{(n)} = \sum_{m=0}^{n-1} B\!\big(C^{(m)},\,C^{(n-1-m)}\big), \qquad n\ge 1. \tag{$\ast$} $$
+  </p>
+
+  <p>
+    The recursion ($\ast$) already contains the tree structure: each $C^{(n)}$ is built by taking two lower-order pieces
+    whose total order is $n-1$, and joining them at one new quadratic vertex (the outermost $B$).
+    Repeating this decomposition until you hit $C^{(0)}=S$ produces a binary rooted tree:
+  </p>
+  <img class="hero" src="images/rootedtree.png" alt="Rooted binary trees for the background-field expansion">
+
+  <ul>
+    <li>each application of $B(\cdot,\cdot)$ is an <strong>internal vertex</strong> (a “binary split”),</li>
+    <li>each time you stop the recursion you place a <strong>leaf</strong>, which contributes $S$,</li>
+    <li>the order $n$ coefficient has exactly <strong>$n$ internal vertices</strong> and therefore <strong>$n+1$ leaves</strong>.</li>
+  </ul>
+
+  <p class="note">
+    This is the same combinatorics as tree-level Feynman diagrams: a quadratic interaction generates binary trees,
+    and the Catalan numbers count the underlying shapes. But here we also have indices, so each tree shape comes with
+    a sum over index assignments (contractions) dictated by $T_{ijk}$.
+  </p>
+
+  <p>
+    To make the formula explicit, fix a rooted binary tree $\tau$ with $n$ internal vertices.
+    Give every edge of $\tau$ an index label in $\{1,\dots,N\}$. Let the root edge (the outgoing edge at the top)
+    carry the fixed external index $i$. Each internal vertex $v$ has:
+  </p>
+
+  <ul>
+    <li>one outgoing edge (toward the root) with index $a_v$,</li>
+    <li>two incoming edges (toward the leaves) with indices $b_v$ and $c_v$.</li>
+  </ul>
+
+  <p>
+    The weight of the vertex $v$ is then the tensor entry $T_{a_v b_v c_v}$.
+    Each leaf $\ell$ ends in a source insertion, contributing a factor $S_{a_\ell}$ where $a_\ell$ is the index on the leaf edge.
+    Summing over all <em>internal</em> edge indices produces the contraction associated with that tree.
+  </p>
+
+  <p>
+    With that notation, the coefficient at order $n$ can be written compactly as a sum over trees:
+  </p>
+
+  <p class="math">
+    $$
+    C_i(\chi)
+    \;=\;
+    \sum_{n=0}^\infty \chi^n
+    \sum_{\tau\in\mathcal{T}_n}
+    \;\;
+    \sum_{\text{edge labellings }a:\, \text{root}=i}
+    \Bigg(
+      \prod_{v\in \mathrm{Int}(\tau)}
+      T_{\,a_{\mathrm{out}(v)}\;a_{\mathrm{in}_1(v)}\;a_{\mathrm{in}_2(v)}}
+    \Bigg)
+    \Bigg(
+      \prod_{\ell\in \mathrm{Leaves}(\tau)}
+      S_{\,a_\ell}
+    \Bigg).
+    $$
+  </p>
+
+  <p>
+    Here $\mathcal{T}_n$ denotes the set of rooted binary trees with $n$ internal vertices,
+    $\mathrm{Int}(\tau)$ is the set of internal vertices of $\tau$, and the labelling sum runs over all assignments
+    of indices to edges with the root edge fixed to be $i$. (Equivalently: you can sum over indices on internal edges,
+    leaving the root index fixed and letting leaf indices be summed implicitly through the $S_{a_\ell}$ factors.)
+  </p>
+
+  <p class="note">
+    If you strip away the indices and set $T_{ijk}\equiv 1$, the only remaining information is the number of tree shapes.
+    Then $C^{(n)}$ is proportional to the Catalan number $C_n$, recovering the familiar scalar story.
+    The tensor $T$ is what turns “counting trees” into “contracting a diagram”.
+  </p>
+
+  <p>
+    The beauty of the formula is that it separates <em>universals</em> from <em>model-specific content</em>:
+    the universals are the rooted binary trees (pure combinatorics), while the model-specific content sits entirely in the
+    vertex weights $T_{ijk}$ and the leaf insertions $S_i$. This is exactly what a good diagrammatic expansion should do.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+
+
+ <section id="nd-trees">
+  <h4>5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
+
+  <p>
+    Let us now discuss how to recover expansion over other roots, instead of expanding directly around $\chi=0$, it is often cleaner (and conceptually sharper) to first pick a
     <em>background</em> and then expand in fluctuations. Concretely, we split
   </p>
 
@@ -517,10 +622,10 @@
     Same diagrams, different weights—set by the background root you chose.
   </p>
 
-  <img class="hero" src="images/rootedtree.png" alt="Rooted binary trees for the background-field expansion">
 
   <div class="hr"></div>
 </section>
+
 <section id="closing">
   <h4>Takeaway: perturbation theory is a choice of branch</h4>
 
