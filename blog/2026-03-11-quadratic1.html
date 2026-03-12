@@ -149,7 +149,6 @@
           <li>and connect “multiple branches” to mean-field / background-field approximations.</li>
         </ul>
 
-        <img class="hero" src="images/trees/quadratic-trees.png" alt="Quadratic recursion and rooted trees (schematic)">
 
         <div class="toc">
           <strong>Contents</strong>
@@ -398,48 +397,80 @@
   <p class="math">
     $$ C = S + \chi\,B(C,C). $$
   </p>
-
+  <p> Let's now discuss how to write the solution of this in a series form.</p>
   <div class="hr"></div>
 </section>
 
-      <section id="nd-trees">
-        <h4>4. Generic tree expansion in small $\chi$</h4>
+ <section id="nd-trees">
+  <h4>5. Diagrammatics: the $\chi$-expansion as rooted-tree Feynman diagrams</h4>
 
-        <p>
-          As in the scalar case, assume a series
-        </p>
+  <p>
+    The fixed point
+    $$ C = S + \chi\,B(C,C) $$
+    can be solved perturbatively in $\chi$ exactly like a tree-level Feynman expansion:
+    at order $k$ you get diagrams with $k$ interaction vertices and no loops.
+  </p>
 
-        <p class="math">
-          $$ C(\chi) = \sum_{n\ge 0} \chi^n C^{(n)}, \qquad C^{(0)}=S. $$
-        </p>
+  <p>
+    Assume a formal series
+  </p>
 
-        <p>
-          Plugging into $C=S+\chi B(C,C)$ gives the coefficient recursion
-        </p>
+  <p class="math">
+    $$ C(\chi) = \sum_{n\ge 0} \chi^n C^{(n)}, \qquad C^{(0)} = S. $$
+  </p>
 
-        <p class="math">
-          $$ C^{(n)} = \sum_{m=0}^{n-1} B\big(C^{(m)},\,C^{(n-1-m)}\big), \qquad n\ge 1. $$
-        </p>
+  <p>
+    Plugging into $C=S+\chi B(C,C)$ and matching powers of $\chi$ gives the recursion
+  </p>
 
-        <p>
-          The first two corrections are
-        </p>
+  <p class="math">
+    $$ C^{(n)} = \sum_{m=0}^{n-1} B\!\big(C^{(m)},\,C^{(n-1-m)}\big), \qquad n\ge 1. $$
+  </p>
 
-        <p class="math">
-          $$ C^{(1)} = B(S,S), \qquad C^{(2)} = B\big(S, C^{(1)}\big) + B\big(C^{(1)}, S\big). $$
-        </p>
+  <p>
+    The first terms look like
+  </p>
 
-        <p>
-          If $T_{ijk}$ is symmetric in $j \leftrightarrow k$, the two terms coincide and $C^{(2)} = 2B(S,C^{(1)})$.
-        </p>
+  <p class="math">
+    $$ C^{(1)} = B(S,S), \qquad
+       C^{(2)} = B\big(S, B(S,S)\big) + B\big(B(S,S), S\big), \quad \dots $$
+  </p>
 
-        <p class="note">
-          Combinatorially, $C^{(n)}$ is a sum over rooted binary trees with $n$ internal vertices:
-          each internal vertex contributes a tensor $T_{ijk}$, each leaf contributes a source $S$, and indices are contracted along edges.
-        </p>
+  <p>
+    If the interaction tensor is symmetric in the two “incoming legs” ($T_{ijk}=T_{ikj}$),
+    the two order-$\chi^2$ diagrams coincide and you simply get a factor of $2$.
+  </p>
 
-        <div class="hr"></div>
-      </section>
+  <div class="callout">
+    <p class="note">
+      <strong>Tree-level Feynman rules (rooted binary trees):</strong>
+      each coefficient $C^{(k)}$ is a sum over rooted binary trees with exactly $k$ internal vertices.
+      <br><br>
+      • Each internal vertex is a quadratic interaction tensor $T_{ijk}$: two incoming indices $(j,k)$ combine into an outgoing index $i$.<br>
+      • Each leaf carries a source factor $S_a$ (with its own index $a$).<br>
+      • Each edge carries an index, and all internal indices are summed/contracted along the tree.<br>
+      • The root edge is the external leg: its index is the output component $i$ of $C_i^{(k)}$.
+    </p>
+  </div>
+
+  <p>
+    Concretely, writing $B$ in components,
+    $$ (B(u,v))_i = \sum_{j,k} T_{ijk}\,u_j v_k, $$
+    the order-$k$ contribution $C_i^{(k)}$ is a sum of terms of the form
+    “product of $k$ tensors $T$” times “product of $(k+1)$ sources $S$,”
+    with indices contracted according to a rooted binary tree.
+    In other words: <em>at order $\chi^k$ you have $k$ interaction nodes and $k+1$ leaves.</em>
+  </p>
+
+  <p>
+    This is the exact analogue of a perturbative expansion in a cubic field theory at tree level:
+    vertices encode the interaction, leaves are external insertions of the source, and the combinatorics is tree combinatorics.
+  </p>
+
+  <img class="hero" src="images/trees/quadratic-trees.png" alt="Rooted binary tree diagrams for the quadratic fixed point">
+
+  <div class="hr"></div>
+</section>
 
       <section id="many">
         <h4>5. Multiple solutions and why you should expect them</h4>
