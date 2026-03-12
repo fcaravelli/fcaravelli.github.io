@@ -126,31 +126,41 @@
         <p class="math">
           $$ \vec x = \vec s + \chi \Omega \vec x^{\odot 2}. $$
         </p>
+<p>
+  Quick notation. The symbol $\odot$ means elementwise multiplication, so
+  $$ \vec x^{\odot 2} = (x_1^2,\dots,x_N^2). $$
+  In the memristor setting I care about, the source actually lives in the projected subspace ($\vec s\in \mathrm{Range}(\Omega)$)
+  and $\Omega$ is a projector enforcing Kirchhoff constraints, but you don’t need circuit details for what follows.
+</p>
 
-        <p>
-          Above, some notation should be explained. The circle dot applied to a vector means elementwise squaring, so $\vec x^{\odot 2} = (x_1^2, x_2^2, \dots, x_N^2)$.
-          For memristors, actually $\vec s\in Span \{\Omega\}$, and $\Omega$ is a projector onto the subspace of currents that satisfy Kirchhoff’s law, but for now we will not need to worry about those details.
-          A comment about this equation: it is complicated. The solution is related to the intersection of $N$ quadratic hypersurfaces in $N$-dimensional space, and 
-          it is not obvious how to solve it or even how many solutions it has in the most general case. It genuinely falls into the domain of algebraic geometry, and it is a special case of 
-          the more general problem of solving systems of polynomial equations. A theorem by Bezout states that a generic system of $N$ polynomial equations of degree 
-          $d$ in $N$ variables has $d^N$ solutions (counting multiplicity and complex solutions), so in our case we can have up to $2^N$ solutions. So, on an arbitrary domain,
-            we can have anywhere between $0$ and $2^N$ solutions, and in special cases we can even have infinitely many solutions 
-        (e.g. if the equations are degenerate and define a variety). In memristive systems equations of this form arise as fixed points of the dynamics, and 
-        understanding their structure is crucial for understanding the behavior of the system. I never talked about memristive equations here, but I will write about them 
-        in the future. For now, I want to focus on the mathematical structure of the problem, and how it connects to perturbation theory and diagrammatic expansions.
-        Let us then focus first on the scalar case, where we have a single quadratic equation of the form. This is very well known since the dawn of algebra, but it is 
-        still very instructive to look at it from the perspective of perturbation theory and diagrammatic expansions.
-        </p>
+<p>
+  What matters is that this is a genuinely nonlinear algebraic problem: $N$ quadratic equations in $N$ unknowns.
+  Geometrically you can think of it as the intersection of $N$ quadratic hypersurfaces, so multiple solutions are the default.
+  (Over the complex numbers a generic degree-$d$ system has up to $d^N$ solutions counting multiplicity; here $d=2$, so “up to $2^N$ branches”
+  is the right mental model. Over the reals you can get fewer, and in degenerate cases you can get continua.)
+</p>
 
-        <ul>
-          <li>derive the tree expansion (Catalan numbers show up immediately),</li>
-          <li>explain why that expansion selects only one of the two quadratic roots,</li>
-          <li>recover the other root by expanding around a different background,</li>
-          <li>generalize the story to an $N$-dimensional quadratic system,</li>
-          <li>and connect “multiple branches” to mean-field / background-field approximations.</li>
-        </ul>
+<p>
+  The point of this post is not to solve the most general system head-on. It’s to explain a very specific phenomenon:
+  when you try to solve a quadratic fixed point perturbatively, the algebra forces you into a diagram expansion.
+  The coefficients aren’t random—they are sums over rooted binary trees, with Catalan numbers in the scalar case and indexed tensor contractions
+  in the vector case.
+</p>
 
+<p class="note">
+  If you’ve seen QFT perturbation theory, this should ring a bell: a quadratic nonlinearity behaves like an interaction vertex,
+  iterating the fixed point builds tree-level diagrams, and “summing the diagrams” means contracting indices (here) instead of integrating over momenta (there).
+  The extra algebraic twist is branch structure: different solutions correspond to different backgrounds, and changing the background changes the propagator,
+  hence the whole expansion.
+</p>
 
+<ul>
+  <li>start with the scalar quadratic and derive its rooted-tree expansion,</li>
+  <li>see why that expansion automatically selects only the analytic root,</li>
+  <li>recover the other root by reorganizing the expansion around a different background,</li>
+  <li>lift the same logic to the $N$-dimensional system via a projector/eigenmode decomposition,</li>
+  <li>and show how “many solutions” becomes “many valid diagrammatics”, one per branch.</li>
+</ul>
     <div class="toc">
     <strong>Contents</strong>
     <ul>
