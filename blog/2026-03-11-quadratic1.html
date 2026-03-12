@@ -120,14 +120,26 @@
         </p>
 
         <p> The origin of this post is that recently I've been looking at the behavior of quadratic fixed points 
-            in the context of perturbation theory and diagrammatic expansions in memristive networks, together with a student.
-            The goal is to study vector quadratic equations of this form:
+            in the context of perturbation theory and diagrammatic expansions in memristive networks, together with a student, and previously with a colleague.
+            The goal is to discuss and study vector quadratic equations of this form:
         </p>
         <p class="math">
           $$ \vec x = \vec s + \chi \Omega \vec x^{\odot 2}. $$
         </p>
+
         <p>
-          This post starts with a one-dimensional quadratic fixed-point equation. We will:
+          Above, some notation should be explained. The circle dot applied to a vector means elementwise squaring, so $\vec x^{\odot 2} = (x_1^2, x_2^2, \dots, x_N^2)$.
+          For memristors, actually $\vec s\in Span \{\Omega\}$, and $\Omega$ is a projector onto the subspace of currents that satisfy Kirchhoff’s law, but for now we will not need to worry about those details.
+          A comment about this equation: it is complicated. The solution is related to the intersection of $N$ quadratic hypersurfaces in $N$-dimensional space, and 
+          it is not obvious how to solve it or even how many solutions it has in the most general case. It genuinely falls into the domain of algebraic geometry, and it is a special case of 
+          the more general problem of solving systems of polynomial equations. A theorem by Bezout states that a generic system of $N$ polynomial equations of degree 
+          $d$ in $N$ variables has $d^N$ solutions (counting multiplicity and complex solutions), so in our case we can have up to $2^N$ solutions. So, on an arbitrary domain,
+            we can have anywhere between $0$ and $2^N$ solutions, and in special cases we can even have infinitely many solutions 
+        (e.g. if the equations are degenerate and define a variety). In memristive systems equations of this form arise as fixed points of the dynamics, and 
+        understanding their structure is crucial for understanding the behavior of the system. I never talked about memristive equations here, but I will write about them 
+        in the future. For now, I want to focus on the mathematical structure of the problem, and how it connects to perturbation theory and diagrammatic expansions.
+        Let us then focus first on the scalar case, where we have a single quadratic equation of the form. This is very well known since the dawn of algebra, but it is 
+        still very instructive to look at it from the perspective of perturbation theory and diagrammatic expansions.
         </p>
 
         <ul>
