@@ -115,7 +115,10 @@
           who developed the solfège system that we still use today (do-re-mi-fa-sol-la-ti). It is also the reason why the abbey is often used as a symbol of the origins of 
           music theory and notation (it is for instance in Lucio Dalla's music video 
           <em><a href="https://www.youtube.com/watch?v=ThA3luuqefg">Com'è profondo il mare</a></em>, a masterpiece).
-          The abbey here represents the fact that quadratic fixed points are quite archaic object. The study of their perturbation expansions 
+          I chose to start the post with this image because it captures the spirit of what I want to discuss: the interplay between old and new, 
+          between classical and modern, between algebra and combinatorics.
+          The abbey here represents the fact that quadratic fixed points, what I would like to discuss about here, are quite archaic object. 
+          The study of their perturbation expansions 
           are a very old and classical topic in mathematics, 
           with roots that go back to the very origins of algebra, yet they still hold many surprises and connections to modern physics and computation.
           In fact, I don't want you to focus on the abbey in the picture, but on the tree next to it. 
@@ -151,13 +154,13 @@
   in the vector case.
 </p>
 
-
+Here is the plan for this post:
 <ul>
-  <li>start with the scalar quadratic and derive its rooted-tree expansion,</li>
+  <li>we start with the scalar quadratic and derive its rooted-tree expansion,</li>
   <li>see why that expansion automatically selects only the analytic root,</li>
   <li>recover the other root by reorganizing the expansion around a different background,</li>
   <li>lift the same logic to the $N$-dimensional system via a projector/eigenmode decomposition,</li>
-  <li>and show how “many solutions” becomes “many valid diagrammatics”, one per branch.</li>
+  <li>and show how “many solutions” becomes “many valid diagrammatics”, one per (analytical) branch.</li>
 </ul>
     <div class="toc">
     <strong>Contents</strong>
@@ -166,8 +169,8 @@
         <li><a href="#other-root">2. Where is the second solution hiding?</a></li>
         <li><a href="#nd">3. The $N$-dimensional quadratic system (from a projector decomposition)</a></li>
         <li><a href="#trees-formula">4. Tree formula: one branch as a sum over rooted binary trees</a></li>
-        <li><a href="#sd">5. Schwinger–Dyson viewpoint: a self-consistent equation for the fluctuations</a></li>
-        <li><a href="#nd-trees">6. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</a></li>
+        <li><a href="#nd-trees">5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</a></li>
+        <li><a href="#sd">6. Schwinger–Dyson viewpoint: a self-consistent equation for the fluctuations</a></li>
         <li><a href="#closing">Takeaway</a></li>
     </ul>
     </div>
@@ -203,7 +206,7 @@
         </p>
 
         <p class="note">
-          The important point for what follows is not the formula—it’s the branch structure.
+          The important point for what follows is not the formula—it’s the analytical branch structure.
           The two solutions behave very differently as $\chi \to 0$.
         </p>
 
@@ -522,8 +525,151 @@
   <div class="hr"></div>
 </section>
 
+<section id="nd-trees">
+  <h4>5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
+
+  <p>
+    Let us now see how to organize an expansion around <em>either</em> branch (not just the one analytic at $\chi=0$).
+    The clean way is to pick a background (mean field) and expand in fluctuations:
+  </p>
+
+  <p class="math">
+    $$ C_i = C_0 + \delta C_i, $$
+  </p>
+
+  <p>
+    with $C_0$ independent of $i$ and fluctuations chosen to have zero mean,
+    $$ \frac{1}{N}\sum_{i=1}^N \delta C_i = 0. $$
+    Insert this into the fixed point
+    $$ C_i = S_i + \chi \sum_{j,k=1}^N T_{ijk}\,C_j C_k. $$
+  </p>
+
+  <p>
+    The background equation should not depend on $i$, so we extract it by <em>summing over $i$</em>.
+    Define the averages
+  </p>
+
+  <p class="math">
+    $$ \bar C := \frac{1}{N}\sum_{i=1}^N C_i,\qquad
+       \bar S := \frac{1}{N}\sum_{i=1}^N S_i. $$
+  </p>
+
+  <p>
+    With our split $C_i=C_0+\delta C_i$ and zero-mean fluctuations, we have $\bar C = C_0$.
+    Now sum the fixed point over $i$ and divide by $N$:
+  </p>
+
+  <p class="math">
+    $$ \frac{1}{N}\sum_i C_i
+       = \frac{1}{N}\sum_i S_i
+       + \chi\,\frac{1}{N}\sum_{i,j,k} T_{ijk}\,C_j C_k, $$
+    i.e.
+    $$ C_0 = \bar S + \chi\,\frac{1}{N}\sum_{i,j,k} T_{ijk}\,C_j C_k. \tag{$\star$} $$
+  </p>
+
+  <p>
+    Expand $C_jC_k=(C_0+\delta C_j)(C_0+\delta C_k)$:
+  </p>
+
+  <p class="math">
+    $$ C_jC_k = C_0^2 + C_0(\delta C_j+\delta C_k) + \delta C_j\,\delta C_k. $$
+  </p>
+
+  <p>
+    Plugging into ($\star$) gives the exact identity
+  </p>
+
+  <p class="math">
+    \[
+      C_0
+      = \bar S
+      + \chi\Bigg[
+        C_0^2\,\underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}}_{=:~\bar T}
+        + C_0\,\underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}(\delta C_j+\delta C_k)}_{=:~L(\delta C)}
+        + \underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}\,\delta C_j\delta C_k}_{=:~Q(\delta C)}
+      \Bigg]. \tag{$\star\star$}
+    \]
+  </p>
+
+  <p class="note">
+    This makes the bookkeeping honest: the background equation is obtained by summing over $i$, and the resulting scalar
+    self-consistency condition still contains fluctuation corrections through $L(\delta C)$ and $Q(\delta C)$.
+    The “pure mean-field” closure is the approximation where you drop those fluctuation-dependent terms.
+  </p>
+
+  <p>
+    At the pure mean-field level (set $L(\delta C)\approx 0$ and $Q(\delta C)\approx 0$) the background closes to a scalar quadratic:
+  </p>
+
+  <p class="math">
+    $$ C_0 = \bar S + \chi\,\bar T\,C_0^2. \tag{$\mathrm{MF}$} $$
+  </p>
+
+  <p>
+    This has the two familiar branches (when the discriminant is positive):
+  </p>
+
+  <p class="math">
+    $$ C_0^{\pm}(\chi)
+       = \frac{1 \pm \sqrt{1-4\chi\,\bar T\,\bar S}}{2\chi\,\bar T}. $$
+  </p>
+
+  <p>
+    Choosing $C_0=C_0^-$ or $C_0=C_0^+$ is therefore already a choice of branch/background.
+    Once that choice is made, the remaining content of the problem is an equation for the fluctuations $\delta C_i$.
+  </p>
+
+  <p>
+    To derive it, return to the full fixed point, insert $C_i=C_0+\delta C_i$, and subtract the (mean-field) background equation
+    componentwise. Using $(\mathrm{MF})$ to eliminate the $C_0^2$ term, one finds
+  </p>
+
+  <p class="math">
+    $$ \delta C_i
+       = (S_i-\bar S)
+       + \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k)
+       + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k$$
+       $$\;+\; \text{(terms enforcing }\tfrac1N\sum_i\delta C_i=0\text{)}. \tag{$\dagger$} $$
+  </p>
+
+  <p>
+    The crucial point is that the <em>linearized operator</em> depends on the chosen root $C_0$.
+    Define the Jacobian around the background:
+  </p>
+
+  <p class="math">
+    $$ (J_{C_0}\,\delta C)_i
+       := \delta C_i
+       - \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k). $$
+  </p>
+
+  <p>
+    Then ($\dagger$) becomes the background-field form
+  </p>
+
+  <p class="math">
+    $$ J_{C_0}\,\delta C
+       = (S-\bar S) + \chi\,B(\delta C,\delta C) \quad (\text{with } \tfrac1N\sum_i\delta C_i=0). $$
+  </p>
+
+  <div class="callout">
+    <p class="note">
+      <strong>Branch dependence in one line:</strong>
+      choosing $C_0^-$ versus $C_0^+$ changes $J_{C_0}$, hence changes the propagator $G_{C_0}=J_{C_0}^{-1}$ (when it exists),
+      hence changes every coefficient in the diagram expansion for $\delta C$.
+    </p>
+  </div>
+
+  <p>
+    Once $G_{C_0}$ is defined, you iterate exactly as before: the expansion of $\delta C$ is again a rooted-tree sum,
+    but now <em>internal lines carry $G_{C_0}$</em>, vertices carry $T_{ijk}$, and leaves carry the inhomogeneity $(S-\bar S)$.
+    Same diagrams, different weights—set by the background root you chose.
+  </p>
+
+  <div class="hr"></div>
+</section>
 <section id="sd">
-  <h4>5. Schwinger–Dyson viewpoint: a self-consistent equation for the fluctuations</h4>
+  <h4>6. Schwinger–Dyson viewpoint: a self-consistent equation for the fluctuations</h4>
 
   <p>
     The background split $C_i=C_0+\delta C_i$ does more than reorganize perturbation theory: it also produces a
@@ -632,149 +778,6 @@
   <div class="hr"></div>
 </section>
 
-<section id="nd-trees">
-  <h4>6. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
-
-  <p>
-    Let us now see how to organize an expansion around <em>either</em> branch (not just the one analytic at $\chi=0$).
-    The clean way is to pick a background (mean field) and expand in fluctuations:
-  </p>
-
-  <p class="math">
-    $$ C_i = C_0 + \delta C_i, $$
-  </p>
-
-  <p>
-    with $C_0$ independent of $i$ and fluctuations chosen to have zero mean,
-    $$ \frac{1}{N}\sum_{i=1}^N \delta C_i = 0. $$
-    Insert this into the fixed point
-    $$ C_i = S_i + \chi \sum_{j,k=1}^N T_{ijk}\,C_j C_k. $$
-  </p>
-
-  <p>
-    The background equation should not depend on $i$, so we extract it by <em>summing over $i$</em>.
-    Define the averages
-  </p>
-
-  <p class="math">
-    $$ \bar C := \frac{1}{N}\sum_{i=1}^N C_i,\qquad
-       \bar S := \frac{1}{N}\sum_{i=1}^N S_i. $$
-  </p>
-
-  <p>
-    With our split $C_i=C_0+\delta C_i$ and zero-mean fluctuations, we have $\bar C = C_0$.
-    Now sum the fixed point over $i$ and divide by $N$:
-  </p>
-
-  <p class="math">
-    $$ \frac{1}{N}\sum_i C_i
-       = \frac{1}{N}\sum_i S_i
-       + \chi\,\frac{1}{N}\sum_{i,j,k} T_{ijk}\,C_j C_k, $$
-    i.e.
-    $$ C_0 = \bar S + \chi\,\frac{1}{N}\sum_{i,j,k} T_{ijk}\,C_j C_k. \tag{$\star$} $$
-  </p>
-
-  <p>
-    Expand $C_jC_k=(C_0+\delta C_j)(C_0+\delta C_k)$:
-  </p>
-
-  <p class="math">
-    $$ C_jC_k = C_0^2 + C_0(\delta C_j+\delta C_k) + \delta C_j\,\delta C_k. $$
-  </p>
-
-  <p>
-    Plugging into ($\star$) gives the exact identity
-  </p>
-
-  <p class="math">
-    \[
-      C_0
-      = \bar S
-      + \chi\Bigg[
-        C_0^2\,\underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}}_{=:~\bar T}
-        + C_0\,\underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}(\delta C_j+\delta C_k)}_{=:~L(\delta C)}
-        + \underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}\,\delta C_j\delta C_k}_{=:~Q(\delta C)}
-      \Bigg]. \tag{$\star\star$}
-    \]
-  </p>
-
-  <p class="note">
-    This makes the bookkeeping honest: the background equation is obtained by summing over $i$, and the resulting scalar
-    self-consistency condition still contains fluctuation corrections through $L(\delta C)$ and $Q(\delta C)$.
-    The “pure mean-field” closure is the approximation where you drop those fluctuation-dependent terms.
-  </p>
-
-  <p>
-    At the pure mean-field level (set $L(\delta C)\approx 0$ and $Q(\delta C)\approx 0$) the background closes to a scalar quadratic:
-  </p>
-
-  <p class="math">
-    $$ C_0 = \bar S + \chi\,\bar T\,C_0^2. \tag{$\mathrm{MF}$} $$
-  </p>
-
-  <p>
-    This has the two familiar branches (when the discriminant is positive):
-  </p>
-
-  <p class="math">
-    $$ C_0^{\pm}(\chi)
-       = \frac{1 \pm \sqrt{1-4\chi\,\bar T\,\bar S}}{2\chi\,\bar T}. $$
-  </p>
-
-  <p>
-    Choosing $C_0=C_0^-$ or $C_0=C_0^+$ is therefore already a choice of branch/background.
-    Once that choice is made, the remaining content of the problem is an equation for the fluctuations $\delta C_i$.
-  </p>
-
-  <p>
-    To derive it, return to the full fixed point, insert $C_i=C_0+\delta C_i$, and subtract the (mean-field) background equation
-    componentwise. Using $(\mathrm{MF})$ to eliminate the $C_0^2$ term, one finds
-  </p>
-
-  <p class="math">
-    $$ \delta C_i
-       = (S_i-\bar S)
-       + \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k)
-       + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k
-       \;+\; \text{(terms enforcing }\tfrac1N\sum_i\delta C_i=0\text{)}. \tag{$\dagger$} $$
-  </p>
-
-  <p>
-    The crucial point is that the <em>linearized operator</em> depends on the chosen root $C_0$.
-    Define the Jacobian around the background:
-  </p>
-
-  <p class="math">
-    $$ (J_{C_0}\,\delta C)_i
-       := \delta C_i
-       - \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k). $$
-  </p>
-
-  <p>
-    Then ($\dagger$) becomes the background-field form
-  </p>
-
-  <p class="math">
-    $$ J_{C_0}\,\delta C
-       = (S-\bar S) + \chi\,B(\delta C,\delta C) \quad (\text{with } \tfrac1N\sum_i\delta C_i=0). $$
-  </p>
-
-  <div class="callout">
-    <p class="note">
-      <strong>Branch dependence in one line:</strong>
-      choosing $C_0^-$ versus $C_0^+$ changes $J_{C_0}$, hence changes the propagator $G_{C_0}=J_{C_0}^{-1}$ (when it exists),
-      hence changes every coefficient in the diagram expansion for $\delta C$.
-    </p>
-  </div>
-
-  <p>
-    Once $G_{C_0}$ is defined, you iterate exactly as before: the expansion of $\delta C$ is again a rooted-tree sum,
-    but now <em>internal lines carry $G_{C_0}$</em>, vertices carry $T_{ijk}$, and leaves carry the inhomogeneity $(S-\bar S)$.
-    Same diagrams, different weights—set by the background root you chose.
-  </p>
-
-  <div class="hr"></div>
-</section>
 <section id="closing">
   <h4>Takeaway: perturbation theory picks a branch</h4>
 
