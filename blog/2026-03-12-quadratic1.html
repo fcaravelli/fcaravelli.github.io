@@ -142,10 +142,13 @@
   $$ \vec x^{\odot 2} = (x_1^2,\dots,x_N^2). $$
   In the memristor setting I care about, the source actually lives in the projected subspace ($\vec s\in \mathrm{Range}(\Omega)$)
   and $\Omega$ is a projector enforcing Kirchhoff constraints, but you don’t need circuit details for what follows.
+  Even with this simplification, the problem is still rich enough to illustrate the key points about branch structure, perturbation theory, and diagrammatics.  
+  Also, the equation looks deceiptively simple, but it is genuinely nonlinear and nontrivial to solve. I know for instance of a full PhD thesis devoted to the study 
+  of this equation, and it is still an active area of research.
 </p>
 
 <p>
-  What matters is that this is a genuinely nonlinear algebraic problem: $N$ quadratic equations in $N$ unknowns.
+  This matters here, as it is a genuinely nonlinear algebraic problem: $N$ quadratic equations in $N$ unknowns.
   Geometrically you can think of it as the intersection of $N$ quadratic hypersurfaces, so multiple solutions are the default.
   (Over the complex numbers a generic degree-$d$ system has up to $d^N$ solutions counting multiplicity; here $d=2$, so “up to $2^N$ branches”
   is the right mental model. Over the reals you can get fewer, and in degenerate cases you can get continua.)
