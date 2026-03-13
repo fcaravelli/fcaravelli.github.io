@@ -533,7 +533,7 @@ Here is the plan for this post:
     Also, the beauty of the formula is that it separates <em>universals</em> from <em>model-specific content</em>:
     the universals are the rooted binary trees (pure combinatorics), while the model-specific content sits entirely in the
     vertex weights $T_{ijk}$ and the leaf insertions $S_i$. This is exactly what a good diagrammatic expansion should do.
-    As Razvan Gurau told me once, sometime it is also worth writing something easy in a complicated way. This is 
+    As Razvan Gurau told me once, sometime it is also worth writing something simple in a complicated way. This is 
     one of those cases: the formula above looks complicated, but it is actually a very clean way to express the solution of 
     the fixed point equation in a way that makes the combinatorial structure manifest. Yet, it is worth stressing
     that is a particular choice of analytical branch: the one that is analytic at $\chi=0$ and satisfies $C(\chi)\to S$ as $\chi\to 0$. 
@@ -547,8 +547,9 @@ Here is the plan for this post:
   <h4>5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
 
   <p>
-    Let us now see how to organize an expansion around <em>either</em> branch (not just the one analytic at $\chi=0$).
-    The clean way is to pick a background (mean field) and expand in fluctuations:
+    The small-$\chi$ tree expansion automatically lands on the branch that stays finite as $\chi\to 0$.
+    To organize an expansion around a <em>different</em> branch, we first choose a background and then expand in fluctuations.
+    Write
   </p>
 
   <p class="math">
@@ -556,132 +557,168 @@ Here is the plan for this post:
   </p>
 
   <p>
-    with $C_0$ independent of $i$ and fluctuations chosen to have zero mean,
-    $$ \frac{1}{N}\sum_{i=1}^N \delta C_i = 0. $$
-    Insert this into the fixed point
-    $$ C_i = S_i + \chi \sum_{j,k=1}^N T_{ijk}\,C_j C_k. $$
-  </p>
-
-  <p>
-    The background equation should not depend on $i$, so we extract it by <em>summing over $i$</em>.
-    Define the averages
+    where $C_0$ is independent of $i$. We fix the split by imposing a zero-mean condition on the fluctuations:
   </p>
 
   <p class="math">
-    $$ \bar C := \frac{1}{N}\sum_{i=1}^N C_i,\qquad
-       \bar S := \frac{1}{N}\sum_{i=1}^N S_i. $$
+    $$ \frac1N\sum_{i=1}^N \delta C_i = 0. $$
   </p>
 
   <p>
-    With our split $C_i=C_0+\delta C_i$ and zero-mean fluctuations, we have $\bar C = C_0$.
-    Now sum the fixed point over $i$ and divide by $N$:
+    Start from the full fixed point
   </p>
 
   <p class="math">
-    $$ \frac{1}{N}\sum_i C_i
-       = \frac{1}{N}\sum_i S_i
-       + \chi\,\frac{1}{N}\sum_{i,j,k} T_{ijk}\,C_j C_k, $$
-    i.e.
-    $$ C_0 = \bar S + \chi\,\frac{1}{N}\sum_{i,j,k} T_{ijk}\,C_j C_k. \tag{$\star$} $$
+    $$ C_i = S_i + \chi \sum_{j,k=1}^N T_{ijk}\,C_j C_k. \tag{1} $$
   </p>
 
   <p>
-    Expand $C_jC_k=(C_0+\delta C_j)(C_0+\delta C_k)$:
+    Insert $C_i=C_0+\delta C_i$ into (1):
   </p>
 
   <p class="math">
-    $$ C_jC_k = C_0^2 + C_0(\delta C_j+\delta C_k) + \delta C_j\,\delta C_k. $$
+    $$ C_0+\delta C_i
+       = S_i + \chi \sum_{j,k} T_{ijk}\,(C_0+\delta C_j)(C_0+\delta C_k). \tag{2} $$
   </p>
 
   <p>
-    Plugging into ($\star$) gives the exact identity
+    To get an equation for the scalar background $C_0$, we average (2) over $i$.
+    Define
+  </p>
+
+  <p class="math">
+    $$ \bar S := \frac1N\sum_{i=1}^N S_i,
+       \qquad
+       \bar C := \frac1N\sum_{i=1}^N C_i. $$
+  </p>
+
+  <p>
+    Because $\sum_i \delta C_i = 0$, we have $\bar C = C_0$.
+    Averaging (2) over $i$ therefore gives the exact background identity
+  </p>
+
+  <p class="math">
+    $$ C_0
+       = \bar S + \chi\,\frac1N\sum_{i,j,k} T_{ijk}\,(C_0+\delta C_j)(C_0+\delta C_k). \tag{3} $$
+  </p>
+
+  <p>
+    Expanding the product
+    $(C_0+\delta C_j)(C_0+\delta C_k)=C_0^2+C_0(\delta C_j+\delta C_k)+\delta C_j\delta C_k$
+    turns (3) into
   </p>
 
   <p class="math">
     \[
       C_0
-      = \bar S
-      + \chi\Bigg[
-        C_0^2\,\underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}}_{=:~\bar T}
-        + C_0\,\underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}(\delta C_j+\delta C_k)}_{=:~L(\delta C)}
-        + \underbrace{\frac{1}{N}\sum_{i,j,k}T_{ijk}\,\delta C_j\delta C_k}_{=:~Q(\delta C)}
-      \Bigg]. \tag{$\star\star$}
+      = \bar S + \chi\Bigg[
+        C_0^2\,\underbrace{\frac1N\sum_{i,j,k} T_{ijk}}_{=:~\bar T}
+        + C_0\,\underbrace{\frac1N\sum_{i,j,k} T_{ijk}(\delta C_j+\delta C_k)}_{=:~L(\delta C)}
+        + \underbrace{\frac1N\sum_{i,j,k} T_{ijk}\,\delta C_j\delta C_k}_{=:~Q(\delta C)}
+      \Bigg]. \tag{4}
     \]
   </p>
 
   <p class="note">
-    This makes the bookkeeping honest: the background equation is obtained by summing over $i$, and the resulting scalar
-    self-consistency condition still contains fluctuation corrections through $L(\delta C)$ and $Q(\delta C)$.
-    The “pure mean-field” closure is the approximation where you drop those fluctuation-dependent terms.
+    Equation (4) is exact: the background is determined by the mean source plus fluctuation corrections.
+    The usual mean-field closure is to drop $L(\delta C)$ and $Q(\delta C)$, giving the scalar quadratic
+    $C_0=\bar S+\chi\bar T C_0^2$ and its two roots $C_0^\pm$.
   </p>
 
   <p>
-    At the pure mean-field level (set $L(\delta C)\approx 0$ and $Q(\delta C)\approx 0$) the background closes to a scalar quadratic:
+    Now comes the key step: derive the equation for $\delta C_i$ by <em>subtracting the averaged equation</em> from the full one.
+    Take (2) and subtract (3). The left-hand side becomes
   </p>
 
   <p class="math">
-    $$ C_0 = \bar S + \chi\,\bar T\,C_0^2. \tag{$\mathrm{MF}$} $$
+    $$ (C_0+\delta C_i) - C_0 = \delta C_i. $$
   </p>
 
   <p>
-    This has the two familiar branches (when the discriminant is positive):
+    On the right-hand side we get
   </p>
 
   <p class="math">
-    $$ C_0^{\pm}(\chi)
-       = \frac{1 \pm \sqrt{1-4\chi\,\bar T\,\bar S}}{2\chi\,\bar T}. $$
+    $$ (S_i-\bar S)
+       + \chi\Bigg[
+          \sum_{j,k}T_{ijk}(C_0+\delta C_j)(C_0+\delta C_k)
+          - \frac1N\sum_{i',j,k}T_{i'jk}(C_0+\delta C_j)(C_0+\delta C_k)
+       \Bigg]. \tag{5} $$
   </p>
 
   <p>
-    Choosing $C_0=C_0^-$ or $C_0=C_0^+$ is therefore already a choice of branch/background.
-    Once that choice is made, the remaining content of the problem is an equation for the fluctuations $\delta C_i$.
+    Equation (5) is still exact. To expose the <em>linearized operator</em>, expand the product inside the sum and
+    separate terms by their degree in $\delta C$.
+    The constant piece $C_0^2$ contributes only through
+    $$ \sum_{j,k}T_{ijk}C_0^2 - \frac1N\sum_{i',j,k}T_{i'jk}C_0^2, $$
+    which is an $i$-dependent shift. Under the mean-field closure (where $C_0$ is chosen to solve the averaged equation at leading order),
+    this constant part is exactly what is removed by the subtraction—its job is to define the background.
   </p>
 
   <p>
-    To derive it, return to the full fixed point, insert $C_i=C_0+\delta C_i$, and subtract the (mean-field) background equation
-    componentwise. Using $(\mathrm{MF})$ to eliminate the $C_0^2$ term, one finds
+    The <em>linear</em> terms are the ones proportional to $C_0(\delta C_j+\delta C_k)$.
+    Keeping those explicitly, we obtain
   </p>
 
   <p class="math">
     $$ \delta C_i
        = (S_i-\bar S)
        + \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k)
-       + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k$$
-       $$\;+\; \text{(terms enforcing }\tfrac1N\sum_i\delta C_i=0\text{)}. \tag{$\dagger$} $$
+       + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k
+       \;-\;\text{(the same three terms averaged over $i$)}. \tag{6} $$
+  </p>
+
+  <p class="note">
+    The final “minus the average” is exactly what enforces $\sum_i\delta C_i=0$ and keeps the fluctuation equation in the
+    zero-mean subspace. You can think of it as projecting both sides with $P:=I-\frac{1}{N}\mathbf{1}\mathbf{1}^T$.
   </p>
 
   <p>
-    The crucial point is that the <em>linearized operator</em> depends on the chosen root $C_0$.
-    Define the Jacobian around the background:
+    Now we can read off the Jacobian. Move the linear term to the left-hand side of (6) (and remember we are working in the
+    zero-mean subspace, i.e. after the projection):
+  </p>
+
+  <p class="math">
+    $$ \delta C_i
+       - \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k)
+       = (S_i-\bar S)
+       + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k
+       \;-\;\text{(average)}. \tag{7} $$
+  </p>
+
+  <p>
+    This is where $J_{C_0}$ comes from: it is simply the operator multiplying $\delta C$ after linearization around the background.
+    Define, on the zero-mean subspace,
   </p>
 
   <p class="math">
     $$ (J_{C_0}\,\delta C)_i
        := \delta C_i
-       - \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k). $$
+       - \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k), \tag{8} $$
   </p>
 
   <p>
-    Then ($\dagger$) becomes the background-field form
+    and write the quadratic remainder as $B(\delta C,\delta C)$ with
+    $(B(u,v))_i=\sum_{j,k}T_{ijk}u_jv_k$. Then (7) becomes the background-field form
   </p>
 
   <p class="math">
     $$ J_{C_0}\,\delta C
-       = (S-\bar S) + \chi\,B(\delta C,\delta C) \quad (\text{with } \tfrac1N\sum_i\delta C_i=0). $$
+       = (S-\bar S) + \chi\,B(\delta C,\delta C)
+       \qquad (\text{under } \tfrac1N\sum_i\delta C_i=0). \tag{9} $$
   </p>
 
   <div class="callout">
     <p class="note">
-      <strong>Choice of the analytical branch dependence in one line:</strong>
-      choosing $C_0^-$ versus $C_0^+$ changes $J_{C_0}$, hence changes the propagator $G_{C_0}=J_{C_0}^{-1}$ (when it exists),
-      hence changes every coefficient in the diagram expansion for $\delta C$.
+      <strong>Why the analytical branch matters here:</strong> choosing $C_0=C_0^-$ or $C_0=C_0^+$ changes the linear term, hence changes $J_{C_0}$.
+      If $J_{C_0}$ is invertible, the propagator $G_{C_0}=J_{C_0}^{-1}$ (and therefore every diagram weight in the expansion of $\delta C$)
+      depends on which root you picked.
     </p>
   </div>
 
   <p>
-    Once $G_{C_0}$ is defined, you iterate exactly as before: the expansion of $\delta C$ is again a rooted-tree sum,
-    but now <em>internal lines carry $G_{C_0}$</em>, vertices carry $T_{ijk}$, and leaves carry the inhomogeneity $(S-\bar S)$.
-    Same diagrams, different weights—set by the background root you chose.
+    Once $G_{C_0}$ is defined, you iterate (9) exactly like before: the expansion of $\delta C$ is again a rooted-tree sum,
+    but now internal lines carry $G_{C_0}$, vertices carry $T_{ijk}$, and leaves carry the inhomogeneity $(S-\bar S)$.
   </p>
 
   <div class="hr"></div>
