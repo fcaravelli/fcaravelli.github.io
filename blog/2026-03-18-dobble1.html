@@ -364,11 +364,15 @@
     $$
   </p>
 
-  <p>
+  <p> 
     Equivalently, one may label each symbol by the pair of cards that share it:
+  </p>
+  <p class="math">
     $$
       s_{ij} \qquad (1\le i<j\le M).
     $$
+  </p>
+  <p>
     In that sense, the symbols are indexed by unordered pairs of cards.
     But the actual object we build is still the bipartite incidence graph:
     cards on one side, symbols on the other, with an edge meaning that a given symbol appears on a given card.
@@ -396,7 +400,7 @@
         <h4>3. Minimal number of symbols, $PG(2,7)$, and a detour through the octonions</h4>
 
         <p>
-          My first construction was perfectly fine, but also extremely wasteful.
+          My previous construction was perfectly fine, but also extremely wasteful.
           There I gave every pair of cards its own dedicated symbol.
           That guarantees the rule, of course, but it scales like
           $$
@@ -404,11 +408,39 @@
           $$
           because there is one fresh symbol for every unordered pair of cards.
           For $M=55$, that would mean $1485$ symbols, which is clearly not what happens in the actual game.
-          That's when I started to search the internet and found <a href="https://www.youtube.com/watch?v=lhTMr8RzUr8&t=8s">this video that explains how Dobble really works.</a>
+          That is when I started searching online and found
+          <a href="https://www.youtube.com/watch?v=lhTMr8RzUr8&t=8s">this video that explains how Dobble really works</a>.
         </p>
 
         <p>
-          The commercial deck is much more clever than that.
+          The one thing my construction has going for it is flexibility: it works for an arbitrary number $M$ of cards.
+          If you want 11 cards, or 37, or 55, you just keep going.
+          The efficient Dobble construction is much more rigid.
+          It uses a finite projective plane, so in principle the total number of cards is not arbitrary, but must be of the form
+          <p class="math">
+           $$ N^2+N+1$$,
+          </p>
+          where each card then carries $N+1$ symbols.
+          In the Dobble case one wants $8$ symbols per card, so $N=7$, and the ideal mathematical deck has
+          <p class="math">
+
+          $$
+            7^2+7+1=57
+          $$
+          cards.
+          </p>
+        </p>
+
+        <p>
+          So there is a tradeoff.
+          My construction works for any deck size, but it is terribly inefficient.
+          The Dobble construction is dramatically more economical, but it only works at those special sizes allowed by finite projective planes.
+          However, you can still get a smaller deck by removing some cards from the ideal $57$-card construction, and that is what the commercial deck does.
+
+        </p>
+
+        <p>
+          The commercial deck is much more clever than my construction..
           In Dobble, every card has $8$ symbols, and the standard box contains $55$ cards, but that deck is really a subset of a mathematically complete
           $57$-card construction. The underlying object is a finite projective plane, specifically $PG(2,7)$. In that ideal construction,
           there are $57$ cards, $57$ symbols, each card contains $8$ symbols, each symbol appears on $8$ cards, and any two cards still share exactly one symbol. 
@@ -620,12 +652,6 @@
           In the other case it organizes multiplication rules, and in Cohl's framework those multiplication rules are then used to build particle representations inside the Dixon algebra.
         </p>
 
-        <div class="callout">
-          <p class="note">
-            This is probably the cleanest way to say it: the Fano plane is the baby version of the same geometric idea that makes Dobble work,
-            except that in the octonionic setting incidence controls multiplication rather than card overlap.
-          </p>
-        </div>
 
         <div class="hr"></div>
       </section>
