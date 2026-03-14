@@ -1,6 +1,10 @@
 [
-  
-      {
+   {
+    "title": "Blog post: Dobble, finite projective planes, and combinatorics",
+    "date": "2026-03-20",
+    "link": "blog/2026-03-20-dobble1.html"  
+    },
+    {
     "title": "Blog post: Quadratic fixed points, trees, and background fields",
     "date": "2026-03-12",
     "link": "blog/2026-03-12-quadratic1.html"
