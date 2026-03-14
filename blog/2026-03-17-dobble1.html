@@ -35,7 +35,7 @@
     const KATEX_RENDER_OPTS = {
       delimiters: [
         { left: "$$", right: "$$", display: true },
-        { left: "\\[", right: "\\]", display: true },
+        { left: "\$$", right: "\$$", display: true },
         { left: "$", right: "$", display: false },
         { left: "\\(", right: "\\)", display: false }
       ],
@@ -243,15 +243,144 @@
         <div class="hr"></div>
       </section>
 
-      <section id="construction">
-        <h4>2. How to construct a Dobble graph</h4>
+<section id="construction">
+  <h4>2. A constructive method</h4>
 
-        <p>
-          To be continued.
-        </p>
+  <p>
+    Let me now describe the most direct construction I could think of while traveling.
+    It is not deep, but it is clean, and it immediately gives both a valid deck and the correct counting.
+    The idea is simple: whenever a new card is added, it must share exactly one symbol with each of the cards that already exist.
+    So for each previous card, we introduce one fresh symbol and place it on that pair of cards.
+  </p>
 
-        <div class="hr"></div>
-      </section>
+  <p>
+    To make this precise, suppose we want to construct \(M\) cards
+    $$
+      C_1,C_2,\dots,C_M,
+    $$
+    with the rule that any two cards share exactly one symbol.
+    I will assume here that each symbol is used to represent exactly one pair of cards.
+    In the bipartite graph picture, this means every symbol-vertex has degree \(2\).
+  </p>
+
+  <div class="callout">
+    <p class="note">
+      This assumption matters. Without it, the problem changes completely: one could reuse the same symbol on many cards,
+      and then the counting is different. The construction below is the clean pairwise construction.
+    </p>
+  </div>
+
+  <p>
+    The inductive procedure is the following.
+  </p>
+
+  <p>
+    Start with the first card \(C_1\). At this stage no symbol is needed yet, since there is no other card to compare it with.
+  </p>
+
+  <p>
+    Add the second card \(C_2\). Now the pair \((C_1,C_2)\) must share exactly one symbol, so we introduce one new symbol
+    and place it on both cards.
+  </p>
+
+  <p>
+    Add the third card \(C_3\). It must share one symbol with \(C_1\) and one symbol with \(C_2\), so we introduce two new symbols:
+    one placed on \(C_3\) and \(C_1\), and one placed on \(C_3\) and \(C_2\).
+  </p>
+
+  <p>
+    Continuing in the same way, when we add the \(n\)-th card \(C_n\), it must share exactly one symbol with each of the
+    previous cards
+    $$
+      C_1,\dots,C_{n-1}.
+    $$
+    Therefore we must introduce exactly \(n-1\) new symbols, one for each pair
+    $$
+      (C_n,C_i), \qquad i=1,\dots,n-1.
+    $$
+  </p>
+
+  <p>
+    In other words, for every unordered pair of cards \(\{C_i,C_j\}\), we create one dedicated symbol \(s_{ij}\),
+    and we place that symbol on exactly those two cards.
+    Equivalently,
+  </p>
+
+  <p class="math">
+    $$
+      s_{ij}\in C_i \cap C_j,
+      \qquad 1\le i&lt;j\le M,
+    $$
+  </p>
+
+  <p>
+    and no other card contains \(s_{ij}\).
+  </p>
+
+  <p>
+    This immediately guarantees the desired property: for any two distinct cards \(C_i\) and \(C_j\),
+    the only symbol they have in common is precisely \(s_{ij}\). Hence
+  </p>
+
+  <p class="math">
+    $$
+      |C_i\cap C_j|=1 \qquad \text{for all } i\neq j.
+    $$
+  </p>
+
+  <div class="hr"></div>
+
+  <p>
+    Now for the count. When the \(n\)-th card is added, we introduce \(n-1\) new symbols.
+    So the total number of symbols is
+  </p>
+
+  <p class="math">
+    $$
+      \sum_{n=2}^{M}(n-1)=1+2+\cdots+(M-1)=\frac{M(M-1)}{2}.
+    $$
+  </p>
+
+  <p>
+    So the correct answer is:
+  </p>
+
+  <p class="math">
+    $$
+      N_{\mathrm{sym}}=\binom{M}{2}=\frac{M(M-1)}{2}.
+    $$
+  </p>
+
+  <p>
+    This is exactly what one should expect: there is one symbol for each unordered pair of cards.
+    In graph-theoretic language, the symbols are in bijection with the edges of the complete graph \(K_M\).
+  </p>
+
+  <p>
+    The associated bipartite incidence graph therefore has:
+  </p>
+
+  <ul>
+    <li>\(M\) card-vertices,</li>
+    <li>\(\binom{M}{2}\) symbol-vertices,</li>
+    <li>and each symbol-vertex is attached to exactly the two card-vertices corresponding to its pair.</li>
+  </ul>
+
+  <p>
+    So the construction is really nothing more than turning the edge set of \(K_M\) into symbols.
+    Each card \(C_i\) is incident to all symbols \(s_{ij}\) with \(j\neq i\), hence each card contains exactly \(M-1\) symbols.
+  </p>
+
+  <div class="callout">
+    <p class="note">
+      In short: the clean pairwise construction is unique in spirit.
+      One pair of cards, one fresh symbol.
+      That is why the count is \(\binom{M}{2}\), not \(M(M-1)\).
+    </p>
+  </div>
+
+  <div class="hr"></div>
+</section>
 
       <section id="minimal">
         <h4>3. Minimal number of symbols and sharp bounds</h4>
