@@ -343,7 +343,7 @@
   </p>
 
   <p>
-    So the correct answer is:
+    So the correct answer, given this construction, is:
   </p>
 
   <p class="math">
@@ -351,34 +351,43 @@
       N_{\mathrm{sym}}=\binom{M}{2}=\frac{M(M-1)}{2}.
     $$
   </p>
-
   <p>
-    This is exactly what one should expect: there is one symbol for each unordered pair of cards.
-    In graph-theoretic language, the symbols are in bijection with the edges of the complete graph $K_M$.
+    This is exactly what the inductive construction gives.
+    When the card $C_\ell$ is added, it must share one symbol with each of the $\ell-1$ previous cards,
+    so we introduce exactly $\ell-1$ new symbols.
+    Therefore the total number of symbols is
+  </p>
+
+  <p class="math">
+    $$
+      \sum_{\ell=1}^{M} (\ell-1)=\frac{M(M-1)}{2}.
+    $$
   </p>
 
   <p>
-    The associated bipartite incidence graph therefore has:
+    Equivalently, one may label each symbol by the pair of cards that share it:
+    $$
+      s_{ij} \qquad (1\le i<j\le M).
+    $$
+    In that sense, the symbols are indexed by unordered pairs of cards.
+    But the actual object we build is still the bipartite incidence graph:
+    cards on one side, symbols on the other, with an edge meaning that a given symbol appears on a given card.
+  </p>
+
+  <p>
+    So the bipartite graph has:
   </p>
 
   <ul>
     <li>$M$ card-vertices,</li>
-    <li>$\binom{M}{2}$ symbol-vertices,</li>
-    <li>and each symbol-vertex is attached to exactly the two card-vertices corresponding to its pair.</li>
+    <li>$\frac{M(M-1)}{2}$ symbol-vertices,</li>
+    <li>and each symbol-vertex $s_{ij}$ is connected exactly to the two card-vertices $C_i$ and $C_j$.</li>
   </ul>
 
   <p>
-    So the construction is really nothing more than turning the edge set of $K_M$ into symbols.
-    Each card $C_i$ is incident to all symbols $s_{ij}$ with $j\neq i$, hence each card contains exactly $M-1$ symbols.
+    In particular, each card $C_i$ is connected to all symbols $s_{ij}$ with $j\neq i$,
+    so each card contains exactly $M-1$ symbols.
   </p>
-
-  <div class="callout">
-    <p class="note">
-      In short: the clean pairwise construction is unique in spirit.
-      One pair of cards, one fresh symbol.
-      That is why the count is $\binom{M}{2}$, not $M(M-1)$.
-    </p>
-  </div>
 
   <div class="hr"></div>
 </section>
@@ -395,7 +404,7 @@
           $$
           because there is one fresh symbol for every unordered pair of cards.
           For $M=55$, that would mean $1485$ symbols, which is clearly not what happens in the actual game.
-          That's when I started to search the internet and found <a href="https://www.youtube.com/watch?v=lhTMr8RzUr8&t=8s">this video that explains it.</a>
+          That's when I started to search the internet and found <a href="https://www.youtube.com/watch?v=lhTMr8RzUr8&t=8s">this video that explains how Dobble really works.</a>
         </p>
 
         <p>
