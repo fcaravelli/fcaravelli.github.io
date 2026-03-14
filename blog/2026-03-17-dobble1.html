@@ -104,13 +104,16 @@
         <p><em>March 14th, 2026</em></p>
 
         <p>
-          I was playing Dobble with my kid the other day and I found myself thinking that, ok, this is actually quite smart.
-          The game is extremely simple. You put one card on the table, then draw another from the deck, and the whole point is to spot
-          the symbol shared by the two cards. Kids love it, it is fast, chaotic enough, and as a game it just works.
+          Last week we met with some old friends and to keep the kid occupied, my friends brought many card games and then we played <a href="https://www.asmodee.it/product/dobble/">Dobble</a>, 
+          the card game where you have to spot the common symbol between two cards. Kids love it, it is fast, chaotic enough, and as a game it just works. It might be called also <em>Spot it!</em> in the US.
+        The game is extremely simple, superficially. You put one card on the table, then draw another from the deck, and the whole point is to spot the common symbol between the two cards. 
+        But after a few rounds I stopped looking at it as just a game and started looking at the combinatorics instead. Wait, how does this work?
+          I bought it, played a bit more, and the first
+          available weekend I sat down to try to understand how it works. We just submitted Volume 3 to the editor and I have a bit of spare time. 
+          While it is a very simple game, the combinatorial structure behind it is quite rich.
         </p>
 
         <p>
-          But after a few rounds I stopped looking at it as just a game and started looking at the combinatorics instead. Wait, how does this work?
           The rule is very clean: for any two cards, there is exactly one common symbol.
           The moment you say it like that, it stops sounding like a toy and starts sounding like a very constrained mathematical object.
           In fact, it is naturally described as an incidence problem, or if one prefers, as a bipartite graph:
@@ -118,12 +121,14 @@
           if and only if they share a common neighbor in the graph. The rule of the game is that any two cards share exactly one symbol, which means that any 
           two nodes on the "card" side of the graph have exactly one common neighbor on the "symbol" side. I will tell you my version of the story, how I did construct it, 
           but I have found that other people <a href="https://neo4j.com/blog/developer/the-math-and-the-graph-behind-a-popular-match-game/">also wrote about it </a> and it
-          is indeed much deeper than I expected. 
+          is indeed much deeper than I expected. What I am about to say might sound crazy, but I never read the arXiv. The reason is simple: I prefer to think on my own
+          rather than following trends, and also try to think independently. I apply this rule also outside, so if I have the time, I try to think about a problem on my own,
+          and then after I search if anybody else solved. This is one of those cases.
         </p>
 
 
         <p>
-          Once I started thinking about it that way, the questions became obvious.
+          Anyway..Once I started thinking about it that way, the questions became obvious.
           First, how do you build such a graph?
           Second, if you want to do it with the smallest possible number of symbols while keeping the rule intact,
           how many such graphs are there? The third part is instead the narrative that I found after I thought about it on my own, which is indeed much deeper.
