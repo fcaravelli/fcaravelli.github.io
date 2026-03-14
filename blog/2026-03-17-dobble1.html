@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Dobble graphs – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+  </style>
+
+  <!-- AdSense: load ONCE per page -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <!-- In-article AdSense Ad -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">combinatorics • graph theory • finite geometry</p>
+        <h3>Dobble graphs</h3>
+        <p><em>March 14th, 2026</em></p>
+
+        <p>
+          I was playing Dobble with my kid the other day and I found myself thinking that, ok, this is actually quite smart.
+          The game is extremely simple. You put one card on the table, then draw another from the deck, and the whole point is to spot
+          the symbol shared by the two cards. Kids love it, it is fast, chaotic enough, and as a game it just works.
+        </p>
+
+        <p>
+          But after a few rounds I stopped looking at it as just a game and started looking at the combinatorics instead. Wait, how does this work?
+          The rule is very clean: for any two cards, there is exactly one common symbol.
+          The moment you say it like that, it stops sounding like a toy and starts sounding like a very constrained mathematical object.
+          In fact, it is naturally described as an incidence problem, or if one prefers, as a bipartite graph:
+          one set of nodes for the cards, one set for the symbols, and edges telling you which symbol appears on which card. Two cards contain the same symbol
+          if and only if they share a common neighbor in the graph. The rule of the game is that any two cards share exactly one symbol, which means that any 
+          two nodes on the "card" side of the graph have exactly one common neighbor on the "symbol" side. I will tell you my version of the story, how I did construct it, 
+          but I have found that other people <a href="https://neo4j.com/blog/developer/the-math-and-the-graph-behind-a-popular-match-game/">also wrote about it </a> and it
+          is indeed much deeper than I expected. 
+        </p>
+
+        <img src="images/graph1.png" alt="Dobble graph example" class="hero">
+
+        <p>
+          Once I started thinking about it that way, the questions became obvious.
+          First, how do you build such a graph?
+          Second, if you want to do it with the smallest possible number of symbols while keeping the rule intact,
+          how many such graphs are there? The third part is instead the narrative that I found after I thought about it on my own, which is indeed much deeper.
+          That is what I want to discuss in this post.
+        </p>
+
+        <p>
+          I worked through this exercise just before traveling to the APS.  I told my wife over the phone, excited, "I solved the Dobble game.":
+          She gave me the kind of look that strongly suggests she was reconsidering several life choices.
+          It is not the first time this has happened and, I suspect, not the last.
+        </p>
+
+        <p>
+          What I like about this kind of problem is that it sits in that pleasant region between something recreational and something rigid.
+          It starts from a children's game, but underneath there is a fairly sharp combinatorial structure.
+          Those are often the nicest problems: simple to explain, annoyingly nontrivial once you actually try to pin them down.
+        </p>
+
+        <p>
+          So the plan is to formulate the Dobble deck as a bipartite incidence graph with this uniqueness property,
+          then ask how such objects can be constructed and what the minimal construction really looks like.
+          Once the problem is written in the right language, the structure becomes much easier to see.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#setup">1. The rules as a graph problem</a></li>
+            <li><a href="#construction">2. How to construct a Dobble graph</a></li>
+            <li><a href="#minimal">3. Minimal number of symbols and sharp bounds</a></li>
+            <li><a href="#counting">4. How many such graphs exist?</a></li>
+            <li><a href="#closing">Takeaway</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="setup">
+        <h4>1. The rules as a graph problem</h4>
+
+        <p>
+          Let me write the game in a way that makes the combinatorics obvious.
+          Think of a deck of cards, each card carrying a collection of symbols.
+          The defining rule of Dobble is that for any two distinct cards, there is exactly one symbol that appears on both.
+          That is the whole game mechanic, but also the whole mathematical constraint.
+        </p>
+
+        <p>
+          The natural way to encode this is as an <em>incidence graph</em>, which is a bipartite graph.
+          On one side we put the cards, on the other side the symbols, and we draw an edge between a card and a symbol
+          whenever that symbol appears on that card.
+          So the deck becomes a bipartite graph
+        </p>
+
+        <img src="images/bipartite.png" alt="Bipartite graph example with the cards from earlier" style="width:100%; border-radius:12px; margin:1rem 0;">
+
+        <p class="math">
+          $$ G=(V_C \sqcup V_S,E), $$
+        </p>
+
+        <p>
+          where $V_C$ is the set of card-vertices, $V_S$ is the set of symbol-vertices, and
+          $$ (c,s)\in E $$
+          precisely when symbol $s$ is printed on card $c$.
+        </p>
+
+        <p>
+          In this language, the Dobble rule says something very clean:
+          any two distinct card-vertices must have exactly one common neighbor in the symbol part.
+          In formulas, if $N(c)$ denotes the set of symbol-neighbors of a card $c$, then for any two cards
+          $c\neq c'$ we require
+        </p>
+
+        <p class="math">
+          $$ |N(c)\cap N(c')|=1. $$
+        </p>
+
+
+
+        <p>
+          So this is not just any bipartite graph. It is a very constrained incidence structure:
+          the card side is arranged so that every pair of cards meets in exactly one symbol.
+          Already from this point of view one can ask two different kinds of questions.
+          One is constructive: how do we build such graphs?
+          The other is extremal: what is the smallest number of symbols needed for a given number of cards?
+        </p>
+
+        <p>
+          Before getting to the general construction, it is useful to look at the smallest nontrivial example.
+          Suppose we have just three cards. Then the condition says that each pair of cards must share exactly one symbol.
+          The simplest way to do that is to introduce three symbols:
+          one shared by cards 1 and 2, one shared by cards 1 and 3, and one shared by cards 2 and 3.
+          The corresponding incidence graph is shown below.
+        </p>
+
+        <p>
+          <img src="images/dobble_incidence_graph_three_cards.png" alt="Incidence graph for three Dobble cards" style="width:100%; border-radius:12px; margin:1rem 0;">
+        </p>
+
+        <p class="note">
+          Each edge means that a symbol appears on a card.
+          The condition that every pair of cards shares exactly one symbol becomes the statement that every pair of card-vertices
+          has exactly one common neighbor on the symbol side.
+        </p>
+
+        <p>
+          This tiny example already captures the general philosophy.
+          Dobble is really an incidence design problem disguised as a children's game.
+          Once written this way, the rest is a question of construction and counting.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="construction">
+        <h4>2. How to construct a Dobble graph</h4>
+
+        <p>
+          To be continued.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="minimal">
+        <h4>3. Minimal number of symbols and sharp bounds</h4>
+
+        <p>
+          To be continued.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="counting">
+        <h4>4. How many such graphs exist?</h4>
+
+        <p>
+          To be continued.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="closing">
+        <h4>Takeaway</h4>
+
+        <p>
+          The charm of Dobble is that it hides a very rigid combinatorial design inside a game that feels immediate and playful.
+          That is part of what makes it so satisfying: the rule is simple, but the structure underneath is not.
+        </p>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <!-- Second ad block -->
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
