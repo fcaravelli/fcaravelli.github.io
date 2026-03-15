@@ -104,33 +104,49 @@
         <p><em>March 20th, 2026</em></p>
 
         <p>
-          The world is slowly going insane, so let's write about something light. A couple of weeks ago we met with some old friends and to keep the kid occupied (he was trying to jump out of the window), 
-          my friends suggested we play some games. They had a bunch of card games, but then we played <a href="https://www.asmodee.it/product/dobble/">Dobble</a>, 
-          the card game where you have to spot the common symbol between two cards. Kids love it, it is fast, chaotic enough, and as a game it just works. It might be called also <em>Spot it!</em> in the US.
-        The game is extremely simple, superficially. You put one card on the table, then draw another from the deck, and the whole point is to spot the common symbol between the two cards. 
-        But after a few rounds I stopped looking at it as just a game and started looking at the combinatorics instead. Wait, how does this work?
+          The world is slowly going insane, so let's write about something light. During my time at Los Alamos I could not write publicly about 
+          essentially anything because of the Lab rules I strictly adhered to. What I did instead was to write a lot of private notes. All these notes, that started initially as my course notes for the Stat Mech course at UMass I taught in 2019,
+          turned into roughly 1600 pages of material. Each time I learned something new, I re-did the calculation in my own way or using some available materials. I had and I have a reminder in my calendar
+          every week that I need to do it. My old notes merged  with
+          exercises from Juan Zanella and Diego Dalvit, and notes from Alioscia Hamma, into the three Volumes that ought to be published by Taylor & Francis next year.
+          This time consuming exercise not only replaces sudoku, and keeps my brain active, but (jokingly) also became my alternative to a therapist :) As it turns out, I realized that this blog is a new version
+          of those notes that instead of being in my own private folder, are publicly available. Eventually, I am sure, there will be also a lot of leftover material 
+          from my old notes, that did not go into the books,
+          and that naturally I will add here, and maybe useful to somebody. 
+          The nature of this post resembles a lot the kind of notes that I used to had, with the difference that instead of 
+          becoming an exercise at the end of the chapters.
+        </p>
+
+        <p> Now, to the topic of this post. A couple of weeks ago we met with some old friends.. and to keep the kid occupied (he was trying to jump out of the window), 
+          my friends suggested that we play some games. They had a bunch of card games, but the one we played  was <a href="https://www.asmodee.it/product/dobble/">Dobble</a>, 
+          the card game where you have to spot the common symbol between two cards. The kid loved it, it is fast, chaotic enough, and as a game it just works. 
+          It might be called also <em>Spot it!</em> in the US.
+          The game is extremely simple, superficially. You put one card on the table, then draw another from the deck, and the whole point is to spot the common symbol between the two cards. 
+          But after a few rounds I stopped looking at it as just a game and started looking at the combinatorics instead. Wait, how does this work?
           I bought it, played a bit more, and the first
           available weekend I sat down to try to understand how it works. We just submitted Volume 3 to the editor and I have a bit of spare time. 
-          While it is a very simple game, the combinatorial structure behind it is quite rich.
+          While it is a very simple game, the combinatorial structure behind is quite rich.
         </p>
 
         <p>
-          The rule is very clean: for any two cards, there is exactly one common symbol.
-          The moment you say it like that, it stops sounding like a toy and starts sounding like a very constrained mathematical object.
-          In fact, it is naturally described as an incidence problem, or if one prefers, as a bipartite graph:
-          one set of nodes for the cards, one set for the symbols, and edges telling you which symbol appears on which card. Two cards contain the same symbol
-          if and only if they share a common neighbor in the graph. The rule of the game is that any two cards share exactly one symbol, which means that any 
-          two nodes on the "card" side of the graph have exactly one common neighbor on the "symbol" side. I will tell you my version of the story, how I did construct it, 
-          but I have found that other people <a href="https://neo4j.com/blog/developer/the-math-and-the-graph-behind-a-popular-match-game/">also wrote about it </a> and it
-          is indeed much deeper than I expected. What I am about to say might sound crazy, but I never read the arXiv. The reason is simple: I prefer to think on my own
+          The rule is very clean: for any two cards, there is exactly one common symbol. This means that each time you compare two cards, you are guaranteed to find exactly 
+          one match.  The moment you say it like that, it stops sounding like a toy and starts sounding like a very constrained mathematical object.
+          What I am about to say might sound crazy, but I never read the arXiv. The reason is simple: I prefer to think on my own
           rather than following trends, and also try to think independently. I apply this rule also outside, so if I have the time, I try to think about a problem on my own,
           and then after I search if anybody else solved. This is one of those cases.. this means that I have two solutions to the same problem, one very wasteful in terms
           of symbols, and the real one.
+          In fact, it is naturally described as an incidence problem, or if one prefers, as a bipartite graph:
+          one set of nodes for the cards, one set for the symbols, and edges telling you which symbol appears on which card. Two cards contain the same symbol
+          if and only if they share a common neighbor in the graph. The rule of the game is converted to the graph theoretical rule that any two cards (nodes of this graph) share exactly one symbol, which means that any 
+          two nodes on the "card" side of the graph have exactly one common neighbor on the "symbol" side. I will tell you my version of the story, how I did construct the graph as a
+           solution. However, as I will explain in this post I realized that my solution could have not been the solution (I explain why along the way).
+          Then I searched online, and have found that other people <a href="https://neo4j.com/blog/developer/the-math-and-the-graph-behind-a-popular-match-game/">also wrote about it </a> and it
+          is indeed much deeper than I expected. 
         </p>
 
 
         <p>
-          Anyway.. Once I started thinking about it that way, the questions became obvious.
+          Anyway.. Once I started thinking about it that graph theoretical way, the questions became obvious.
           First, how do you build such a graph?
           Second, if you want to do it with the smallest possible number of symbols while keeping the rule intact,
           how many such graphs are there? The third part is instead the narrative that I found after I thought about it on my own, which is indeed much deeper.
@@ -141,19 +157,13 @@
                 <img src="images/dobble/graph1.png" alt="Dobble graph example" class="hero">
         </p>
         <p>
-          I worked through this exercise just before traveling to the APS.  I told my wife over the phone, excited, "I solved the Dobble game.":
+          I worked through this exercise just before traveling to the APS.  I told my wife, excited, "I solved the Dobble game.":
           She gave me the kind of look that strongly suggests she was reconsidering several life choices.
           It is not the first time this has happened and, I suspect, not the last.
         </p>
 
         <p>
-          What I like about this kind of problem is that it sits in that pleasant region between something recreational and something rigid.
-          It starts from a children's game, but underneath there is a fairly sharp combinatorial structure.
-          Those are often the nicest problems: simple to explain, annoyingly nontrivial once you actually try to pin them down.
-        </p>
-
-        <p>
-          So the plan is to formulate the Dobble deck as a bipartite incidence graph with this uniqueness property,
+          So.. to recap, the plan is to formulate the Dobble deck as a bipartite incidence graph with this uniqueness property,
           then ask how such objects can be constructed and what the minimal construction really looks like.
           Once the problem is written in the right language, the structure becomes much easier to see.
         </p>
