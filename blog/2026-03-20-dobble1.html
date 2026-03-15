@@ -221,14 +221,12 @@
           $$ |N(c)\cap N(c')|=1. $$
         </p>
 
-
-
         <p>
           So this is not just any bipartite graph. It is a very constrained incidence structure:
           the card side is arranged so that every pair of cards meets in exactly one symbol.
           Already from this point of view one can ask two different kinds of questions.
           One is constructive: how do we build such graphs?
-          The other is extremal: what is the smallest number of symbols needed for a given number of cards?
+          The other is extremal: what is the smallest number of symbols needed for a given number of cards? Well, my is very wasteful.
         </p>
 
         <p>
@@ -239,7 +237,7 @@
           The corresponding incidence graph is shown below.
         </p>
 
-        <p class="note">
+        <p>
           Each edge means that a symbol appears on a card.
           The condition that every pair of cards shares exactly one symbol becomes the statement that every pair of card-vertices
           has exactly one common neighbor on the symbol side.
@@ -273,13 +271,6 @@
     I will assume here that each symbol is used to represent exactly one pair of cards.
     In the bipartite graph picture, this means every symbol-vertex has degree $2$.
   </p>
-
-  <div class="callout">
-    <p class="note">
-      This assumption matters. Without it, the problem changes completely: one could reuse the same symbol on many cards,
-      and then the counting is different. The construction below is the clean pairwise construction.
-    </p>
-  </div>
 
   <p>
     The inductive procedure is the following.
@@ -362,7 +353,7 @@
     $$
   </p>
   <p>
-    This is exactly what the inductive construction gives.
+    e.g., Gauss' formula. This is exactly what the inductive construction gives.
     When the card $C_\ell$ is added, it must share one symbol with each of the $\ell-1$ previous cards,
     so we introduce exactly $\ell-1$ new symbols.
     Therefore the total number of symbols is
