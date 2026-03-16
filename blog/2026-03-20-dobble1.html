@@ -113,7 +113,7 @@
           of those notes that instead of being in my own private folder, are publicly available. Eventually, I am sure, there will be also a lot of leftover material 
           from my old notes, that did not go into the books,
           and that naturally I will add here, and maybe useful to somebody. 
-          The nature of this post resembles a lot the kind of notes that I used to had, with the difference that instead of 
+          The nature of this post resembles a lot the kind of notes that I used to have, with the difference that instead of 
           becoming an exercise at the end of the chapters it becomes a blog post.
         </p>
 
@@ -138,28 +138,29 @@
           In fact, it is naturally described as an incidence problem, or if one prefers, as a bipartite graph:
           one set of nodes for the cards, one set for the symbols, and edges telling you which symbol appears on which card. Two cards contain the same symbol
           if and only if they share a common neighbor in the graph. The rule of the game is converted to the graph theoretical rule that any two cards (nodes of this graph) share exactly one symbol, which means that any 
-          two nodes on the "card" side of the graph have exactly one common neighbor on the "symbol" side. I will tell you my version of the story, how I did construct the graph as a
-           solution. However, as I will explain in this post I realized that my solution could have not been the solution (I explain why along the way).
+          two nodes on the "card" side of the graph have exactly one common neighbor on the "symbol" side. I will tell you my version of the story, 
+          how I did construct the graph as a
+           solution of the only one symbol between two pairs of cards. 
+           However, as I will explain in this post I realized that my construction could have not been the solution (I explain why along the way).
           Then I searched online, and have found that other people <a href="https://neo4j.com/blog/developer/the-math-and-the-graph-behind-a-popular-match-game/">also wrote about it </a> and it
           is indeed much deeper than I expected. 
         </p>
 
 
         <p>
-          Anyway.. Once I started thinking about it that graph theoretical way, the questions became obvious.
+          Anyway.. Once I started thinking about it that graph theoretical way, the key questions became obvious.
           First, how do you build such a graph?
           Second, if you want to do it with the smallest possible number of symbols while keeping the rule intact,
           how many such graphs are there? The third part is instead the narrative that I found after I thought about it on my own, which is indeed much deeper.
           That is what I want to discuss in this post.
         </p>
-
         <p>
                 <img src="images/dobble/graph1.png" alt="Dobble graph example" class="hero">
         </p>
         <p>
           I worked through this exercise just before traveling to the APS.  I told my wife, excited, "I solved the Dobble game.":
-          She gave me the kind of look that strongly suggests she was reconsidering several life choices.
-          It is not the first time this has happened and, I suspect, not the last.
+          she gave me the kind of look that strongly suggests she was reconsidering several life choices. Fine, I'll take it.
+          (It is not the first time this has happened and, I suspect, not the last.)
         </p>
 
         <p>
@@ -226,7 +227,7 @@
           the card side is arranged so that every pair of cards meets in exactly one symbol.
           Already from this point of view one can ask two different kinds of questions.
           One is constructive: how do we build such graphs?
-          The other is extremal: what is the smallest number of symbols needed for a given number of cards? Well, my is very wasteful.
+          The other is extremal: what is the smallest number of symbols needed for a given number of cards? Well, mine is very wasteful.
         </p>
 
         <p>
@@ -243,12 +244,6 @@
           has exactly one common neighbor on the symbol side.
         </p>
 
-        <p>
-          This tiny example already captures the general philosophy.
-          Dobble is really an incidence design problem disguised as a children's game.
-          Once written this way, the rest is a question of construction and counting.
-        </p>
-
         <div class="hr"></div>
       </section>
 
@@ -256,7 +251,7 @@
   <h4>2. A constructive method</h4>
 
   <p>
-    Let me now describe the most direct construction I could think of.
+    Before discussing how actually Dobble is constructed, let me now describe the most direct construction I could think of.
     It is not deep, but it is clean, and it immediately gives both a valid deck and the correct counting.
     The idea is simple: whenever a new card is added, it must share exactly one symbol with each of the cards that already exist.
     So for each previous card, we introduce one fresh symbol and place it on that pair of cards.
@@ -273,7 +268,7 @@
   </p>
 
   <p>
-    The inductive procedure is the following.
+    The inductive procedure is the following. It also serves to show that a "Dobble graph" exists for any number of cards.
   </p>
 
   <p>
@@ -432,8 +427,7 @@
         </p>
 
         <p>
-          The commercial deck is much more clever than my construction..
-          In Dobble, every card has $8$ symbols, and the standard box contains $55$ cards, but that deck is really a subset of a mathematically complete
+          The commercial deck is much more clever than we described earlier.. in Dobble, every card has $8$ symbols, and the standard box contains $55$ cards, but that deck is really a subset of a mathematically complete
           $57$-card construction. The underlying object is a finite projective plane, specifically $PG(2,7)$. In that ideal construction,
           there are $57$ cards, $57$ symbols, each card contains $8$ symbols, each symbol appears on $8$ cards, and any two cards still share exactly one symbol. 
         </p>
@@ -443,7 +437,8 @@
           So the real trick is not “one symbol per pair of cards.”
           The real trick is that the same symbol can be reused on many cards, but in a globally consistent way.
           My construction enforced the matching rule locally, pair by pair.
-          The projective-plane construction enforces it globally, by geometry.
+          The projective-plane construction enforces it globally, by geometry. This means that there are multiple pair of cards that can have the same symbol, but between two pairs
+          of cards there is only one.
         </p>
 
         <p>
@@ -569,7 +564,7 @@
         </p>
 
         <p>
-          In Cohl's paper, the octonionic imaginary units $e_1,\dots,e_7$ are arranged according to the Fano-plane diagram, and any three imaginary units lying on a directed line behave like a quaternionic triple. The paper states explicitly that the $e_n$ multiply according to Fig. 2, and that any three imaginary units on a directed line segment act as if they were a quaternionic triple. 
+          In the $PG(2,2) representation, the octonionic imaginary units $e_1,\dots,e_7$ are arranged according to the Fano-plane diagram, and any three imaginary units lying on a directed line behave like a quaternionic triple. The paper states explicitly that the $e_n$ multiply according to Fig. 2, and that any three imaginary units on a directed line segment act as if they were a quaternionic triple. 
         </p>
 
         <p>
