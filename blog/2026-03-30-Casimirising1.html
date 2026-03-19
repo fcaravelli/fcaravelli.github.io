@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Casimir force in an Ising chain model – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+  </style>
+
+  <!-- AdSense: load ONCE per page -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">stat mech • ising model • transfer matrices</p>
+        <h3>Casimir force in a single-spin model</h3>
+        <p><em>March 19th, 2026</em></p>
+
+        <p>
+          I was scribbling through a very simple one-dimensional Ising model and ended up thinking about an equally simple question:
+          if I take two boundary spins, integrate out everything in between, and then ask how their effective interaction depends on distance,
+          what kind of force do I get?
+        </p>
+
+        <p>
+          Calling it a “Casimir force” in one dimension is maybe a bit grandiose, but the logic is the same enough to be useful:
+          you eliminate intermediate degrees of freedom, obtain an effective free energy between distant boundary variables,
+          and then study how that free energy changes with separation.
+        </p>
+
+        <p>
+          This is one of those calculations that I like because it is elementary, but not completely trivial.
+          The transfer-matrix method does all the work, and at the end one gets a neat exponentially decaying effective interaction.
+          Then, as a separate remark, one can also ask what an <em>entropic</em> point of view would look like.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#setup">1. The setup</a></li>
+            <li><a href="#tm">2. Transfer matrix and fixed-boundary partition function</a></li>
+            <li><a href="#eff">3. Effective coupling between the boundary spins</a></li>
+            <li><a href="#force">4. A Casimir-like force from the effective free energy</a></li>
+            <li><a href="#asymptotics">5. Large-distance asymptotics and correlation length</a></li>
+            <li><a href="#entropy">6. Alternative point of view: entropy</a></li>
+            <li><a href="#closing">Takeaway</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="setup">
+        <h4>1. The setup</h4>
+
+        <p>
+          Consider a one-dimensional Ising chain with spins \(s_i=\pm 1\), nearest-neighbor ferromagnetic coupling \(J>0\),
+          and two distinguished boundary spins \(s_A\) and \(s_B\), separated by a finite segment of bulk spins.
+          The Hamiltonian is
+        </p>
+
+        <p class="math">
+          $$
+          H = -J\sum_i s_i s_{i+1}.
+          $$
+        </p>
+
+        <p>
+          The thermodynamic free energy is, as usual,
+        </p>
+
+        <p class="math">
+          $$
+          F = -k_B T \log Z,
+          $$
+        </p>
+
+        <p>
+          where
+        </p>
+
+        <p class="math">
+          $$
+          Z = \sum_{\{s\}} e^{-\beta H},
+          \qquad \beta = \frac{1}{k_B T}.
+          $$
+        </p>
+
+        <p>
+          What I want to do is slightly more specific: instead of summing over all spins including the two boundaries,
+          I keep \(s_A\) and \(s_B\) fixed and sum over the bulk spins only.
+          This gives a constrained partition function \(Z(s_A,s_B;n)\), where \(n\) is the number of transfer-matrix steps between the boundaries.
+        </p>
+
+        <p>
+          Once that quantity is known, one can read off the effective interaction mediated by the bulk.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="tm">
+        <h4>2. Transfer matrix and fixed-boundary partition function</h4>
+
+        <p>
+          The transfer matrix for the one-dimensional Ising chain is
+        </p>
+
+        <p class="math">
+          $$
+          T=
+          \begin{pmatrix}
+          e^{\beta J} & e^{-\beta J}\\
+          e^{-\beta J} & e^{\beta J}
+          \end{pmatrix}.
+          $$
+        </p>
+
+        <p>
+          It is symmetric, so it diagonalizes immediately.
+          The two eigenvalues are
+        </p>
+
+        <p class="math">
+          $$
+          \lambda_+ = 2\cosh(\beta J),
+          \qquad
+          \lambda_- = 2\sinh(\beta J),
+          $$
+        </p>
+
+        <p>
+          with eigenvectors proportional to
+        </p>
+
+        <p class="math">
+          $$
+          e_+ \propto \binom{1}{1},
+          \qquad
+          e_- \propto \binom{1}{-1}.
+          $$
+        </p>
+
+        <p>
+          Therefore the spectral decomposition of \(T^n\) has the usual form
+        </p>
+
+        <p class="math">
+          $$
+          T^n = \lambda_+^n P_+ + \lambda_-^n P_-,
+          $$
+        </p>
+
+        <p>
+          where \(P_+\) and \(P_-\) are the projectors onto the symmetric and antisymmetric sectors.
+          From this one obtains the matrix element between the two boundary spins:
+        </p>
+
+        <p class="math">
+          $$
+          Z(s_A,s_B;n) = (T^n)_{s_A,s_B}.
+          $$
+        </p>
+
+        <p>
+          After a little algebra, the result can be written as
+        </p>
+
+        <p class="math">
+          $$
+          Z(s_A,s_B;n)
+          =
+          \lambda_+^n\left(1+s_A s_B\left(\frac{\lambda_-}{\lambda_+}\right)^n\right).
+          $$
+        </p>
+
+        <p>
+          Introducing
+        </p>
+
+        <p class="math">
+          $$
+          t:=\tanh(\beta J)=\frac{\lambda_-}{\lambda_+},
+          $$
+        </p>
+
+        <p>
+          this becomes the much cleaner expression
+        </p>
+
+        <p class="math">
+          $$
+          Z(s_A,s_B;n)=\lambda_+^n\left(1+s_A s_B\, t^n\right).
+          $$
+        </p>
+
+        <div class="callout">
+          <p class="note">
+            This is already the whole physical content of the calculation.
+            The only dependence on the two boundary spins comes through the product \(s_A s_B\), exactly as one would expect from symmetry.
+          </p>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="eff">
+        <h4>3. Effective coupling between the boundary spins</h4>
+
+        <p>
+          The next step is to rewrite the constrained partition function in the suggestive form
+        </p>
+
+        <p class="math">
+          $$
+          Z(s_A,s_B;n)=A(n)\,e^{\beta J_n s_A s_B},
+          $$
+        </p>
+
+        <p>
+          where \(A(n)\) is an overall prefactor and \(J_n\) is the effective coupling between the boundary spins after the bulk has been integrated out.
+          Comparing this with the previous expression gives
+        </p>
+
+        <p class="math">
+          $$
+          \tanh(\beta J_n)=t^n=\tanh^n(\beta J).
+          $$
+        </p>
+
+        <p>
+          Hence
+        </p>
+
+        <p class="math">
+          $$
+          J_n=\frac{1}{\beta}\operatorname{arctanh}\!\big(\tanh^n(\beta J)\big).
+          $$
+        </p>
+
+        <p>
+          So the boundary spins interact as if they were directly coupled, but with a distance-dependent renormalized coupling \(J_n\).
+          The bulk has been reduced to a single number.
+        </p>
+
+        <p>
+          In particular, for parallel and antiparallel boundary conditions one gets
+        </p>
+
+        <p class="math">
+          $$
+          Z_{++}=Z_{--}=A(n)e^{\beta J_n},
+          \qquad
+          Z_{+-}=Z_{-+}=A(n)e^{-\beta J_n}.
+          $$
+        </p>
+
+        <p>
+          The corresponding free energies are
+        </p>
+
+        <p class="math">
+          $$
+          F_{++}=F_{--}=-k_B T\log A(n)-J_n,
+          $$
+        </p>
+
+        <p class="math">
+          $$
+          F_{+-}=F_{-+}=-k_B T\log A(n)+J_n.
+          $$
+        </p>
+
+        <p>
+          Therefore
+        </p>
+
+        <p class="math">
+          $$
+          F_{++}-F_{+-}=-2J_n<0.
+          $$
+        </p>
+
+        <p>
+          So the effective interaction mediated by the bulk is ferromagnetic, as expected: aligned boundary spins are favored.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="force">
+        <h4>4. A Casimir-like force from the effective free energy</h4>
+
+        <p>
+          If one wants to speak of a Casimir-like force, the natural thing to do is to define it from the change of effective free energy with separation.
+          Since the distance \(n\) is discrete, the most natural lattice definition is a finite difference:
+        </p>
+
+        <p class="math">
+          $$
+          \mathcal F_n(s_A,s_B)
+          :=
+          F_{\mathrm{eff}}(s_A,s_B;n)-F_{\mathrm{eff}}(s_A,s_B;n+1).
+          $$
+        </p>
+
+        <p>
+          Using
+        </p>
+
+        <p class="math">
+          $$
+          F_{\mathrm{eff}}(s_A,s_B;n)
+          =
+          -k_B T\log A(n)-J_n s_A s_B,
+          $$
+        </p>
+
+        <p>
+          one gets
+        </p>
+
+        <p class="math">
+          $$
+          \mathcal F_n(s_A,s_B)
+          =
+          k_B T\bigl[\log A(n+1)-\log A(n)\bigr]
+          +(J_{n+1}-J_n)s_A s_B.
+          $$
+        </p>
+
+        <p>
+          If one is mainly interested in the interaction-dependent part, the relevant term is the one controlled by \(J_n\).
+          Since \(J_n\) decreases with \(n\), the induced interaction weakens with distance, which is exactly what one expects.
+        </p>
+
+        <p>
+          In other words, the chain mediates an effective boundary-boundary interaction, and that interaction decays as the two ends are pulled apart.
+        </p>
+
+        <div class="callout">
+          <p class="note">
+            I am not trying to claim here that this is the full-fledged critical Casimir story.
+            It is a very small toy model.
+            But as a cartoon of the mechanism — integrate out the bulk, obtain a distance-dependent effective free energy, differentiate with respect to distance — it already captures the main idea.
+          </p>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="asymptotics">
+        <h4>5. Large-distance asymptotics and correlation length</h4>
+
+        <p>
+          The large-\(n\) behavior is immediate once the effective coupling is written as
+        </p>
+
+        <p class="math">
+          $$
+          J_n=\frac{1}{\beta}\operatorname{arctanh}(t^n),
+          \qquad t=\tanh(\beta J).
+          $$
+        </p>
+
+        <p>
+          Away from zero temperature one has \(|t|<1\), so for large \(n\),
+        </p>
+
+        <p class="math">
+          $$
+          t^n \ll 1.
+          $$
+        </p>
+
+        <p>
+          Since \(\operatorname{arctanh}(x)\sim x\) for small \(x\), this gives
+        </p>
+
+        <p class="math">
+          $$
+          J_n \sim \frac{1}{\beta} t^n.
+          $$
+        </p>
+
+        <p>
+          Writing this in exponential form,
+        </p>
+
+        <p class="math">
+          $$
+          t^n = e^{n\log t}=e^{-n/\xi},
+          $$
+        </p>
+
+        <p>
+          one identifies the correlation length
+        </p>
+
+        <p class="math">
+          $$
+          \xi = -\frac{1}{\log(\tanh(\beta J))}.
+          $$
+        </p>
+
+        <p>
+          Therefore the effective interaction decays as
+        </p>
+
+        <p class="math">
+          $$
+          J_n \sim \frac{1}{\beta}e^{-n/\xi}.
+          $$
+        </p>
+
+        <p>
+          So in this simple one-dimensional model the induced force is exponentially screened at finite temperature.
+          That is exactly what finite correlation length should look like.
+        </p>
+
+        <p class="note">
+          The ordinary one-dimensional nearest-neighbor Ising model has no finite-temperature critical point.
+          The only place where \(\xi\) diverges is \(T\to 0\), where \(\tanh(\beta J)\to 1\).
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="entropy">
+        <h4>6. Alternative point of view: entropy</h4>
+
+        <p>
+          Up to now everything came from the transfer-matrix calculation.
+          But there is another way to think about forces of this kind, and it is worth keeping conceptually separate.
+          Namely: what if the force is not read primarily as an energetic interaction, but as an <em>entropic</em> effect?
+        </p>
+
+        <p>
+          The free energy is
+        </p>
+
+        <p class="math">
+          $$
+          F = E - TS,
+          $$
+        </p>
+
+        <p>
+          and entropy counts the logarithm of the number of accessible configurations:
+        </p>
+
+        <p class="math">
+          $$
+          S = k_B \log \Omega.
+          $$
+        </p>
+
+        <p>
+          So if the number of allowed configurations depends on the separation between two objects, then even without changing the microscopic coupling,
+          the free energy can acquire a distance dependence simply because the entropy changes.
+          That is the basic logic behind entropic forces.
+        </p>
+
+        <p>
+          In the present one-dimensional Ising example, the transfer-matrix derivation already gives the exact answer, so there is no need to invoke entropy separately.
+          Still, it is useful to keep this alternative point of view in mind:
+          integrating out bulk degrees of freedom may generate an effective interaction not only because energy is being transmitted through the medium,
+          but also because the number of compatible bulk configurations depends on what the boundaries are doing.
+        </p>
+
+        <p>
+          So one can tell two complementary stories.
+          The first is the one we actually computed: the bulk generates an effective coupling \(J_n\) between the two ends.
+          The second is a more thermodynamic story: different boundary conditions constrain the bulk differently, and this changes the entropy,
+          hence the free energy, hence the force.
+        </p>
+
+        <div class="callout">
+          <p class="note">
+            I would not derive the transfer-matrix result from entropy alone here.
+            That would be a different argument.
+            But as an interpretation, it is perfectly fair: a distance-dependent force can also be thought of as the free-energy price of changing the number of available configurations in the medium.
+          </p>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="closing">
+        <h4>Takeaway</h4>
+
+        <p>
+          The whole exercise is tiny, but I like it because it is clean.
+          You start with a trivial nearest-neighbor Ising chain, integrate out the bulk, and end up with an effective interaction between two distant boundary spins.
+          That interaction is
+        </p>
+
+        <p class="math">
+          $$
+          J_n=\frac{1}{\beta}\operatorname{arctanh}\!\big(\tanh^n(\beta J)\big),
+          $$
+        </p>
+
+        <p>
+          and at large distance it decays exponentially with the correlation length.
+        </p>
+
+        <p>
+          So the model is simple, but the structure is already there:
+          bulk fluctuations mediate an effective interaction between boundaries,
+          and the distance dependence of the resulting free energy is the toy-model version of a Casimir-like force.
+        </p>
+
+        <p>
+          What I also like is that there are two perfectly reasonable languages for the same phenomenon.
+          One is algebraic and transfer-matrix based.
+          The other is thermodynamic and entropic.
+          Same mechanism seen from two slightly different angles.
+        </p>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
