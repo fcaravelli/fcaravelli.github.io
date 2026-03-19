@@ -102,21 +102,27 @@
         <p><em>March 30th, 2026</em></p>
 
         <p>
-          I was scribbling through a very simple one-dimensional Ising model and ended up thinking about an equally simple question:
-          if I take two boundary spins, integrate out everything in between, and then ask how their effective interaction depends on distance,
-          what kind of force do I get?
-        </p>
-
-        <p>
-          Calling it a “Casimir force” in one dimension is maybe a bit grandiose, but the logic is the same enough to be useful:
-          you eliminate intermediate degrees of freedom, obtain an effective free energy between distant boundary variables,
-          and then study how that free energy changes with separation.
-        </p>
-
-        <p>
-          This is one of those calculations that I like because it is elementary, but not completely trivial.
-          The transfer-matrix method does all the work, and at the end one gets a neat exponentially decaying effective interaction.
-          Then, as a separate remark, one can also ask what an <em>entropic</em> point of view would look like.
+          Some months ago I attended a conference in Krakow (I wrote about it <a href="2025-11-28-turing.html">in a previous post</a>).
+          One of the talks I attended was about the <a href="https://www.nature.com/articles/nature06443">critical Casimir force</a>, which is a thermodynamic/entropic analog of 
+          the more well known Casimir force occurring between two conductive plates. Now, although I had heard about the effect before, I had never really sat down 
+          to understand the mechanism in a simple model, and I thought it would be nice to do that here.
+          There is a very nice review by Andrea Gambassi <a href="https://iopscience.iop.org/article/10.1088/1742-6596/161/1/012037">here</a>. 
+          I've been meaning to write about this topic for a while, and I thought it would be nice to start with a very simple toy model that captures 
+          the main mechanism in a transparent way. Now, as I discuss below, this effect is usually studied in the context of critical phenomena, 
+          but the basic idea of a mediated interaction that depends on distance is more general, and can be illustrated even in a simple one-dimensional Ising chain.
+          The caveat, you might say, is that the one dimensional Ising model does not have a finite-temperature critical point, so it is not the full story. 
+          But as a cartoon of the mechanism, it already captures the main idea: integrate out the bulk, obtain a distance-dependent effective free energy, 
+          differentiate with respect to distance, and read off the induced force. My colleague Diego Dalvit is an expert on the topic and I discussed this with him
+            before writing, so I hope this is a faithful representation of the physics. In the standard quantum mechanical effect, the force arises from the change in
+             zero-point energy of the electromagnetic field due to the presence of the boundaries, and the attractive force scales as an inverse power of the distance
+             between the plates. In the critical Casimir effect, the force arises from the change in free energy of a fluctuating medium 
+             (like a fluid near its critical point) due to the presence of boundaries, 
+             and it typically decays exponentially with distance, with a decay length given by the correlation length of the medium. 
+             In both cases, the key idea is that the presence of boundaries modifies the spectrum of fluctuations in the medium, 
+             leading to an effective interaction between the boundaries that depends on their separation. However, near a second order phase transition
+             the critical fluctuations become long-ranged, and the correlation length diverges, leading to a long-range Casimir force that can be observed experimentally at 
+             large distances as well. This is the phenomenology that is usually associated with the critical Casimir effect, but the basic mechanism of a 
+             mediated interaction that depends on distance can be illustrated even in a simple one-dimensional Ising chain, as I show below (with a caveat).
         </p>
 
         <div class="toc">
@@ -127,8 +133,6 @@
             <li><a href="#eff">3. Effective coupling between the boundary spins</a></li>
             <li><a href="#force">4. A Casimir-like force from the effective free energy</a></li>
             <li><a href="#asymptotics">5. Large-distance asymptotics and correlation length</a></li>
-            <li><a href="#entropy">6. Alternative point of view: entropy</a></li>
-            <li><a href="#closing">Takeaway</a></li>
           </ul>
         </div>
 
@@ -139,9 +143,10 @@
         <h4>1. The setup</h4>
 
         <p>
-          Consider a one-dimensional Ising chain with spins \(s_i=\pm 1\), nearest-neighbor ferromagnetic coupling \(J>0\),
+          As mentioned above, we focus on a simple one dimensional ferromagnetic Ising chain.
+          This is a chain with spins \(s_i=\pm 1\), nearest-neighbor ferromagnetic coupling \(J>0\),
           and two distinguished boundary spins \(s_A\) and \(s_B\), separated by a finite segment of bulk spins.
-          The Hamiltonian is
+          The Hamiltonian is simply written in the usual form
         </p>
 
         <p class="math">
@@ -202,7 +207,7 @@
         </p>
 
         <p>
-          It is symmetric, so it diagonalizes immediately.
+          It is symmetric, so we can diagonalize it immediately.
           The two eigenvalues are
         </p>
 
@@ -240,7 +245,6 @@
           where \(P_+\) and \(P_-\) are the projectors onto the symmetric and antisymmetric sectors.
           From this one obtains the matrix element between the two boundary spins:
         </p>
-
         <p class="math">
           $$
           Z(s_A,s_B;n) = (T^n)_{s_A,s_B}.
@@ -248,19 +252,174 @@
         </p>
 
         <p>
-          After a little algebra, the result can be written as
+          Since the transfer matrix is symmetric, it is convenient to diagonalize it first.
+          Its two eigenvectors are the symmetric and antisymmetric combinations
+        </p>
+
+        <p class="math">
+          $$
+          e_+ = \frac{1}{\sqrt{2}}\binom{1}{1},
+          \qquad
+          e_- = \frac{1}{\sqrt{2}}\binom{1}{-1},
+          $$
+        </p>
+
+        <p>
+          with eigenvalues
+        </p>
+
+        <p class="math">
+          $$
+          \lambda_+ = 2\cosh(\beta J),
+          \qquad
+          \lambda_- = 2\sinh(\beta J).
+          $$
+        </p>
+
+        <p>
+          Therefore the spectral decomposition of \(T\) is
+        </p>
+
+        <p class="math">
+          $$
+          T = \lambda_+\, e_+ e_+^{\mathsf T} + \lambda_-\, e_- e_-^{\mathsf T},
+          $$
+        </p>
+
+        <p>
+          and hence
+        </p>
+
+        <p class="math">
+          $$
+          T^n = \lambda_+^n\, e_+ e_+^{\mathsf T} + \lambda_-^n\, e_- e_-^{\mathsf T}.
+          $$
+        </p>
+
+        <p>
+          Now compute the two rank-one matrices explicitly:
+        </p>
+
+        <p class="math">
+          $$
+          e_+ e_+^{\mathsf T}
+          =
+          \frac12
+          \begin{pmatrix}
+          1 & 1\\
+          1 & 1
+          \end{pmatrix},
+          \qquad
+          e_- e_-^{\mathsf T}
+          =
+          \frac12
+          \begin{pmatrix}
+          1 & -1\\
+          -1 & 1
+          \end{pmatrix}.
+          $$
+        </p>
+
+        <p>
+          Substituting these into the expression for \(T^n\), we obtain
+        </p>
+
+        <p class="math">
+          $$
+          T^n
+          =
+          \frac{\lambda_+^n}{2}
+          \begin{pmatrix}
+          1 & 1\\
+          1 & 1
+          \end{pmatrix}
+          +
+          \frac{\lambda_-^n}{2}
+          \begin{pmatrix}
+          1 & -1\\
+          -1 & 1
+          \end{pmatrix}.
+          $$
+        </p>
+
+        <p>
+          At this point it is useful to label the row and column indices by the spin values
+          \(s_A,s_B\in\{+1,-1\}\).
+          With this convention, the matrix element can be written compactly as
+        </p>
+
+        <p class="math">
+          $$
+          (T^n)_{s_A,s_B}
+          =
+          \frac{\lambda_+^n}{2}
+          +
+          \frac{\lambda_-^n}{2}\, s_A s_B.
+          $$
+        </p>
+
+        <p>
+          In other words,
         </p>
 
         <p class="math">
           $$
           Z(s_A,s_B;n)
           =
-          \lambda_+^n\left(1+s_A s_B\left(\frac{\lambda_-}{\lambda_+}\right)^n\right).
+          \frac12\Bigl(\lambda_+^n + s_A s_B\,\lambda_-^n\Bigr).
           $$
         </p>
 
         <p>
-          Introducing
+          Factoring out the dominant eigenvalue gives
+        </p>
+
+        <p class="math">
+          $$
+          Z(s_A,s_B;n)
+          =
+          \frac{\lambda_+^n}{2}
+          \left(
+          1+s_A s_B\left(\frac{\lambda_-}{\lambda_+}\right)^n
+          \right).
+          $$
+        </p>
+
+        <p>
+          Finally, since
+        </p>
+
+        <p class="math">
+          $$
+          \frac{\lambda_-}{\lambda_+}
+          =
+          \frac{2\sinh(\beta J)}{2\cosh(\beta J)}
+          =
+          \tanh(\beta J),
+          $$
+        </p>
+
+        <p>
+          one arrives at the compact form
+        </p>
+
+        <p class="math">
+          $$
+          Z(s_A,s_B;n)
+          =
+          \frac{\lambda_+^n}{2}
+          \left(
+          1+s_A s_B\,\tanh^n(\beta J)
+          \right).
+          $$
+        </p>
+
+        <p>
+          The factor \(1/2\) is just a normalization convention coming from the projectors.
+          Since it does not depend on the boundary spins, it can be absorbed into the prefactor \(A(n)\) when we rewrite the answer as an effective two-spin Boltzmann weight.
+        </p>
+        <p>
+          Now, introducing
         </p>
 
         <p class="math">
@@ -367,7 +526,11 @@
         </p>
 
         <p>
-          So the effective interaction mediated by the bulk is ferromagnetic, as expected: aligned boundary spins are favored.
+          So the effective interaction mediated by the bulk is ferromagnetic, as expected: aligned boundary spins are favored as one would expect. 
+          The effective coupling \(J_n\) decreases with distance, which is also expected: the further apart the boundaries, the weaker the mediated interaction.
+          In this form, however, the distance dependence is somewhat hidden in the \(\operatorname{arctanh}\) function, so it is not immediately obvious how it 
+          behaves for large \(n\) and in particular near a critical point. For that, let's rewrite the answer in a more explicit form in the next section using a different
+          tool: the potential of mean force.
         </p>
 
         <div class="hr"></div>
@@ -377,8 +540,12 @@
         <h4>4. Potential of mean force</h4>
 
         <p>
-          There is another perfectly natural way to package the same information, namely through the
-          <em>potential of mean force</em>.
+          There is another perfectly natural way to discuss the same phenomenon, namely through the
+          <em>potential of mean force</em>. This is a concept that comes from chemistry and biophysics, but it is a perfectly general way to talk about effective 
+          interactions in statistical mechanics. For instance, it is very natural to show that pressure is in fact an entropic force that can be read off from the 
+          potential of mean force between two plates immersed in a fluid. 
+          The PMF is defined as the free energy associated with a given configuration of the boundary spins, after integrating out the bulk degrees of freedom, quite similarly 
+          to how we did earlier, but one needs to normalize the constrained partition function we introduce earlier.
           Instead of keeping the fixed-boundary partition function itself, we normalize it into a probability distribution for the two boundary spins:
         </p>
 
@@ -494,18 +661,11 @@
           It is the same physics, just packaged in a slightly different way.
         </p>
 
-        <div class="callout">
-          <p class="note">
-            I like this formulation because it makes the probabilistic meaning very explicit:
-            the mediated interaction can be read either from the fixed-boundary free energy or from the normalized probability of observing the two boundary spins in a given configuration.
-          </p>
-        </div>
-
         <div class="hr"></div>
       </section>
 
       <section id="force">
-        <h4>5. A Casimir-like force from the effective free energy</h4>
+        <h4>5. A "Casimir-like" force from the effective free energy</h4>
 
         <p>
           If one wants to speak of a Casimir-like force, the natural thing to do is to define it from the change of effective free energy with separation.
@@ -552,14 +712,13 @@
 
         <p>
           In other words, the chain mediates an effective boundary-boundary interaction, and that interaction decays as the two ends are pulled apart.
+          I am not trying to claim here that this is the full-fledged critical Casimir story.
+        It is a very small toy model.
+          But as a cartoon of the mechanism — integrate out the bulk, obtain a distance-dependent effective free energy, differentiate with respect to distance — it already captures the main idea.
+
         </p>
 
-        <div class="callout">
-          <p class="note">
-            I am not trying to claim here that this is the full-fledged critical Casimir story.
-            It is a very small toy model.
-            But as a cartoon of the mechanism — integrate out the bulk, obtain a distance-dependent effective free energy, differentiate with respect to distance — it already captures the main idea.
-          </p>
+
         </div>
 
         <div class="hr"></div>
@@ -569,6 +728,7 @@
         <h4>6. Large-distance asymptotics and correlation length</h4>
 
         <p>
+          Let us now try to understand what the large-distance behavior of the effective coupling \(J_n\) is, and how it is related to the correlation length of the system.
           The large-\(n\) behavior is immediate once the effective coupling is written as
         </p>
 
@@ -610,7 +770,7 @@
         </p>
 
         <p>
-          one identifies the correlation length
+          one identifies naturally the correlation length of the one dimensional Ising model, which is
         </p>
 
         <p class="math">
@@ -636,71 +796,134 @@
 
         <p class="note">
           The ordinary one-dimensional nearest-neighbor Ising model has no finite-temperature critical point.
-          The only place where \(\xi\) diverges is \(T\to 0\), where \(\tanh(\beta J)\to 1\).
-        </p>
-
-        <div class="hr"></div>
-      </section>
-
-      <section id="entropy">
-        <h4>7. Alternative point of view: entropy</h4>
-
-        <p>
-          Up to now everything came from the transfer-matrix calculation.
-          But there is another way to think about forces of this kind, and it is worth keeping conceptually separate.
-          Namely: what if the force is not read primarily as an energetic interaction, but as an <em>entropic</em> effect?
-        </p>
-
-        <p>
-          The free energy is
+          The only place where \(\xi\) diverges is \(T\to 0\), where \(\tanh(\beta J)\to 1\) and this is important for what follows.
         </p>
 
         <p class="math">
           $$
-          F = E - TS,
+          \mathcal F^{\rm PMF}_n(s_A,s_B)
+          =
+          (J_{n+1}-J_n)s_A s_B
+          +
+          k_B T\log\!\frac{\cosh(\beta J_n)}{\cosh(\beta J_{n+1})}.
           $$
         </p>
 
         <p>
-          and entropy counts the logarithm of the number of accessible configurations:
+          To extract the large-distance behavior, recall that
         </p>
 
         <p class="math">
           $$
-          S = k_B \log \Omega.
+          J_n=\frac{1}{\beta}\operatorname{arctanh}\!\bigl(\tanh^n(\beta J)\bigr).
           $$
         </p>
 
         <p>
-          So if the number of allowed configurations depends on the separation between two objects, then even without changing the microscopic coupling,
-          the free energy can acquire a distance dependence simply because the entropy changes.
-          That is the basic logic behind entropic forces.
+          Define
+        </p>
+
+        <p class="math">
+          $$
+          t:=\tanh(\beta J),
+          \qquad
+          \xi:=-\frac{1}{\log t}.
+          $$
         </p>
 
         <p>
-          In the present one-dimensional Ising example, the transfer-matrix derivation already gives the exact answer, so there is no need to invoke entropy separately.
-          Still, it is useful to keep this alternative point of view in mind:
-          integrating out bulk degrees of freedom may generate an effective interaction not only because energy is being transmitted through the medium,
-          but also because the number of compatible bulk configurations depends on what the boundaries are doing.
+          Since \(0&lt;t&lt;1\) at finite temperature, one may write
+        </p>
+
+        <p class="math">
+          $$
+          t^n=e^{n\log t}=e^{-n/\xi}.
+          $$
         </p>
 
         <p>
-          So one can tell two complementary stories.
-          The first is the one we actually computed: the bulk generates an effective coupling \(J_n\) between the two ends.
-          The second is a more thermodynamic story: different boundary conditions constrain the bulk differently, and this changes the entropy,
-          hence the free energy, hence the force.
+          For large \(n\), \(t^n\ll 1\), so using \(\operatorname{arctanh}(x)\sim x\) for small \(x\), we obtain
         </p>
 
-        <div class="callout">
-          <p class="note">
-            I would not derive the transfer-matrix result from entropy alone here.
-            That would be a different argument.
-            But as an interpretation, it is perfectly fair: a distance-dependent force can also be thought of as the free-energy price of changing the number of available configurations in the medium.
-          </p>
-        </div>
+        <p class="math">
+          $$
+          J_n
+          \sim
+          \frac{1}{\beta}t^n
+          =
+          k_B T\, e^{-n/\xi}.
+          $$
+        </p>
 
-        <div class="hr"></div>
+        <p>
+          Therefore
+        </p>
+
+        <p class="math">
+          $$
+          J_{n+1}-J_n
+          \sim
+          k_B T\left(e^{-(n+1)/\xi}-e^{-n/\xi}\right)
+          =
+          -\,k_B T\left(1-e^{-1/\xi}\right)e^{-n/\xi}.
+          $$
+        </p>
+
+        <p>
+          Now consider the logarithmic term. For large \(n\), \(\beta J_n\ll 1\), so
+        </p>
+
+        <p class="math">
+          $$
+          \cosh(\beta J_n)=1+\mathcal O\!\big((\beta J_n)^2\big),
+          $$
+        </p>
+
+        <p>
+          and hence
+        </p>
+
+        <p class="math">
+          $$
+          \log\!\frac{\cosh(\beta J_n)}{\cosh(\beta J_{n+1})}
+          =
+          \mathcal O\!\big(e^{-2n/\xi}\big).
+          $$
+        </p>
+
+        <p>
+          So this second term is subleading compared with the first one, which is of order \(e^{-n/\xi}\).
+          Keeping only the dominant contribution, we find
+        </p>
+
+        <p class="math">
+          $$
+          \mathcal F^{\rm PMF}_n(s_A,s_B)
+          \sim
+          -\,k_B T\left(1-e^{-1/\xi}\right)s_A s_B\, e^{-n/\xi}.
+          $$
+        </p>
+
+        <p>
+          In particular, up to a sign and an order-one prefactor, the potential-of-mean-force interaction decays exponentially:
+        </p>
+
+        <p class="math">
+          $$
+          \mathcal F^{\rm PMF}_n \propto k_B T\, e^{-n/\xi}.
+          $$
+        </p>
+
+        <p>
+          So the important point is not the precise prefactor, but the fact that the decay is controlled by the same correlation length \(\xi\).
+          At large separation, the PMF force is exponentially screened. At the critical point, where \(\xi\to\infty\) the exponential term becomes distance indipendent.
+          We can then see that it is proportional to \(k_B T_c\) and becomes distance indipendend, which is the natural scale for an entropic force.
+          However, since \(T_c=0\), we see that it also goes to zero, so the critical point is somewhat <em>pointless</em> in this model. 
+         </p>
+
+
       </section>
+
 
       <p><a href="../blog.html">← Back to Blog</a></p>
 
