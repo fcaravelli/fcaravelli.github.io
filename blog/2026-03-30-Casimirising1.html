@@ -446,6 +446,9 @@
             of an effective interaction between the two boundary spins, or "a force", and then read off the effective force from the distance dependence of that interaction.
           </p>
 
+            <p> As a side comment, one can see that summing the expression above over the two remaining spins gives the standard formula for the partition function
+                of the Ising model in one dimension with free boundary conditions. </p>
+
         <div class="hr"></div>
       </section>
 
@@ -536,18 +539,22 @@
 
         <div class="hr"></div>
       </section>
-
       <section id="pmf">
         <h4>4. Potential of mean force</h4>
 
         <p>
           There is another perfectly natural way to discuss the same phenomenon, namely through the
-          <em>potential of mean force</em>. This is a concept that comes from chemistry and biophysics, but it is a perfectly general way to talk about effective 
-          interactions in statistical mechanics. For instance, it is very natural to show that pressure is in fact an entropic force that can be read off from the 
-          potential of mean force between two plates immersed in a fluid. 
-          The PMF is defined as the free energy associated with a given configuration of the boundary spins, after integrating out the bulk degrees of freedom, quite similarly 
-          to how we did earlier, but one needs to normalize the constrained partition function we introduce earlier.
-          Instead of keeping the fixed-boundary partition function itself, we normalize it into a probability distribution for the two boundary spins:
+          <em>potential of mean force</em>. This concept comes up often in chemistry and biophysics,
+          but it is really a general statistical-mechanics way of describing effective interactions.
+          For instance, pressure itself can be viewed as an entropic force, and one can often read it off
+          from the potential of mean force between two objects immersed in a fluctuating medium.
+        </p>
+
+        <p>
+          In the present setting, the PMF is the free energy associated with a given configuration of the
+          boundary spins after integrating out the bulk degrees of freedom, but now with the constrained
+          partition function normalized into a probability distribution.
+          Instead of keeping the fixed-boundary partition function itself, we define
         </p>
 
         <p class="math">
@@ -591,7 +598,7 @@
         </p>
 
         <p>
-          Equivalently, using \(\tanh(\beta J_n)=\tanh^n(\beta J)\), one may write
+          Equivalently, using \(\tanh(\beta J_n)=\tanh^n(\beta J)\), this may be written as
         </p>
 
         <p class="math">
@@ -603,7 +610,7 @@
         </p>
 
         <p>
-          The potential of mean force is then defined as
+          The potential of mean force is then defined by
         </p>
 
         <p class="math">
@@ -632,7 +639,7 @@
         </p>
 
         <p>
-          If one wants a discrete “force” directly from the PMF, the natural lattice definition is
+          If one wants a discrete force directly from the PMF, the natural lattice definition is
         </p>
 
         <p class="math">
@@ -669,8 +676,9 @@
         <h4>5. A "Casimir-like" force from the effective free energy</h4>
 
         <p>
-          If one wants to speak of a Casimir-like force, the natural thing to do is to define it from the change of effective free energy with separation.
-          Since the distance \(n\) is discrete, the most natural lattice definition is a finite difference:
+          If one wants to speak of a Casimir-like force, the natural thing to do is to define it from the change of
+          effective free energy with separation. Since the distance \(n\) is discrete, the most natural lattice definition
+          is a finite difference:
         </p>
 
         <p class="math">
@@ -713,14 +721,10 @@
 
         <p>
           In other words, the chain mediates an effective boundary-boundary interaction, and that interaction decays as the two ends are pulled apart.
-          I am not trying to claim here that this is the full-fledged critical Casimir story.
-        It is a very small toy model.
-          But as a cartoon of the mechanism — integrate out the bulk, obtain a distance-dependent effective free energy, differentiate with respect to distance — it already captures the main idea.
-
+          I am not trying to claim here that this is the full-fledged critical Casimir story. It is a very small toy model.
+          But as a cartoon of the mechanism — integrate out the bulk, obtain a distance-dependent effective free energy,
+          and differentiate with respect to distance — it already captures the main idea.
         </p>
-
-
-        </div>
 
         <div class="hr"></div>
       </section>
@@ -729,8 +733,8 @@
         <h4>6. Large-distance asymptotics and correlation length</h4>
 
         <p>
-          Let us now try to understand what the large-distance behavior of the effective coupling \(J_n\) is, and how it is related to the correlation length of the system.
-          The large-\(n\) behavior is immediate once the effective coupling is written as
+          Let us now understand the large-distance behavior of the effective coupling \(J_n\), and how it is related to the
+          correlation length of the system. The starting point is
         </p>
 
         <p class="math">
@@ -771,7 +775,7 @@
         </p>
 
         <p>
-          one identifies naturally the correlation length of the one dimensional Ising model, which is
+          one identifies naturally the correlation length of the one-dimensional Ising model:
         </p>
 
         <p class="math">
@@ -791,13 +795,17 @@
         </p>
 
         <p>
-          So in this simple one-dimensional model the induced force is exponentially screened at finite temperature.
+          So in this simple one-dimensional model the induced interaction is exponentially screened at finite temperature.
           That is exactly what finite correlation length should look like.
         </p>
 
         <p class="note">
           The ordinary one-dimensional nearest-neighbor Ising model has no finite-temperature critical point.
-          The only place where \(\xi\) diverges is \(T\to 0\), where \(\tanh(\beta J)\to 1\) and this is important for what follows.
+          The only place where \(\xi\) diverges is \(T\to 0\), where \(\tanh(\beta J)\to 1\), and this will matter in a moment.
+        </p>
+
+        <p>
+          We can now plug this asymptotic form into the PMF force. Recall that
         </p>
 
         <p class="math">
@@ -811,39 +819,7 @@
         </p>
 
         <p>
-          To extract the large-distance behavior, recall that
-        </p>
-
-        <p class="math">
-          $$
-          J_n=\frac{1}{\beta}\operatorname{arctanh}\!\bigl(\tanh^n(\beta J)\bigr).
-          $$
-        </p>
-
-        <p>
-          Define
-        </p>
-
-        <p class="math">
-          $$
-          t:=\tanh(\beta J),
-          \qquad
-          \xi:=-\frac{1}{\log t}.
-          $$
-        </p>
-
-        <p>
-          Since \(0&lt;t&lt;1\) at finite temperature, one may write
-        </p>
-
-        <p class="math">
-          $$
-          t^n=e^{n\log t}=e^{-n/\xi}.
-          $$
-        </p>
-
-        <p>
-          For large \(n\), \(t^n\ll 1\), so using \(\operatorname{arctanh}(x)\sim x\) for small \(x\), we obtain
+          Since
         </p>
 
         <p class="math">
@@ -852,12 +828,12 @@
           \sim
           \frac{1}{\beta}t^n
           =
-          k_B T\, e^{-n/\xi}.
+          k_B T\, e^{-n/\xi},
           $$
         </p>
 
         <p>
-          Therefore
+          we immediately get
         </p>
 
         <p class="math">
@@ -871,7 +847,7 @@
         </p>
 
         <p>
-          Now consider the logarithmic term. For large \(n\), \(\beta J_n\ll 1\), so
+          Now look at the logarithmic term. For large \(n\), \(\beta J_n\ll 1\), so
         </p>
 
         <p class="math">
@@ -916,16 +892,19 @@
         </p>
 
         <p>
-          So the important point is not the precise prefactor, but the fact that the decay is controlled by the same correlation length \(\xi\).
-          At large separation, the PMF force is exponentially screened. At the critical point, where \(\xi\to\infty\) the exponential term becomes distance indipendent.
-          We can then see that it is proportional to \(k_B T_c\) and becomes distance indipendend, which is the natural scale for an entropic force.
-          However, since \(T_c=0\), we see that it also goes to zero, so the critical point is somewhat <em>pointless</em> in this model. 
-         </p>
+          The important point is not the exact prefactor, but that the decay is controlled by the same correlation length \(\xi\).
+          At large separation, the PMF force is exponentially screened.
+        </p>
 
+        <p>
+          At the critical point, where \(\xi\to\infty\), this exponential screening disappears.
+          In the present model, however, that limit occurs only at \(T=0\), so although the range diverges, the thermal prefactor \(k_B T\) also goes to zero.
+          In that sense, the critical point of the one-dimensional Ising chain is not a very interesting place for a thermal Casimir force:
+          the range becomes infinite precisely when the thermal scale vanishes.
+        </p>
 
+        <div class="hr"></div>
       </section>
-
-
       <p><a href="../blog.html">← Back to Blog</a></p>
 
       <div class="hr"></div>
