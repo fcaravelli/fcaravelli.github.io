@@ -99,7 +99,7 @@
       <section id="top">
         <p class="kicker">stat mech • ising model • transfer matrices</p>
         <h3>Casimir force in a single-spin model</h3>
-        <p><em>March 19th, 2026</em></p>
+        <p><em>March 30th, 2026</em></p>
 
         <p>
           I was scribbling through a very simple one-dimensional Ising model and ended up thinking about an equally simple question:
@@ -373,8 +373,139 @@
         <div class="hr"></div>
       </section>
 
+      <section id="pmf">
+        <h4>4. Potential of mean force</h4>
+
+        <p>
+          There is another perfectly natural way to package the same information, namely through the
+          <em>potential of mean force</em>.
+          Instead of keeping the fixed-boundary partition function itself, we normalize it into a probability distribution for the two boundary spins:
+        </p>
+
+        <p class="math">
+          $$
+          P(s_A,s_B;n)=\frac{Z(s_A,s_B;n)}{\sum_{s'_A,s'_B} Z(s'_A,s'_B;n)}.
+          $$
+        </p>
+
+        <p>
+          Using
+        </p>
+
+        <p class="math">
+          $$
+          Z(s_A,s_B;n)=A(n)e^{\beta J_n s_A s_B},
+          $$
+        </p>
+
+        <p>
+          the denominator is
+        </p>
+
+        <p class="math">
+          $$
+          \sum_{s_A,s_B} Z(s_A,s_B;n)
+          =
+          4A(n)\cosh(\beta J_n),
+          $$
+        </p>
+
+        <p>
+          and therefore
+        </p>
+
+        <p class="math">
+          $$
+          P(s_A,s_B;n)
+          =
+          \frac{e^{\beta J_n s_A s_B}}{4\cosh(\beta J_n)}.
+          $$
+        </p>
+
+        <p>
+          Equivalently, using \(\tanh(\beta J_n)=\tanh^n(\beta J)\), one may write
+        </p>
+
+        <p class="math">
+          $$
+          P(s_A,s_B;n)
+          =
+          \frac14\Bigl(1+s_A s_B\,\tanh^n(\beta J)\Bigr).
+          $$
+        </p>
+
+        <p>
+          The potential of mean force is then defined as
+        </p>
+
+        <p class="math">
+          $$
+          W_n(s_A,s_B):=-k_B T\log P(s_A,s_B;n).
+          $$
+        </p>
+
+        <p>
+          Substituting the probability above gives
+        </p>
+
+        <p class="math">
+          $$
+          W_n(s_A,s_B)
+          =
+          -k_B T\log\!\left(\frac{e^{\beta J_n s_A s_B}}{4\cosh(\beta J_n)}\right)
+          =
+          -J_n s_A s_B + k_B T\log\!\bigl(4\cosh(\beta J_n)\bigr).
+          $$
+        </p>
+
+        <p>
+          So, up to the \(n\)-dependent normalization term, the PMF is just the same effective coupling written in probabilistic language.
+          The aligned configurations have lower PMF than the anti-aligned ones, again reflecting the induced ferromagnetic interaction.
+        </p>
+
+        <p>
+          If one wants a discrete “force” directly from the PMF, the natural lattice definition is
+        </p>
+
+        <p class="math">
+          $$
+          \mathcal F^{\rm PMF}_n(s_A,s_B)
+          :=
+          W_n(s_A,s_B)-W_{n+1}(s_A,s_B).
+          $$
+        </p>
+
+        <p>
+          This gives
+        </p>
+
+        <p class="math">
+          $$
+          \mathcal F^{\rm PMF}_n(s_A,s_B)
+          =
+          (J_{n+1}-J_n)s_A s_B
+          +
+          k_B T\log\!\frac{\cosh(\beta J_n)}{\cosh(\beta J_{n+1})}.
+          $$
+        </p>
+
+        <p>
+          So the PMF contains both the interaction term and the normalization term coming from the full boundary distribution.
+          It is the same physics, just packaged in a slightly different way.
+        </p>
+
+        <div class="callout">
+          <p class="note">
+            I like this formulation because it makes the probabilistic meaning very explicit:
+            the mediated interaction can be read either from the fixed-boundary free energy or from the normalized probability of observing the two boundary spins in a given configuration.
+          </p>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
       <section id="force">
-        <h4>4. A Casimir-like force from the effective free energy</h4>
+        <h4>5. A Casimir-like force from the effective free energy</h4>
 
         <p>
           If one wants to speak of a Casimir-like force, the natural thing to do is to define it from the change of effective free energy with separation.
@@ -435,7 +566,7 @@
       </section>
 
       <section id="asymptotics">
-        <h4>5. Large-distance asymptotics and correlation length</h4>
+        <h4>6. Large-distance asymptotics and correlation length</h4>
 
         <p>
           The large-\(n\) behavior is immediate once the effective coupling is written as
@@ -512,7 +643,7 @@
       </section>
 
       <section id="entropy">
-        <h4>6. Alternative point of view: entropy</h4>
+        <h4>7. Alternative point of view: entropy</h4>
 
         <p>
           Up to now everything came from the transfer-matrix calculation.
@@ -569,39 +700,6 @@
         </div>
 
         <div class="hr"></div>
-      </section>
-
-      <section id="closing">
-        <h4>Takeaway</h4>
-
-        <p>
-          The whole exercise is tiny, but I like it because it is clean.
-          You start with a trivial nearest-neighbor Ising chain, integrate out the bulk, and end up with an effective interaction between two distant boundary spins.
-          That interaction is
-        </p>
-
-        <p class="math">
-          $$
-          J_n=\frac{1}{\beta}\operatorname{arctanh}\!\big(\tanh^n(\beta J)\big),
-          $$
-        </p>
-
-        <p>
-          and at large distance it decays exponentially with the correlation length.
-        </p>
-
-        <p>
-          So the model is simple, but the structure is already there:
-          bulk fluctuations mediate an effective interaction between boundaries,
-          and the distance dependence of the resulting free energy is the toy-model version of a Casimir-like force.
-        </p>
-
-        <p>
-          What I also like is that there are two perfectly reasonable languages for the same phenomenon.
-          One is algebraic and transfer-matrix based.
-          The other is thermodynamic and entropic.
-          Same mechanism seen from two slightly different angles.
-        </p>
       </section>
 
       <p><a href="../blog.html">← Back to Blog</a></p>
