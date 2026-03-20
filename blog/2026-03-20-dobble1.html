@@ -129,10 +129,10 @@
         </p>
 
         <p>
-          The rule is very clean: for any two cards, there is exactly one common symbol. This means that each time you compare two cards, you are guaranteed to find exactly 
+          The rule is very simple: for any two cards, there is exactly one common symbol. This means that each time you compare two cards, you are guaranteed to find exactly 
           one match.  The moment you say it like that, it stops sounding like a toy and starts sounding like a very constrained mathematical object.
-          What I am about to say might sound crazy, but I never read the arXiv. The reason is simple: I prefer to think on my own
-          rather than following trends, and also try to think independently. I apply this rule also outside, so if I have the time, I try to think about a problem on my own,
+          What I am about to say might sound crazy, but I never read the arXiv in the morning (I get infos about papers via researchgate typically). 
+          The reason is simple: I prefer to think on my own rather than following trends, and also try to think independently. I apply this rule also outside, so if I have the time, I try to think about a problem on my own,
           and then after I search if anybody else solved. This is one of those cases.. this means that I have two solutions to the same problem, one very wasteful in terms
           of symbols, and the real one.
           In fact, it is naturally described as an incidence problem, or if one prefers, as a bipartite graph:
@@ -246,7 +246,7 @@
 
   <p>
     Before discussing how actually Dobble is constructed, let me now describe the most direct construction I could think of.
-    It is not deep, but it is clean, and it immediately gives both a valid deck and the correct counting.
+    It is not deep, but it is clean, and it immediately gives both a valid deck.
     The idea is simple: whenever a new card is added, it must share exactly one symbol with each of the cards that already exist.
     So for each previous card, we introduce one fresh symbol and place it on that pair of cards.
   </p>
@@ -342,16 +342,9 @@
     $$
   </p>
   <p>
-    e.g., Gauss' formula. This is exactly what the inductive construction gives.
+    This is exactly what the inductive construction gives.
     When the card $C_\ell$ is added, it must share one symbol with each of the $\ell-1$ previous cards,
     so we introduce exactly $\ell-1$ new symbols.
-    Therefore the total number of symbols is
-  </p>
-
-  <p class="math">
-    $$
-      \sum_{\ell=1}^{M} (\ell-1)=\frac{M(M-1)}{2}.
-    $$
   </p>
   <p>
     In that sense, the symbols are indexed by unordered pairs of cards.
@@ -376,255 +369,276 @@
 
   <div class="hr"></div>
 </section>
+<section id="minimal">
+  <h4>3. Minimal number of symbols, $PG(2,7)$, and a detour through the octonions</h4>
 
-      <section id="minimal">
-        <h4>3. Minimal number of symbols, $PG(2,7)$, and a detour through the octonions</h4>
+  <p>
+    My previous construction was perfectly valid, but also extremely wasteful.
+    In that version, I assigned a dedicated symbol to every pair of cards.
+    That certainly guarantees the matching rule, but it scales like
+  </p>
 
-        <p>
-          My previous construction was perfectly fine, but also extremely wasteful.
-          There I gave every pair of cards its own dedicated symbol.
-          That guarantees the rule, of course, but it scales like
-          $$
-            \binom{M}{2},
-          $$
-          because there is one fresh symbol for every unordered pair of cards.
-          For $M=55$, that would mean $1485$ symbols, which is clearly not what happens in the actual game.
-          That is when I started searching online and found
-          <a href="https://www.youtube.com/watch?v=lhTMr8RzUr8&t=8s">this video that explains how Dobble really works</a>.
-        </p>
+  <p class="math">
+    $$
+      \binom{M}{2},
+    $$
+  </p>
 
-        <p>
-          The one thing my construction has going for it is flexibility: it works for an arbitrary number $M$ of cards.
-          If you want 11 cards, or 37, or 55, you just keep going.
-          The efficient Dobble construction is much more rigid.
-          It uses a finite projective plane, so in principle the total number of cards is not arbitrary, but must be of the form
-          <p class="math">
-           $$ N^2+N+1$$,
-          </p>
-          where each card then carries $N+1$ symbols.
-          In the Dobble case one wants $8$ symbols per card, so $N=7$, and the ideal mathematical deck has
-          <p class="math">
+  <p>
+    since there is one fresh symbol for every unordered pair of cards.
+    For $M=55$, this would require $1485$ symbols, which is obviously not how the actual game works.
+    At that point I started looking around online and found
+    <a href="https://www.youtube.com/watch?v=lhTMr8RzUr8&t=8s">this video explaining how Dobble really works</a>.
+  </p>
 
-          $$
-            7^2+7+1=57
-          $$
-          cards.
-          </p>
-        </p>
+  <p>
+    The main virtue of my construction is flexibility: it works for an arbitrary number $M$ of cards.
+    If you want $11$ cards, or $37$, or $55$, you can just keep going.
+    The efficient Dobble construction is much more rigid.
+    It is based on a finite projective plane, so the total number of cards is not arbitrary, but must be of the form
+  </p>
 
-        <p>
-          So there is a tradeoff.
-          My construction works for any deck size, but it is terribly inefficient.
-          The Dobble construction is dramatically more economical, but it only works at those special sizes allowed by finite projective planes.
-          However, you can still get a smaller deck by removing some cards from the ideal $57$-card construction, and that is what the commercial deck does.
+  <p class="math">
+    $$
+      N^2+N+1.
+    $$
+  </p>
 
-        </p>
+  <p>
+    Each card then carries $N+1$ symbols.
+    In Dobble, each card has $8$ symbols, so we must take $N=7$.
+    The corresponding ideal mathematical deck therefore has
+  </p>
 
-        <p>
-          The commercial deck is much more clever than we described earlier.. in Dobble, every card has $8$ symbols, and the standard box contains $55$ cards, but that deck is really a subset of a mathematically complete
-          $57$-card construction. The underlying object is a finite projective plane, specifically $PG(2,7)$. In that ideal construction,
-          there are $57$ cards, $57$ symbols, each card contains $8$ symbols, each symbol appears on $8$ cards, and any two cards still share exactly one symbol. 
-        </p>
-        <p>That is when I understood that the real magic of Dobble is not just that any two cards share exactly one symbol, but that the same symbol can be 
-        reused on many cards, while still keeping the rule intact. </p>
-        <p>
-          So the real trick is not “one symbol per pair of cards.”
-          The real trick is that the same symbol can be reused on many cards, but in a globally consistent way.
-          My construction enforced the matching rule locally, pair by pair.
-          The projective-plane construction enforces it globally, by geometry. This means that there are multiple pair of cards that can have the same symbol, but between two pairs
-          of cards there is only one.
-        </p>
+  <p class="math">
+    $$
+      7^2+7+1=57
+    $$
+  </p>
 
-        <p>
-          Let me say what $PG(2,7)$ means in concrete terms.
-          A projective plane is a collection of <em>points</em> and <em>lines</em> satisfying a very rigid set of rules:
-        </p>
+  <p>
+    cards.
+  </p>
 
-        <ul>
-          <li>any two distinct points lie on exactly one line,</li>
-          <li>any two distinct lines meet in exactly one point,</li>
-          <li>each line contains the same number of points,</li>
-          <li>and each point lies on the same number of lines.</li>
-        </ul>
+  <p>
+    So there is a real tradeoff here.
+    My construction works for any deck size, but it is horribly inefficient.
+    The projective-plane construction is dramatically more economical, but it only exists at those special sizes allowed by finite geometry.
+    Still, one can always obtain a smaller deck by deleting some cards from the ideal $57$-card construction, and that is exactly what the commercial deck does.
+  </p>
 
-        <p>
-          For a projective plane of order $N$, these numbers are forced:
-        </p>
+  <p>
+    In other words, the commercial deck is much cleverer than the pair-by-pair construction discussed earlier.
+    In Dobble, every card has $8$ symbols, and the standard box contains $55$ cards, but this deck is really a subset of a mathematically complete $57$-card configuration.
+    The underlying object is a finite projective plane, specifically $PG(2,7)$.
+    In that ideal construction there are $57$ cards and $57$ symbols; each card contains $8$ symbols, each symbol appears on $8$ cards, and any two cards still share exactly one symbol.
+  </p>
 
-        <p class="math">
-          $$
-            \#\text{points}=\#\text{lines}=N^2+N+1,
-            \qquad
-            \text{points per line}=N+1.
-          $$
-        </p>
+  <p>
+    That is when I understood the real magic of Dobble.
+    It is not merely that any two cards share exactly one symbol.
+    It is that the <em>same</em> symbol can be reused on many different cards, while the rule still remains perfectly consistent.
+  </p>
 
-        <p>
-          In Dobble, the number of symbols on each card is $8$, so we want
-        </p>
+  <p>
+    So the real trick is not “one symbol per pair of cards.”
+    The real trick is that symbols can be reused globally in a highly constrained way.
+    My earlier construction enforced the matching rule locally, pair by pair.
+    The projective-plane construction enforces it globally, through geometry.
+    Many different pairs of cards may involve the same symbol, but any given pair of cards shares exactly one.
+  </p>
 
-        <p class="math">
-          $$
-            N+1=8,
-          $$
-        </p>
+  <p>
+    Let me say more concretely what $PG(2,7)$ means.
+    A projective plane is a collection of <em>points</em> and <em>lines</em> satisfying a rigid set of incidence rules:
+  </p>
 
-        <p>
-          which means
-        </p>
+  <ul>
+    <li>any two distinct points lie on exactly one line,</li>
+    <li>any two distinct lines meet in exactly one point,</li>
+    <li>each line contains the same number of points,</li>
+    <li>and each point lies on the same number of lines.</li>
+  </ul>
 
-        <p class="math">
-          $$
-            N=7.
-          $$
-        </p>
+  <p>
+    For a projective plane of order $N$, these numbers are forced:
+  </p>
 
-        <p>
-          Therefore the relevant geometry is $PG(2,7)$, and the total number of points and lines is
-        </p>
+  <p class="math">
+    $$
+      \#\text{points}=\#\text{lines}=N^2+N+1,
+      \qquad
+      \text{points per line}=N+1.
+    $$
+  </p>
 
-        <p class="math">
-          $$
-            7^2+7+1=57.
-          $$
-        </p>
+  <p>
+    In Dobble, the number of symbols on each card is $8$, so we want
+  </p>
 
-        <p>
-          This is exactly why the full ideal deck has $57$ cards and $57$ symbols, 
-          even though the commercial deck usually ships with $55$ cards. 
-        </p>
+  <p class="math">
+    $$
+      N+1=8,
+    $$
+  </p>
 
-        <p>
-          The dictionary with the game is then immediate:
-        </p>
+  <p>
+    which means
+  </p>
 
-        <p class="math">
-          $$
-            \text{symbols} \longleftrightarrow \text{points},
-            \qquad
-            \text{cards} \longleftrightarrow \text{lines}.
-          $$
-        </p>
+  <p class="math">
+    $$
+      N=7.
+    $$
+  </p>
 
-        <p>
-          A symbol appears on a card precisely when the corresponding point lies on the corresponding line.
-          Once you say that out loud, the Dobble rule becomes almost embarrassingly simple:
-        </p>
+  <p>
+    Therefore the relevant geometry is $PG(2,7)$, and the total number of points and lines is
+  </p>
 
-        <p class="math">
-          $$
-            \text{“any two cards share exactly one symbol”}
-            \quad\Longleftrightarrow\quad
-            \text{“any two lines meet in exactly one point.”}
-          $$
-        </p>
+  <p class="math">
+    $$
+      7^2+7+1=57.
+    $$
+  </p>
 
-        <p>
-          So the game is really just projective geometry in disguise.
-          What looks like a toy constraint is actually a finite geometric design.
-          In graph language, one may build a bipartite graph with card-nodes on one side, symbol-nodes on the other,
-          and an edge meaning “this symbol is on this card.” Then the whole game reduces to one invariant:
-          every pair of card-nodes has exactly one common symbol-neighbor. That is exactly how the graph-based reconstruction in the Dobble writeup phrases it. 
-        </p>
+  <p>
+    This is exactly why the full ideal deck has $57$ cards and $57$ symbols, even though the commercial deck usually comes with only $55$ cards.
+  </p>
 
-        <div class="hr"></div>
+  <p>
+    The dictionary with the game is immediate:
+  </p>
 
-        <p>
-          At this point I could not help thinking of a much smaller and much more famous picture: the Fano plane.
-          This is the smallest projective plane, namely $PG(2,2)$.
-          It has
-        </p>
+  <p class="math">
+    $$
+      \text{symbols} \longleftrightarrow \text{points},
+      \qquad
+      \text{cards} \longleftrightarrow \text{lines}.
+    $$
+  </p>
 
-        <p class="math">
-          $$
-            2^2+2+1=7
-          $$
-        </p>
+  <p>
+    A symbol appears on a card precisely when the corresponding point lies on the corresponding line.
+    Once one says this out loud, the Dobble rule becomes almost embarrassingly simple:
+  </p>
 
-        <p>
-        <img src="images/dobble/Fano.jpg" alt="Fano's projective plane">
-        </p>
+  <p class="math">
+    $$
+      \text{“any two cards share exactly one symbol”}
+      \quad\Longleftrightarrow\quad
+      \text{“any two lines meet in exactly one point.”}
+    $$
+  </p>
 
-        <p>
-          points and also $7$ lines, with $3$ points on each line.
-          It is the little triangular diagram that many physicists and algebraists know by heart because it encodes the multiplication rules of the octonions.
-        </p>
+  <p>
+    So the game is really projective geometry in disguise.
+    What looks like a toy combinatorial constraint is actually a finite geometric design.
+    In graph-theoretic language, one can build a bipartite graph with card-nodes on one side and symbol-nodes on the other, where an edge means “this symbol appears on this card.”
+    Then the whole game reduces to one invariant:
+    every pair of card-nodes has exactly one common symbol-neighbor.
+    That is exactly the perspective used in graph-based reconstructions of Dobble.
+  </p>
 
-        <p>
-          This is where the connection to the octonions comes in.
-          It is <em>not</em> that Dobble literally is the octonions, nor that $PG(2,7)$ is the same object as the octonion multiplication table.
-          The correct statement is more interesting anyway:
-          the octonions use the smallest projective plane, while Dobble uses a larger one of the same species.
-        </p>
+  <div class="hr"></div>
 
-        <p>
-          In the $PG(2,2) representation, the octonionic imaginary units $e_1,\dots,e_7$ are arranged according to the Fano-plane diagram, and any three imaginary units lying on a directed line behave like a quaternionic triple. The paper states explicitly that the $e_n$ multiply according to Fig. 2, and that any three imaginary units on a directed line segment act as if they were a quaternionic triple. 
-        </p>
+  <p>
+    At this point I could not help thinking of a much smaller and much more famous picture: the Fano plane.
+    This is the smallest projective plane, namely $PG(2,2)$.
+    It has
+  </p>
 
-        <p>
-          In practice, this means that if a directed line contains three units $e_i,e_j,e_k$ in cyclic order, then their multiplication follows the quaternionic pattern:
-        </p>
+  <p class="math">
+    $$
+      2^2+2+1=7
+    $$
+  </p>
 
-        <p class="math">
-          $$
-            e_i e_j = e_k,
-            \qquad
-            e_j e_i = -\,e_k,
-          $$
-        </p>
+  <p>
+    points and also $7$ lines, with $3$ points on each line.
+    It is the little triangular diagram that many physicists and algebraists know by heart because it encodes the multiplication rules of the octonions.
+  </p>
 
-        <p>
-          together with
-        </p>
+  <p>
+    <img src="images/dobble/Fano.jpg" alt="Fano plane">
+  </p>
 
-        <p class="math">
-          $$
-            e_i^2=-1.
-          $$
-        </p>
+  <p>
+    This is where the connection with the octonions comes in.
+    It is <em>not</em> that Dobble literally is the octonions, nor that $PG(2,7)$ is the same object as the octonion multiplication table.
+    The correct statement is subtler and more interesting:
+    the octonions are organized by the smallest projective plane, while Dobble uses a larger projective plane of the same type.
+  </p>
 
-        <p>
-          So in the octonionic setting, the Fano plane is not just representing cards.
-          It is a compact incidence diagram that tells you which triples of imaginary units multiply into one another.
-          The lines no longer represent cards; they represent multiplication triples.
-        </p>
+  <p>
+    In the $PG(2,2)$ picture, the imaginary octonion units $e_1,\dots,e_7$ are arranged according to the Fano-plane diagram, and any three units lying on a directed line behave like a quaternionic triple.
+    Concretely, if a directed line contains three units $e_i,e_j,e_k$ in cyclic order, then their multiplication follows the familiar pattern
+  </p>
 
-        <p>
-          This is exactly why it reminded me of <a href="https://journals.aps.org/prd/abstract/10.1103/PhysRevD.86.025024">Cohl Furey’s</a> use of the Dixon algebra.
-          I know Cohl's since the time of Perimeter, and I had my desk next to her's in the library when she was working on that paper. I went to re-read that paper to try
-          to recall what the exact construction was. 
-          In her “unified theory of ideals,” the point is that one can look for particle sectors as generalized ideals of the algebra
-          $$
-            \mathbb R\otimes \mathbb C\otimes \mathbb H\otimes \mathbb O,
-          $$
-          with $\mathbb C\otimes\mathbb H$ organizing Lorentz representations and $\mathbb C\otimes\mathbb O$ organizing the internal degrees of freedom of one generation of quarks and leptons. This is stated already in the abstract and summarized in Fig. 1 of the paper.
-        </p>
+  <p class="math">
+    $$
+      e_i e_j = e_k,
+      \qquad
+      e_j e_i = -\,e_k,
+    $$
+  </p>
 
-        <p>
-          The relevant point for me here is not whether that program is ultimately right in physics.
-          The relevant point is structural.
-          The same kind of finite incidence diagram that appears in the Dobble story reappears in the octonionic story.
-          In Dobble, incidence tells you which symbol sits on which card.
-          In the octonions, incidence tells you which imaginary units sit on which multiplication triple.
-        </p>
+  <p>
+    together with
+  </p>
 
-        <p>
-          Cohl pushes that one step further, and I have always found her construction quite elegant.
-          The paper argues that $\mathbb C\otimes\mathbb O$ carries a full generation of fermions as a basis, and in particular notes that the eigenvectors of the operator
-          $$
-            \frac{i e_7}{2}
-          $$
-          give a full generation of fermions as a basis for $\mathbb C\otimes\mathbb O$. It also emphasizes that the octonions may be viewed as a net of quaternionic triples, exactly the perspective suggested by the Fano plane. 
-        </p>
+  <p class="math">
+    $$
+      e_i^2=-1.
+    $$
+  </p>
 
-        <p>
-          So the link I have in mind is not “Dobble secretly is octonionic physics,” which would be nonsense.
-          The link is that both examples are governed by the same kind of combinatorial skeleton:
-          a finite projective-plane incidence structure.
-          In one case it organizes overlaps of cards.
-          In the other case it organizes multiplication rules, and in Cohl's framework those multiplication rules are then used to build particle representations inside the Dixon algebra.
-        </p>
+  <p>
+    So in the octonionic setting, the Fano plane is not representing cards at all.
+    It is an incidence diagram encoding which triples of imaginary units multiply into one another.
+    The lines no longer represent cards; they represent multiplication triples.
+  </p>
 
+  <p>
+    This is exactly why it reminded me of <a href="https://journals.aps.org/prd/abstract/10.1103/PhysRevD.86.025024">Cohl Furey’s</a> use of the Dixon algebra.
+    I have known Cohl since my time at Perimeter, and I used to sit next to her in the library while she was working on that paper.
+    Reading about the Fano plane sent me back to it, because I wanted to remember the precise structure she was using.
+  </p>
+
+  <p>
+    In her “unified theory of ideals,” the idea is to look for particle sectors as generalized ideals of the algebra
+  </p>
+
+  <p class="math">
+    $$
+      \mathbb R\otimes \mathbb C\otimes \mathbb H\otimes \mathbb O,
+    $$
+  </p>
+
+  <p>
+    with $\mathbb C\otimes\mathbb H$ organizing Lorentz representations and $\mathbb C\otimes\mathbb O$ organizing the internal degrees of freedom of one generation of quarks and leptons.
+  </p>
+
+  <p>
+    The relevant point for me here is not whether that program is ultimately correct physics.
+    The relevant point is structural.
+    The same kind of finite incidence diagram that appears in the Dobble story reappears in the octonionic story.
+    In Dobble, incidence tells you which symbol sits on which card.
+    In the octonions, incidence tells you which imaginary units sit on which multiplication triple.
+  </p>
+
+  <p>
+    Furey pushes that one step further, and I have always found the construction elegant.
+    In her framework, $\mathbb C\otimes\mathbb O$ carries a full generation of fermions as a basis, and the octonions are viewed as a network of quaternionic triples, precisely the perspective suggested by the Fano plane.
+  </p>
+
+  <p>
+    So the link I have in mind is not “Dobble secretly is octonionic physics,” which would be silly.
+    The link is that both examples are governed by the same kind of combinatorial skeleton:
+    a finite projective-plane incidence structure.
+    In one case it organizes overlaps between cards.
+    In the other it organizes multiplication rules, and in Furey’s framework those multiplication rules are then used to build particle representations inside the Dixon algebra.
+  </p>
 
         <div class="hr"></div>
       </section>
