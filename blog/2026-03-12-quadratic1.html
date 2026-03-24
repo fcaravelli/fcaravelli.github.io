@@ -464,7 +464,7 @@ Here is the plan for this post:
   </ul>
 
   <p class="note">
-      If you’ve seen QFT perturbation theory, this should ring a bell: a quadratic nonlinearity behaves like an interaction vertex,
+    If you’ve seen QFT perturbation theory, this should ring a bell: a quadratic nonlinearity behaves like an interaction vertex,
      iterating the fixed point builds tree-level diagrams, and “summing the diagrams” means contracting indices (here) instead of integrating over momenta (there).
      The extra algebraic twist is branch structure: different solutions correspond to different backgrounds, and changing the background changes the propagator,
      hence the whole expansion.
@@ -546,339 +546,388 @@ Here is the plan for this post:
 <section id="nd-trees">
   <h4>5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</h4>
 
-  <p>
-    The small-$\chi$ tree expansion automatically lands on the branch that stays finite as $\chi\to 0$.
-    To organize an expansion around a <em>different</em> branch, we first choose a background and then expand in fluctuations.
-    Write
-  </p>
+<p>
+  The small-$\chi$ tree expansion automatically lands on the branch that stays finite as $\chi\to 0$.
+  To organize an expansion around a <em>different</em> branch, we pick a background and expand in fluctuations:
+</p>
 
-  <p class="math">
-    $$ C_i = C_0 + \delta C_i, $$
-  </p>
+<p class="math">
+  $$ C_i = C_0 + \delta C_i, $$
+</p>
 
-  <p>
-    where $C_0$ is independent of $i$. We fix the split by imposing a zero-mean condition on the fluctuations:
-  </p>
+<p>
+  where $C_0$ is independent of $i$. The idea is that $C_0$ captures the “background” part of the solution, while
+  $\delta C_i$ captures fluctuations around it.
+</p>
 
-  <p class="math">
-    $$ \frac1N\sum_{i=1}^N \delta C_i = 0. $$
-  </p>
+<p>
+  Start from the full fixed point
+</p>
 
-  <p>
-    Start from the full fixed point
-  </p>
+<p class="math">
+  $$ C_i = S_i + \chi \sum_{j,k=1}^N T_{ijk}\,C_j C_k. \tag{1} $$
+</p>
 
-  <p class="math">
-    $$ C_i = S_i + \chi \sum_{j,k=1}^N T_{ijk}\,C_j C_k. \tag{1} $$
-  </p>
+<p>
+  Insert $C_i=C_0+\delta C_i$ into (1):
+</p>
 
-  <p>
-    Insert $C_i=C_0+\delta C_i$ into (1):
-  </p>
+<p class="math">
+  $$ C_0+\delta C_i
+     = S_i + \chi \sum_{j,k} T_{ijk}\,(C_0+\delta C_j)(C_0+\delta C_k). \tag{2} $$
+</p>
 
-  <p class="math">
-    $$ C_0+\delta C_i
-       = S_i + \chi \sum_{j,k} T_{ijk}\,(C_0+\delta C_j)(C_0+\delta C_k). \tag{2} $$
-  </p>
+<p>
+  Expand the product:
+</p>
 
-  <p>
-    To get an equation for the scalar background $C_0$, we average (2) over $i$.
-    Define
-  </p>
+<p class="math">
+  $$ (C_0+\delta C_j)(C_0+\delta C_k)
+     = C_0^2 + C_0(\delta C_j+\delta C_k) + \delta C_j\,\delta C_k. \tag{3} $$
+</p>
 
-  <p class="math">
-    $$ \bar S := \frac1N\sum_{i=1}^N S_i,
-       \qquad
-       \bar C := \frac1N\sum_{i=1}^N C_i. $$
-  </p>
+<p>
+  To get a scalar equation for the background, average (2) over $i$ and assume the standard mean-field closure
+  (drop fluctuation contributions in the average). Define
+</p>
 
-  <p>
-    Because $\sum_i \delta C_i = 0$, we have $\bar C = C_0$.
-    Averaging (2) over $i$ therefore gives the exact background identity
-  </p>
+<p class="math">
+  $$ \bar S := \frac{1}{N}\sum_{i=1}^N S_i,
+     \qquad
+     \bar T := \frac{1}{N}\sum_{i,j,k} T_{ijk}. $$
+</p>
 
-  <p class="math">
-    $$ C_0
-       = \bar S + \chi\,\frac1N\sum_{i,j,k} T_{ijk}\,(C_0+\delta C_j)(C_0+\delta C_k). \tag{3} $$
-  </p>
+<p>
+  Then the background is chosen to satisfy the <em>scalar</em> quadratic
+</p>
 
-  <p>
-    Expanding the product
-    $(C_0+\delta C_j)(C_0+\delta C_k)=C_0^2+C_0(\delta C_j+\delta C_k)+\delta C_j\delta C_k$
-    turns (3) into
-  </p>
+<p class="math">
+  $$ C_0 = \bar S + \chi\,\bar T\,C_0^2. \tag{4} $$
+</p>
 
-  <p class="math">
-    \[
-      C_0
-      = \bar S + \chi\Bigg[
-        C_0^2\,\underbrace{\frac1N\sum_{i,j,k} T_{ijk}}_{=:~\bar T}
-        + C_0\,\underbrace{\frac1N\sum_{i,j,k} T_{ijk}(\delta C_j+\delta C_k)}_{=:~L(\delta C)}
-        + \underbrace{\frac1N\sum_{i,j,k} T_{ijk}\,\delta C_j\delta C_k}_{=:~Q(\delta C)}
-      \Bigg]. \tag{4}
-    \]
-  </p>
+<p>
+  Solving (4) gives the two candidate backgrounds (when the discriminant is positive):
+</p>
 
-  <p class="note">
-    Equation (4) is exact: the background is determined by the mean source plus fluctuation corrections.
-    The usual mean-field closure is to drop $L(\delta C)$ and $Q(\delta C)$, giving the scalar quadratic
-    $C_0=\bar S+\chi\bar T C_0^2$ and its two roots $C_0^\pm$.
-  </p>
+<p class="math">
+  $$ C_0^{\pm}(\chi)=\frac{1\pm\sqrt{1-4\chi\,\bar T\,\bar S}}{2\chi\,\bar T}. \tag{5} $$
+</p>
 
-  <p>
-    Now comes the key step: derive the equation for $\delta C_i$ by <em>subtracting the averaged equation</em> from the full one.
-    Take (2) and subtract (3). The left-hand side becomes
-  </p>
+<p>
+  Now go back to (2) and subtract the background equation (4) from it (componentwise, i.e. subtract $\bar S+\chi\bar T C_0^2$
+  from both sides). This removes the constant part and leaves an equation for the fluctuations:
+</p>
 
-  <p class="math">
-    $$ (C_0+\delta C_i) - C_0 = \delta C_i. $$
-  </p>
+<p class="math">
+  $$ \delta C_i
+     = (S_i-\bar S)
+     + \chi \sum_{j,k}T_{ijk}\Big[C_0(\delta C_j+\delta C_k)+\delta C_j\delta C_k\Big]
+     \;-\;\chi\,C_0^2\Big(\sum_{j,k}T_{ijk}-\bar T\Big). \tag{6} $$
+</p>
 
-  <p>
-    On the right-hand side we get
-  </p>
+<p class="note">
+  The last term is an $i$-dependent “mismatch” coming from the fact that $\sum_{j,k}T_{ijk}$ need not be constant in $i$.
+  If your model/basis has $\sum_{j,k}T_{ijk}$ independent of $i$ (common in symmetric reductions), that term vanishes.
+  Otherwise it can be absorbed into a redefinition of the inhomogeneity (it is still of order $C_0^2$ and fixed once $C_0$ is chosen).
+</p>
 
-  <p class="math">
-    $$ (S_i-\bar S)
-       + \chi\Bigg[
-          \sum_{j,k}T_{ijk}(C_0+\delta C_j)(C_0+\delta C_k)
-          - \frac1N\sum_{i',j,k}T_{i'jk}(C_0+\delta C_j)(C_0+\delta C_k)
-       \Bigg]. \tag{5} $$
-  </p>
+<p>
+  From now on, assume the common simplifying case where the quadratic interaction is symmetric in the two incoming legs,
+  $T_{ijk}=T_{ikj}$. Then
+</p>
 
-  <p>
-    Equation (5) is still exact. To expose the <em>linearized operator</em>, expand the product inside the sum and
-    separate terms by their degree in $\delta C$.
-    The constant piece $C_0^2$ contributes only through
-    $$ \sum_{j,k}T_{ijk}C_0^2 - \frac1N\sum_{i',j,k}T_{i'jk}C_0^2, $$
-    which is an $i$-dependent shift. Under the mean-field closure (where $C_0$ is chosen to solve the averaged equation at leading order),
-    this constant part is exactly what is removed by the subtraction—its job is to define the background.
-  </p>
+<p class="math">
+  $$ \sum_{j,k}T_{ijk}\,(\delta C_j+\delta C_k)=2\sum_{j,k}T_{ijk}\,\delta C_j, $$
+</p>
 
-  <p>
-    The <em>linear</em> terms are the ones proportional to $C_0(\delta C_j+\delta C_k)$.
-    Keeping those explicitly, we obtain
-  </p>
+<p>
+  and (6) becomes
+</p>
 
-  <p class="math">
-    $$ \delta C_i
-       = (S_i-\bar S)
-       + \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k)
-       + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k$$
-       $$\;-\;\text{(the same three terms averaged over $i$)}. \tag{6} $$
-  </p>
+<p class="math">
+  $$ \delta C_i
+     = (S_i-\bar S)
+     + 2\chi C_0\sum_{j,k}T_{ijk}\,\delta C_j
+     + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k
+     \;+\;\text{(optional mismatch term)}. \tag{7} $$
+</p>
 
-  <p class="note">
-    The final “minus the average” is exactly what enforces $\sum_i\delta C_i=0$ and keeps the fluctuation equation in the
-    zero-mean subspace. You can think of it as projecting both sides with $P:=I-\frac{1}{N}\mathbf{1}\mathbf{1}^T$.
-  </p>
+<p>
+  Now the linear term can be brought to the left. Define the Jacobian (linearized operator around the background $C_0$):
+</p>
 
-  <p>
-    Now we can read off the Jacobian. Move the linear term to the left-hand side of (6) (and remember we are working in the
-    zero-mean subspace, i.e. after the projection):
-  </p>
+<p class="math">
+  $$ (J_0\,\delta C)_i
+     := \delta C_i - 2\chi C_0\sum_{j,k}T_{ijk}\,\delta C_j. \tag{8} $$
+</p>
 
-  <p class="math">
-    $$ \delta C_i
-       - \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k)
-       = (S_i-\bar S)
-       + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k
-       \;-\;\text{(average)}. \tag{7} $$
-  </p>
+<p>
+  In matrix form this is
+</p>
 
-  <p>
-    This is where $J_{C_0}$ comes from: it is simply the operator multiplying $\delta C$ after linearization around the background.
-    Define, on the zero-mean subspace,
-  </p>
+<p class="math">
+  $$ (J_0)_{ij}=\delta_{ij}-2\chi C_0\sum_{k}T_{ijk}. \tag{9} $$
+</p>
 
-  <p class="math">
-    $$ (J_{C_0}\,\delta C)_i
-       := \delta C_i
-       - \chi\,C_0\sum_{j,k}T_{ijk}(\delta C_j+\delta C_k), \tag{8} $$
-  </p>
+<p>
+  With this notation, the fluctuation equation is
+</p>
 
-  <p>
-    and write the quadratic remainder as $B(\delta C,\delta C)$ with
-    $(B(u,v))_i=\sum_{j,k}T_{ijk}u_jv_k$. Then (7) becomes the background-field form
-  </p>
+<p class="math">
+  $$ J_0\,\delta C
+     = (S-\bar S) + \chi\,B(\delta C,\delta C) \quad \text{(plus mismatch term if present)}. \tag{10} $$
+</p>
 
-  <p class="math">
-    $$ J_{C_0}\,\delta C
-       = (S-\bar S) + \chi\,B(\delta C,\delta C)
-       \qquad (\text{under } \tfrac1N\sum_i\delta C_i=0). \tag{9} $$
-  </p>
+<p>
+  Now we are back to the same structural form as before: linear operator equals source plus quadratic term.
+  If $J_0$ is invertible, define the <em>propagator</em> around the chosen background,
+</p>
 
-  <div class="callout">
-    <p class="note">
-      <strong>Why the analytical branch matters here:</strong> choosing $C_0=C_0^-$ or $C_0=C_0^+$ changes the linear term, hence changes $J_{C_0}$.
-      If $J_{C_0}$ is invertible, the propagator $G_{C_0}=J_{C_0}^{-1}$ (and therefore every diagram weight in the expansion of $\delta C$)
-      depends on which root you picked.
-    </p>
-  </div>
+<p class="math">
+  $$ G_0 := J_0^{-1}. \tag{11} $$
+</p>
 
-  <p>
-    Once $G_{C_0}$ is defined, you iterate (9) exactly like before: the expansion of $\delta C$ is again a rooted-tree sum,
-    but now internal lines carry $G_{C_0}$, vertices carry $T_{ijk}$, and leaves carry the inhomogeneity $(S-\bar S)$.
-  </p>
+<p>
+  Then we can rewrite (10) as a fixed point for $\delta C$:
+</p>
 
-  <div class="hr"></div>
+<p class="math">
+  $$ \delta C = G_0\,(S-\bar S) + \chi\,G_0\,B(\delta C,\delta C). \tag{12} $$
+</p>
+
+<p class="note">
+  This is the key: the propagator $G_0$ depends on $C_0$, and $C_0$ depends on which root you chose in (5).
+  Same diagrammatics, different weights.
+</p>
+
+<p>
+  Iterating (12) generates a rooted-tree expansion again, but now internal lines carry $G_0$, vertices carry $T_{ijk}$,
+  and leaves carry $(S-\bar S)$ (or whatever inhomogeneity you keep after the subtraction).
+  This is how you “access the other branch” in practice: pick $C_0^+$ instead of $C_0^-$, which changes $J_0$ and therefore changes the entire expansion.
+</p>
+
+<p>
+  With (12) in hand, the tree expansion comes back in the same way as before, except that now every internal line carries a propagator.
+  Iterating
+  $$ \delta C = G_0\,(S-\bar S) + \chi\,G_0\,B(\delta C,\delta C) $$
+  generates a sum over rooted binary trees: each time you apply the quadratic term you add one vertex, and each time you stop you attach a leaf.
+  The only new ingredient compared to the “bare” expansion is that every contraction is preceded by a factor of $G_0$.
+</p>
+
+<p>
+  Concretely, fix a rooted binary tree $\tau$ with $n$ internal vertices. Label every oriented edge $e$ with an index
+  $a(e)\in\{1,\dots,N\}$, with the root edge fixed to carry the external index $i$.
+  Each internal vertex $v$ has two incoming edges $e_1(v),e_2(v)$ and one outgoing edge $e_{\mathrm{out}}(v)$.
+  Then the order-$n$ contribution to $\delta C_i$ can be written schematically as
+</p>
+
+<p class="math">
+  \[
+  \delta C_i(\chi)
+  \;=\;
+  \sum_{n\ge 0}\chi^n
+  \sum_{\tau\in\mathcal{T}_n}
+  \sum_{a:\,\mathrm{root}=i}
+  \Bigg(
+    \prod_{e\in E(\tau)} G_{0,\,a(e_{\uparrow})\,a(e_{\downarrow})}
+  \Bigg)
+  \Bigg(
+    \prod_{v\in \mathrm{Int}(\tau)}
+    T_{\,a(e_{\mathrm{out}}(v))\;a(e_1(v))\;a(e_2(v))}
+  \Bigg)
+  \Bigg(
+    \prod_{\ell\in \mathrm{Leaves}(\tau)}
+    (S-\bar S)_{\,a(e_\ell)}
+  \Bigg),
+  \]
+</p>
+
+<p>
+  where $E(\tau)$ is the set of edges of the tree, and for each edge $e$ we think of $G_0$ as the weight that maps the index at the “downstream”
+  end of the edge to the index at the “upstream” end (toward the root). (Any consistent orientation convention works; the point is: each edge contributes one $G_0$.)
+</p>
+
+<p>
+  There is another equivalent (often cleaner) way to present the same expansion: <em>dress the vertices and sources</em> so that edges carry no weight.
+  If $G_0$ is symmetric positive (or if you choose some factorization), write
+  $$ G_0 = R\,R^{\mathsf T} \qquad \text{(think of }R=G_0^{1/2}\text{ when it exists).} $$
+  Then you can “push” half a propagator onto each adjacent vertex/leaf/root. In practice this means:
+</p>
+
+<ul>
+  <li>dress each leaf/source by $\tilde S := R^{\mathsf T}(S-\bar S)$,</li>
+  <li>dress the external/root leg by applying $R$ at the end,</li>
+  <li>dress each vertex by contracting $T$ with $R$ on all three legs:
+    $$ \tilde T_{abc} := \sum_{i,j,k} R_{ai}\,T_{ijk}\,R_{bj}\,R_{ck}. $$
+  </li>
+</ul>
+
+<p>
+  With these definitions, the same tree sum can be written with <em>unit-weight edges</em>:
+</p>
+
+<p class="math">
+  \[
+  \delta C(\chi)
+  \;=\;
+  R\left[
+    \sum_{n\ge 0}\chi^n
+    \sum_{\tau\in\mathcal{T}_n}
+    \sum_{a:\,\mathrm{root\ index\ free}}
+    \Bigg(
+      \prod_{v\in \mathrm{Int}(\tau)} \tilde T_{\,a(e_{\mathrm{out}}(v))\;a(e_1(v))\;a(e_2(v))}
+    \Bigg)
+    \Bigg(
+      \prod_{\ell\in \mathrm{Leaves}(\tau)} \tilde S_{\,a(e_\ell)}
+    \Bigg)
+  \right].
+  \]
+</p>
+
+<p class="note">
+  Same combinatorics, but different structure: either you attach $G_0$ to every internal line, or you absorb “square roots” of $G_0$
+  into the vertices/leaves/root. In diagram language this is just dressing the rules of Feynman diagrams: propagators become trivial, while sources and vertices carry the $C_0$-dependent weights.
+</p>
+
+
 </section>
 <section id="sd">
-  <h4>6. Schwinger–Dyson viewpoint: a self-consistent equation for the fluctuations</h4>
+  <h4>6. Schwinger–Dyson viewpoint: dressing the propagator</h4>
 
   <p>
-    The background split $C_i=C_0+\delta C_i$ does more than reorganize perturbation theory: it also produces a
-    Schwinger–Dyson–type self-consistency equation. In QFT language, it is the statement that the “full propagator”
-    (here: the linear response of $\delta C$) differs from the bare one by a self-energy generated by the interaction.
-    In our setting it is purely algebraic, but the structure is the same.
+    Once we have rewritten the fluctuation equation as
+    $$ \delta C = G_0(S-\bar S) + \chi\,G_0\,B(\delta C,\delta C), $$
+    we can also ask a slightly different question: how does the solution respond to changes in the source?
+    This leads to a Schwinger–Dyson/Dyson equation for the <em>dressed</em> propagator (the linear response around the chosen background).
   </p>
 
   <p>
-    Start from the fluctuation equation in operator form
+    Define the response matrix
   </p>
 
   <p class="math">
-    $$ J_{C_0}\,\delta C = (S-\bar S) + \chi\,B(\delta C,\delta C), $$
+    $$ \mathcal{G}_{ia} := \frac{\partial\,\delta C_i}{\partial S_a}. $$
   </p>
 
   <p>
-    where $J_{C_0}$ is the background Jacobian and $G_{C_0}:=J_{C_0}^{-1}$ (when it exists) is the background propagator.
-    Apply $G_{C_0}$ to both sides to get the fixed-point form
+    Differentiate the fixed-point equation for $\delta C$ with respect to $S_a$.
+    The derivative of the first term is just the background propagator: $\partial[(S-\bar S)]/\partial S_a$ is the projector that removes the mean.
+    For simplicity (and because we are always working in the zero-mean subspace), I will write it as $P$, so the “bare” response is $G_0P$.
+    The nontrivial part comes from differentiating the quadratic term.
   </p>
 
   <p class="math">
-    $$ \delta C = G_{C_0}(S-\bar S) + \chi\,G_{C_0}\,B(\delta C,\delta C). \tag{SD0} $$
+    $$ \mathcal{G}_{\cdot a}
+       = G_0\,P_{\cdot a}
+       + \chi\,G_0\,\frac{\partial}{\partial S_a}B(\delta C,\delta C). \tag{SD0} $$
   </p>
 
   <p>
-    Now introduce the (connected) two-point response of the fluctuations to the source. A convenient definition is the
-    derivative with respect to the source components:
+    Using bilinearity of $B$,
   </p>
 
   <p class="math">
-    $$ \mathcal{G}_{ia} \;:=\; \frac{\partial\,\delta C_i}{\partial S_a}. $$
-  </p>
-
-  <p>
-    Differentiate (SD0) with respect to $S_a$. The first term gives the “bare” response $G_{C_0}$,
-    while the second term generates a contribution proportional to $\mathcal{G}$ itself (this is the Schwinger–Dyson closure):
-  </p>
-
-  <p class="math">
-    $$ \mathcal{G}_{ia}
-       = (G_{C_0})_{ia}
-       + \chi \sum_{m} (G_{C_0})_{im}\;
-          \frac{\partial}{\partial S_a}\Big(B(\delta C,\delta C)\Big)_m. \tag{SD1} $$
-  </p>
-
-  <p>
-    Using bilinearity,
-    $$ \frac{\partial}{\partial S_a} B(\delta C,\delta C)
+    $$ \frac{\partial}{\partial S_a}B(\delta C,\delta C)
        = B\!\Big(\frac{\partial \delta C}{\partial S_a},\delta C\Big)
-       + B\!\Big(\delta C,\frac{\partial \delta C}{\partial S_a}\Big)
-       = B(\mathcal{G}_{\cdot a},\delta C)+B(\delta C,\mathcal{G}_{\cdot a}), $$
-    where $\mathcal{G}_{\cdot a}$ denotes the vector with components $\mathcal{G}_{ja}$.
-    Plugging this into (SD1) gives
+        +B\!\Big(\delta C,\frac{\partial \delta C}{\partial S_a}\Big)
+       = B(\mathcal{G}_{\cdot a},\delta C)+B(\delta C,\mathcal{G}_{\cdot a}). \tag{SD1} $$
+  </p>
+
+  <p>
+    Plugging (SD1) into (SD0) gives the Schwinger–Dyson equation for the response:
   </p>
 
   <p class="math">
-    $$ \mathcal{G}_{ia}
-       = (G_{C_0})_{ia}
-       + \chi \sum_m (G_{C_0})_{im}\Big(
-           B(\mathcal{G}_{\cdot a},\delta C)_m
-           + B(\delta C,\mathcal{G}_{\cdot a})_m
-         \Big). \tag{SD2} $$
+    $$ \mathcal{G}_{\cdot a}
+       = G_0\,P_{\cdot a}
+       + \chi\,G_0\Big(B(\mathcal{G}_{\cdot a},\delta C)+B(\delta C,\mathcal{G}_{\cdot a})\Big). \tag{SD2} $$
   </p>
 
   <p class="note">
-    (SD2) is the finite-dimensional Schwinger–Dyson equation: the response $\mathcal{G}$ appears on both sides because
-    changing the source changes the background solution through the interaction. Diagrammatically, (SD2) resums an infinite
-    family of tree insertions (“dressed propagators”).
+    The structure is the point: $\mathcal{G}$ appears on both sides. The interaction feeds back into the linear response, so the
+    “propagator” gets dressed by the state $\delta C$ itself.
   </p>
 
   <p>
-    If $T_{ijk}$ is symmetric in the two incoming legs, $B(u,v)=B(v,u)$, the two terms coincide and (SD2) simplifies to
+    If $T_{ijk}$ is symmetric in $j\leftrightarrow k$ (so $B(u,v)=B(v,u)$), the two terms coincide and (SD2) simplifies to
   </p>
 
   <p class="math">
-    $$ \mathcal{G}_{ia}
-       = (G_{C_0})_{ia}
-       + 2\chi \sum_m (G_{C_0})_{im}\;B(\mathcal{G}_{\cdot a},\delta C)_m. \tag{SD2'} $$
+    $$ \mathcal{G}_{\cdot a}
+       = G_0\,P_{\cdot a}
+       + 2\chi\,G_0\,B(\mathcal{G}_{\cdot a},\delta C). \tag{SD2'} $$
   </p>
 
   <p>
-    You can also package this in the more familiar “Dyson form”. Define the (background-dependent) linear operator
+    It is often convenient to rewrite this in Dyson form by defining the (state-dependent) “self-energy” operator
   </p>
 
   <p class="math">
-    $$ (\Sigma_{\delta})\,u \;:=\; \chi\Big(B(u,\delta C)+B(\delta C,u)\Big). $$
+    $$ (\Sigma_{\delta}u) := \chi\Big(B(u,\delta C)+B(\delta C,u)\Big). $$
   </p>
 
   <p>
-    Then (SD2) is equivalent to
+    Then (SD2) becomes
   </p>
 
   <p class="math">
-    $$ \mathcal{G} = G_{C_0} + G_{C_0}\,\Sigma_{\delta}\,\mathcal{G},
-       \qquad\text{so}\qquad
-       \mathcal{G} = (I - G_{C_0}\Sigma_{\delta})^{-1}G_{C_0}. \tag{Dyson} $$
+    $$ \mathcal{G} = G_0P + G_0\,\Sigma_{\delta}\,\mathcal{G}. \tag{Dyson} $$
+  </p>
+
+  <p>
+    Formally, if $(I-G_0\Sigma_{\delta})$ is invertible,
+  </p>
+
+  <p class="math">
+    $$ \mathcal{G} = (I-G_0\Sigma_{\delta})^{-1}G_0P. $$
   </p>
 
   <p class="note">
-    This is exactly the usual story: $G_{C_0}$ is the “bare” propagator around the chosen branch $C_0$,
-    and $\Sigma_{\delta}$ plays the role of a self-energy induced by the interaction and the actual fluctuation field $\delta C$.
-    Changing the branch (changing $C_0$) changes $G_{C_0}$, and therefore changes the full response $\mathcal{G}$.
+    This makes the dependence on the chosen branch completely explicit: $G_0=J_0^{-1}$ depends on $C_0$,
+    and $C_0$ depends on which root you chose. Changing the background changes the bare propagator, and therefore changes the dressed response.
   </p>
 
   <div class="hr"></div>
 </section>
-
 <section id="closing">
   <h4>Takeaway</h4>
 
   <p>
-    This started as a toy fixed point, but the point is general.
-    Quadratic self-consistency equations show up everywhere (mean field, message passing, closures),
-    and they almost never have a single “the” solution. They have <em>analytical</em> branches. It also generalizes to higher-order nonlinearities, 
-    but the quadratic case is already rich enough to illustrate the key points. It is also the simplest setting where you can see the interplay between branch structure, 
-    perturbation theory, and diagrammatics in a clean way without the baggage of a full QFT or statistical physics model. 
-    The same basic structure appears in all those settings, but here we can see it in its purest form.
+    This was a long way to say something simple: even a quadratic fixed point already has the main features people usually
+    associate with “hard” nonlinear problems. There are typically multiple solutions (branches), and the moment you try to
+    solve anything perturbatively you are forced to make a choice about which one you are talking about.
+    Higher-order nonlinearities only add more of the same; the quadratic case is just the first place where you can see it cleanly.
   </p>
 
   <p class="note">
-    It also shows in which sense a perturbative expansion is therefore not neutral. Expanding in $\chi$ automatically selects the branch that is analytic in $\chi$
-    (here the one with $C(\chi)\to S$ as $\chi\to 0$). The rooted trees are just the bookkeeping for that choice.
+    A perturbative expansion is not neutral. Expanding in $\chi$ selects the branch that is analytic in $\chi$
+    (in the scalar case: the root that stays finite as $\chi\to 0$). The rooted trees are just the bookkeeping of that choice.
   </p>
 
   <p>
-    The background-field rewrite makes the choice explicit. Pick a background $C^0$ (ideally an actual solution)
+    The background-field rewrite makes this explicit. Pick a background $C^0$ (ideally a solution),
     $$ C^0 = S + \chi\,B(C^0,C^0), $$
-    write $C=C^0+\delta$, and you get
-    $$ J\,\delta = \chi\,B(\delta,\delta), \qquad
-       J = I - \chi\big(B(C^0,\cdot)+B(\cdot,C^0)\big). $$
-    If $J$ is invertible, $G=J^{-1}$ is the linear response around that background. Different $C^0$ give different $J$ and $G$,
-    so the whole expansion changes with the branch.
+    write $C=C^0+\delta$, and isolate the linearized operator
+    $$ J = I - \chi\big(B(C^0,\cdot)+B(\cdot,C^0)\big). $$
+    If $J$ is invertible, $G=J^{-1}$ is the propagator around that background. Changing $C^0$ changes $J$ and $G$, so it changes
+    the whole diagram expansion.
   </p>
 
   <p>
-    This is also why the diagrams look like QFT diagrams. Same objects: vertices, propagators, trees.
-    The difference is what you do with an internal line: in QFT you integrate over a momentum; here you sum over an index.
-    So it’s “Feynman diagrams”, but with sums instead of integrals.
+    This is also why the pictures look like QFT. Same basic ingredients: vertices, propagators, trees.
+    The only difference is what “summing a diagram” means: in QFT you integrate over internal momenta; here you sum over internal indices.
   </p>
 
   <p>
-    One last structural point: we simplified the reduction to the $N$-dimensional system by using that $\Omega$ is a projector,
-    so the relevant subspace is clean and the decomposition is straightforward.
-    You can generalize this: instead of a projector you can work with a spectral decomposition (a sum over eigenvalues/eigenmodes),
-    or even drop symmetry and deal with non-normal/non-symmetric operators. The same basic ideas still apply,
-    but the bookkeeping gets messier (left/right eigenvectors, non-orthogonal modes, Jordan blocks), and the branch structure can become harder to track.
+    One last structural comment: the reduction to the $N$-dimensional system was simple because $\Omega$ was a projector.
+    You can loosen that assumption—use a spectral decomposition with nontrivial eigenvalues, or even allow non-symmetric/non-normal operators—
+    but then the bookkeeping gets more delicate (left/right eigenvectors, non-orthogonal modes, sometimes Jordan structure), and tracking branches can be harder.
   </p>
 
   <p>
-    If you want a next step: impose structure on $T_{ijk}$ (symmetries, projectors, low rank, eigenmodes).
-    Then many of these tree sums simplify a lot, sometimes enough to compute them in closed form.
+    If you want a next step: put structure into $T_{ijk}$ (symmetries, projectors, low rank, eigenmodes). That’s where these tree sums
+    often simplify enough to compute something explicit.
   </p>
-
 </section>
 
   <p><a href="../blog.html">← Back to Blog</a></p>
