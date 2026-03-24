@@ -455,7 +455,8 @@ Here is the plan for this post:
     whose total order is $n-1$, and joining them at one new quadratic vertex (the outermost $B$).
     Repeating this decomposition until you hit $C^{(0)}=S$ produces a binary rooted tree:
   </p>
-  <img class="hero" src="images/rootedtree.png" alt="Rooted binary trees for the background-field expansion">
+
+  <img class="hero" src="images/rootedtree.png" alt="Rooted binary trees for the expansion">
 
   <ul>
     <li>each application of $B(\cdot,\cdot)$ is an <strong>internal vertex</strong> (a “binary split”),</li>
@@ -706,17 +707,21 @@ Here is the plan for this post:
   This is how you “access the other branch” in practice: pick $C_0^+$ instead of $C_0^-$, which changes $J_0$ and therefore changes the entire expansion.
 </p>
 
+  <img class="hero" src="images/doubleline.png" alt="Rooted binary tree expansion with a background">
+
+
 <p>
   With (12) in hand, the tree expansion comes back in the same way as before, except that now every internal line carries a propagator.
   Iterating
   $$ \delta C = G_0\,(S-\bar S) + \chi\,G_0\,B(\delta C,\delta C) $$
   generates a sum over rooted binary trees: each time you apply the quadratic term you add one vertex, and each time you stop you attach a leaf.
-  The only new ingredient compared to the “bare” expansion is that every contraction is preceded by a factor of $G_0$.
+  The only new ingredient compared to the “bare” expansion is that every contraction is preceded by a factor of $G_0$. 
 </p>
 
 <p>
   Concretely, fix a rooted binary tree $\tau$ with $n$ internal vertices. Label every oriented edge $e$ with an index
-  $a(e)\in\{1,\dots,N\}$, with the root edge fixed to carry the external index $i$.
+  $a(e)\in\{1,\dots,N\}$, with the root edge fixed to carry the external index $i$. In terms of the rooted tree expansion,each line is now double to recall that
+  this is not a "bare" expansion, e.g. the propagator now carry some weight and depends on the choice of the background.
   Each internal vertex $v$ has two incoming edges $e_1(v),e_2(v)$ and one outgoing edge $e_{\mathrm{out}}(v)$.
   Then the order-$n$ contribution to $\delta C_i$ can be written schematically as
 </p>
