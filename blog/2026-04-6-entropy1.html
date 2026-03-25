@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>The second law, statistically speaking – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+  </style>
+
+  <!-- AdSense: load ONCE per page -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">thermodynamics • fluctuations • nonequilibrium physics</p>
+        <h3>The second law, statistically</h3>
+        <p><em>March 25th, 2026</em></p>
+
+        <img class="hero" src="../assets/images/entropy-tattoo.png" alt="Tattoo on the back of an arm reading &lt;ΔS&gt; ≥ 0" />
+
+        <p>
+          A few weeks ago I was at the APS March Meeting in Denver. It was interesting, though not exactly surprising, to see that a very large fraction of the exhibition floor and many of the talks revolved around quantum computing. 
+          That is the current gravitational center of a lot of physics-adjacent funding, optimism, and branding, whether one likes it or not.
+        </p>
+
+        <p>
+          The convention center had an area near the top with a view of Denver and the Rocky Mountains. It was one of those unexpectedly peaceful conference moments: bright air, some sun, a little distance from the buzz downstairs. 
+          I sat there for a bit doing nothing in particular, which is sometimes the most productive thing one can do at a conference.
+        </p>
+
+        <p>
+          And then I noticed a guy with a tattoo on the back of his arm, just above the elbow. It said
+        </p>
+
+        <p class="math">
+          $$
+          \Delta S \geq 0.
+          $$
+        </p>
+
+        <img src="images/secondlaw.png" alt="Tattoo on the back of an arm reading ΔS ≥ 0 (courtesy of ChatGPT)" />
+
+        <p>
+          Ten or fifteen years ago this would not have bothered me at all. In fact, if you had asked my younger self what formula from thermodynamics I would consider tattoo-worthy, I might well have chosen the same one.
+          But now it bothered me just enough that I felt a childish urge to walk over with a Uni Posca marker and add angle brackets:
+        </p>
+
+        <p class="math">
+          $$
+          \langle \Delta S \rangle \geq 0.
+          $$
+        </p>
+
+        <p>
+          Not because the tattoo was “wrong” in any useful practical sense. For macroscopic systems, it is basically right. If you compress the air in a room, melt an ice cube, burn fuel in an engine, or drop cream into coffee, 
+          the entropy increase is so overwhelmingly likely that writing \(\Delta S\geq 0\) is an excellent approximation to reality.
+          The issue is that it is still an approximation. The second law is not a divine prohibition. It is a statistical statement.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#textbook">1. The textbook version and what it hides</a></li>
+            <li><a href="#small">2. Small systems can fluctuate “the wrong way”</a></li>
+            <li><a href="#jarzynski">3. Jarzynski, fluctuation theorems, and why the average behaves</a></li>
+            <li><a href="#pedagogy">4. Why I think we should teach this earlier</a></li>
+            <li><a href="#bh">5. Black holes and the price of taking the second law seriously</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="textbook">
+        <h4>1. The textbook version</h4>
+
+        <p>
+          The way most of us first meet the second law is through a clean slogan:
+          entropy does not decrease.
+          There are good pedagogical reasons for this. Thermodynamics is already abstract enough, and nobody wants to make first exposure even murkier by immediately introducing probability distributions over trajectories,
+          rare events, coarse graining, and the subtle distinction between typical behavior and absolute impossibility.
+        </p>
+
+        <p>
+          But something important is lost when we present the law in that absolute form. What one really learns later, usually much later, is that the second law is a law of overwhelming tendency.
+          In a macroscopic sample with an astronomical number of degrees of freedom, the entropy-decreasing trajectories are not forbidden; they are just so fantastically improbable that for all ordinary purposes one never sees them.
+        </p>
+
+        <p>
+          This is one of the deep achievements of statistical mechanics: what looks like an iron law at human scales emerges from counting, probability, and typicality.
+          The drama of irreversibility is not that microscopic physics literally bans reverse behavior. It is that the reverse behavior occupies an absurdly tiny portion of the available phase space.
+        </p>
+
+        <p>
+          In that sense, the second law is closer in spirit to “you will never see all the air in the room spontaneously collect in one corner” than to “this event is mathematically impossible.”
+        </p>
+
+        <div class="callout">
+          The slogan \(\Delta S \geq 0\) is excellent thermodynamics for large systems. But for small systems, short times, or single realizations, the more faithful statement is probabilistic.
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="small">
+        <h4>2. Small systems can fluctuate “the wrong way”</h4>
+
+        <p>
+          Once one starts looking at nanoscale systems, molecular machines, colloidal particles, biomolecules, or small driven quantum systems, the textbook slogan becomes too blunt.
+          In these regimes the fluctuations are not negligible decorations. They are the physics.
+        </p>
+
+        <p>
+          A single realization of an experiment can show what, from the macroscopic viewpoint, looks like a local violation of the second law.
+          Heat can flow the “wrong” way for a moment. A driven system can, in a single run, appear to do better than the naive thermodynamic bound.
+          Entropy production can come out negative on one trajectory.
+        </p>
+
+        <p>
+          The point is not that thermodynamics has failed. The point is that thermodynamics was never supposed to be read as an absolute statement about every single microscopic history.
+          It is a statement about distributions, ensemble averages, and overwhelmingly likely behavior.
+        </p>
+
+        <p>
+          In fact, once one phrases things carefully, these apparent violations become not embarrassing exceptions but precise quantitative probes of nonequilibrium physics.
+          They are exactly the kind of events whose probabilities are constrained by the fluctuation theorems.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="jarzynski">
+        <h4>3. Jarzynski, fluctuation theorems, and why the average behaves</h4>
+
+        <p>
+          A modern way to say all this uses the fluctuation relations developed in the 1990s, among which the Jarzynski equality is probably the most famous.
+          Consider a system initially prepared in thermal equilibrium at inverse temperature \(\beta\), and then driven out of equilibrium by changing some external control parameter in finite time.
+          If \(W\) is the work done during a single realization of that protocol, Jarzynski's equality says
+        </p>
+
+        <p class="math">
+          $$
+          \left\langle e^{-\beta W}\right\rangle = e^{-\beta \Delta F},
+          $$
+        </p>
+
+        <p>
+          where \(\Delta F\) is the equilibrium free-energy difference between the final and initial control settings.
+          This is a remarkable identity because it holds even for processes driven arbitrarily far from equilibrium.
+        </p>
+
+        <p>
+          It is also one of those formulas whose conceptual meaning is bigger than its compactness suggests.
+          It says that even when the work fluctuates wildly from run to run, the fluctuations are not arbitrary.
+          The entire work distribution is tied to an equilibrium quantity.
+        </p>
+
+        <p>
+          And from this equality, by Jensen's inequality,
+        </p>
+
+        <p class="math">
+          $$
+          \langle W \rangle \geq \Delta F.
+          $$
+        </p>
+
+        <p>
+          That is one precise modern version of the second law.
+          On average, the work done exceeds the reversible free-energy cost, even though individual realizations may fall below it.
+          What looks like a “violation” in a single run is compensated statistically across the ensemble.
+        </p>
+
+        <p>
+          Closely related results, such as Crooks' fluctuation theorem, make the point even more sharply by comparing the probability of a forward trajectory with that of its time-reversed cousin.
+          Schematically, entropy-producing trajectories are exponentially favored over entropy-reducing ones, but the latter are not assigned probability zero.
+          They are rare, not illegal.
+        </p>
+
+        <p>
+          This is exactly why I wanted to add brackets to the tattoo. Not because the unbracketed formula is useless, but because the brackets encode the conceptual leap from classical thermodynamics to statistical mechanics:
+          the law survives, but it survives as a law about averages, typicality, and exponentially biased probabilities.
+        </p>
+
+        <p class="note">
+          For macroscopic systems the distinction is almost invisible, because fluctuations scale roughly like \(N^{1/2}\) while extensive entropy changes scale like \(N\). 
+          So as \(N\) becomes large, the relative size of the fluctuations collapses. Actually, this was known to Boltzmann already, who never believed that Statistical Mechancis was
+          a microscopic theory.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="pedagogy">
+        <h4>4. Why I think we should teach this earlier</h4>
+
+        <p>
+          None of this is especially controversial anymore. It is standard nonequilibrium statistical mechanics.
+          And yet it is still not usually how we introduce the second law.
+          Students are often first told the absolute-sounding version, and only much later are they informed that the real object underneath is statistical.
+        </p>
+
+        <p>
+          I understand why. One does not want to confuse beginners, and there is a natural wish to preserve the elegance of phenomenological thermodynamics before exposing the machinery underneath.
+          But I increasingly think that this choice comes at a cost.
+        </p>
+
+        <p>
+          It encourages the idea that the second law is a prohibition instead of an emergence statement.
+          It makes the later appearance of fluctuation theorems seem like a correction or loophole rather than the mature formulation of what was really going on all along.
+          And it deprives students of one of the most beautiful lessons in physics: that irreversibility is not fundamental in the way it first appears to be.
+        </p>
+
+        <p>
+          Personally, I think a textbook should say this clearly near the beginning:
+          for macroscopic systems, entropy increase is so overwhelmingly probable that we may treat it as deterministic;
+          for microscopic systems or single realizations, entropy-decreasing fluctuations can occur;
+          the second law is recovered as a statistical statement about averages and typical behavior.
+        </p>
+
+        <p>
+          That is not a weakening of the law. If anything, it is the stronger and more interesting form of it.
+          It explains not only why the law works, but also when it can appear to fail and why those apparent failures are themselves constrained.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="bh">
+        <h4>5. Black holes and the price of taking the second law seriously</h4>
+
+        <p>
+          There is another reason I find this distinction worth dwelling on.
+          If one takes the second law very seriously, and extends it beyond ordinary laboratory matter, one is led to some extraordinary places.
+          A famous example is black-hole thermodynamics.
+        </p>
+
+        <p>
+          Bekenstein's starting point was essentially to ask what happens to the second law when entropy-bearing matter falls into a black hole.
+          If the black hole simply swallows the entropy and nothing compensates for it, then the ordinary second law seems to fail for the exterior world.
+          That tension led him to propose that a black hole itself should carry an entropy, proportional to horizon area.
+        </p>
+
+        <p class="math">
+          $$
+          S_{\mathrm{BH}} \propto A.
+          $$
+        </p>
+
+        <p>
+          This was not originally just a decorative analogy. It was driven by a real attempt to save a generalized second law.
+          The proposal was radical, and in hindsight incredibly fruitful.
+          Hawking's later discovery that black holes radiate thermally fixed the proportionality constant and turned the analogy into one of the deepest facts we have about gravity and quantum theory.
+        </p>
+
+        <p>
+          So yes, if you assume the second law in a robust enough form, you can get astonishing mileage out of it.
+          Black-hole entropy is one of the best examples of that.
+          It is one reason I do not want to sound flippant about the tattoo: the rough macroscopic statement \(\Delta S\geq 0\) has earned its prestige.
+        </p>
+
+        <p>
+          Still, I cannot help wondering about the alternative route.
+          If from the start one insists that the second law is statistical, what is the most natural way to formulate its extension to black holes?
+          The standard generalized second law remains the right language for macroscopic semiclassical gravity, and black holes are special objects for many other reasons anyway.
+          But I have often wondered how differently the intuition might have developed if the probabilistic character of entropy production had been emphasized more explicitly from the beginning.
+        </p>
+
+        <p>
+          That, however, is a story for another day. Long story short, if you want to get the tattoo right, use the one below.
+        </p>
+
+        <img src="images/secondlaw.2png" alt="Tattoo on the back of an arm with the correct form of the second law (courtesy of ChatGPT)" />
+
+
+        <div class="callout">
+          Ps. I'm actually the one who also has a tattoo with a "mistake". People might know I have tattoos of "memento mori" and "memento vivere". The second 
+          is grammaticaly wrong in Latin. However, it has been known for being a "nonstandard form" used in the ancient past. I had
+          arguments with a few "purists" about it. 
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
