@@ -252,11 +252,9 @@
         <h4>3. Jarzynski, fluctuation theorems, and why the average behaves</h4>
 
         <p>
-          A modern way to say all this uses the fluctuation relations developed in the 1990s, 
-          among which the Jarzynski equality is probably the most famous.
-          Consider a system initially prepared in thermal equilibrium at inverse temperature \(\beta\), 
-          and then driven out of equilibrium by changing some external control parameter in finite time.
-          If \(W\) is the work done during a single realization of that protocol, Jarzynski's equality says
+          A modern way to formulate these ideas is through the fluctuation relations developed in the 1990s, among which the Jarzynski equality is probably the most famous.
+          Consider a system initially prepared in thermal equilibrium at inverse temperature \(\beta\), and then driven out of equilibrium by varying some external control parameter over a finite time.
+          If \(W\) denotes the work performed in a single realization of the protocol, Jarzynski's equality states that
         </p>
 
         <p class="math">
@@ -266,24 +264,113 @@
         </p>
 
         <p>
-          where \(\Delta F\) is the equilibrium free-energy difference between the final and initial control settings.
-          This is a remarkable identity because it holds even for processes driven arbitrarily far from equilibrium.
+          where \(\Delta F\) is the equilibrium free-energy difference between the final and initial values of the control parameter.
+          What makes this identity remarkable is that it remains valid even when the protocol drives the system arbitrarily far from equilibrium.
         </p>
 
         <p>
-          It is also one of those formulas whose conceptual meaning is bigger than its compactness suggests.
-          It says that even when the work fluctuates wildly from run to run, the fluctuations are not arbitrary.
-          The entire work distribution is tied to an equilibrium quantity.
-        </p>
-
-        <p>
-          And from this equality, by Jensen's inequality,
+          It is useful to rewrite the relation by moving \(\Delta F\) to the left-hand side:
         </p>
 
         <p class="math">
           $$
-          \langle W \rangle \geq \Delta F.
+          \left\langle e^{-\beta (W-\Delta F)}\right\rangle = 1.
           $$
+        </p>
+
+        <p>
+          The quantity
+        </p>
+
+        <p class="math">
+          $$
+          W_{\mathrm{diss}} := W-\Delta F
+          $$
+        </p>
+
+        <p>
+          is the dissipated work, namely the excess work above the reversible minimum.
+          In contact with a heat bath at temperature \(T\), this naturally defines a stochastic entropy production
+        </p>
+
+        <p class="math">
+          $$
+          \Delta S_{\mathrm{tot}} := \frac{W-\Delta F}{T}.
+          $$
+        </p>
+
+        <p>
+          Since \(\beta = 1/(k_B T)\), the Jarzynski equality can then be written in the suggestive form
+        </p>
+
+        <p class="math">
+          $$
+          \left\langle e^{-\Delta S_{\mathrm{tot}}/k_B}\right\rangle = 1.
+          $$
+        </p>
+
+        <p>
+          This is already very close in spirit to the modern fluctuation-theorem formulation of the second law:
+          the entropy production may fluctuate from run to run, and in a single realization it can even be negative, but its distribution is constrained in a very precise way.
+        </p>
+
+        <p>
+          To recover the usual macroscopic inequality, one now applies Jensen's inequality to the convex function \(e^x\).
+          From
+        </p>
+
+        <p class="math">
+          $$
+          \left\langle e^{-\Delta S_{\mathrm{tot}}/k_B}\right\rangle = 1,
+          $$
+        </p>
+
+        <p>
+          one gets
+        </p>
+
+        <p class="math">
+          $$
+          e^{-\langle \Delta S_{\mathrm{tot}}\rangle/k_B}
+          \leq
+          \left\langle e^{-\Delta S_{\mathrm{tot}}/k_B}\right\rangle
+          =1.
+          $$
+        </p>
+
+        <p>
+          Taking the logarithm of both sides gives
+        </p>
+
+        <p class="math">
+          $$
+          -\frac{\langle \Delta S_{\mathrm{tot}}\rangle}{k_B} \leq 0,
+          $$
+        </p>
+
+        <p>
+          and therefore
+        </p>
+
+        <p class="math">
+          $$
+          \langle \Delta S_{\mathrm{tot}}\rangle \geq 0.
+          $$
+        </p>
+
+        <p>
+          Equivalently, going back to work and free energy, one recovers
+        </p>
+
+        <p class="math">
+          $$
+          \langle W\rangle \geq \Delta F.
+          $$
+        </p>
+
+        <p>
+          So the second law reappears not as a statement that every single realization must satisfy \(\Delta S_{\mathrm{tot}}\geq 0\), but as the statement that the <em>average</em> entropy production is non-negative.
+          Individual trajectories may transiently go the wrong way, but the ensemble, on average, does not.
         </p>
 
         <p>
