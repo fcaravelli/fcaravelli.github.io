@@ -139,7 +139,8 @@
           Not because the tattoo was “wrong” in any useful practical sense. For macroscopic systems, it is basically right. If you compress the air in a room, melt an ice cube, burn fuel in an engine, or drop cream into coffee, 
           the entropy increase is so overwhelmingly likely that writing \(\Delta S\geq 0\) is an excellent approximation to reality.
           The issue is that it is still an approximation. The second law is not a divine prohibition. It is a statistical statement. This is what many
-          people still don't know and when you tell them they think you're a crook, not Crooks, who developed a more complete version of Jarzynski's equality
+          people still don't know and when you tell them they think you're a crook, not Crooks, who developed a more complete version of 
+          Jarzynski's equality
           from which the generalization of the second law out of equilibrium was found for the first (actually, second) time.
         </p>
 
@@ -161,37 +162,60 @@
         <h4>1. The  textbook version</h4>
 
         <p>
-          The way most of us first meet the second law is through a clean slogan:
+          The way most of us first meet the second law is through a clean law:
           entropy does not decrease.
           There are good pedagogical reasons for this. Thermodynamics is already abstract enough, and nobody wants to make first exposure even murkier by immediately introducing probability distributions over trajectories,
           rare events, coarse graining, and the subtle distinction between typical behavior and absolute impossibility.
         </p>
 
         <p>
-          But something important is lost when we present the law in that absolute form. 
-          What one really learns later, usually much later if at all, is that the second law is a law of overwhelming tendency.
-          In a macroscopic sample with an astronomical number of degrees of freedom, the entropy-decreasing 
-          trajectories are not forbidden; they are just so fantastically improbable that for all ordinary 
-          purposes one never sees them.
+          Historically, the second law was not first written in the compact entropy form we use today.
+          Carnot's original insight was phrased in terms of heat engines: there are strict limits to how much useful work can be extracted from heat, and reversible engines set the optimal benchmark.
+          It was only later, with Clausius, that this idea was recast into the now familiar thermodynamic language of entropy.
         </p>
 
         <p>
-          This is one of the deep achievements of statistical mechanics of the last three decades: 
-          what looks like an iron law at human scales emerges from counting, probability, and typicality.
-          The drama of irreversibility is not that microscopic physics literally bans reverse behavior. 
-          It is that the reverse behavior occupies an absurdly tiny portion of the available phase space.
+          In that classical formulation, the second law says that for an isolated system entropy cannot decrease:
+        </p>
+
+        <p class="math">
+          $$
+          \Delta S \geq 0.
+          $$
         </p>
 
         <p>
-          In that sense, the second law is closer in spirit to “you will never see all the air in the room 
-          spontaneously collect in one corner” than to “this event is mathematically impossible.”
+          Clausius pushed this point even further in his famous summary that the entropy of the universe tends to a maximum.
+          Presented this way, the law sounds like an absolute prohibition:
+          nature appears simply to forbid certain processes from taking place.
+          And for macroscopic systems this is an extraordinarily good approximation.
+          One never sees heat spontaneously flow from a colder body to a hotter one, or a gas in a room gather itself into a corner.
+        </p>
+
+        <p>
+          But something important is hidden when the law is stated in that absolute form.
+          What one learns later, if one learns it at all, is that the second law is not really a ban at the microscopic level.
+          It is a law of overwhelming probability.
+          In a macroscopic sample with an enormous number of degrees of freedom, entropy-decreasing trajectories are not impossible; they are simply so unlikely that for all practical purposes they are never observed.
+        </p>
+
+        <p>
+          This is one of the deepest lessons of statistical mechanics:
+          what appears at human scales as an iron law emerges, at a more fundamental level, from counting, probability, and typicality.
+          Irreversibility does not come from the microscopic equations literally excluding the reverse process.
+          It comes from the fact that the reverse process occupies an absurdly tiny region of the space of possibilities.
+        </p>
+
+        <p>
+          In that sense, the second law is closer in spirit to the statement that one will never witness all the air in a room spontaneously collect into a corner than to the statement that such an event is mathematically impossible.
+          For large systems the distinction hardly matters in practice, but conceptually it matters a great deal.
         </p>
 
         <div class="callout">
-          The slogan \(\Delta S \geq 0\) is excellent thermodynamics for large systems. 
-          But for small systems, short times, or single realizations, the more faithful statement is probabilistic.
+          Carnot taught us that there are fundamental limits to heat engines; Clausius translated that insight into the entropy inequality
+          \(\Delta S \geq 0\).
+          For macroscopic systems this is essentially exact in practice, but for small systems, short times, or single realizations, the more faithful formulation is statistical rather than absolute.
         </div>
-
         <div class="hr"></div>
       </section>
 
