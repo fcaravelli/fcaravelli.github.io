@@ -1,9 +1,19 @@
 [
+     {
+    "title": "Blog post: The critical Casimir effect in the 1D ising model",
+    "date": "2026-03-29",
+    "link": "blog/2026-03-29-Casimirising1.html"  
+     },  
    {
     "title": "Book announcement: Volume 1 of the Practical Statistical Mechanics and Thermodynamics series is in pre-order!",
-    "date": "2026-03-20",
+    "date": "2026-07-01",
     "link": "https://www.amazon.it/Practical-Statistical-Mechanics-Thermodynamics/dp/1032982047"  
     },
+   {
+    "title": "Talk: Volume 1 of the Practical Statistical Mechanics and Thermodynamics series is in pre-order!",
+    "date": "2026-07-01",
+    "link": "https://www.amazon.it/Practical-Statistical-Mechanics-Thermodynamics/dp/1032982047"  
+    },    
    {
     "title": "Blog post: From Dobble to projective spaces to the octonions",
     "date": "2026-03-20",
