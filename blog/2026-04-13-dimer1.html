@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>A classical topological model – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">topology • dimers • gauge theory</p>
+        <h3>A classical topological model</h3>
+        <p><em>April 10th, 2026</em></p>
+
+        <p>
+          Last year I attended, roughly in June, a workshop at the Santa Fe Institute on computation and thermodynamics. 
+          One of the talks was by Pedro Harunari, and he mentioned <em>en passant</em> of entropy production in some statistical many body systems.
+            That got me thinking about the relationship between thermodynamics and topology, and in particular about the 
+            possibility of building a simple classical model whose energy is a function of a global topological invariant. Pedro and I rode together
+            to the airport in Albuquerque a few days later. At the airport, I sat down trying to develop a totally classical "topological" model,
+            something that had some topologicala features. In the attempt of doing that I started from the idea of adding dimers on a lattice, and add 
+            energy terms that resembled faces, nodes and edges, with the idea that they would add up to the Euler characteristic. 
+            I was able to write down a model that looked like it had the right ingredients, but then I realized that the local terms 
+            I had written down did not actually compute the Euler characteristic for generic configurations. I have found a 
+            combination of parameters that do that,
+            but it only works for a subset of configurations.
+            That was a bit of a bummer, but it also highlighted an important lesson: topology is global, and a purely local Hamiltonian that tries to count it will usually miss something essential. So the most honest conclusion is that the construction is a useful toy model and a useful set of notes, but not yet a genuine local realization of $E_{\mathrm{tot}}=\lambda\chi$ for arbitrary configurations. To get that exactly, one would need a more genuinely global definition of the energy, or a different framework altogether.
+          More specifically, one can think of the Euler characteristic as a global quantity that encodes topological information about 
+          the system. This is given by:
+          $$
+          \chi = V-E+F,
+          $$
+          which already packages a surprising amount of geometric information into a single number.
+          The question I wanted to explore is whether one can build a simple classical lattice model whose thermodynamics is 
+          organized by this quantity,
+          and how far that point of view can be pushed before it runs into trouble. I never got to study the second part of the problem,
+          too much other things got in the way, but I did write down some notes on the first part, and I thought it would be 
+          interesting to share them here. It turned out resembling quite closely, at the end, Kitaev's toric code, but in a purely 
+          classical setting. The model is not quantum, so it does not have topological order in the full quantum many-body sense, 
+          but it is still topological in what it is trying to count. I had also run some Monte Carlo simulations to get a feel for the 
+          thermodynamics, and I have included some of those results as well. 
+        </p>
+
+        <p>
+          This post is a reconstruction of personal notes from last summar, that led in two different directions. 
+          One direction is constructive: formulate a dimer model,
+          rewrite the partition function as a sum over topological sectors, and then connect the result to a classical $\mathbb{Z}_2$ 
+          gauge theory language. The second is what happens to standard quantities when the system crosses the "topological point".
+          
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#euler">1. Why the Euler characteristic is a natural starting point</a></li>
+            <li><a href="#edge-model">2. A dimer model on edges</a></li>
+            <li><a href="#partition">3. Partition function as a sum over topological sectors</a></li>
+            <li><a href="#gauge">4. Spin variables and a classical $\mathbb{Z}_2$ gauge-theory viewpoint</a></li>
+            <li><a href="#mc">5. Monte Carlo observables</a></li>
+            <li><a href="#topological-order">6. Is this topological order?</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="euler">
+        <h4>1. Why the Euler characteristic is a natural starting point</h4>
+
+        <p>
+          The Euler characteristic is one of the oldest and simplest topological invariants.
+          For a graph or cell complex embedded in a two-dimensional surface, it is defined by
+        </p>
+
+        <p class="math">$$
+          \chi = V-E+F,
+        $$</p>
+
+        <p>
+          where $V$ is the number of vertices, $E$ the number of edges, and $F$ the number of faces.
+          What makes $\chi$ so useful is that it depends only on topology rather than on detailed geometry:
+          smooth deformations do not change it.
+          A sphere has $\chi=2$, a disk has $\chi=1$, a torus has $\chi=0$, and more generally a genus-$g$ surface has
+        </p>
+
+        <p class="math">$$
+          \chi = 2-2g.
+        $$</p>
+
+        <p>
+          Another basic fact is additivity over disconnected components. If a configuration splits as $G=G_1\sqcup G_2$, then
+        </p>
+
+        <p class="math">$$
+          \chi(G)=\chi(G_1)+\chi(G_2).
+        $$</p>
+
+        <p>
+          That already makes it a natural quantity for statistical mechanics. If one could engineer a model whose energy depends only on $\chi$,
+          then the theory would be organized by topological sectors rather than by local geometric details.
+          Formally, one would like to write
+        </p>
+
+        <p class="math">$$
+          E_{\mathrm{tot}}(\{\sigma\}) = \lambda\,\chi(\{\sigma\}),
+        $$</p>
+
+        <p>
+          with $\lambda$ setting the energy scale.
+          In that case, locally different configurations with the same Euler characteristic would carry the same Boltzmann weight.
+        </p>
+
+        <div class="callout">
+          The ambition is simple to state: build a classical model whose thermodynamics is governed by a global invariant.
+          The subtlety is that global topology is much harder to encode with local terms than it first appears.
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+ <section id="edge-model">
+  <h4>2. A dimer model on edges</h4>
+
+  <p>
+    Let us now make the model more concrete. Consider a two-dimensional lattice
+    \(\mathcal L\), with vertices \(\mathcal V\), edges \(\mathcal E\), and plaquettes \(\mathcal P\).
+    The degrees of freedom live on the edges: for each edge \(\ell\), we introduce an occupation variable
+  </p>
+
+  <p class="math">$$
+    n_\ell =
+    \begin{cases}
+    1 & \text{if edge }\ell\text{ is occupied by a dimer,}\\
+    0 & \text{otherwise.}
+    \end{cases}
+  $$</p>
+
+  <p>
+    Unlike the usual hard-core dimer model, I am not imposing the constraint that exactly one dimer must touch each vertex.
+    In this model, several occupied edges may meet at the same node. As a result, the allowed configurations are more general:
+    they may contain overlaps, open structures, and closed loops.
+  </p>
+
+  <p>
+    The natural local quantity at a vertex \(i\) is its degree,
+  </p>
+
+  <p class="math">$$
+    d_i = \sum_{\ell \in i} n_\ell,
+  $$</p>
+
+  <p>
+    where the sum runs over all edges incident on the vertex \(i\).
+  </p>
+
+  <figure class="post-figure">
+    <img src="../assets/img/topological-dimer-config.png" alt="Illustration of a dimer configuration" />
+    <figcaption>
+      A sample dimer configuration. Thick lines indicate occupied edges. The dashed square marks a plaquette whose boundary is fully occupied.
+    </figcaption>
+  </figure>
+
+  <p>
+    We also need a local quantity associated with plaquettes. A plaquette \(p \in \mathcal P\) is said to be fully occupied when all edges along its boundary carry a dimer, namely when
+  </p>
+
+  <p class="math">$$
+    \prod_{\ell \in p} n_\ell = 1.
+  $$</p>
+
+  <p>
+    This suggests a natural attempt at building a local Hamiltonian from node, edge, and plaquette contributions:
+  </p>
+
+  <p class="math">$$
+    E_{\mathrm{tot}}
+    =
+    \alpha V
+    +
+    \beta \sum_i d_i
+    +
+    \gamma \sum_\ell n_\ell
+    +
+    \delta \sum_p \prod_{\ell \in p} n_\ell.
+  $$</p>
+
+  <p>
+    Here \(V\) is the total number of vertices, the second term measures how many occupied edges meet at each node,
+    the third counts the total number of occupied edges, and the fourth counts the number of fully occupied plaquettes.
+  </p>
+
+  <p>
+    Since each occupied edge contributes to the degree of its two endpoints, one has
+  </p>
+
+  <p class="math">$$
+    \sum_i d_i = 2E,
+  $$</p>
+
+  <p>
+    where
+  </p>
+
+  <p class="math">$$
+    E = \sum_\ell n_\ell
+  $$</p>
+
+  <p>
+    is the total number of occupied edges. With this simplification, the Hamiltonian becomes
+  </p>
+
+  <p class="math">$$
+    E_{\mathrm{tot}} = \alpha V + (2\beta+\gamma)E + \delta F,
+  $$</p>
+
+  <p>
+    where, at least at first sight,
+  </p>
+
+  <p class="math">$$
+    F = \sum_p \prod_{\ell \in p} n_\ell
+  $$</p>
+
+  <p>
+    looks like the number of occupied faces. This is the point where the tempting argument appears: if one wants the energy to reproduce the Euler characteristic
+  </p>
+
+  <p class="math">$$
+    \chi = V - E + F,
+  $$</p>
+
+  <p>
+    then comparing with
+  </p>
+
+  <p class="math">$$
+    E_{\mathrm{tot}} = \lambda \chi = \lambda (V - E + F)
+  $$</p>
+
+  <p>
+    suggests the parameter choice
+  </p>
+
+  <p class="math">$$
+    \alpha = \lambda, \qquad 2\beta+\gamma = -\lambda, \qquad \delta = \lambda.
+  $$</p>
+
+  <p>
+    This is a very natural idea, and it is useful as a starting point. It tells us what kind of local ingredients one would like to use if one hopes to build an energy depending only on topology.
+  </p>
+
+  <figure class="post-figure">
+    <img src="images/topdim/local-term.png" alt="Local plaquette and cross terms" />
+    <figcaption>
+      The two local ingredients that enter the tentative Hamiltonian: a plaquette term and a vertex-degree, or “cross,” term. The cross is the sum over the edges attached to a node, while the plaquette is the edges around a certain plaquette.
+    </figcaption>
+  </figure>
+
+  <div class="hr"></div>
+</section>
+
+      <section id="partition">
+        <h4>3. Partition function as a sum over topological sectors</h4>
+
+        <p>
+          If the energy were really a function only of the Euler characteristic, the partition function would reorganize very cleanly.
+          Starting from
+        </p>
+
+        <p class="math">$$
+          Z = \sum_{\{\sigma\}} e^{-E_{\mathrm{tot}}(\{\sigma\})},
+        $$</p>
+
+        <p>
+          and substituting $E_{\mathrm{tot}}=\lambda\chi$, one gets
+        </p>
+
+        <p class="math">$$
+          Z = \sum_{\{\sigma\}} e^{-\lambda\chi(\{\sigma\})}.
+        $$</p>
+
+        <p>
+          Configurations with the same value of $\chi$ contribute the same Boltzmann factor, so one can group them into sectors and define the degeneracy
+        </p>
+
+        <p class="math">$$
+          g(\chi)=\#\bigl\{\{\sigma\}:\chi(\{\sigma\})=\chi\bigr\}.
+        $$</p>
+
+        <p>
+          The partition function then becomes
+        </p>
+
+        <p class="math">$$
+          Z = \sum_\chi g(\chi)e^{-\lambda\chi}.
+        $$</p>
+
+        <p>
+          In other words, the thermodynamics is governed by a competition between two things:
+          the Boltzmann suppression $e^{-\lambda\chi}$ and the entropic multiplicity $g(\chi)$ of each topological sector.
+        </p>
+
+        <p>
+          This viewpoint also makes additivity transparent. If a configuration splits into disconnected pieces,
+          then the Euler characteristic adds, and so does the energy.
+          For example, a disconnected square has $\chi=1$ and a disconnected triangle also has $\chi=1$,
+          so the union has $\chi=2$ and therefore energy $2\lambda$.
+        </p>
+
+        <div class="callout">
+          Even if the fully local derivation turns out to be flawed, the sector language is still conceptually valuable.
+          It tells you what kind of statistical mechanics you were aiming for: a sum over topological classes rather than a sum organized by local order.
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="gauge">
+        <h4>4. Spin variables and a classical $\mathbb{Z}_2$ gauge-theory viewpoint</h4>
+
+        <p>
+          To connect the model with more familiar lattice-gauge ideas, it is convenient to trade the occupation variables for edge spins,
+        </p>
+
+        <p class="math">$$
+          s_\ell=
+          \begin{cases}
+          +1 & \text{if edge }\ell\text{ is occupied},\\
+          -1 & \text{if edge }\ell\text{ is empty.}
+          \end{cases}
+        $$</p>
+
+        <p>
+          Then
+        </p>
+
+        <p class="math">$$
+          n_\ell = \frac{1+s_\ell}{2}.
+        $$</p>
+
+        <p>
+          The total number of occupied edges becomes
+        </p>
+
+        <p class="math">$$
+          \sum_\ell n_\ell = \frac{E_{\max}}{2} + \frac12\sum_\ell s_\ell,
+        $$</p>
+
+        <p>
+          while the sum of degrees is
+        </p>
+
+        <p class="math">$$
+          \sum_i d_i = E_{\max}+\sum_\ell s_\ell.
+        $$</p>
+
+        <p>
+          For a plaquette $p$ with $m_p$ boundary edges,
+        </p>
+
+        <p class="math">$$
+          \prod_{\ell\in p} n_\ell = 2^{-m_p}\prod_{\ell\in p}(1+s_\ell).
+        $$</p>
+
+        <p>
+          Substituting these expressions into the energy gives a schematic form
+        </p>
+
+        <p class="math">$$
+          E_{\mathrm{tot}} = \text{const} + h\sum_\ell s_\ell + \lambda\sum_p 2^{-m_p}\prod_{\ell\in p}(1+s_\ell),
+        $$</p>
+
+        <p>
+          with
+        </p>
+
+        <p class="math">$$
+          h = \beta + \frac\gamma2.
+        $$</p>
+
+        <p>
+          This looks very much like a classical $\mathbb{Z}_2$ gauge-theory expression: the plaquette product plays the role of a magnetic-flux term,
+          while the linear spin contribution acts like a coupling to a background field or static charge sector.
+          It is in this sense that the model is naturally adjacent to the toric-code story.
+        </p>
+
+        <p>
+          The analogy becomes even clearer if one recalls the toric-code Hamiltonian
+        </p>
+
+        <p class="math">$$
+          H = -J_e\sum_v A_v - J_m\sum_p B_p,
+          \qquad
+          A_v = \prod_{\ell\in v}\sigma^x_\ell,
+          \qquad
+          B_p = \prod_{\ell\in p}\sigma^z_\ell.
+        $$</p>
+
+        <p>
+          The crucial difference, though, is that the toric code is quantum: its ground state is a coherent superposition of loop configurations.
+          Here everything is classical, so topological sectors may exist, but there is no long-range entanglement and no anyonic statistics.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="mc">
+        <h4>5. Monte Carlo observables</h4>
+
+        <p>
+          To get a feel for the thermodynamics, one can simulate the model on a periodic square lattice in the space of plaquette configurations.
+          Each plaquette carries a binary variable $\sigma_p\in\{0,1\}$, and a Monte Carlo move flips one plaquette,
+          thereby toggling the state of all its boundary edges.
+        </p>
+
+        <p>
+          A simple Metropolis rule accepts the move with probability
+        </p>
+
+        <p class="math">$$
+          P_{\mathrm{accept}} = \min\left(1,e^{-\lambda\Delta\chi}\right),
+        $$</p>
+
+        <p>
+          after the usual thermalization and measurement sweeps.
+          The natural observables to track are the mean Euler characteristic $\langle\chi\rangle$, its variance,
+          the dimer density $\rho_E=\langle E\rangle/E_{\max}$, and the sector entropy
+        </p>
+
+        <p class="math">$$
+          S = -\sum_\chi p(\chi)\log p(\chi).
+        $$</p>
+
+        <figure class="post-figure">
+          <img src="../assets/img/topological-dimer-observables.png" alt="Monte Carlo observables" />
+          <figcaption>
+            Mean Euler characteristic, variance, dimer density, and sector entropy as functions of temperature.
+          </figcaption>
+        </figure>
+
+        <p>
+          Interpreting the figure qualitatively, one expects peaks in the variance or the sector entropy to mark a regime where several topological sectors compete appreciably,
+          while the dimer density tracks how populated the lattice becomes as temperature changes.
+          I would read these not as a sharp proof of a phase transition, but as evidence of a crossover structure in sector space.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="topological-order">
+        <h4>6. Is this topological order?</h4>
+
+        <p>
+          This is the conceptual question that naturally comes next.
+          The model certainly has some features that resemble the language of topological order:
+          it is organized by global data, local perturbations need not distinguish between sectors, and on a torus one can talk about winding sectors that are globally distinct.
+        </p>
+
+        <p>
+          But resemblance is not identity.
+          In the modern condensed-matter sense, topological order is a quantum notion.
+          The standard hallmarks include topology-dependent ground-state degeneracy, absence of a conventional local order parameter,
+          long-range entanglement, anyonic excitations, and a universal topological contribution to entanglement entropy.
+        </p>
+
+        <p>
+          A classical model weighted by $e^{-\lambda\chi}$ does not automatically have those features.
+          There is no quantum superposition of loop configurations here, and therefore no genuine topological entanglement in the toric-code sense.
+          So the safest statement is this: the model is topological in what it is trying to count, but not topologically ordered in the full quantum many-body sense.
+        </p>
+
+        <div class="callout">
+          A Hamiltonian depending on a topological invariant is not, by itself, enough to produce quantum topological order.
+          The missing ingredient is not just degeneracy, but quantumness.
+        </div>
+
+        <p>
+          That is why the toric code is such a useful comparison point.
+          It looks structurally related, yet it lives in a genuinely quantum Hilbert space and therefore realizes the stronger phenomenon.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="issue">
+        <h4>7. The catch: a local Hamiltonian does not really compute $\chi$</h4>
+
+        <p>
+          Now for the important correction.
+          The earlier derivation tacitly treated
+        </p>
+
+        <p class="math">$$
+          F = \sum_p \prod_{\ell\in p} n_\ell
+        $$</p>
+
+        <p>
+          as though it were the number of faces entering the Euler characteristic.
+          But this expression only counts elementary plaquettes whose boundaries are fully occupied.
+          In general, that is <em>not</em> the same thing as the number of faces of the graph defined by the occupied edges.
+        </p>
+
+        <p>
+          A torus gives a clean counterexample.
+          Take the parameter choice
+        </p>
+
+        <p class="math">$$
+          \alpha=1,\qquad \beta=-\frac14,\qquad \gamma=-\frac12,\qquad \delta=1,
+        $$</p>
+
+        <p>
+          so that
+        </p>
+
+        <p class="math">$$
+          H = V - \frac14\sum_i d_i - \frac12\sum_\ell n_\ell + \sum_p\prod_{\ell\in p}n_\ell.
+        $$</p>
+
+        <p>
+          For the fully occupied torus graph, one indeed finds
+        </p>
+
+        <p class="math">$$
+          \chi = 4-8+4 = 0,
+          \qquad
+          E_{\mathrm{tot}} = 4-4-4+4=0.
+        $$</p>
+
+        <p>
+          So in that particular case everything looks fine.
+          But now remove a suitable set of edges while staying on a connected graph on the torus.
+          Then the Euler characteristic is still
+        </p>
+
+        <p class="math">$$
+          \chi = 4-5+1 = 0,
+        $$</p>
+
+        <p>
+          because there is still one global face.
+          However, no elementary plaquette is completely filled anymore, so the local plaquette sum vanishes and one gets instead
+        </p>
+
+        <p class="math">$$
+          E_{\mathrm{tot}} = 4-\frac{10}{4}-\frac{5}{2}+0 = -1.
+        $$</p>
+
+        <p>
+          The energy no longer matches the Euler characteristic.
+          The problem is not an algebraic slip; it is structural.
+          A sum of local plaquette indicators cannot in general detect a global face that wraps around the geometry.
+        </p>
+
+        <figure class="post-figure">
+          <img src="../assets/img/topological-dimer-counterexample.png" alt="Counterexample configurations on a torus" />
+          <figcaption>
+            Two toroidal configurations. The first behaves as hoped; the second shows why counting complete elementary plaquettes does not reproduce the global face count.
+          </figcaption>
+        </figure>
+
+        <div class="callout">
+          This is the real lesson of the model: topology is global, and a purely local Hamiltonian that tries to count it will usually miss something essential.
+        </div>
+
+        <p>
+          So the most honest conclusion is that the construction is a useful toy model and a useful set of notes,
+          but not yet a genuine local realization of $E_{\mathrm{tot}}=\lambda\chi$ for arbitrary configurations.
+          To get that exactly, one would need a more genuinely global definition of the energy, or a different framework altogether.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
