@@ -244,13 +244,6 @@
     where the sum runs over all edges incident on the vertex \(i\).
   </p>
 
-  <figure class="post-figure">
-    <img src="../assets/img/topological-dimer-config.png" alt="Illustration of a dimer configuration" />
-    <figcaption>
-      A sample dimer configuration. Thick lines indicate occupied edges. The dashed square marks a plaquette whose boundary is fully occupied.
-    </figcaption>
-  </figure>
-
   <p>
     We also need a local quantity associated with plaquettes. A plaquette \(p \in \mathcal P\) is said to be fully occupied when all edges along its boundary carry a dimer, namely when
   </p>
@@ -349,62 +342,115 @@
 
   <div class="hr"></div>
 </section>
+<section id="partition">
+  <h4>3. Partition function as a sum over topological sectors</h4>
 
-      <section id="partition">
-        <h4>3. Partition function as a sum over topological sectors</h4>
+  <p>
+    If one takes seriously the idea that the energy depends only on the Euler characteristic, then the partition function acquires a very suggestive form.
+    Starting from
+  </p>
 
-        <p>
-          If the energy were really a function only of the Euler characteristic, the partition function would reorganize very cleanly.
-          Starting from
-        </p>
+  <p class="math">$$
+    Z = \sum_{\{\sigma\}} e^{-E_{\mathrm{tot}}(\{\sigma\})},
+  $$</p>
 
-        <p class="math">$$
-          Z = \sum_{\{\sigma\}} e^{-E_{\mathrm{tot}}(\{\sigma\})},
-        $$</p>
+  <p>
+    Now, it takes a second to realize that this cannot fully work. This sum will have a lot of configurations in which there is essentially one edge hanging,
+    and do not make sense much from the topological point of view, as they do not really represent a face, but they will contribute 
+    to the energy as if they were a face. 
+    So the local terms do not really compute the Euler characteristic for generic configurations. One has to restrict this sum only to "spin" configurations, such that a face is complete.
+    One way to do this in practice is by assuming that there is an underlying "space", a lattice or a representation of one or more surface or connected surface,
+    such that one can turn "on" and "off" face. This means that the sum is not truly over the degrees of freedom on the edges, but on the dual lattice.
+    I talked a bit about this with Pratik Sathe, we had sort of started to look at this together but we both got busy with our new jobs.
+    Then, let's resume. Assuming now that we are in the parameter choice such that
+  </p>
 
-        <p>
-          and substituting $E_{\mathrm{tot}}=\lambda\chi$, one gets
-        </p>
+  <p class="math">$$
+    E_{\mathrm{tot}}(\{\sigma\}) = \lambda \chi(\{\sigma\}),
+  $$</p>
 
-        <p class="math">$$
-          Z = \sum_{\{\sigma\}} e^{-\lambda\chi(\{\sigma\})}.
-        $$</p>
+  <p>
+    one finds that we have
+  </p>
 
-        <p>
-          Configurations with the same value of $\chi$ contribute the same Boltzmann factor, so one can group them into sectors and define the degeneracy
-        </p>
+  <p class="math">$$
+    Z = \sum_{\{\sigma_p\in \mathcal{P}\}} e^{-\lambda \chi(\{\sigma_p\})}.
+  $$</p>
 
-        <p class="math">$$
-          g(\chi)=\#\bigl\{\{\sigma\}:\chi(\{\sigma\})=\chi\bigr\}.
-        $$</p>
+  <p>
+    The sum above is now assumed over the configurations of the plaquette variables \(\sigma_p\), 
+    which are the natural degrees of freedom in this model. Each configuration corresponds to a particular graph defined by the occupied edges, and therefore to a particular value of the Euler characteristic.
+    At that point, configurations with the same Euler characteristic contribute with the same Boltzmann weight, so it is natural to group them into sectors labeled by \(\chi\).
+    If we define the degeneracy of a sector by
+  </p>
 
-        <p>
-          The partition function then becomes
-        </p>
+  <p class="math">$$
+    g(\chi)=\#\bigl\{\{\sigma\}:\chi(\{\sigma\})=\chi\bigr\},
+  $$</p>
 
-        <p class="math">$$
-          Z = \sum_\chi g(\chi)e^{-\lambda\chi}.
-        $$</p>
+  <p>
+    then the partition function can be rewritten as
+  </p>
 
-        <p>
-          In other words, the thermodynamics is governed by a competition between two things:
-          the Boltzmann suppression $e^{-\lambda\chi}$ and the entropic multiplicity $g(\chi)$ of each topological sector.
-        </p>
+  <p class="math">$$
+    Z = \sum_{\chi} g(\chi)e^{-\lambda\chi}.
+  $$</p>
 
-        <p>
-          This viewpoint also makes additivity transparent. If a configuration splits into disconnected pieces,
-          then the Euler characteristic adds, and so does the energy.
-          For example, a disconnected square has $\chi=1$ and a disconnected triangle also has $\chi=1$,
-          so the union has $\chi=2$ and therefore energy $2\lambda$.
-        </p>
+  <p>
+    Written this way, the model starts to look much less like an ordinary lattice system organized by local order parameters, and much more like a statistical sum over topological classes.
+    The competition is between the Boltzmann weight \(e^{-\lambda\chi}\), which favors some values of the Euler characteristic over others, and the entropic factor \(g(\chi)\), which counts how many configurations realize each sector.
+  </p>
 
-        <div class="callout">
-          Even if the fully local derivation turns out to be flawed, the sector language is still conceptually valuable.
-          It tells you what kind of statistical mechanics you were aiming for: a sum over topological classes rather than a sum organized by local order.
-        </div>
+  <p>
+    At least at a conceptual level, this is very reminiscent of the way two-dimensional gravity is often formulated, where one reorganizes the theory as a sum over 
+    discretized surfaces or triangulations, weighted by topological data together with combinatorial multiplicities. During the Perimeter times, 
+    the first year of the PSI program, François David gave a beautiful series of lectures on <a href="https://www.sciencedirect.com/science/article/abs/pii/0550321391902029?via%3Dihub">this perspective</a>, 
+    and it is hard not to see the present model as a very simplified version of that story. David is a very gentle soul, I remember him
+    breaking his glasses during the first days of the lectures, and for the rest of the course he had to hold them with one hand while writing on the board, 
+    which made the whole thing even more charming. 
+These models are also the prelude to more complicated sums like those that exist in quantum gravity.
+    Examples are causal dynamical triangulations (Ambjorn & Loll & Jurkiewicz) and so on and so forth (a review appeared <a href="https://arxiv.org/abs/2604.05641">just a few days ago</a>).
+    In that sense, the expression above has the flavor of the old matrix-model and random-surface viewpoint 
+    associated with two-dimensional gravity, and it is hard not to think of the perspective developed in the work 
+    of François David and others: the microscopic configurations are many, but the statistical mechanics can be reorganized 
+    in terms of global topological information.
+  </p>
 
-        <div class="hr"></div>
-      </section>
+  <p>
+    It also resonates with another line of ideas that later became very important in quantum gravity, namely group field theory 
+    and related combinatorial approaches.
+    Even though the present model is much simpler and entirely classical, the basic picture of summing over discrete 
+    building blocks and reorganizing the result in terms of global structures is philosophically close to what appears in 
+    two-dimensional versions of those theories.
+    In that sense, it reminds me a little of the early work around the “second phase” of loop quantum gravity, 
+    after spin foams had clarified the covariant picture and people such as <a href="https://arxiv.org/abs/gr-qc/0406063">Oriti and Speziale</a> were pushing these 
+    discrete sums in a more field-theoretic direction. The present model is not quantum, so it does not have the same kind of 
+    quantum superposition and entanglement that one finds in those theories, but the basic idea of summing over 
+    discrete configurations and organizing the result in terms of topological data is still there. See for instance the many reviews that
+    Daniele Oriti and collaborators <a href="https://arxiv.org/abs/1408.7112">wrote over the years</a>.
+  </p>
+
+  <p>
+    Going back to our model: there is also a simple structural consequence of this sector language: additivity becomes immediate.
+    If a configuration splits into disconnected components, then the Euler characteristic adds,
+  </p>
+
+  <p class="math">$$
+    \chi(G_1 \sqcup G_2)=\chi(G_1)+\chi(G_2),
+  $$</p>
+
+  <p>
+    and therefore the energy does as well.
+    For example, a disconnected square has \(\chi=1\), and a disconnected triangle also has \(\chi=1\), so together they contribute \(\chi=2\), corresponding to energy \(2\lambda\).
+  </p>
+
+  <div class="callout">
+    Even if the local derivation proposed earlier is not fully correct, this sector decomposition is still conceptually useful. 
+    It shows what kind of statistical mechanics one is aiming for: not a sum organized by local order, but a sum organized by topology, in a way that faintly echoes two-dimensional gravity and other discrete sum-over-geometries frameworks.
+  </div>
+
+  <div class="hr"></div>
+</section>
 
       <section id="gauge">
         <h4>4. Spin variables and a classical $\mathbb{Z}_2$ gauge-theory viewpoint</h4>
@@ -523,9 +569,9 @@
         $$</p>
 
         <figure class="post-figure">
-          <img src="../assets/img/topological-dimer-observables.png" alt="Monte Carlo observables" />
+          <img src="images/topdim/mc.png" alt="Monte Carlo observables" />
           <figcaption>
-            Mean Euler characteristic, variance, dimer density, and sector entropy as functions of temperature.
+            Mean Euler characteristic, variance, dimer density, and sector entropy as functions of temperature. The variance of the mean Euler characteristics peaks at a particular value of the temperature.
           </figcaption>
         </figure>
 
@@ -551,118 +597,48 @@
           But resemblance is not identity.
           In the modern condensed-matter sense, topological order is a quantum notion.
           The standard hallmarks include topology-dependent ground-state degeneracy, absence of a conventional local order parameter,
-          long-range entanglement, anyonic excitations, and a universal topological contribution to entanglement entropy.
+          long-range entanglement, anyonic excitations, and a universal topological contribution to entanglement entropy.There are some very nice <a href="https://www.ggi.infn.it/sft/SFT_2014/LectureNotes/Burrello_Lecture_1(ToricCode).pdf">lectures by</a> Burrello (who is in Pisa), but 
+          you can find for instance the review by X.-G. Wen (see <a href="https://arxiv.org/abs/1210.1281">here</a>) and papers by <a href="https://arxiv.org/abs/cond-mat/0501500">here</a> and the one by Kitaev and Preskill <a href="https://arxiv.org/abs/hep-th/0510092">here</a>.
+          
         </p>
 
         <p>
-          A classical model weighted by $e^{-\lambda\chi}$ does not automatically have those features.
+          A classical model weighted by $e^{-\lambda\chi}$ does not automatically have those features. 
           There is no quantum superposition of loop configurations here, and therefore no genuine topological entanglement in the toric-code sense.
-          So the safest statement is this: the model is topological in what it is trying to count, but not topologically ordered in the full quantum many-body sense.
+          So the safest statement is this: the model is topological in what it is trying to count, 
+          but not topologically ordered in the full quantum many-body sense. Topological entropy and anyonic statistics are not on the
+           menu here, and therefore the model does not realize the stronger phenomenon of topological order as it is usually defined in condensed matter physics.
         </p>
 
         <div class="callout">
           A Hamiltonian depending on a topological invariant is not, by itself, enough to produce quantum topological order.
-          The missing ingredient is not just degeneracy, but quantumness.
+          The missing ingredient is not just degeneracy, but quantumness. But it does not mean that the model is not interesting or not topological.
+          The Hamiltonian's still depends on global features which is one of the fingerprints of topological order, but it does 
+          not have the full quantum structure that is usually associated with that phenomenon. 
+          This said, Chris Henley had disagreed on this point (see <a href="https://arxiv.org/abs/0910.4574">this</a>) and I've been on and the other side of the spectrum of
+          this issue. Is topological order a quantum phenomenon, or is it a more general notion that can also be realized in classical 
+          systems? I think the safest answer is that the term "topological order" is usually reserved for quantum systems, 
+          but that does not mean that classical models with topological features are not interesting or not worth studying.
         </div>
 
         <p>
           That is why the toric code is such a useful comparison point.
-          It looks structurally related, yet it lives in a genuinely quantum Hilbert space and therefore realizes the stronger phenomenon.
-        </p>
+          It looks structurally related, yet it lives in a genuinely quantum Hilbert space and therefore realizes the stronger
+           phenomenon. Right now, the toric code is coming back, after a hyatus of a few years, as a useful playground for 
+           quantum error correction and quantum computation, 
+           and it is interesting to see how the classical model shares some of its structural features while lacking the 
+           quantum ones. This said, if you are interested in studying this model further, it might be interesting to see if 
+           there is a way to study potential critical exponents at that particular $T^*$ where the variance of the Euler 
+           characteristic peaks, and see if there is some kind of universality class associated with that point.
+           Just send me <a href="mailto:caravelli@lanl.gov">an email</a> if you are interested in that, 
+           I would be happy to chat about it.
+           </p>
 
         <div class="hr"></div>
       </section>
 
-      <section id="issue">
-        <h4>7. The catch: a local Hamiltonian does not really compute $\chi$</h4>
 
-        <p>
-          Now for the important correction.
-          The earlier derivation tacitly treated
-        </p>
-
-        <p class="math">$$
-          F = \sum_p \prod_{\ell\in p} n_\ell
-        $$</p>
-
-        <p>
-          as though it were the number of faces entering the Euler characteristic.
-          But this expression only counts elementary plaquettes whose boundaries are fully occupied.
-          In general, that is <em>not</em> the same thing as the number of faces of the graph defined by the occupied edges.
-        </p>
-
-        <p>
-          A torus gives a clean counterexample.
-          Take the parameter choice
-        </p>
-
-        <p class="math">$$
-          \alpha=1,\qquad \beta=-\frac14,\qquad \gamma=-\frac12,\qquad \delta=1,
-        $$</p>
-
-        <p>
-          so that
-        </p>
-
-        <p class="math">$$
-          H = V - \frac14\sum_i d_i - \frac12\sum_\ell n_\ell + \sum_p\prod_{\ell\in p}n_\ell.
-        $$</p>
-
-        <p>
-          For the fully occupied torus graph, one indeed finds
-        </p>
-
-        <p class="math">$$
-          \chi = 4-8+4 = 0,
-          \qquad
-          E_{\mathrm{tot}} = 4-4-4+4=0.
-        $$</p>
-
-        <p>
-          So in that particular case everything looks fine.
-          But now remove a suitable set of edges while staying on a connected graph on the torus.
-          Then the Euler characteristic is still
-        </p>
-
-        <p class="math">$$
-          \chi = 4-5+1 = 0,
-        $$</p>
-
-        <p>
-          because there is still one global face.
-          However, no elementary plaquette is completely filled anymore, so the local plaquette sum vanishes and one gets instead
-        </p>
-
-        <p class="math">$$
-          E_{\mathrm{tot}} = 4-\frac{10}{4}-\frac{5}{2}+0 = -1.
-        $$</p>
-
-        <p>
-          The energy no longer matches the Euler characteristic.
-          The problem is not an algebraic slip; it is structural.
-          A sum of local plaquette indicators cannot in general detect a global face that wraps around the geometry.
-        </p>
-
-        <figure class="post-figure">
-          <img src="../assets/img/topological-dimer-counterexample.png" alt="Counterexample configurations on a torus" />
-          <figcaption>
-            Two toroidal configurations. The first behaves as hoped; the second shows why counting complete elementary plaquettes does not reproduce the global face count.
-          </figcaption>
-        </figure>
-
-        <div class="callout">
-          This is the real lesson of the model: topology is global, and a purely local Hamiltonian that tries to count it will usually miss something essential.
-        </div>
-
-        <p>
-          So the most honest conclusion is that the construction is a useful toy model and a useful set of notes,
-          but not yet a genuine local realization of $E_{\mathrm{tot}}=\lambda\chi$ for arbitrary configurations.
-          To get that exactly, one would need a more genuinely global definition of the energy, or a different framework altogether.
-        </p>
-
-        <div class="hr"></div>
-      </section>
-
+    
       <p><a href="../blog.html">← Back to Blog</a></p>
 
       <div class="hr"></div>
