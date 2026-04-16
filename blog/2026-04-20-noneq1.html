@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>The Pace of Civilizations – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">technology • economics • nonequilibrium</p>
+        <h3>The Pace of Civilizations</h3>
+        <p><em>April 20th, 2026</em></p>
+
+        <p class="callout">
+          I have been thinking a lot lately about the relation between technology and the feeling that history itself is speeding up.
+          The question is not just how much we can do, but how fast we have to do it. We usually measure progress in output, productivity, growth, and GDP. 
+          But those quantities only capture one side of the story. 
+          Right now, there is quite a delay between the shock of a new technology and the full economic consequences of that shock.
+              The other side is the delay between the shock and the social reaction to that shock.
+              The first is about production; the second is about adaptation. So far we have barely felt the shock caused
+              by the war in Iran, unless you are in the war zone, or if you are in the oil industry. But the shock will 
+              propagate through the economy, and it will cause a wave of reactions that will be felt by everyone. The speed of that shock
+              is due to the speed at which the last loaded ship that left Iran is now being unloaded in a port, and the speed at which 
+              the oil is being processed, and the speed at which the price changes are being transmitted to consumers. 
+              That is the pace of the shock, and it is much faster than the pace of the war itself. 
+          On the other hand, our days are loaded with news, because those are fast to reach us. The medium, propagates information
+          close to the speed of light, and then now in seconds what happened on the other side of the world.
+          How quickly information moves, how rapidly decisions propagate, 
+          and how little time societies have to adapt before the next wave arrives: these are questions related to non-equilibrium.
+        </p>
+
+        <p>
+          There is something odd about the present moment. We do not merely feel that technology is improving.
+          We feel that our <em>time constant</em> as a civilization is changing.
+          Decisions that once took months now take days; reactions that once took days now take minutes;
+          and expectations that once belonged to institutions are now imposed on individuals.
+        </p>
+
+        <p>
+          In that sense, technological progress is not just an increase in capability.
+          It is an increase in the pace at which society is forced to reorganize itself.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#what-is-pace">1. What does it mean for an economy to have a pace?</a></li>
+            <li><a href="#historical">2. Ancient worlds, medieval worlds, modern worlds</a></li>
+            <li><a href="#information">3. Productivity is not enough: information has its own physics</a></li>
+            <li><a href="#networks">4. Technology inside production networks</a></li>
+            <li><a href="#nonequilibrium">5. Living in nonequilibrium</a></li>
+            <li><a href="#ai">6. AI as a new membrane</a></li>
+            <li><a href="#planning">7. How do we cope?</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="what-is-pace">
+        <h4>1. What does it mean for an economy to have a pace?</h4>
+
+        <p>
+          We are used to thinking of an economy in static terms.
+          We ask how rich it is, how much it produces, how fast it grows, how productive its workers are.
+          These are all useful questions, but they are not quite the same as asking how fast the society itself is <em>running</em>.
+        </p>
+
+        <p>
+          Let me try a rough distinction.
+          Productivity measures how much output is generated per worker or per hour.
+          Pace, instead, measures how quickly a system absorbs information, updates expectations, 
+          reallocates resources, and changes behavior.
+          One is about the amount produced.
+          The other is about the speed of adaptation.
+        </p>
+
+        <p>
+          A society can become more productive without becoming dramatically faster in the lived sense.
+          Conversely, a society can feel much faster even when measured output does not fully capture that acceleration.
+          Anyone who has lived through the transition from letters to email, from email to smartphones, 
+          and from search engines to generative AI has felt this directly. In my lifetime I literally went through
+          such transitions, and I can say that the pace of life has changed more than the amount of work I do.
+        </p>
+
+        <p>
+          Pace is not just economic.
+          It is cultural, cognitive, institutional.
+          It is the time it takes for news to circulate, for prices to adjust, for a panic to spread, for a style to become obsolete,
+          for a scientific result to become a product, and for a product to become a dependency.
+        </p>
+
+        <p class="callout">
+          A civilization has a pace when information, production, and decision-making propagate on a characteristic timescale.
+          Technology changes that timescale.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="historical">
+        <h4>2. Ancient worlds, medieval worlds, modern worlds</h4>
+
+        <p>
+          For most of human history, economic life moved very slowly.
+          Long-run historical reconstructions suggest that average incomes changed only modestly over many centuries before modern growth took off.
+          This does not mean that nothing happened.
+          It means that local bursts of sophistication did not yet translate into sustained, compounding acceleration at the scale of civilization.
+        </p>
+
+        <p>
+          Think of the Greeks.
+          Their world was intellectually extraordinary: geometry, philosophy, political experimentation, drama, natural speculation.
+          And yet the material and informational metabolism of society was still slow.
+          News traveled by foot, by ship, by memory, by rumor.
+          When we recall the legend of the messenger from Marathon, what strikes us is not just heroism.
+          It is the fact that the body itself was the communication channel.
+        </p>
+
+        <p>
+          The Roman world increased scale.
+          Roads, administration, engineering, and logistics created a more integrated imperial machine.
+          The Chinese empires, in different ways and at different times, also achieved very high levels of administrative sophistication, agricultural organization, and technological ingenuity.
+          These societies were not static.
+          But their speed was still constrained by the speed of physical transport, the durability of record-keeping, 
+          and the slowness of coordination over long distances.
+        </p>
+
+        <p>
+          The Middle Ages are often misremembered as simple stagnation.
+          That is too crude.
+          There were institutional changes, urban networks, innovations in agriculture, finance, architecture, and trade.
+          But still, the pace of transformation remained low enough that generations could live under roughly stable technological conditions.
+          One could plausibly be born, work, marry, age, and die within the same technological regime.
+        </p>
+
+        <p>
+          The Renaissance and the early modern period changed something deeper.
+          The printing press mattered not just because books became more available, but because reproducible information became a structural force.
+          Knowledge was no longer merely transmitted; it could be replicated, standardized, compared, corrected, and accumulated. Before,
+          books had to be copied by hand, and that was a bottleneck for the spread of ideas. 
+          With the printing press, that bottleneck was removed, and the pace of intellectual change accelerated.
+          The Enlightenment and the scientific revolution then turned this into a method.
+          At that point, society began to discover a new engine:
+          knowledge could generate technology, technology could generate wealth, wealth could fund institutions, and institutions could generate more knowledge.
+        </p>
+
+        <p>
+          The Industrial Revolution did not just make economies richer.
+          It changed their rhythm.
+          Once growth becomes sustained and compounding, pace ceases to be an occasional disturbance and becomes the normal condition.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="information">
+        <h4>3. Productivity is not enough: information has its own physics</h4>
+
+        <p>
+          Economists often quantify progress through productivity.
+          This makes sense.
+          If one worker with one machine can produce what ten workers once produced by hand, something important has happened.
+          Output per worker, or per hour, is one natural metric for technological change.
+        </p>
+
+        <p>
+          But productivity alone does not capture the feeling that societies are speeding up.
+          The missing piece is information.
+        </p>
+
+        <p>
+          A messenger runs from Marathon to Athens.
+          Then a horse carries dispatches.
+          Then ships move letters across seas.
+          Then the telegraph makes it possible to separate communication from transportation.
+          That is a civilizational break.
+          The telephone adds immediacy to voice.
+          Radio adds broadcast.
+          The internet collapses transmission times for text, sound, and image.
+          The smartphone fuses communication, computation, memory, navigation, markets, and social presence into a single portable object.
+        </p>
+
+        <p>
+          What changed across these layers was not only the amount of information sent.
+          It was the time needed for information to become socially effective.
+          Once communication becomes nearly instantaneous, delays migrate elsewhere:
+          into institutions, into regulation, into psychology, into attention, into trust.
+        </p>
+
+        <p class="callout">
+          Modern acceleration is not merely that we can do more.
+          It is that signals now travel faster than our habits, and often faster than our institutions.
+        </p>
+
+        <p>
+          This is why the notion of pace cannot be reduced to GDP.
+          GDP counts production.
+          Pace concerns transmission and reaction.
+          A slow society can be productive by the standards of its age.
+          A fast society is one in which expectations must be continuously updated because information keeps arriving before equilibrium is restored.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="networks">
+        <h4>4. Technology inside production networks</h4>
+
+        <p>
+          There is also a more economic way to say all this.
+          In many standard growth models, such as the Solow model, technology appears as an aggregate driver:
+          a parameter, or a residual, that shifts the production frontier and makes long-run growth possible.
+          This is powerful, but also incomplete.
+          It tells us that technology matters, but not <em>how</em> it spreads through the fine structure of the economy.
+        </p>
+
+        <p>
+          Real economies are not single production functions.
+          They are networks of interconnected productive units: industries buying inputs from other industries,
+          transforming them, and passing them downstream.
+          At that more coarse-grained level, each node of the economy has its own local technological progress,
+          but the aggregate consequences depend on the web of interdependence through which these improvements propagate.
+        </p>
+
+        <p>
+          This is exactly the perspective we developed in our paper
+          <a href="https://www.pnas.org/doi/10.1073/pnas.2106031118" target="_blank"><em>from a few years back</em></a>.
+          The basic idea is simple but, I think, quite profound:
+          technological progress does not act in isolation.
+          It travels through production chains, and the network itself amplifies the effect.
+        </p>
+
+        <p class="callout">
+          Technology is not only an aggregate shock to “the economy.”
+          It is a local change that propagates through a network, and that network can magnify its effects.
+        </p>
+
+        <p>
+          In the paper, we show that longer production chains tend to bias industries toward faster price reduction,
+          and countries toward faster growth. Acemoglu and collaborators had already shown that the depth of production chains 
+          is a key determinant of aggregate growth.
+           Our contribution was to show that the depth of production chains also shapes the pace of growth.
+           In other words, the structure of the economy itself can amplify or dampen the effects of technological change.
+          In other words, the depth of the production structure matters.
+          Growth is not just a question of how much innovation exists, but also of how the economy is wired together.
+          Technological change is not just a shock to the aggregate production function, but a local change that propagates
+           through a network of interdependence and that can be amplified. In particular, the more layers of production there are, 
+           the more opportunities for amplification, and the faster the pace of growth.
+        </p>
+
+        <p>
+          This is one reason I find the language of pace so useful.
+          Once you see an economy as a network, “acceleration” is no longer a metaphor.
+          It becomes something like a propagation phenomenon.
+          Innovations appear locally, but their consequences cascade across suppliers, users, complements, and final demand.
+          The economy speeds up not only because each component improves,
+          but because improvements diffuse through many layers of interdependence.
+        </p>
+
+        <p>
+          This also helps explain why older equilibrium pictures can feel unsatisfactory.
+          If technologies are changing at different nodes, and if the effects of those changes propagate with delays,
+          frictions, amplifications, and bottlenecks, then the economy is better understood as an evolving network
+          than as a system sitting quietly near a fixed point.
+        </p>
+
+        <p>
+          In that sense, the recent emergence of
+          <a href="https://macrocosm.group/" target="_blank">Macrocosm</a>
+          is interesting not just as a company but as a signal.
+          It suggests that out-of-equilibrium, networked, adaptive economies are increasingly becoming the natural object of analysis rather than an exotic alternative.
+        </p>
+
+        <p>
+          And this way of thinking extends far beyond economics.
+          The same logic appears in social systems, in communication systems, in innovation systems, and in institutions.
+          We live inside networks whose topology shapes the speed at which signals travel and the scale at which local changes become collective transformations.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="nonequilibrium">
+        <h4>5. Living in nonequilibrium</h4>
+
+        <p>
+          Physics offers a useful metaphor here.
+          Equilibrium is a regime in which macroscopic observables are stable, fluctuations average out, and the system has enough time to relax.
+          Nonequilibrium is what happens when driving is persistent, relaxation is incomplete, and the system is always in the middle of adjusting to something.
+        </p>
+
+        <p>
+          Increasingly, our societies feel like nonequilibrium systems.
+          The next platform arrives before the last one is metabolized.
+          The next regulation arrives before firms have adapted to the previous one.
+          The next expectation arrives before careers, families, schools, or cities can reorganize around it.
+        </p>
+
+        <p>
+          The subjective feeling that “everything is going faster” may therefore be more than nostalgia.
+          It may be a real structural property of a society whose forcing term keeps increasing.
+          Technology keeps injecting novelty faster than the social body can dissipate it.
+        </p>
+
+        <p>
+          This has consequences.
+          In equilibrium, optimization makes sense.
+          In nonequilibrium, robustness often matters more.
+          In a calm world, efficiency is attractive.
+          In a rapidly driven world, slack, redundancy, and optionality become forms of intelligence.
+        </p>
+
+        <p>
+          That is one reason why institutions built for slower centuries often appear confused today.
+          They are not necessarily irrational.
+          They may simply have been designed for a world in which relaxation times were longer than innovation cycles.
+          That world is gone.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="ai">
+        <h4>6. AI as a new membrane</h4>
+
+        <p>
+          Artificial intelligence feels different not because it is “just another tool,” but because it acts on the layer that coordinates many other layers:
+          language, search, classification, synthesis, planning, code, and increasingly decision support.
+        </p>
+
+        <p>
+          Every major technological threshold acts like a membrane.
+          Once crossed, the internal tempo of society changes.
+          Printing changed the pace of reproducible thought.
+          Telegraphy changed the pace of long-distance coordination.
+          The internet changed the pace of access.
+          Smartphones changed the pace of daily life.
+          AI may be changing the pace at which cognition itself can be externally scaffolded.
+        </p>
+
+        <p>
+          One rough way to picture it is this:
+          AI is like a genie that can produce an effectively unbounded stream of answers.
+          Of course, many of those answers are mediocre, some are wrong, and some are brilliant.
+          But abundance is itself a structural fact.
+          The bottleneck moves away from production of responses and toward judgment, verification, selection, and responsibility.
+        </p>
+
+        <p>
+          This matters economically.
+          If the cost of generating drafts, summaries, prototypes, translations, software fragments, marketing variants, research outlines, and strategic scenarios collapses,
+          then the organizations best adapted to the new pace are not the ones that merely “use AI.”
+          They are the ones that can absorb and evaluate accelerated cognitive output without becoming incoherent.
+        </p>
+
+        <p>
+          In other words, the scarce resource is no longer always labor in the old sense.
+          More and more often it is attention, trust, institutional bandwidth, and the ability to decide under abundance.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="planning">
+        <h4>7. How do we cope?</h4>
+
+        <p>
+          Once we see society this way, the problem becomes harder, but also clearer.
+          Our technologies are embedded in networks that accelerate propagation.
+          Social networks accelerate attention.
+          Production networks accelerate cost changes and structural change.
+          Digital systems accelerate coordination, imitation, contagion, and panic.
+          Meanwhile, human beings still process only a finite amount of information in a finite amount of time.
+        </p>
+
+        <p>
+          That asymmetry may be one of the defining tensions of our age.
+          The network can speed up without obvious bound;
+          the human nervous system cannot.
+          Institutions can digitize many processes;
+          judgment remains scarce.
+          Answers can now be generated at enormous scale;
+          understanding cannot.
+        </p>
+
+        <p>
+          This is why AI feels so different.
+          It is not simply another machine in the factory.
+          It operates closer to the layer of language, interpretation, synthesis, and decision support.
+          It produces candidate thoughts faster than we can properly evaluate them.
+          In that sense, AI intensifies the basic condition of modernity:
+          abundance on the side of signals, scarcity on the side of attention.
+        </p>
+
+        <p>
+          The real question, then, is not whether we can accelerate further.
+          Clearly we can.
+          The real question is how we design societies that remain livable under acceleration.
+          How should firms plan when technological frontiers shift continuously?
+          How should governments regulate when equilibrium is the exception rather than the norm?
+          How should individuals preserve depth, concentration, and responsibility in environments built for perpetual updating?
+        </p>
+
+        <p>
+          Planning in such a world cannot look like planning in 1970.
+          In a slower environment, one can often extrapolate from the present.
+          In a faster environment, that is not enough.
+          You do not move toward where the frisbee is now; you move toward where it is going to be.
+          Good planning means reasoning about trajectories, feedback loops, and adaptation speeds.
+          It means thinking dynamically rather than statically.
+        </p>
+
+        <p class="callout">
+          The central task is no longer just to optimize within a stable world.
+          It is to remain coherent inside a world that keeps changing faster than before.
+        </p>
+
+        <p>
+          Perhaps that is the deeper philosophical point.
+          Every major technological threshold changes not only what we can do,
+          but also the temporal structure of life itself.
+          It changes what counts as timely action, what counts as delay, what counts as foresight,
+          and even what counts as a mistake.
+        </p>
+
+        <p>
+          We are becoming inhabitants of a civilization whose characteristic pace is increasingly set by networks,
+          automation, and machine-mediated information.
+          The challenge is not merely to innovate.
+          It is to learn how to think, govern, and live inside that accelerating web without losing the human capacity for judgment.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="closing">
+        <h4>Final thought</h4>
+
+        <p>
+          For most of history, people lived inside worlds whose basic tempo changed only slowly.
+          Our world is different.
+          The channels of production are faster, but even more importantly the channels of information are faster.
+          And because information is what coordinates expectation, desire, fear, finance, politics, and action, a faster informational civilization becomes a faster civilization in every other sense.
+        </p>
+
+        <p>
+          That may be why the present feels so strange.
+          We are not merely living through technological progress.
+          We are living through a shift in the characteristic timescale of society itself.
+        </p>
+
+        <p>
+          We are, in a very literal sense, learning what it means to inhabit a civilization that is permanently out of equilibrium.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
