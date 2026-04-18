@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Your computer is a heater – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">nonequilibrium • computation • thermodynamics</p>
+        <h3>Your computer is a heater</h3>
+        <p><em>April 19th, 2026</em></p>
+
+        <p class="callout">
+          Note, this is also on <a href="https://fcompl.substack.com/p/your-computer-is-a-heater" target="_blank">Substack</a>, 
+          where I will generally write a less technical version of these posts and you can subscribe as well. Actually, this week I 
+          wanted to write about something else, but then <a href="https://academic.oup.com/pnasnexus/advance-article/doi/10.1093/pnasnexus/pgag116/8654698">our paper appeared online</a>
+          and I thought it might be fitting to talk about that next. I'm not done with the other blog post, so I'm pulling this one out that I had already written. Enjoy.
+        </p>
+
+        <p>
+          We usually describe computers in the language of logic, algorithms, transistors, memory, and software. We are so used
+          to that language that it can be hard to see the machine in any other way. Chips, gates, instructions, and data 
+          structures are the natural way to talk about computation, and they are very useful for many purposes. 
+          This has been like this since the late 80s, when the stored-program architecture became dominant and 
+          software began to be the main way we interact with machines. Between the 1930s and 1960s it was more common to talk 
+          about the physical implementation of computation. One of my favorite models of computing is lambda calculus, which is a 
+          very abstract mathematical model of computation. It is not a physical model, but it is a very useful one for 
+          understanding the theoretical limits of computation (actually, I have an idea for a blog post about that, so I will not 
+          say more here).
+           But that language has fallen out of fashion, and it is now mostly used by a small community of 
+           researchers in physics and engineering. Gates, operations, registers, algorithms are the dominant way to talk about 
+           computation, and that is fine. But it is not the only way, 
+           and it can be useful to step back and look at the machine from a different angle.
+          But there is a much more primitive description that is impossible to avoid:
+          a computer is a device that takes high-quality electrical energy and turns almost all of it into heat. Hear me out.
+        </p>
+
+        <p>
+          This sounds flippant, but it is not. The machine on your desk, the server in a data center, 
+          the GPU training a large model,
+          and even your phone are all physical systems running far from equilibrium. The easiest way to see this is to 
+          look at the power consumption of a computer. A typical laptop consumes tens of watts, 
+          while a high-end GPU can consume hundreds of watts. That energy is not just being used to do useful work; 
+          it is also being dissipated as heat. In fact, the heat generated by a computer is often the 
+          main reason why we need fans, cooling systems, and thermal management. 
+          The machine is not just processing information; it is also exchanging energy with its environment, 
+          and that exchange inevitably produces heat.
+          They compute, yes, but in doing so they also dissipate. However my point here is not just that they dissipate, 
+          but that the dissipation is a fundamental part of what they do. It has to do with the logical operations they performs.
+          Around 1961, Rolf Landauer showed that there is a fundamental thermodynamic cost to erasing information.
+          This is known as Landauer’s principle, and it states that erasing one bit of information requires a minimum amount of energy, which is dissipated as heat. 
+          This principle is not just a theoretical curiosity; it has practical implications for the design of computers and the limits of computation. 
+          It tells us that there is a fundamental trade-off between the speed of computation and the amount of heat generated. 
+          If we want to compute faster, we have to accept that we will generate more heat. If we want to reduce heat, we have to accept that we will compute slower. 
+          This is not just a technical detail; it is a fundamental aspect of the physics of computation.
+        </p>
+        <p>
+           The machine is not just a logical device; it is also a thermodynamic one. I have talked recently about <a href="https://fcaravelli.github.io/blog/2025-12-23-normalextropic1.html">
+            thermodynamic computing,</a> which is a paradigm that takes this idea seriously and tries to design computers 
+            that are more efficient by leveraging thermodynamic principles. Even in that case, however, the heat dissipation
+            is connected (literally), to the tradeoff between diffusion and drift of electrons across a potential barrier.
+            The point is that the heat is not a side effect; it is a consequence of the physical processes that implement computation. 
+           </p>
+        <p>
+            Information is physical, as Rolf Landauer famously said.  Before him, people like Szilard and Brillouin had 
+            already shown that there is a deep connection between information and thermodynamics. More recently,
+            researchers in stochastic thermodynamics have developed a rich framework for understanding the thermodynamics of 
+            information processing.
+            But I want to go a step further and say that not only is information physical, 
+            but also that computation has a thermodynamic structure, associated with lower bounds on the energy cost of logical 
+            operations, and with a tradeoff between speed and dissipation. This is, in a sense that I will make more precise, 
+            the thermodynamic structure of computation. I have learned this from various conversations I had
+            with David Wolpert, and before my collaboration with him, with several conversations with Artemy Kolchinsky, 
+            who has done a lot of work on the thermodynamics of computation and the connection between information and energy.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#heat">1. Every computation ends as heat</a></li>
+            <li><a href="#landauer">2. Why Landauer is not the whole story</a></li>
+            <li><a href="#clock">3. A clocked computer is a repeated physical process</a></li>
+            <li><a href="#programs">4. Programs have thermodynamic costs too</a></li>
+            <li><a href="#algorithms">5. Algorithms are not thermodynamically equivalent</a></li>
+            <li><a href="#conclusion">6. The uncomfortable moral</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="heat">
+        <h4>1. Every computation ends as heat</h4>
+
+        <p>
+          There is a very old temptation, especially in theoretical computer science, to think of computation as 
+          something abstract and almost ethereal. We think of an algorithm as a sequence of instructions.          
+          A Turing machine manipulates symbols, and the "calculator" performing the process
+          is a finite state machine with reading and writing capabilities on the tape. 
+          Computer scientists came up with realistic models to implement something close to a Turing machine, also called 
+          stored-program architecture, in which instructions are stored in a register. This has led us to think of 
+          computation as a purely logical process,
+           divorced from the physical world, unless when we need to come up a device implementing it. 
+           But that is a very misleading way to think about it. 
+          In addition, we think of a (modern) computing apparatus as a device that, each time, repeats a series
+          of processes that involve moving charges, switching voltages, 
+          stabilizing and destabilizing memory states, refreshing signals, amplifying, transmitting, and correcting.
+          However, at each clock cycle, the machine is repeating the same process, e.g. read an instruction, decode it, 
+          execute it, write back the result, and so on. Each time the device activates the same circuitry, and what changes
+          is the initial distribution of the state of the registers. 
+          The machine is not just doing different things; it is also repeating the same physical process over and over, 
+          while the distribution of states changes as a result of such process. In deterministic machines, such process is the same, 
+          but does not mean that the whole process is deterministic. This is due to the fact that we are still dealing
+          with initial probability distributions over the states of the machine. Writing a poem or a blog post is not a deterministic process.
+          The machine producing the poem is literally the same (or close), and each time the inspiration is different,
+          and this is due to the fact that the input to the machine is probabilistic per se. This process, that processes information,
+          as a cost due to the manipulation of the machine. LLMs are no different, in this respect. If this interests you, keep reading.
+          </p>
+
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="landauer">
+        <h4>2. Why Landauer is not the whole story</h4>
+
+        <p>
+          The most famous statement in this area is Landauer’s principle.
+          In its simplest form, one often hears that erasing one bit costs at least
+        </p>
+
+        <p class="math">
+          $$
+          k_B T \ln 2.
+          $$
+        </p>
+
+        <p>
+          This is one of those beautiful formulas that is both true and dangerously easy to misuse.
+          It is true that there is a lower bound relating logical irreversibility and heat.
+          But it is very misleading to jump from that statement to the conclusion that this is the energy cost of actual computing.
+        </p>
+
+        <p>
+          The reason is straightforward.
+          Landauer’s bound is only the entropy-change part of the story, and it has to do to the switching of a single bit. However,
+          the bit might belong to a more complicated distribution that cannot be factorized, e.g. that bit might have correlation due
+          to the intricacies of the computation. 
+          Real computers are not unconstrained reversible devices slowly exploring equilibrium configurations.
+          They are fast, clocked, modular, noisy, engineered systems operating far from equilibrium. 
+          And that means there is an additional contribution, 
+          usually called <em>entropy production</em>, that reflects irreversibility in the actual physical process. In the case of the mismatch cost, that we describe below,
+          dissipation is connected to the logical irreversibility of a process. In the case of Landauer's bound, the irreversibility is due to the fact
+          that once you have resetted the bit, you don't know what was the initial value of the bit (e.g. the process is not bijective).
+        </p>
+
+        <p>
+          In stochastic thermodynamics one writes, schematically,
+        </p>
+
+        <p class="math">
+          $$
+          \Sigma = \Delta S + \sum_i \frac{Q_i}{k_B T_i},
+          $$
+        </p>
+
+        <p>
+          where \(\Sigma\) is the entropy production,
+          \(\Delta S\) is the change in Shannon entropy of the system,
+          and the \(Q_i\) are the heat flows to thermal reservoirs.
+          The generalized Landauer bound comes from the fact that \(\Sigma \ge 0\).
+          But the important thing is that \(\Sigma\) is often the dominant term in real machines.
+        </p>
+
+        <p>
+          This is exactly why the slogan “computation costs \(k_B T \ln 2\) per bit” is not a good guide 
+          to the thermodynamics of modern hardware.
+          It is a lower bound in a very special limit.
+          It is not a faithful description of what your laptop, CPU, GPU, or data center is actually paying.
+        </p>
+
+        <p>
+          Said differently:
+          the classical story focuses on what can be recovered in principle,
+          while the modern nonequilibrium story focuses on what is irretrievably lost in practice.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="clock">
+        <h4>3. A clocked computer is a repeated physical process</h4>
+
+        <p>
+          One of the points that I find particularly elegant is the following.
+          A modern computer is not just “doing different things” all the time.
+          At the hardware level, it is also repeating the same kinds of physical cycles over and over:
+          fetch, decode, update, move information, increment the program counter, repeat.
+        </p>
+
+        <p>
+          A clocked machine applies the same basic dynamical template again and again, which has been encoded in the BIOS, 
+          while the distribution over the machine’s logical states changes during the run. Biological systems also satisfy a similar feature, 
+          in the sense.
+          The machine is therefore in a very peculiar situation:
+          the physical mechanism is periodic, but the computational state it acts on is evolving.
+        </p>
+
+        <p>
+          That mismatch already forces dissipation.
+          Even if one could optimize the physical process for one very special distribution over states,
+          the same process will generally no longer be optimal once the computation has advanced and the distribution has changed.
+          In the language of the recent literature, this extra unavoidable contribution is called <em>mismatch cost</em>.
+        </p>
+
+        <p>
+          This is a nice place where the programmer’s view and the thermodynamic view begin to meet.
+          A programmer says: the same CPU cycle is applied to many different machine states during a run.
+          A thermodynamicist says: then the same physical process is being reused off-design, and that produces irreversible entropy.
+          These are really the same statement in two different dialects.
+        </p>
+
+        <p>
+          It also explains why the architecture of the machine matters.
+          Periodicity, modularity, hierarchy, limited communication, finite-time execution:
+          all of these are useful design features, but they are also thermodynamic constraints.
+          And constraints are exactly what generate positive entropy production.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="programs">
+        <h4>4. Programs have thermodynamic costs too</h4>
+
+        <p>
+          Up to here the discussion could still sound rather general.
+          Fine, one might say: hardware dissipates, clocks dissipate, wires dissipate.
+          But does this really tell us anything about <em>programs</em>?
+        </p>
+
+        <p>
+          I think the interesting answer is yes.
+        </p>
+
+        <p>
+          In recent work with Abhishek Yadav and David Wolpert, we proposed a framework (based on previous work developed by David and collaborators) 
+          to assign lower bounds on the entropy production of running actual computer programs, only based on the structure of the program.
+          The idea is to model a stored-program machine in a simplified but faithful way:
+          memory stores data and instructions, a control unit fetches the current instruction, a program counter tracks where we are, and each clock tick updates the machine state.
+          This means that if you give me a program, in principle I can tell what is the minimum value that that program will dissipate
+          notwithstanding the implementaiton.
+        </p>
+
+        <p>
+          Once you take that view seriously, the state of a program is not just the value of its variables.
+          It is the joint state of those variables <em>plus</em> the program counter and the relevant internal registers.
+          In other words, the “state of the computation” lives in a graph of possible machine states, and executing the program traces a path through that graph.
+        </p>
+
+        <p>
+          Then one can ask a thermodynamic question:
+          given a probability distribution over possible inputs, and given the induced evolution over program states,
+          what is the minimal unavoidable mismatch cost generated by running that program step by step?
+        </p>
+
+        <p>
+          Formally, if \(G\) is the map induced by one iteration of the machine and \(q_X\) is the prior minimizing the cost,
+          the mismatch cost at iteration \(i\) can be written as
+        </p>
+
+        <p class="math">
+          $$
+          MC_i(p_{X_0})
+          =
+          D(p_{X_{i-1}} \Vert q_X)
+          -
+          D(Gp_{X_{i-1}} \Vert Gq_X),
+          $$
+        </p>
+
+        <p>
+          and the total mismatch cost is the sum over all iterations until the program halts.
+          The details are technical, but the conceptual point is simple:
+          running a program generates a sequence of distributional updates in machine-state space,
+          and those updates can carry a strictly positive lower-bound thermodynamic cost.
+        </p>
+
+        <p>
+          This is appealing because it moves us one step beyond slogans.
+          We are no longer saying only that “computation costs energy.”
+          We are saying that the logical structure of a program, when embedded in a clocked stored-program architecture,
+          induces a concrete thermodynamic lower bound.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="algorithms">
+        <h4>5. Algorithms are not thermodynamically equivalent</h4>
+
+        <p>
+          If that framework is even approximately right, a very natural consequence follows:
+          two algorithms that solve the same problem need not look the same thermodynamically.
+        </p>
+
+        <p>
+          This is already familiar from ordinary complexity theory.
+          Bubble sort and bucket sort both sort, but not in the same way.
+          They have different control flow, different use of memory, different numbers of repeated sub-operations, and different dependence on the input distribution.
+          So why should their dissipation look identical?
+        </p>
+
+        <p>
+          In our paper we used the mismatch-cost framework on simple examples, including sorting routines.
+          Even at that level one already sees that thermodynamic cost depends not just on the function being computed,
+          but on the way the program explores its state space.
+          Input distributions matter.
+          Repeated values can matter.
+          Conditional branches matter.
+          Invoking subroutines matters.
+        </p>
+
+        <p>
+          This is, to me, the beginning of a very interesting research program that allows one to think about a third component 
+          in computing, which is not only time and space resources, but also dissipation.
+          Traditional complexity theory asks how running time or memory scale with input size.
+          A thermodynamics of algorithms would ask, in addition, how unavoidable dissipation scales with input size, input structure, architecture, and implementation constraints.
+        </p>
+
+        <p>
+          That does <em>not</em> mean that tomorrow we will replace big-O notation with joules.
+          But it does suggest that “algorithmic efficiency” has a missing physical dimension.
+          Two programs may be equivalent as abstract computations and still differ substantially as physical processes.
+        </p>
+
+        <p>
+          Once one says it this way, it feels almost obvious.
+          Computer science abstracted away from the substrate for extremely good reasons.
+          But abstractions do not abolish physics.
+          They only postpone it.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="conclusion">
+        <h4>6. The uncomfortable moral</h4>
+
+        <p>
+          So, yes: your computer is a heater.
+        </p>
+
+        <p>
+          This is not a joke and not merely an engineering complaint.
+          It is a reminder that computation is always implemented by a physical system constrained by time, architecture, noise, communication bottlenecks, and control.
+          Those constraints force irreversibility.
+          Irreversibility forces entropy production.
+          Entropy production shows up as heat.
+        </p>
+
+        <p>
+          The old dream was that the energetic cost of computation could be captured by a tiny reversible ideal.
+          The more modern lesson is harsher and more interesting:
+          the real cost lies in the fact that actual computers are designed to be fast, modular, programmable, reusable, and reliable.
+          In other words, the cost comes from the very features that make them computers.
+        </p>
+
+        <p>
+          This perspective may eventually become practically important.
+          As hardware improves and margins shrink, the question will no longer be only how fast an algorithm is, or how much memory it needs,
+          but also how much dissipation is fundamentally baked into the way it computes.
+        </p>
+
+        <p>
+          And at that point, thermodynamics may stop being a metaphor for information processing and become part of algorithm design itself.
+        </p>
+
+        <p class="note">
+          If you want the more technical version of this story, see also the recent papers on stochastic thermodynamics and the energetic cost of computation,
+          including our work on entropy-production bounds for systems running computer programs.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
