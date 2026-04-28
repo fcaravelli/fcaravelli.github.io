@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spin Ice LaTeX Files</title>
+  <style>
+    :root {
+      --bg: #f5f2ea;
+      --card: #fffdf8;
+      --ink: #1f2933;
+      --muted: #66727f;
+      --line: #d8d0c0;
+      --accent: #0f766e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #faf7f0 0%, var(--bg) 100%);
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 36px 20px 48px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--card);
+      padding: 24px;
+    }
+
+    h1, h2 { margin: 0; }
+    p { color: var(--muted); line-height: 1.55; }
+
+    .nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      margin-bottom: 24px;
+    }
+
+    .nav a, .files a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav a {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(15, 118, 110, 0.1);
+      border: 1px solid rgba(15, 118, 110, 0.18);
+      font-weight: 600;
+    }
+
+    .files {
+      list-style: none;
+      padding: 0;
+      margin: 18px 0 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .files li {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #fbf9f3;
+      border: 1px solid #eee6d7;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.94rem;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 680px) {
+      .files li { display: block; }
+      .meta { display: block; margin-top: 6px; white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="panel">
+      <h1>LaTeX Folder</h1>
+      <p>File-by-file index for <code>simulations/spinice/latex</code>.</p>
+      <div class="nav">
+        <a href="../index.html">Back to spinice index</a>
+        <a href="./main.pdf">Open PDF</a>
+        <a href="./main.tex">Open TeX source</a>
+      </div>
+
+      <h2>Files</h2>
+      <ul class="files">
+        <li><a href="./index.html">index.html</a><span class="meta">this page</span></li>
+        <li><a href="./main.tex">main.tex</a><span class="meta">LaTeX source</span></li>
+        <li><a href="./main.pdf">main.pdf</a><span class="meta">compiled PDF</span></li>
+        <li><a href="./main.aux">main.aux</a><span class="meta">auxiliary output</span></li>
+        <li><a href="./main.log">main.log</a><span class="meta">LaTeX build log</span></li>
+        <li><a href="./main.out">main.out</a><span class="meta">auxiliary output</span></li>
+        <li><a href="./missfont.log">missfont.log</a><span class="meta">font log</span></li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>
