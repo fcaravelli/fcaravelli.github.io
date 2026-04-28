@@ -252,6 +252,26 @@ def _parse_samples(s: str) -> int:
     return int(base) * 10 ** int(exp)
 
 
+def _alternating_cmap_positions(n: int) -> list[float]:
+    """Return dark/light/dark/... positions for sequential colormaps."""
+    if n <= 1:
+        return [0.3]
+
+    n_dark = (n + 1) // 2
+    n_light = n // 2
+
+    darks = np.linspace(0.2, 0.45, n_dark)
+    lights = np.linspace(0.92, 0.68, n_light)
+
+    positions: list[float] = []
+    for k in range(n):
+        if k % 2 == 0:
+            positions.append(float(darks[k // 2]))
+        else:
+            positions.append(float(lights[k // 2]))
+    return positions
+
+
 def discover_files(data_dir: Path,
                    legacy_p: int, legacy_N: int) -> list[Group]:
     groups: dict[tuple[str, int, int], Group] = {}
@@ -530,9 +550,9 @@ def plot_group(r: float, lam: float,
     for pn, lst in pn_curves.items():
         marker = pn_to_marker[pn]
         cmap = pn_to_cmap[pn]
-        n_in_pn = len(lst)
+        color_positions = _alternating_cmap_positions(len(lst))
         for k, c in enumerate(lst):
-            col = cmap(0.25 + 0.6 * k / max(n_in_pn - 1, 1))
+            col = cmap(color_positions[k])
             g = c["group"]
             label = (rf"MC  $p={g.p}$, $N={g.N}$, "
                      rf"${g.samples_str}$/run × {len(g.runs)}"
@@ -575,9 +595,9 @@ def plot_group(r: float, lam: float,
     for pn, lst in pn_curves.items():
         marker = pn_to_marker[pn]
         cmap = pn_to_cmap[pn]
-        n_in_pn = len(lst)
+        color_positions = _alternating_cmap_positions(len(lst))
         for k, c in enumerate(lst):
-            col = cmap(0.25 + 0.6 * k / max(n_in_pn - 1, 1))
+            col = cmap(color_positions[k])
             if c["e"].size == 0:
                 continue
             I_th_at_e = np.interp(c["e"], theory.e_grid, theory.I_grid,

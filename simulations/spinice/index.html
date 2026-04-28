@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spin Ice Index</title>
+  <style>
+    :root {
+      --bg: #f6f3eb;
+      --panel: #fffdf8;
+      --ink: #1f2933;
+      --muted: #5f6c7b;
+      --line: #d7cfbe;
+      --accent: #0f766e;
+      --accent-soft: #d9f1ec;
+      --shadow: 0 14px 30px rgba(49, 58, 71, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 28%),
+        linear-gradient(180deg, #f8f5ee 0%, var(--bg) 100%);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px 56px;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .hero {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 253, 248, 0.88);
+      backdrop-filter: blur(4px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero p {
+      margin-top: 10px;
+      max-width: 62ch;
+    }
+
+    .quick-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .quick-links a,
+    .tile a,
+    .file-list a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .quick-links a {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 118, 110, 0.18);
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .tile,
+    section {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .tile {
+      padding: 20px;
+    }
+
+    .tile p {
+      margin-top: 8px;
+      margin-bottom: 14px;
+    }
+
+    section {
+      margin-top: 24px;
+      overflow: hidden;
+    }
+
+    .section-head {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, rgba(15, 118, 110, 0.08), rgba(15, 118, 110, 0.01));
+    }
+
+    .section-head p {
+      margin-top: 6px;
+    }
+
+    .section-body {
+      padding: 18px 22px 22px;
+    }
+
+    .file-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .file-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #fbf9f3;
+    }
+
+    .meta {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 0.92rem;
+      text-align: right;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .gallery a {
+      display: block;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fcfbf7;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .gallery strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .empty {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fbf9f3;
+      color: var(--muted);
+    }
+
+    code {
+      padding: 0.08rem 0.35rem;
+      border-radius: 6px;
+      background: rgba(15, 118, 110, 0.08);
+      font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    @media (max-width: 700px) {
+      .file-list li {
+        display: block;
+      }
+
+      .meta {
+        margin-top: 6px;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <h1>Spin Ice Workspace</h1>
+      <p>
+        Local navigation page for the files inside <code>simulations/spinice</code>.
+        Open this file in a browser and use the links below to move between the code,
+        LaTeX notes, generated figures, and data folders.
+      </p>
+      <div class="quick-links">
+        <a href="../">Parent folder</a>
+        <a href="./spinice.py">Open <code>spinice.py</code></a>
+        <a href="./latex/main.pdf">Open PDF</a>
+        <a href="./latex/main.tex">Open TeX source</a>
+        <a href="./plots/">Open plots folder</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="tile">
+        <h2>Code</h2>
+        <p>Main simulation code and the compiled executable in this folder.</p>
+        <a href="./spinice.py">spinice.py</a><br>
+        <a href="./spinice">spinice</a>
+      </div>
+      <div class="tile">
+        <h2>Write-up</h2>
+        <p>LaTeX source plus the latest compiled PDF for the spin-ice notes.</p>
+        <a href="./latex/main.tex">latex/main.tex</a><br>
+        <a href="./latex/main.pdf">latex/main.pdf</a>
+      </div>
+      <div class="tile">
+        <h2>Folders</h2>
+        <p>Jump directly into the subdirectories from here.</p>
+        <a href="./latex/">latex/</a><br>
+        <a href="./plots/">plots/</a><br>
+        <a href="./outputs/">outputs/</a>
+      </div>
+    </div>
+
+    <section>
+      <div class="section-head">
+        <h2>Files in This Folder</h2>
+        <p>Top-level files only, excluding cache artifacts.</p>
+      </div>
+      <div class="section-body">
+        <ul class="file-list">
+          <li>
+            <a href="./index.html">index.html</a>
+            <span class="meta">navigation page</span>
+          </li>
+          <li>
+            <a href="./spinice.py">spinice.py</a>
+            <span class="meta">Python source</span>
+          </li>
+          <li>
+            <a href="./spinice">spinice</a>
+            <span class="meta">compiled executable</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Subfolders</h2>
+        <p>Directory-level navigation for the main project areas.</p>
+      </div>
+      <div class="section-body">
+        <ul class="file-list">
+          <li>
+            <a href="./latex/">latex/</a>
+            <span class="meta">TeX source, logs, PDF</span>
+          </li>
+          <li>
+            <a href="./plots/">plots/</a>
+            <span class="meta">figures and <code>.npz</code> result files</span>
+          </li>
+          <li>
+            <a href="./outputs/">outputs/</a>
+            <span class="meta">currently empty</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>LaTeX Files</h2>
+        <p>Quick access to the note source and the generated document.</p>
+      </div>
+      <div class="section-body">
+        <ul class="file-list">
+          <li>
+            <a href="./latex/main.tex">latex/main.tex</a>
+            <span class="meta">source</span>
+          </li>
+          <li>
+            <a href="./latex/main.pdf">latex/main.pdf</a>
+            <span class="meta">compiled PDF</span>
+          </li>
+          <li>
+            <a href="./latex/main.aux">latex/main.aux</a>
+            <span class="meta">auxiliary</span>
+          </li>
+          <li>
+            <a href="./latex/main.log">latex/main.log</a>
+            <span class="meta">build log</span>
+          </li>
+          <li>
+            <a href="./latex/main.out">latex/main.out</a>
+            <span class="meta">auxiliary</span>
+          </li>
+          <li>
+            <a href="./latex/missfont.log">latex/missfont.log</a>
+            <span class="meta">font log</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Plot Gallery</h2>
+        <p>Grouped links to the generated figures and saved result archives.</p>
+      </div>
+      <div class="section-body">
+        <div class="gallery">
+          <a href="./plots/phase_diagram_L30_J2_T0p5_omega_0p001_to_1_F0_0p2_to_2p5_dens_3.png">
+            <strong>Phase diagrams</strong>
+            2D phase diagram at T = 0.5
+          </a>
+          <a href="./plots/phase_diagram_3d_L30_J2_T0p5_omega_0p001_to_1_F0_0p2_to_2p5_dens_3.png">
+            <strong>3D phase diagrams</strong>
+            3D surface version at T = 0.5
+          </a>
+          <a href="./plots/line_cut_L30_J2_T0p5_F0_1p5_omega_0p000316_to_1.png">
+            <strong>Line cuts</strong>
+            Representative line-cut plot at T = 0.5
+          </a>
+          <a href="./plots/snap_low_omega_L30_J2_T0p5_omega_0p001_F0_1p5.png">
+            <strong>Low-omega snapshots</strong>
+            Example low-frequency configuration
+          </a>
+          <a href="./plots/snap_high_omega_L30_J2_T0p5_omega_0p5_F0_1p5.png">
+            <strong>High-omega snapshots</strong>
+            Example high-frequency configuration
+          </a>
+          <a href="./plots/defect_trace_low_omega_L30_J2_T0p5_omega_0p001_F0_1p5.png">
+            <strong>Defect traces</strong>
+            Low-frequency defect trace at T = 0.5
+          </a>
+          <a href="./plots/results_L30_J2_T0p5_omega_0p001_to_1_F0_0p2_to_2p5_dens_3.npz">
+            <strong>Saved results</strong>
+            NPZ archive for T = 0.5 scan
+          </a>
+          <a href="./plots/">
+            <strong>All plot files</strong>
+            Open the full plots directory
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Notes</h2>
+        <p>What is intentionally omitted from this page.</p>
+      </div>
+      <div class="section-body">
+        <div class="empty">
+          Cache files in <code>__pycache__</code> and <code>.DS_Store</code> are not listed here,
+          since they are usually not helpful for manual navigation.
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

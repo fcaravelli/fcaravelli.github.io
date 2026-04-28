@@ -1,0 +1,18 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Degrees of Freedom and Geometric Structure}{}% 2
+\BOOKMARK [1][-]{section.3}{Vertex Rule, Charge Variable, and Local Ice Energetics}{}% 3
+\BOOKMARK [1][-]{section.4}{Time-Dependent Drive and the Effective Single-Edge Tilt}{}% 4
+\BOOKMARK [1][-]{section.5}{Total Effective Hamiltonian}{}% 5
+\BOOKMARK [1][-]{section.6}{Stochastic Dynamics}{}% 6
+\BOOKMARK [2][-]{subsection.6.1}{Metropolis dynamics as an effective kinetic rule}{section.6}% 7
+\BOOKMARK [2][-]{subsection.6.2}{Monte Carlo time and discretization of the drive}{section.6}% 8
+\BOOKMARK [2][-]{subsection.6.3}{Temperature as effective thermal activation}{section.6}% 9
+\BOOKMARK [1][-]{section.7}{Nonequilibrium Steady State and Detailed Balance}{}% 10
+\BOOKMARK [1][-]{section.8}{Warmup, Measurement, and the Operational Definition of NESS}{}% 11
+\BOOKMARK [1][-]{section.9}{Observables}{}% 12
+\BOOKMARK [1][-]{section.10}{Modeling Assumptions: Explicit and Implicit}{}% 13
+\BOOKMARK [1][-]{section.11}{What the Model Captures Reliably}{}% 14
+\BOOKMARK [1][-]{section.12}{What the Model Does Not Capture}{}% 15
+\BOOKMARK [1][-]{section.13}{Interpretive Status of the Simulation}{}% 16
+\BOOKMARK [1][-]{section.14}{Possible Extensions}{}% 17
+\BOOKMARK [1][-]{section.15}{Conclusion}{}% 18
