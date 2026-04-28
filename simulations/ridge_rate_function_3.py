@@ -53,6 +53,7 @@ import numpy as np
 # Headless backend for cluster use.
 import matplotlib
 matplotlib.use("Agg")
+from matplotlib import colors as mcolors
 import matplotlib.pyplot as plt
 
 
@@ -252,24 +253,44 @@ def _parse_samples(s: str) -> int:
     return int(base) * 10 ** int(exp)
 
 
-def _alternating_cmap_positions(n: int) -> list[float]:
-    """Return dark/light/dark/... positions for sequential colormaps."""
+def _blend_with(color: tuple[float, float, float],
+                target: tuple[float, float, float],
+                amount: float) -> tuple[float, float, float]:
+    """Linearly blend an RGB colour toward a target colour."""
+    return tuple((1.0 - amount) * c + amount * t
+                 for c, t in zip(color, target))
+
+
+def _group_curve_colors(n: int,
+                        base_color: tuple[float, float, float]
+                        ) -> list[tuple[float, float, float]]:
+    """Return visually separated shades derived from one base hue.
+
+    Different (p, N) groups get distinct base hues; curves within one group
+    alternate between slightly darker and lighter variants of that hue.
+    """
     if n <= 1:
-        return [0.3]
+        return [_blend_with(base_color, (1.0, 1.0, 1.0), 0.10)]
 
     n_dark = (n + 1) // 2
     n_light = n // 2
 
-    darks = np.linspace(0.2, 0.45, n_dark)
-    lights = np.linspace(0.92, 0.68, n_light)
+    dark_amounts = np.linspace(0.10, 0.28, n_dark)
+    light_amounts = np.linspace(0.18, 0.45, n_light)
 
-    positions: list[float] = []
+    colours: list[tuple[float, float, float]] = []
     for k in range(n):
         if k % 2 == 0:
-            positions.append(float(darks[k // 2]))
+            colours.append(
+                _blend_with(base_color, (0.0, 0.0, 0.0),
+                            float(dark_amounts[k // 2]))
+            )
         else:
-            positions.append(float(lights[k // 2]))
-    return positions
+            colours.append(
+                _blend_with(base_color, (1.0, 1.0, 1.0),
+                            float(light_amounts[k // 2]))
+            )
+    return colours
 
 
 def discover_files(data_dir: Path,
@@ -534,11 +555,12 @@ def plot_group(r: float, lam: float,
     pn_to_marker = {pn: markers[k % len(markers)]
                     for k, pn in enumerate(unique_pn)}
 
-    # Colour: per (p, N), use a colormap in a different hue.
-    pn_to_cmap = {}
-    cmap_names = ["plasma", "viridis", "cividis", "magma", "inferno"]
-    for k, pn in enumerate(unique_pn):
-        pn_to_cmap[pn] = plt.get_cmap(cmap_names[k % len(cmap_names)])
+    # Colour: per (p, N), use a distinct qualitative base hue.
+    base_palette = plt.get_cmap("tab10").colors
+    pn_to_base_color = {
+        pn: mcolors.to_rgb(base_palette[k % len(base_palette)])
+        for k, pn in enumerate(unique_pn)
+    }
 
     # Group curves by (p, N) for colour-shading by sample count.
     pn_curves: dict[tuple[int, int], list[dict]] = {}
@@ -549,10 +571,9 @@ def plot_group(r: float, lam: float,
 
     for pn, lst in pn_curves.items():
         marker = pn_to_marker[pn]
-        cmap = pn_to_cmap[pn]
-        color_positions = _alternating_cmap_positions(len(lst))
+        curve_colors = _group_curve_colors(len(lst), pn_to_base_color[pn])
         for k, c in enumerate(lst):
-            col = cmap(color_positions[k])
+            col = curve_colors[k]
             g = c["group"]
             label = (rf"MC  $p={g.p}$, $N={g.N}$, "
                      rf"${g.samples_str}$/run × {len(g.runs)}"
@@ -594,10 +615,9 @@ def plot_group(r: float, lam: float,
     # ---------- Residual panel ----------
     for pn, lst in pn_curves.items():
         marker = pn_to_marker[pn]
-        cmap = pn_to_cmap[pn]
-        color_positions = _alternating_cmap_positions(len(lst))
+        curve_colors = _group_curve_colors(len(lst), pn_to_base_color[pn])
         for k, c in enumerate(lst):
-            col = cmap(color_positions[k])
+            col = curve_colors[k]
             if c["e"].size == 0:
                 continue
             I_th_at_e = np.interp(c["e"], theory.e_grid, theory.I_grid,
