@@ -766,7 +766,7 @@ def main(argv: list[str] | None = None) -> int:
                     for k in keys) + "\n")
         print(f"\nSummary written to {csv_path}")
 
-    print(f"\nDone. {len(by_r)} figure(s) in {args.out_dir}")
+    print(f"\nDone. {len(by_r_beta0)} figure(s) in {args.out_dir}")
     return 0
 
 
