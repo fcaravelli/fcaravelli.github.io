@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Computation under the lenses of Koopman Operators – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">Koopman operators • computation • reachability</p>
+
+        <h3>Computation under the lenses of Koopman Operators</h3>
+
+        <p><em>May 2026</em></p>
+
+
+        <p>
+            A few years ago, Jan Korbel and David Wolpert organized a workshop in the austrian Alps, 
+            in Obergurgl. The workshop was at the intersection of computation, dynamical systems and physics.
+            It was a fantastic workshop, and we had a few hikes up the beautiful austrian Alps. 
+            Jean-Charles Delvenne gave a talk in which the first part was about his work on reachability in dynamical systems,
+            and the second part was about his results at the intersection of computation and stochastic thermodynamics.
+            I was fascinated by the first part, and I had a few questions about the second part.
+            During the talk, I asked whether he had thought about using the Koopman operator to study reachability and halting problems.
+            He said no, but that it was an interesting idea. A few years later, here we are with a paper about exactly that.
+        </p>
+
+        <p>
+          The Koopman operator is a way of looking at a dynamical system not by
+          following its points directly, but by following the functions we use to
+          observe those points. Suppose a discrete-time system evolves according to
+          \(x_{t+1}=F(x_t)\), with \(x_t\in X\). Instead of tracking the trajectory
+          \(x_t,F(x_t),F^2(x_t),\ldots\), we take an observable
+          \(g:X\to\mathbb{C}\) and ask how the value of \(g\) changes along the
+          dynamics. The Koopman operator \(K\) is then defined by composition,
+          \((Kg)(x)=g(F(x))\). Its iterates satisfy \((K^n g)(x)=g(F^n(x))\), so
+          the full future of the system is encoded in the action of a linear operator
+          on observables. This is the basic idea behind what is sometimes called
+          <em>Koopmanism</em>: even if the original map \(F\) is nonlinear, the induced
+          evolution of observables is linear, usually at the cost of moving to an
+          infinite-dimensional function space. This shift makes it possible to study
+          nonlinear dynamics using spectral objects such as eigenfunctions,
+          eigenvalues, invariant subspaces, and one of my favourite objects: the resolvent.
+        </p>
+
+        <p>
+          A (digital) computer is on the other hand usually described symbolically: a finite state machine,
+          a Turing machine, a circuit, a program, a sequence of instructions.
+          But at another level, computation is just motion. A state is updated,
+          then updated again, then updated again. The tape of a Turing machine,
+          the configuration of a cellular automaton, the voltage pattern in a chip,
+          or the point of an analog dynamical system all evolve according to some rule.
+        </p>
+
+        <p>
+          This suggests a natural question: can one describe computation using the
+          language of dynamical systems? And if so, can one translate classical
+          ideas such as halting, reachability, decidability, and universality into
+          operator-theoretic language?
+        </p>
+
+        <p>
+          Koopman operators provide one such language. They replace nonlinear
+          evolution of states by linear evolution of observables. The price is that
+          the linear operator usually lives in an infinite-dimensional space. The
+          reward is that questions about computation can be rewritten as questions
+          about spectra, invariant subspaces, resolvents, and eigenfunctions.
+        </p>
+
+        <p>
+          This post is based on my recent paper with Jean-Charles Delvenne,
+          <em><a href="https://iopscience.iop.org/article/10.1088/2632-072X/ae6f5f">Analog and Symbolic Computation through the Koopman Framework</a></p>em>,
+          accepted in <em>Journal of Physics: Complexity</em>.
+          The goal here is to give a less formal introduction to the main idea:
+          computation can be studied as a dynamical process, and Koopman operators
+          give a surprisingly clean language for doing so.
+        </p>
+
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#dynamics">1. Computation as dynamics</a></li>
+            <li><a href="#koopman">2. The Koopman point of view</a></li>
+            <li><a href="#reachability">3. Reachability and the resolvent</a></li>
+            <li><a href="#halting">4. Halting states and eigenvalue one</a></li>
+            <li><a href="#automata">5. Automata as coarse-grained dynamics</a></li>
+            <li><a href="#cycles">6. Cycles, spectra, and transient states</a></li>
+            <li><a href="#analog">7. Analog computation and hardness</a></li>
+            <li><a href="#outlook">8. Outlook</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="dynamics">
+        <h4>1. Computation as dynamics</h4>
+
+        <p>
+          The classical models of computation are already dynamical systems in disguise.
+          A Turing machine evolves by repeatedly applying a transition rule. A cellular
+          automaton evolves by applying a local update rule to all cells. A finite automaton
+          reads a symbol, changes state, reads another symbol, changes state again.
+        </p>
+
+        <p>
+          In the simplest autonomous case, the entire computation can be written as
+        </p>
+
+        <p class="math equation-block">
+          $$
+          x_{t+1}=F(x_t),
+          $$
+        </p>
+
+        <p>
+          where \(x_t\) is the configuration at time \(t\), and \(F\) is the update rule.
+          The state space \(X\) may be finite, symbolic, continuous, or a mixture of these.
+          In a Turing machine, \(x_t\) contains the tape contents, the internal state, and
+          the head position. In a cellular automaton, \(x_t\) is an infinite or finite
+          symbolic configuration. In an analog computer, \(x_t\) may be a point in
+          \(\mathbb{R}^n\).
+        </p>
+
+        <p>
+          From this perspective, a computation is a trajectory:
+        </p>
+
+        <p class="math equation-block">
+          $$
+          x_0,\quad F(x_0),\quad F^2(x_0),\quad F^3(x_0),\ldots
+          $$
+        </p>
+
+        <p>
+          The halting problem then becomes a question about this trajectory. Does it
+          eventually enter a special region of state space? More generally, a reachability
+          question asks whether an orbit starting in a set \(A\) eventually reaches a set
+          \(B\).
+        </p>
+
+        <p>
+          This is already a bridge between computation theory and dynamical systems.
+          What the Koopman framework adds is a way to lift this question from states
+          to observables.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="koopman">
+        <h4>2. The Koopman point of view</h4>
+
+        <p>
+          Instead of following the state \(x_t\) directly, Koopman theory follows
+          functions of the state. These functions are called observables. An observable
+          is simply a function
+        </p>
+
+        <p class="math equation-block">
+          $$
+          g:X\to \mathbb{C}.
+          $$
+        </p>
+
+        <p>
+          The Koopman operator \(K\) associated with the map \(F\) acts on observables by
+          composition:
+        </p>
+
+        <p class="math equation-block">
+          $$
+          (Kg)(x)=g(F(x)).
+          $$
+        </p>
+
+        <p>
+          This formula looks almost too simple, but it contains the whole point.
+          The original map \(F\) may be nonlinear, complicated, discontinuous in some
+          coordinates, or hard to analyze directly. But the map \(g\mapsto Kg\) is
+          linear. Nonlinear dynamics has been moved into a linear operator acting on
+          a space of functions.
+        </p>
+
+        <p>
+          Iterating the Koopman operator gives
+        </p>
+
+        <p class="math equation-block">
+          $$
+          (K^n g)(x)=g(F^n(x)).
+          $$
+        </p>
+
+        <p>
+          So if \(g\) is an observable that detects some region of state space, then
+          \(K^n g\) tells us whether the trajectory reaches that region after \(n\)
+          steps. This is the first hint that Koopman operators know something about
+          computation.
+        </p>
+
+        <p>
+          In ordinary Koopman theory, one often studies eigenfunctions
+        </p>
+
+        <p class="math equation-block">
+          $$
+          K\phi=\mu\phi.
+          $$
+        </p>
+
+        <p>
+          These eigenfunctions provide coordinates in which the dynamics becomes
+          multiplication by \(\mu\). For computation, however, the most useful object
+          is not only the spectrum itself. A central role is played by the resolvent
+          of the Koopman operator.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="reachability">
+        <h4>3. Reachability and the resolvent</h4>
+
+        <p>
+          Suppose \(A\) and \(B\) are two regions of state space. The reachability
+          question is:
+        </p>
+
+        <p class="callout">
+          Is there an initial condition in \(A\) whose trajectory eventually reaches \(B\)?
+        </p>
+
+        <p>
+          In symbolic systems, the natural regions are often clopen sets: sets that
+          are simultaneously closed and open. For example, in Cantor space, a clopen
+          set may be specified by a finite prefix of an infinite symbolic sequence.
+          Such sets are finitely describable, which is exactly what one wants for
+          computation.
+        </p>
+
+        <p>
+          Let \(\chi_B\) be the characteristic observable of \(B\):
+        </p>
+
+        <p class="math equation-block">
+          $$
+          \chi_B(x)=
+          \begin{cases}
+          1, & x\in B,\\
+          0, & x\notin B.
+          \end{cases}
+          $$
+        </p>
+
+        <p>
+          Then \(K^n\chi_B(x)=\chi_B(F^n(x))\), which is nonzero exactly when the
+          trajectory starting at \(x\) is in \(B\) after \(n\) steps.
+        </p>
+
+        <p>
+          Now consider the resolvent
+        </p>
+
+        <p class="math equation-block">
+          $$
+          (\lambda I-K)^{-1}.
+          $$
+        </p>
+
+        <p>
+          For \(|\lambda|>1\), this can be expanded as a convergent Neumann series:
+        </p>
+
+        <p class="math equation-block">
+          $$
+          (\lambda I-K)^{-1}
+          =
+          \lambda^{-1}\sum_{n=0}^{\infty}\lambda^{-n}K^n.
+          $$
+        </p>
+
+        <p>
+          Applying this to \(\chi_B\), we get a weighted sum over all future visits
+          to \(B\):
+        </p>
+
+        <p class="math equation-block">
+          $$
+          (\lambda I-K)^{-1}\chi_B(x)
+          =
+          \lambda^{-1}\sum_{n=0}^{\infty}\lambda^{-n}\chi_B(F^n(x)).
+          $$
+        </p>
+
+        <p>
+          Therefore,
+        </p>
+
+        <p class="math equation-block">
+          $$
+          (\lambda I-K)^{-1}\chi_B(x)\neq 0
+          $$
+        </p>
+
+        <p>
+          exactly when the orbit of \(x\) eventually reaches \(B\). Multiplying by
+          \(\chi_A\), one obtains the set-to-set condition
+        </p>
+
+        <p class="math equation-block">
+          $$
+          \chi_A(\lambda I-K)^{-1}\chi_B\neq 0.
+          $$
+        </p>
+
+        <p>
+          This is the Koopman version of reachability. It packages infinitely many
+          possible future times into one operator-theoretic object.
+        </p>
+
+        <p class="note">
+          A small but important technical point: here \(\lambda\) is a resolvent
+          parameter chosen so that the Neumann series converges. It should not be
+          confused with a Koopman eigenvalue of the dynamics.
+        </p>
+
+        <p>
+          This gives rise to what one can call the <em>Koopman Halting Problem</em>:
+          given two finitely describable observables \(g_a\) and \(g_b\), decide whether
+        </p>
+
+        <p class="math equation-block">
+          $$
+          g_a(\lambda I-K)^{-1}g_b\neq 0.
+          $$
+        </p>
+
+        <p>
+          In the paper, we show that under natural computability assumptions on the
+          observable space and on the Koopman operator, this problem is recursively
+          enumerable. Informally, if the answer is yes, there is a finite procedure
+          that eventually certifies it. This mirrors the ordinary halting problem:
+          halting can be recognized when it happens, but non-halting cannot always
+          be certified in finite time.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="halting">
+        <h4>4. Halting states and eigenvalue one</h4>
+
+        <p>
+          Reachability asks whether a trajectory ever reaches a target set. Halting
+          is a stronger notion. A halting state is not merely visited; once the system
+          enters it, it remains there.
+        </p>
+
+        <p>
+          Suppose \(H\subset X\) is a halting region. This means
+        </p>
+
+        <p class="math equation-block">
+          $$
+          F(H)\subseteq H.
+          $$
+        </p>
+
+        <p>
+          In words: if the system is in \(H\), the next state is still in \(H\).
+          The characteristic observable \(\chi_H\) then satisfies
+        </p>
+
+        <p class="math equation-block">
+          $$
+          K\chi_H=\chi_H.
+          $$
+        </p>
+
+        <p>
+          Thus \(\chi_H\) is a Koopman eigenfunction with eigenvalue \(1\).
+          This is the spectral signature of absorption.
+        </p>
+
+        <p>
+          More generally, one can consider the basin of the halting region:
+        </p>
+
+        <p class="math equation-block">
+          $$
+          B(H)=\{x\in X:\exists n\in\mathbb{N}\ \text{such that}\ F^n(x)\in H\}.
+          $$
+        </p>
+
+        <p>
+          This is the set of initial conditions that eventually halt. The characteristic
+          function of this basin is also invariant under the Koopman operator:
+        </p>
+
+        <p class="math equation-block">
+          $$
+          K\chi_{B(H)}=\chi_{B(H)}.
+          $$
+        </p>
+
+        <p>
+          So halting does not merely correspond to a special state. It corresponds
+          to an invariant observable. In this sense, the long-term computational fate
+          of a system is encoded in the eigenspace of \(K\) at eigenvalue \(1\).
+        </p>
+
+        <p>
+          Of course, the constant function \(1\) is always an eigenfunction with
+          eigenvalue \(1\). So the mere presence of the eigenvalue \(1\) is not enough
+          to prove that a system halts. What matters is the structure of the invariant
+          subspace: whether there are nontrivial characteristic observables associated
+          with absorbing computational regions.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="automata">
+        <h4>5. Automata as coarse-grained dynamics</h4>
+
+        <p>
+          The same idea becomes very concrete for finite automata. A finite automaton
+          has a finite set of states \(Q\), an input alphabet \(\Sigma\), and a transition
+          rule
+        </p>
+
+        <p class="math equation-block">
+          $$
+          \delta:Q\times \Sigma\to Q.
+          $$
+        </p>
+
+        <p>
+          From the dynamical systems point of view, each logical state \(q\in Q\)
+          can be regarded as a coarse-grained region \(\Omega_q\) of a larger phase
+          space \(X\). For instance, many microscopic voltage configurations in a
+          physical device may all correspond to the same logical state.
+        </p>
+
+        <p>
+          We then define characteristic observables
+        </p>
+
+        <p class="math equation-block">
+          $$
+          \chi_q(x)=
+          \begin{cases}
+          1, & x\in \Omega_q,\\
+          0, & x\notin \Omega_q.
+          \end{cases}
+          $$
+        </p>
+
+        <p>
+          If the system is driven by an input \(u_k\), the dynamics take the form
+        </p>
+
+        <p class="math equation-block">
+          $$
+          x_{k+1}=F(x_k,u_k).
+          $$
+        </p>
+
+        <p>
+          One can make this autonomous by enlarging the state space to include the
+          input. The extended state is
+        </p>
+
+        <p class="math equation-block">
+          $$
+          z_k=(x_k,u_k),
+          $$
+        </p>
+
+        <p>
+          and the Koopman operator acts on observables of this extended state.
+          In the finite-state case, this action reduces to a finite-dimensional linear
+          representation of the transition graph.
+        </p>
+
+        <p>
+          The dictionary is direct:
+        </p>
+
+        <ul>
+          <li>discrete states \(q\in Q\) correspond to regions \(\Omega_q\subset X\);</li>
+          <li>transition rules correspond to inclusions \(F(\Omega_q,U_\sigma)\subseteq \Omega_{q'}\);</li>
+          <li>state observables are characteristic functions \(\chi_q\);</li>
+          <li>halting states correspond to absorbing regions;</li>
+          <li>absorbing regions generate eigenfunctions at eigenvalue \(1\).</li>
+        </ul>
+
+        <p>
+          This means that the set-theoretic description of an automaton and the
+          Koopman description are not competing pictures. They are two languages
+          for the same coarse-grained dynamics.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="cycles">
+        <h4>6. Cycles, spectra, and transient states</h4>
+
+        <p>
+          The transition graph of an automaton also leaves spectral fingerprints.
+          Suppose the coarse-grained dynamics contains a deterministic cycle
+        </p>
+
+        <p class="math equation-block">
+          $$
+          q_0\to q_1\to\cdots\to q_{m-1}\to q_0.
+          $$
+        </p>
+
+        <p>
+          On the span of the observables
+        </p>
+
+        <p class="math equation-block">
+          $$
+          \chi_{q_0},\chi_{q_1},\ldots,\chi_{q_{m-1}},
+          $$
+        </p>
+
+        <p>
+          the Koopman operator acts as a cyclic permutation. Therefore
+        </p>
+
+        <p class="math equation-block">
+          $$
+          K^m=I
+          $$
+        </p>
+
+        <p>
+          on this invariant subspace, and the corresponding eigenvalues satisfy
+        </p>
+
+        <p class="math equation-block">
+          $$
+          \mu^m=1.
+          $$
+        </p>
+
+        <p>
+          In other words, deterministic cycles contribute roots of unity to the
+          Koopman spectrum.
+        </p>
+
+        <p>
+          This also clarifies an important distinction. In stochastic or Markov-type
+          systems, transient behavior is often associated with eigenvalues strictly
+          inside the unit disk, \(|\mu|<1\), which describe asymptotic relaxation.
+          But deterministic finite-state systems behave differently. Their transient
+          states feed into recurrent components in finite time. Spectrally, this is
+          better understood through nilpotent or generalized-eigenspace structure,
+          often associated with the eigenvalue \(0\), rather than through genuine
+          asymptotic decay.
+        </p>
+
+        <p>
+          So the Koopman picture is not a single slogan such as “computation is
+          spectrum.” It is more precise than that. Absorbing states, cycles, transients,
+          symbolic dynamics, and stochastic dynamics each have different spectral
+          signatures.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="analog">
+        <h4>7. Analog computation and hardness</h4>
+
+        <p>
+          The Koopman language is not limited to symbolic machines. It also applies
+          naturally to analog dynamical systems, where computation is carried by
+          continuous variables rather than discrete symbols.
+        </p>
+
+        <p>
+          This is especially interesting because analog computation has always lived
+          near the boundary between physics and computation theory. A continuous
+          dynamical system can, in principle, encode enormous information in real-valued
+          states. But this also raises the problem of precision: what does computation
+          mean if it requires infinitely many digits to specify an initial condition?
+        </p>
+
+        <p>
+          The reachability formulation helps here because it does not require exact
+          point-to-point targeting. Instead of asking whether one exact state reaches
+          another exact state, one asks whether a trajectory starting in a finitely
+          describable region \(A\) reaches another finitely describable region \(B\).
+          This is closer to how physical systems are actually initialized and observed.
+        </p>
+
+        <p>
+          There is also a broader motivation. Some analog formulations of hard
+          computational problems exhibit dynamical signatures such as transient chaos,
+          sensitive dependence on initial conditions, and fractal basin boundaries.
+          This suggests that computational hardness may sometimes appear as a
+          dynamical phenomenon. The Koopman operator is a natural tool for asking
+          whether such hardness has spectral or operator-theoretic signatures.
+        </p>
+
+        <p>
+          This is speculative, but it is a promising direction: perhaps the difficulty
+          of a computation can sometimes be read not only from an algorithmic description,
+          but from the spectral organization of the dynamical system that performs it.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="outlook">
+        <h4>8. Outlook</h4>
+
+        <p>
+          The main message is simple: computation can be studied as dynamics, and
+          Koopman operators provide a linear language for doing so.
+        </p>
+
+        <p>
+          In this language, reachability is encoded by the resolvent:
+        </p>
+
+        <p class="math equation-block">
+          $$
+          \chi_A(\lambda I-K)^{-1}\chi_B\neq 0.
+          $$
+        </p>
+
+        <p>
+          Halting regions are absorbing sets, and their basins give invariant
+          observables at eigenvalue \(1\). Cycles in deterministic transition graphs
+          contribute roots of unity. Transient deterministic components are associated
+          with finite-time nilpotent structure, while stochastic or weighted systems
+          may show true asymptotic decay through eigenvalues inside the unit disk.
+        </p>
+
+        <p>
+          This framework does not replace classical computation theory. Rather, it
+          gives another representation of it, one that is especially well suited to
+          comparing symbolic, analog, finite-state, and dynamical models of computation.
+        </p>
+
+        <p>
+          Several questions remain open. Can one characterize computational
+          universality directly in terms of Koopman spectral data? Can arrival times
+          and time-to-halting be extracted systematically from resolvent expansions?
+          Can complexity classes be related to operator-theoretic structure? And can
+          the same language be extended cleanly to stochastic or quantum computation?
+        </p>
+
+        <p>
+          These are not settled questions. But they point to a useful principle:
+          the boundary between computation and dynamics is not as sharp as it may
+          appear. A computation is a trajectory; a trajectory acts on observables;
+          and observables are the natural home of the Koopman operator.
+        </p>
+
+        <p class="callout">
+          Reference: Francesco Caravelli and Jean-Charles Delvenne,
+          <em>Analog and Symbolic Computation through the Koopman Framework</em>,
+          <em>Journal of Physics: Complexity</em>, accepted manuscript, 2026.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
