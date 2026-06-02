@@ -235,17 +235,18 @@
     This is also why reservoir computing provides a natural language for recent biological and physical computing experiments.
     The question is no longer: can this object implement NAND gates? The question is: can this object be driven, can it remember,
     can it separate signals, and can one train a readout from its internal state?
+    In general, I'm sure that Cortical Labs has many more ways of making use of their platform 
+    than just playing Doom and using Reservoir Computing, but this is a nice way to explain the basic idea to a broad audience.
   </p>
 
   <div class="toc">
     <strong>Contents</strong>
     <ul>
       <li><a href="#reservoir">1. Reservoir computing: using dynamics instead of designing algorithms</a></li>
-      <li><a href="#cortical">2. Cortical Labs and biological reservoirs</a></li>
-      <li><a href="#doom">3. Why make neurons play Doom?</a></li>
-      <li><a href="#somn">4. SOMN: a self-organizing memristive network</a></li>
-      <li><a href="#memristive-model">5. A closed memristive-network equation</a></li>
-      <li><a href="#control">6. From memory to control</a></li>
+      <li><a href="#doom">2. Why make neurons play Doom?</a></li>
+      <li><a href="#somn">3. SOMN: a self-organizing memristive network</a></li>
+      <li><a href="#memristive-model">4. A closed memristive-network equation</a></li>
+      <li><a href="#control">5. From memory to control</a></li>
     </ul>
   </div>
 
@@ -283,12 +284,9 @@
     we can make that evolution useful.
   </p>
 
-  <div class="hr"></div>
-</section>
-
-<section id="cortical">
-  <h4>2. Cortical Labs and biological reservoirs</h4>
-
+  <p>
+    The reservoir computing paradigm is not new. It has been around for a couple of decades, and it has been applied in many contexts.
+    But it is only recently that we have started to see it implemented with truly unconventional substrates, such as living neurons.
   <p>
     Cortical Labs is one of the more striking examples of this idea. Their systems use living neurons grown on a silicon interface.
     The neurons are not a metaphor for a neural network. They are actual biological cells, electrically stimulated and electrically
@@ -318,7 +316,7 @@
 </section>
 
 <section id="doom">
-  <h4>3. Why make neurons play Doom?</h4>
+  <h4>2. Why make neurons play Doom?</h4>
 
   <p>
     The public-facing result that attracted attention was the use of living neurons interfaced with Cortical Labs' platform to
@@ -374,7 +372,7 @@
 </section>
 
 <section id="somn">
-  <h4>4. SOMN: a self-organizing memristive network</h4>
+  <h4>3. SOMN: a self-organizing memristive network</h4>
 
   <p>
     Let me now move from living neurons to a substrate that is not alive, but that is also not quite a conventional circuit:
@@ -483,7 +481,7 @@
 </section>
 
 <section id="memristive-model">
-  <h4>5. A closed memristive-network equation</h4>
+  <h4>4. A closed memristive-network equation</h4>
 
   <p>
     The advantage of SOMNs is that they look messy enough to be useful. The danger is that they look so messy that one might be
@@ -624,7 +622,7 @@
 </section>
 
 <section id="control">
-  <h4>6. From memory to control: a memristive reservoir for satellite dynamics</h4>
+  <h4>5. From memory to control: a memristive reservoir for satellite dynamics</h4>
 
   <p>
     Up to this point, I have described the reservoir as something that transforms signals. But the really interesting case is when
