@@ -1,553 +1,710 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Memristive Reservoir Control of a Low-Orbit Satellite - Francesco Caravelli</title>
-<link rel="stylesheet" href="../assets/css/style.css" />
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-<style>
-p.math { margin: 1rem 0; }
-img.hero { max-width: 100%; height: auto; border-radius: 12px; }
-.note { font-size: 0.95rem; opacity: 0.9; }
-.hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
-.toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
-.toc a { text-decoration: none; }
-.callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
-.kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
-code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
-figure.post-figure { margin: 1.5rem 0; }
-figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
-figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
-.equation-block { overflow-x: auto; }
-table.post-table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
-table.post-table th, table.post-table td { border-bottom: 1px solid rgba(0,0,0,0.12); padding: 0.55rem 0.45rem; text-align: left; vertical-align: top; }
-table.post-table th { font-weight: 700; }
-pre.code-block { overflow-x: auto; background: rgba(0,0,0,0.04); border-radius: 12px; padding: 1rem; }
-</style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
-<script defer>
-const KATEX_RENDER_OPTS = {
-delimiters: [
-{ left: "$$", right: "$$", display: true },
-{ left: "\\[", right: "\\]", display: true },
-{ left: "$", right: "$", display: false },
-{ left: "\\(", right: "\\)", display: false }
-],
-throwOnError: false,
-macros: { "\\mathbbm": "\\mathbb" },
-ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
-};
-function renderKatexIn(el) {
-if (!el) return;
-if (typeof renderMathInElement !== "function") return;
-renderMathInElement(el, KATEX_RENDER_OPTS);
-}
-function whenKatexReady(cb) {
-const maxTries = 300;
-let tries = 0;
-const timer = setInterval(() => {
-tries++;
-if (typeof renderMathInElement === "function") {
-clearInterval(timer);
-cb();
-} else if (tries >= maxTries) {
-clearInterval(timer);
-console.warn("KaTeX auto-render not available (renderMathInElement missing).");
-}
-}, 10);
-}
-function renderAllMath() {
-renderKatexIn(document.querySelector("main.content"));
-}
-window.__renderAllMath = function () {
-whenKatexReady(renderAllMath);
-};
-document.addEventListener("DOMContentLoaded", () => {
-window.__renderAllMath();
-window.addEventListener("load", () => window.__renderAllMath(), { once: true });
-});
-</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Memristive Reservoir Control of a Low-Orbit Satellite - Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; margin: 1rem 0; }
+    table.post-table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    table.post-table th,
+    table.post-table td { border-bottom: 1px solid rgba(0,0,0,0.12); padding: 0.55rem 0.45rem; text-align: left; vertical-align: top; }
+    table.post-table th { font-weight: 700; }
+    pre.code-block { overflow-x: auto; background: rgba(0,0,0,0.04); border-radius: 12px; padding: 1rem; }
+  </style>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: {
+        "\\mathbbm": "\\mathbb"
+      },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+
+      const timer = setInterval(() => {
+        tries += 1;
+
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available: renderMathInElement is missing.");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
 </head>
+
 <body>
-<div class="layout">
-<div id="sidebar"></div>
-<main class="content">
-<ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-ef+6k-30-ac+ty" data-ad-client="ca-pub-6719988103594554" data-ad-slot="9710109684"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-<section id="top">
-<p class="kicker">nonequilibrium systems - memristive reservoirs - orbital control</p>
-<h3>Memristive Reservoir Control of a Low-Orbit Satellite</h3>
-<p><em>May 28th, 2026</em></p>
-<p class="callout">
-This post documents a small simulation and browser game in which a 6U CubeSat in low Earth orbit is controlled by a memristive reservoir computer. The reservoir is not trained by backpropagation: it is driven by orbital error signals and only a linear readout is fitted.
-</p>
+  <div class="layout">
+    <div id="sidebar"></div>
 
-<figure class="post-figure">
-<img class="hero" src="outputs/fig5_dashboard.png" alt="Dashboard summarizing memristive reservoir satellite control." />
-<figcaption>
-Summary of the simulation: reference orbit, uncontrolled drift, Clohessy-Wiltshire teacher control, memristive-reservoir control, thrust commands, and internal memory states.
-</figcaption>
-</figure>
+    <main class="content">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+          console.warn("AdSense block failed to initialize:", e);
+        }
+      </script>
 
-<div class="toc">
-<strong>Contents</strong>
-<ul>
-<li><a href="#problem">1. The control problem</a></li>
-<li><a href="#orbit">2. Newtonian orbital dynamics</a></li>
-<li><a href="#thrusters">3. Four-thruster actuation</a></li>
-<li><a href="#teacher">4. The Clohessy-Wiltshire teacher</a></li>
-<li><a href="#reservoir">5. The memristive reservoir</a></li>
-<li><a href="#training">6. Training the readout</a></li>
-<li><a href="#deployment">7. Closed-loop deployment</a></li>
-<li><a href="#game">8. The browser game modes</a></li>
-<li><a href="#implementation">9. Implementation notes</a></li>
-</ul>
-</div>
-<div class="hr"></div>
-</section>
+      <section id="top">
+        <p class="kicker">nonequilibrium systems - memristive reservoirs - orbital control</p>
 
-<section id="problem">
-<h4>1. The control problem</h4>
-<p>
-The physical system is deliberately simple: a point-mass satellite moving in a two-dimensional orbital plane around the Earth. The reference trajectory is a circular orbit at altitude \(400\,\mathrm{km}\). The actual satellite starts near that reference orbit but receives a perturbation, for instance a displacement and a velocity kick. The goal is to keep the satellite close to the reference trajectory using four small thrusters.
-</p>
-<p>
-The state vector used by the simulation is
-</p>
-<div class="equation-block">
-$$
-s(t) = (x(t), y(t), v_x(t), v_y(t))^T.
-$$
-</div>
-<p>
-The reference orbit is
-</p>
-<div class="equation-block">
-$$
-r_\mathrm{ref}(t) =
-\begin{pmatrix}
-R_0 \cos(nt) \\
-R_0 \sin(nt)
-\end{pmatrix},
-\qquad
-v_\mathrm{ref}(t) =
-\begin{pmatrix}
--V_c \sin(nt) \\
-V_c \cos(nt)
-\end{pmatrix},
-$$
-</div>
-<p>
-where \(R_0=R_E+400\,\mathrm{km}\), \(V_c=\sqrt{\mu/R_0}\), \(\mu=GM\), and \(n=V_c/R_0\). In the code this is the function <code class="inline">ref_orbit(t)</code>.
-</p>
-<table class="post-table">
-<tr><th>Quantity</th><th>Value in the simulation</th></tr>
-<tr><td>Satellite mass</td><td>\(M=8\,\mathrm{kg}\)</td></tr>
-<tr><td>Orbit altitude</td><td>\(400\,\mathrm{km}\)</td></tr>
-<tr><td>Circular speed</td><td>\(V_c\simeq 7.67\,\mathrm{km/s}\)</td></tr>
-<tr><td>Orbital period</td><td>\(T\simeq 92.4\,\mathrm{min}\)</td></tr>
-<tr><td>Maximum force per thruster</td><td>\(F_\max=5\,\mathrm{mN}\)</td></tr>
-<tr><td>Number of thrusters</td><td>4, aligned with \(\pm x\) and \(\pm y\)</td></tr>
-</table>
-<div class="hr"></div>
-</section>
+        <h3>Memristive Reservoir Control of a Low-Orbit Satellite</h3>
 
-<section id="orbit">
-<h4>2. Newtonian orbital dynamics</h4>
-<p>
-The equations integrated in both the Python simulation and the browser version are Newton's equations in the orbital plane, with the central gravitational potential, atmospheric drag, and thrust. If \(r=(x,y)^T\) and \(\|r\|=\sqrt{x^2+y^2}\), the gravitational acceleration is
-</p>
-<div class="equation-block">
-$$
-a_\mathrm{grav}(r) = -\mu\,\frac{r}{\|r\|^3}.
-$$
-</div>
-<p>
-The drag term is modeled as a quadratic velocity drag with fixed density:
-</p>
-<div class="equation-block">
-$$
-a_\mathrm{drag}(v)
-= -\frac{1}{2M}\rho C_D A \|v\| v.
-$$
-</div>
-<p>
-Thus the full state equation is
-</p>
-<div class="equation-block">
-$$
-\dot{x}=v_x,\qquad
-\dot{y}=v_y,
-$$
-$$
-\dot{v}_x
-= -\mu\frac{x}{(x^2+y^2)^{3/2}}
-- \frac{1}{2M}\rho C_D A \|v\| v_x
-+ \frac{F_x}{M},
-$$
-$$
-\dot{v}_y
-= -\mu\frac{y}{(x^2+y^2)^{3/2}}
-- \frac{1}{2M}\rho C_D A \|v\| v_y
-+ \frac{F_y}{M}.
-$$
-</div>
-<p>
-This is the function <code class="inline">eom(t, s, u)</code> in the Python code and <code class="inline">eom(state, u)</code> in the browser game. The Python version uses <code class="inline">solve_ivp</code>. The browser game uses a fourth-order Runge-Kutta step, which is sufficient for interactive control at the chosen time step.
-</p>
+        <p><em>May 28th, 2026</em></p>
 
-<figure class="post-figure">
-<img src="outputs/fig1_orbit.png" alt="Two-dimensional low Earth orbit trajectories." />
-<figcaption>
-The simulation is not an epicycle or a linearized orbit model. The propagated satellite follows the nonlinear central-force equation in the plane; the CW controller is only the teacher used to generate control examples.
-</figcaption>
-</figure>
-<div class="hr"></div>
-</section>
+        <p class="callout">
+          This post documents a small simulation and browser game in which a 6U CubeSat in low Earth orbit is controlled by a memristive reservoir computer. The reservoir is not trained by backpropagation: it is driven by orbital error signals and only a linear readout is fitted.
+        </p>
 
-<section id="thrusters">
-<h4>3. Four-thruster actuation</h4>
-<p>
-The control vector is a vector of four normalized thruster activations:
-</p>
-<div class="equation-block">
-$$
-u=(u_{+x},u_{-x},u_{+y},u_{-y}),\qquad 0\le u_i\le 1.
-$$
-</div>
-<p>
-The resulting force is
-</p>
-<div class="equation-block">
-$$
-F_x = F_\max(u_{+x}-u_{-x}),\qquad
-F_y = F_\max(u_{+y}-u_{-y}).
-$$
-</div>
-<p>
-The helper <code class="inline">f2u(Fx,Fy)</code> performs the inverse mapping. Given a desired force \((F_x,F_y)\), it activates the positive or negative thruster on each axis and clips the command to the maximum force:
-</p>
-<pre class="code-block"><code>if Fx &gt; 0: u[+x] = min(Fx / F_MAX, 1)
+        <figure class="post-figure">
+          <img class="hero" src="outputs/fig5_dashboard.png" alt="Dashboard summarizing memristive reservoir satellite control." />
+          <figcaption>
+            Summary of the simulation: reference orbit, uncontrolled drift, Clohessy-Wiltshire teacher control, memristive-reservoir control, thrust commands, and internal memory states.
+          </figcaption>
+        </figure>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#problem">1. The control problem</a></li>
+            <li><a href="#orbit">2. Newtonian orbital dynamics</a></li>
+            <li><a href="#thrusters">3. Four-thruster actuation</a></li>
+            <li><a href="#teacher">4. The Clohessy-Wiltshire teacher</a></li>
+            <li><a href="#reservoir">5. The memristive reservoir</a></li>
+            <li><a href="#training">6. Training the readout</a></li>
+            <li><a href="#deployment">7. Closed-loop deployment</a></li>
+            <li><a href="#game">8. The browser game modes</a></li>
+            <li><a href="#implementation">9. Implementation notes</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="problem">
+        <h4>1. The control problem</h4>
+
+        <p>
+          The context of this simulation is the same as the one described in the blog post 
+           <a href="/blog/2026-06-02-doom1.html" target="_blank">here</a>. 
+           The difference is that here we discuss only the technical aspects of the problem: 
+           the plant is a two-dimensional satellite orbit, and the controller is trained to imitate a conventional orbital controller.
+          The physical system is deliberately simple: a point-mass satellite moving in a two-dimensional orbital plane around the Earth. 
+          The reference trajectory is a circular orbit at altitude \(400\,\mathrm{km}\). The actual satellite starts near that reference orbit but receives a perturbation, for instance a displacement and a velocity kick. The goal is to keep the satellite close to the reference trajectory using four small thrusters.
+        </p>
+
+        <p>
+          The state vector used by the simulation is
+        </p>
+
+        <div class="equation-block">
+          $$
+          s(t) = \bigl(x(t), y(t), v_x(t), v_y(t)\bigr)^T.
+          $$
+        </div>
+
+        <p>
+          The reference orbit is
+        </p>
+
+        <div class="equation-block">
+          $$
+          r_{\mathrm{ref}}(t) =
+          \begin{pmatrix}
+          R_0 \cos(nt) \\
+          R_0 \sin(nt)
+          \end{pmatrix},
+          \qquad
+          v_{\mathrm{ref}}(t) =
+          \begin{pmatrix}
+          -V_c \sin(nt) \\
+          V_c \cos(nt)
+          \end{pmatrix}.
+          $$
+        </div>
+
+        <p>
+          Here \(R_0=R_E+400\,\mathrm{km}\), \(V_c=\sqrt{\mu/R_0}\), \(\mu=GM\), and \(n=V_c/R_0\). In the code this is the function <code class="inline">ref_orbit(t)</code>.
+        </p>
+
+        <table class="post-table">
+          <tr><th>Quantity</th><th>Value in the simulation</th></tr>
+          <tr><td>Satellite mass</td><td>\(M=8\,\mathrm{kg}\)</td></tr>
+          <tr><td>Orbit altitude</td><td>\(400\,\mathrm{km}\)</td></tr>
+          <tr><td>Circular speed</td><td>\(V_c\simeq 7.67\,\mathrm{km/s}\)</td></tr>
+          <tr><td>Orbital period</td><td>\(T\simeq 92.4\,\mathrm{min}\)</td></tr>
+          <tr><td>Maximum force per thruster</td><td>\(F_{\max}=5\,\mathrm{mN}\)</td></tr>
+          <tr><td>Number of thrusters</td><td>4, aligned with \(\pm x\) and \(\pm y\)</td></tr>
+        </table>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="orbit">
+        <h4>2. Newtonian orbital dynamics</h4>
+
+        <p>
+          The equations integrated in both the Python simulation and the browser version are Newton's equations in the orbital plane, with the central gravitational potential, atmospheric drag, and thrust. If \(r=(x,y)^T\) and \(\lVert r\rVert=\sqrt{x^2+y^2}\), the gravitational acceleration is
+        </p>
+
+        <div class="equation-block">
+          $$
+          a_{\mathrm{grav}}(r) = -\mu\,\frac{r}{\lVert r\rVert^3}.
+          $$
+        </div>
+
+        <p>
+          The drag term is modeled as a quadratic velocity drag with fixed density:
+        </p>
+
+        <div class="equation-block">
+          $$
+          a_{\mathrm{drag}}(v)
+          =
+          -\frac{1}{2M}\rho C_D A \lVert v\rVert v.
+          $$
+        </div>
+
+        <p>
+          Thus the full state equation is
+        </p>
+
+        <div class="equation-block">
+          $$
+          \dot{x}=v_x,
+          \qquad
+          \dot{y}=v_y,
+          $$
+          $$
+          \dot{v}_x
+          =
+          -\mu\frac{x}{(x^2+y^2)^{3/2}}
+          - \frac{1}{2M}\rho C_D A \lVert v\rVert v_x
+          + \frac{F_x}{M},
+          $$
+          $$
+          \dot{v}_y
+          =
+          -\mu\frac{y}{(x^2+y^2)^{3/2}}
+          - \frac{1}{2M}\rho C_D A \lVert v\rVert v_y
+          + \frac{F_y}{M}.
+          $$
+        </div>
+
+        <p>
+          This is the function <code class="inline">eom(t, s, u)</code> in the Python code and <code class="inline">eom(state, u)</code> in the browser game. The Python version uses <code class="inline">solve_ivp</code>. The browser game uses a fourth-order Runge-Kutta step, which is sufficient for interactive control at the chosen time step.
+        </p>
+
+        <figure class="post-figure">
+          <img src="outputs/fig1_orbit.png" alt="Two-dimensional low Earth orbit trajectories." />
+          <figcaption>
+            The simulation is not an epicycle or a linearized orbit model. The propagated satellite follows the nonlinear central-force equation in the plane; the CW controller is only the teacher used to generate control examples.
+          </figcaption>
+        </figure>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="thrusters">
+        <h4>3. Four-thruster actuation</h4>
+
+        <p>
+          The control vector is a vector of four normalized thruster activations:
+        </p>
+
+        <div class="equation-block">
+          $$
+          u=(u_{+x},u_{-x},u_{+y},u_{-y}),
+          \qquad
+          0\leq u_i\leq 1.
+          $$
+        </div>
+
+        <p>
+          The resulting force is
+        </p>
+
+        <div class="equation-block">
+          $$
+          F_x = F_{\max}(u_{+x}-u_{-x}),
+          \qquad
+          F_y = F_{\max}(u_{+y}-u_{-y}).
+          $$
+        </div>
+
+        <p>
+          The helper <code class="inline">f2u(Fx,Fy)</code> performs the inverse mapping. Given a desired force \((F_x,F_y)\), it activates the positive or negative thruster on each axis and clips the command to the maximum force:
+        </p>
+
+        <pre class="code-block"><code>if Fx &gt; 0: u[+x] = min(Fx / F_MAX, 1)
 else:      u[-x] = min(-Fx / F_MAX, 1)
 
 if Fy &gt; 0: u[+y] = min(Fy / F_MAX, 1)
 else:      u[-y] = min(-Fy / F_MAX, 1)</code></pre>
-<p>
-There is also a simple power-budget limiter in the code. It rescales the four activations if their proxy power exceeds the budget. The important control-theoretic point is that the readout produces a continuous desired force, but the satellite receives bounded directional thruster fractions.
-</p>
 
-<figure class="post-figure">
-<img src="outputs/fig3_thrusters.png" alt="Thruster activation over time." />
-<figcaption>
-Thruster activations during memristive-reservoir control. The controller is trained in force space, then mapped to four bounded thruster channels.
-</figcaption>
-</figure>
-<div class="hr"></div>
-</section>
+        <p>
+          There is also a simple power-budget limiter in the code. It rescales the four activations if their proxy power exceeds the budget. The important control-theoretic point is that the readout produces a continuous desired force, but the satellite receives bounded directional thruster fractions.
+        </p>
 
-<section id="teacher">
-<h4>4. The Clohessy-Wiltshire teacher</h4>
-<p>
-The reservoir is trained by imitation. First, a conventional controller is used to generate examples. This controller is a radial and along-track proportional-derivative law inspired by the Clohessy-Wiltshire relative-orbit equations.
-</p>
-<p>
-At each time \(t\), the inertial error \(s-s_\mathrm{ref}\) is projected into the instantaneous orbital frame. Define
-</p>
-<div class="equation-block">
-$$
-e_r=(\cos\theta,\sin\theta),\qquad
-e_t=(-\sin\theta,\cos\theta),
-$$
-</div>
-<p>
-where \(\theta=\mathrm{atan2}(y_\mathrm{ref},x_\mathrm{ref})\). The radial and tangential position errors are
-</p>
-<div class="equation-block">
-$$
-d_r = (r-r_\mathrm{ref})\cdot e_r,\qquad
-d_t = (r-r_\mathrm{ref})\cdot e_t,
-$$
-</div>
-<p>
-and similarly for the velocity errors \(d_{v,r}\) and \(d_{v,t}\). The teacher acceleration in the rotating frame is
-</p>
-<div class="equation-block">
-$$
-a_r = -(K_{p,r}d_r+K_{d,r}d_{v,r}) + 2n d_{v,t},
-$$
-$$
-a_t = -(K_{p,t}d_t+K_{d,t}d_{v,t}) - 2n d_{v,r}.
-$$
-</div>
-<p>
-The gains used in the code are
-</p>
-<div class="equation-block">
-$$
-K_{p,r}=8n^2,\quad K_{d,r}=4n,\quad
-K_{p,t}=4n^2,\quad K_{d,t}=4n.
-$$
-</div>
-<p>
-The terms proportional to \(2n\) are Coriolis-like feedforward terms. After computing \((a_r,a_t)\), the controller rotates the desired acceleration back into the inertial \((x,y)\) frame, multiplies by \(M\), and maps the result through <code class="inline">f2u</code>.
-</p>
-<div class="hr"></div>
-</section>
+        <figure class="post-figure">
+          <img src="outputs/fig3_thrusters.png" alt="Thruster activation over time." />
+          <figcaption>
+            Thruster activations during memristive-reservoir control. The controller is trained in force space, then mapped to four bounded thruster channels.
+          </figcaption>
+        </figure>
 
-<section id="reservoir">
-<h4>5. The memristive reservoir</h4>
-<p>
-The reservoir is a network of memristive internal variables. It is not a recurrent neural network trained through time. Its recurrent structure is physical: each memristor has a memory state \(w_i(t)\in[0,1]\), and the network topology appears through a cycle-space projector.
-</p>
-<p>
-The reservoir evolution law used in the simulation comes from the original paper
-<a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.95.022140" target="_blank"><em>The complex dynamics of memristive circuits: analytical results and universal slow relaxation</em></a>
-(<a href="https://arxiv.org/abs/1608.08651" target="_blank">arXiv:1608.08651</a>). Written in the notation used here, the internal memory variables obey
-</p>
-<div class="equation-block">
-$$
-\frac{dw}{dt}
-=-\frac{w}{\beta}
-+\frac{\alpha}{V_0}\,
-\Omega\left(I+\xi W\Omega\right)^{-1}E(t),
-$$
-</div>
-<p>
-where
-</p>
-<div class="equation-block">
-$$
-W=\mathrm{diag}(w_1,\ldots,w_N),
-\qquad
-\xi=\frac{R_\mathrm{off}-R_\mathrm{on}}{R_\mathrm{on}}.
-$$
-</div>
-<p>
-The input signal is the normalized orbital deviation:
-</p>
-<div class="equation-block">
-$$
-E(t)=W_\mathrm{in}\,\delta_\mathrm{norm}(t),
-$$
-</div>
-<p>
-with
-</p>
-<div class="equation-block">
-$$
-\delta(t)=s(t)-s_\mathrm{ref}(t),
-\qquad
-\delta_\mathrm{norm}
-=
-\left(
-\frac{\delta x}{200},
-\frac{\delta y}{200},
-\frac{\delta v_x}{0.3},
-\frac{\delta v_y}{0.3}
-\right)^T.
-$$
-</div>
-<p>
-The matrix \(\Omega\) is the cycle-space projector of the randomly generated circuit graph. If \(B\) is the incidence matrix, then
-</p>
-<div class="equation-block">
-$$
-\Omega=I-B^T(BB^T)^+B,
-$$
-</div>
-<p>
-where \((\cdot)^+\) denotes the Moore-Penrose pseudoinverse. This projection removes gradient components and keeps the component compatible with circuit cycles.
-</p>
-<table class="post-table">
-<tr><th>Reservoir parameter</th><th>Value</th></tr>
-<tr><td>Number of memristors</td><td>\(N=40\)</td></tr>
-<tr><td>Memory decay time</td><td>\(\beta=100\)</td></tr>
-<tr><td>Drive scale</td><td>\(\alpha=1.5\times 10^{-3}\)</td></tr>
-<tr><td>Voltage scale</td><td>\(V_0=1\)</td></tr>
-<tr><td>Resistances</td><td>\(R_\mathrm{on}=100\), \(R_\mathrm{off}=16000\)</td></tr>
-</table>
+        <div class="hr"></div>
+      </section>
 
-<figure class="post-figure">
-<img src="outputs/fig4_reservoir.png" alt="Memristive reservoir memory state evolution." />
-<figcaption>
-The reservoir state is a high-dimensional nonlinear memory of the recent orbital error. Only the final linear readout is trained.
-</figcaption>
-</figure>
-<div class="hr"></div>
-</section>
+      <section id="teacher">
+        <h4>4. The Clohessy-Wiltshire teacher</h4>
 
-<section id="training">
-<h4>6. Training the readout</h4>
-<p>
-Training is supervised, but only at the readout. The reservoir weights and topology are fixed after initialization. The code generates \(25\) random teacher-controlled trajectories. Each trajectory starts from a random perturbation
-</p>
-<div class="equation-block">
-$$
-p\sim \mathrm{Uniform}[-1,1]^4
-\odot
-(250\,\mathrm{m},250\,\mathrm{m},0.08\,\mathrm{m/s},0.04\,\mathrm{m/s}).
-$$
-</div>
-<p>
-For each trajectory, the CW controller stabilizes the satellite for one orbit. Along the way, the reservoir receives the deviation signal and evolves according to this memristive-network evolution law. The training set consists of pairs
-</p>
-<div class="equation-block">
-$$
-\left(w(t_k), F^\mathrm{CW}(t_k)\right),
-$$
-</div>
-<p>
-where \(F^\mathrm{CW}(t_k)\) is the inertial force implied by the CW thruster command:
-</p>
-<div class="equation-block">
-$$
-F^\mathrm{CW}(t_k)
-=
-\begin{pmatrix}
-F_\max(u_{+x}-u_{-x})\\
-F_\max(u_{+y}-u_{-y})
-\end{pmatrix}.
-$$
-</div>
-<p>
-Stacking all reservoir states into a matrix \(R\in\mathbb{R}^{N\times T}\), and all teacher forces into \(F\in\mathbb{R}^{2\times T}\), the ridge-regression readout is
-</p>
-<div class="equation-block">
-$$
-W_\mathrm{out}
-=
-F R^T
-\left(RR^T+\lambda I\right)^{-1}.
-$$
-</div>
-<p>
-This is the entire learning step. There is no gradient descent through the satellite dynamics, and no training of the memristive network itself. The reservoir supplies nonlinear, history-dependent features; the readout learns how to combine them into a force command.
-</p>
-<pre class="code-block"><code>R = reservoir states collected across teacher trajectories
+        <p>
+          The reservoir is trained by imitation. First, a conventional controller is used to generate examples. This controller is a radial and along-track proportional-derivative law inspired by the Clohessy-Wiltshire relative-orbit equations.
+        </p>
+
+        <p>
+          At each time \(t\), the inertial error \(s-s_{\mathrm{ref}}\) is projected into the instantaneous orbital frame. Define
+        </p>
+
+        <div class="equation-block">
+          $$
+          e_r=(\cos\theta,\sin\theta),
+          \qquad
+          e_t=(-\sin\theta,\cos\theta),
+          $$
+        </div>
+
+        <p>
+          where \(\theta=\operatorname{atan2}(y_{\mathrm{ref}},x_{\mathrm{ref}})\). The radial and tangential position errors are
+        </p>
+
+        <div class="equation-block">
+          $$
+          d_r = (r-r_{\mathrm{ref}})\cdot e_r,
+          \qquad
+          d_t = (r-r_{\mathrm{ref}})\cdot e_t,
+          $$
+        </div>
+
+        <p>
+          and similarly for the velocity errors \(d_{v,r}\) and \(d_{v,t}\). The teacher acceleration in the rotating frame is
+        </p>
+
+        <div class="equation-block">
+          $$
+          a_r = -(K_{p,r}d_r+K_{d,r}d_{v,r}) + 2n d_{v,t},
+          $$
+          $$
+          a_t = -(K_{p,t}d_t+K_{d,t}d_{v,t}) - 2n d_{v,r}.
+          $$
+        </div>
+
+        <p>
+          The gains used in the code are
+        </p>
+
+        <div class="equation-block">
+          $$
+          K_{p,r}=8n^2,
+          \qquad
+          K_{d,r}=4n,
+          \qquad
+          K_{p,t}=4n^2,
+          \qquad
+          K_{d,t}=4n.
+          $$
+        </div>
+
+        <p>
+          The terms proportional to \(2n\) are Coriolis-like feedforward terms. After computing \((a_r,a_t)\), the controller rotates the desired acceleration back into the inertial \((x,y)\) frame, multiplies by \(M\), and maps the result through <code class="inline">f2u</code>.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="reservoir">
+        <h4>5. The memristive reservoir</h4>
+
+        <p>
+          The reservoir is a network of memristive internal variables. It is not a recurrent neural network trained through time. Its recurrent structure is physical: each memristor has a memory state \(w_i(t)\in[0,1]\), and the network topology appears through a cycle-space projector.
+        </p>
+
+        <p>
+          The reservoir evolution law used in the simulation comes from the original paper
+          <a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.95.022140" target="_blank"><em>The complex dynamics of memristive circuits: analytical results and universal slow relaxation</em></a>
+          (<a href="https://arxiv.org/abs/1608.08651" target="_blank">arXiv:1608.08651</a>). Written in the alternative convention used here, the internal memory variables obey
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{dw}{dt}
+          =
+          -\frac{w}{\beta}
+          +
+          \frac{\alpha}{V_0}\,
+          \Omega
+          \left(I-\xi W\Omega\right)^{-1}
+          E(t),
+          $$
+        </div>
+
+        <p>
+          where
+        </p>
+
+        <div class="equation-block">
+          $$
+          W=\operatorname{diag}(w_1,\ldots,w_N),
+          \qquad
+          \xi=\frac{R_{\mathrm{off}}-R_{\mathrm{on}}}{R_{\mathrm{off}}}.
+          $$
+        </div>
+
+        <p>
+          The input signal is the normalized orbital deviation:
+        </p>
+
+        <div class="equation-block">
+          $$
+          E(t)=W_{\mathrm{in}}\,\delta_{\mathrm{norm}}(t),
+          $$
+        </div>
+
+        <p>
+          with
+        </p>
+
+        <div class="equation-block">
+          $$
+          \delta(t)=s(t)-s_{\mathrm{ref}}(t),
+          \qquad
+          \delta_{\mathrm{norm}}
+          =
+          \left(
+          \frac{\delta x}{200},
+          \frac{\delta y}{200},
+          \frac{\delta v_x}{0.3},
+          \frac{\delta v_y}{0.3}
+          \right)^T.
+          $$
+        </div>
+
+        <p>
+          The matrix \(\Omega\) is the cycle-space projector of the randomly generated circuit graph. If \(B\) is the incidence matrix, then
+        </p>
+
+        <div class="equation-block">
+          $$
+          \Omega=I-B^T(BB^T)^+B,
+          $$
+        </div>
+
+        <p>
+          where \((\cdot)^+\) denotes the Moore-Penrose pseudoinverse. This projection removes gradient components and keeps the component compatible with circuit cycles.
+        </p>
+
+        <table class="post-table">
+          <tr><th>Reservoir parameter</th><th>Value</th></tr>
+          <tr><td>Number of memristors</td><td>\(N=40\)</td></tr>
+          <tr><td>Memory decay time</td><td>\(\beta=100\)</td></tr>
+          <tr><td>Drive scale</td><td>\(\alpha=1.5\times 10^{-3}\)</td></tr>
+          <tr><td>Voltage scale</td><td>\(V_0=1\)</td></tr>
+          <tr><td>Resistances</td><td>\(R_{\mathrm{on}}=100\), \(R_{\mathrm{off}}=16000\)</td></tr>
+        </table>
+
+        <figure class="post-figure">
+          <img src="outputs/fig4_reservoir.png" alt="Memristive reservoir memory state evolution." />
+          <figcaption>
+            The reservoir state is a high-dimensional nonlinear memory of the recent orbital error. Only the final linear readout is trained.
+          </figcaption>
+        </figure>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="training">
+        <h4>6. Training the readout</h4>
+
+        <p>
+          Training is supervised, but only at the readout. The reservoir weights and topology are fixed after initialization. The code generates \(25\) random teacher-controlled trajectories. Each trajectory starts from a random perturbation
+        </p>
+
+        <div class="equation-block">
+          $$
+          p\sim \operatorname{Uniform}[-1,1]^4
+          \odot
+          \bigl(250\,\mathrm{m},250\,\mathrm{m},0.08\,\mathrm{m/s},0.04\,\mathrm{m/s}\bigr).
+          $$
+        </div>
+
+        <p>
+          For each trajectory, the CW controller stabilizes the satellite for one orbit. Along the way, the reservoir receives the deviation signal and evolves according to this memristive-network evolution law. The training set consists of pairs
+        </p>
+
+        <div class="equation-block">
+          $$
+          \left(w(t_k), F^{\mathrm{CW}}(t_k)\right),
+          $$
+        </div>
+
+        <p>
+          where \(F^{\mathrm{CW}}(t_k)\) is the inertial force implied by the CW thruster command:
+        </p>
+
+        <div class="equation-block">
+          $$
+          F^{\mathrm{CW}}(t_k)
+          =
+          \begin{pmatrix}
+          F_{\max}(u_{+x}-u_{-x})\\
+          F_{\max}(u_{+y}-u_{-y})
+          \end{pmatrix}.
+          $$
+        </div>
+
+        <p>
+          Stacking all reservoir states into a matrix \(R\in\mathbb{R}^{N\times T}\), and all teacher forces into \(F\in\mathbb{R}^{2\times T}\), the ridge-regression readout is
+        </p>
+
+        <div class="equation-block">
+          $$
+          W_{\mathrm{out}}
+          =
+          F R^T
+          \left(RR^T+\lambda I\right)^{-1}.
+          $$
+        </div>
+
+        <p>
+          This is the entire learning step. There is no gradient descent through the satellite dynamics, and no training of the memristive network itself. The reservoir supplies nonlinear, history-dependent features; the readout learns how to combine them into a force command.
+        </p>
+
+        <pre class="code-block"><code>R = reservoir states collected across teacher trajectories
 F = CW teacher forces collected at the same times
 A = R @ R.T + lambda * I
 W_out = F @ R.T @ inv(A)</code></pre>
-<div class="hr"></div>
-</section>
 
-<section id="deployment">
-<h4>7. Closed-loop deployment</h4>
-<p>
-After training, the CW controller is removed. The deployed reservoir controller repeats the following loop:
-</p>
-<ol>
-<li>Compute the current deviation \(\delta(t)=s(t)-s_\mathrm{ref}(t)\).</li>
-<li>Normalize the deviation and drive the memristive reservoir.</li>
-<li>Compute the force readout \((F_x,F_y)^T=W_\mathrm{out}w(t)\).</li>
-<li>Convert this force to four thruster activations via <code class="inline">f2u</code>.</li>
-<li>Integrate the satellite dynamics forward.</li>
-</ol>
-<p>
-In equations, the deployed controller is simply
-</p>
-<div class="equation-block">
-$$
-u(t)
-=
-\mathrm{f2u}
-\left(
-W_\mathrm{out}w(t)
-\right).
-$$
-</div>
-<p>
-The interesting part is that \(w(t)\) is not just the present error. It is a nonlinear fading memory of the recent error history, filtered by the memristive-network dynamics and the circuit-topology projector.
-</p>
+        <div class="hr"></div>
+      </section>
 
-<figure class="post-figure">
-<img src="outputs/fig2_deviation.png" alt="Deviation from reference orbit over time." />
-<figcaption>
-The memristive-reservoir readout is trained to imitate the CW controller. In this simulation it brings the satellite back close to the reference trajectory from the initial perturbation.
-</figcaption>
-</figure>
-<div class="hr"></div>
-</section>
+      <section id="deployment">
+        <h4>7. Closed-loop deployment</h4>
 
-<section id="game">
-<h4>8. The browser game modes</h4>
-<p>
-The browser version turns the same mathematical model into a game. It has two modes.
-</p>
-<p>
-In <strong>Recover</strong> mode, the satellite receives a collision impulse and the player directly commands the four thrusters. The manual controls modify the same vector \(u=(u_{+x},u_{-x},u_{+y},u_{-y})\) that the simulation uses for thrust.
-</p>
-<p>
-In <strong>Kick</strong> mode, the player applies velocity kicks to the satellite and the memristive reservoir controller tries to recover the reference orbit. The controller is considered defeated when the satellite crosses a loss boundary:
-</p>
-<ul>
-<li>altitude below \(120\,\mathrm{km}\), interpreted as reentry or crash;</li>
-<li>altitude above \(1200\,\mathrm{km}\), interpreted as escape from the mission orbit;</li>
-<li>position error above \(800\,\mathrm{km}\), interpreted as loss of tracking.</li>
-</ul>
-<p>
-The game also draws a live satellite actuator schematic. In Recover mode it displays the human thruster command. In Kick mode it displays the reservoir command. In both cases, the displayed bars are the actual entries of \(u\) being passed to the integrator.
-</p>
-<p>
-Try the browser game <a href="index.html">here</a>: either recover the orbit by hand, or kick the satellite and see whether the reservoir controller can bring it back.
-</p>
-<div class="hr"></div>
-</section>
+        <p>
+          After training, the CW controller is removed. The deployed reservoir controller repeats the following loop:
+        </p>
 
-<section id="implementation">
-<h4>9. Implementation notes</h4>
-<p>
-The Python scripts and the browser game implement the same hierarchy:
-</p>
-<table class="post-table">
-<tr><th>Layer</th><th>Python</th><th>Browser</th></tr>
-<tr><td>Reference orbit</td><td><code class="inline">ref_orbit</code></td><td><code class="inline">refOrbit</code></td></tr>
-<tr><td>Dynamics</td><td><code class="inline">eom</code>, <code class="inline">istep</code></td><td><code class="inline">eom</code>, <code class="inline">integrate</code></td></tr>
-<tr><td>Force-to-thruster map</td><td><code class="inline">f2u</code></td><td><code class="inline">f2u</code></td></tr>
-<tr><td>Teacher controller</td><td><code class="inline">cw_ctrl</code></td><td><code class="inline">cwCtrl</code></td></tr>
-<tr><td>Reservoir</td><td><code class="inline">MemristiveReservoir</code></td><td><code class="inline">MemristiveReservoir</code></td></tr>
-<tr><td>Readout training</td><td><code class="inline">train_multi</code></td><td><code class="inline">trainMulti</code></td></tr>
-<tr><td>Deployment controller</td><td><code class="inline">RCCtrl.compute</code></td><td><code class="inline">RCCtrl.compute</code></td></tr>
-</table>
-<p>
-The central idea is modular: Newtonian orbital mechanics defines the plant; a conventional CW controller defines the training signal; the memristive reservoir supplies a physical nonlinear memory; and ridge regression turns that memory into force commands. Once trained, the reservoir controller replaces the teacher in the closed loop.
-</p>
-<div class="hr"></div>
-</section>
+        <ol>
+          <li>Compute the current deviation \(\delta(t)=s(t)-s_{\mathrm{ref}}(t)\).</li>
+          <li>Normalize the deviation and drive the memristive reservoir.</li>
+          <li>Compute the force readout \((F_x,F_y)^T=W_{\mathrm{out}}w(t)\).</li>
+          <li>Convert this force to four thruster activations via <code class="inline">f2u</code>.</li>
+          <li>Integrate the satellite dynamics forward.</li>
+        </ol>
 
-<p><a href="../blog.html">&larr; Back to Blog</a></p>
-<div class="hr"></div>
-<ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-6719988103594554" data-ad-slot="2406334732"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</main>
-</div>
-<script>
-async function loadSidebar() {
-const sidebarContainer = document.getElementById("sidebar");
-try {
-const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
-const html = await response.text();
-sidebarContainer.innerHTML = html;
-const currentPath = window.location.pathname.split("/").pop();
-const links = sidebarContainer.querySelectorAll("a");
-links.forEach(link => {
-if (link.getAttribute("href") === currentPath) link.classList.add("active");
-});
-if (typeof window.__renderAllMath === "function") {
-window.__renderAllMath();
-}
-} catch (e) {
-console.warn("Sidebar failed to load:", e);
-}
-}
-loadSidebar();
-</script>
+        <p>
+          In equations, the deployed controller is simply
+        </p>
+
+        <div class="equation-block">
+          $$
+          u(t)
+          =
+          \operatorname{f2u}
+          \left(
+          W_{\mathrm{out}}w(t)
+          \right).
+          $$
+        </div>
+
+        <p>
+          The interesting part is that \(w(t)\) is not just the present error. It is a nonlinear fading memory of the recent error history, filtered by the memristive-network dynamics and the circuit-topology projector.
+        </p>
+
+        <figure class="post-figure">
+          <img src="outputs/fig2_deviation.png" alt="Deviation from reference orbit over time." />
+          <figcaption>
+            The memristive-reservoir readout is trained to imitate the CW controller. In this simulation it brings the satellite back close to the reference trajectory from the initial perturbation.
+          </figcaption>
+        </figure>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="game">
+        <h4>8. The browser game modes</h4>
+
+        <p>
+          The browser version turns the same mathematical model into a game. It has two modes.
+        </p>
+
+        <p>
+          In <strong>Recover</strong> mode, the satellite receives a collision impulse and the player directly commands the four thrusters. The manual controls modify the same vector \(u=(u_{+x},u_{-x},u_{+y},u_{-y})\) that the simulation uses for thrust.
+        </p>
+
+        <p>
+          In <strong>Kick</strong> mode, the player applies velocity kicks to the satellite and the memristive reservoir controller tries to recover the reference orbit. The controller is considered defeated when the satellite crosses a loss boundary:
+        </p>
+
+        <ul>
+          <li>altitude below \(120\,\mathrm{km}\), interpreted as reentry or crash;</li>
+          <li>altitude above \(1200\,\mathrm{km}\), interpreted as escape from the mission orbit;</li>
+          <li>position error above \(800\,\mathrm{km}\), interpreted as loss of tracking.</li>
+        </ul>
+
+        <p>
+          The game also draws a live satellite actuator schematic. In Recover mode it displays the human thruster command. In Kick mode it displays the reservoir command. In both cases, the displayed bars are the actual entries of \(u\) being passed to the integrator.
+        </p>
+
+        <p>
+          Try the browser game <a href="index.html">here</a>: either recover the orbit by hand, or kick the satellite and see whether the reservoir controller can bring it back.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="implementation">
+        <h4>9. Implementation notes</h4>
+
+        <p>
+          The Python scripts and the browser game implement the same hierarchy:
+        </p>
+
+        <table class="post-table">
+          <tr><th>Layer</th><th>Python</th><th>Browser</th></tr>
+          <tr><td>Reference orbit</td><td><code class="inline">ref_orbit</code></td><td><code class="inline">refOrbit</code></td></tr>
+          <tr><td>Dynamics</td><td><code class="inline">eom</code>, <code class="inline">istep</code></td><td><code class="inline">eom</code>, <code class="inline">integrate</code></td></tr>
+          <tr><td>Force-to-thruster map</td><td><code class="inline">f2u</code></td><td><code class="inline">f2u</code></td></tr>
+          <tr><td>Teacher controller</td><td><code class="inline">cw_ctrl</code></td><td><code class="inline">cwCtrl</code></td></tr>
+          <tr><td>Reservoir</td><td><code class="inline">MemristiveReservoir</code></td><td><code class="inline">MemristiveReservoir</code></td></tr>
+          <tr><td>Readout training</td><td><code class="inline">train_multi</code></td><td><code class="inline">trainMulti</code></td></tr>
+          <tr><td>Deployment controller</td><td><code class="inline">RCCtrl.compute</code></td><td><code class="inline">RCCtrl.compute</code></td></tr>
+        </table>
+
+        <p>
+          The central idea is modular: Newtonian orbital mechanics defines the plant; a conventional CW controller defines the training signal; the memristive reservoir supplies a physical nonlinear memory; and ridge regression turns that memory into force commands. Once trained, the reservoir controller replaces the teacher in the closed loop.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">&larr; Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+          console.warn("AdSense block failed to initialize:", e);
+        }
+      </script>
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+      if (!sidebarContainer) return;
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("Sidebar request failed with status " + response.status);
+        }
+
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+
+        links.forEach(link => {
+          const href = link.getAttribute("href");
+          if (href === currentPath) {
+            link.classList.add("active");
+          }
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
 </body>
 </html>
