@@ -32,8 +32,7 @@ for Ridge), with r = p/N and beta_i = beta_0/sqrt(p), so ||beta||^2 = beta_0^2.
 The cost from the C code is
     cost = (RSS + p*lambda*||w||^2) / (2p)
 which is exactly e = E/P in the theory's notation.
-
-Author: helper script for Francesco
+    
 """
 
 from __future__ import annotations

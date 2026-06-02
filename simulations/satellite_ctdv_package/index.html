@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Memristive Orbit Control</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="panel" aria-label="Game controls">
+      <header class="brand">
+        <h1>Memristive Orbit Control</h1>
+        <p id="controllerState">Training reservoir...</p>
+      </header>
+
+      <div class="tabs" role="tablist" aria-label="Game mode">
+        <button id="modeRecover" class="active" type="button">Recover</button>
+        <button id="modeKick" type="button">Kick</button>
+      </div>
+
+      <section class="readouts" aria-label="Telemetry">
+        <div>
+          <span>Mission</span>
+          <strong id="missionTime">0:00</strong>
+        </div>
+        <div>
+          <span>Altitude</span>
+          <strong id="altitude">400 km</strong>
+        </div>
+        <div>
+          <span>Deviation</span>
+          <strong id="deviation">0 m</strong>
+        </div>
+        <div>
+          <span>Delta-v</span>
+          <strong id="deltaV">0.00 m/s</strong>
+        </div>
+        <div>
+          <span>Power</span>
+          <strong id="power">0.0 W</strong>
+        </div>
+        <div>
+          <span>Score</span>
+          <strong id="score">0</strong>
+        </div>
+      </section>
+
+      <section class="actuator-panel" aria-label="Thruster activity">
+        <div class="actuator-head">
+          <span>Actuators</span>
+          <strong id="controllerMode">Human manual</strong>
+        </div>
+        <div class="sat-viz" aria-hidden="true">
+          <span class="jet jet-px" data-jet="+x"></span>
+          <span class="jet jet-nx" data-jet="-x"></span>
+          <span class="jet jet-py" data-jet="+y"></span>
+          <span class="jet jet-ny" data-jet="-y"></span>
+          <div class="sat-sprite">
+            <span class="solar-panel solar-left"></span>
+            <span class="solar-panel solar-right"></span>
+            <span class="boom boom-left"></span>
+            <span class="boom boom-right"></span>
+            <span class="thruster-port port-px"></span>
+            <span class="thruster-port port-nx"></span>
+            <span class="thruster-port port-py"></span>
+            <span class="thruster-port port-ny"></span>
+            <div class="sat-body">
+              <span>6U</span>
+              <i></i>
+            </div>
+          </div>
+        </div>
+        <div class="thruster-levels">
+          <div class="thruster-level" data-jet-row="+x"><span>+X</span><i></i><strong>0%</strong></div>
+          <div class="thruster-level" data-jet-row="-x"><span>-X</span><i></i><strong>0%</strong></div>
+          <div class="thruster-level" data-jet-row="+y"><span>+Y</span><i></i><strong>0%</strong></div>
+          <div class="thruster-level" data-jet-row="-y"><span>-Y</span><i></i><strong>0%</strong></div>
+        </div>
+        <p class="loss-rule">Defeated at reentry, escape altitude, or 800 km off-track.</p>
+      </section>
+
+      <section id="recoverControls" class="controls" aria-label="Manual thrusters">
+        <div class="pad">
+          <button class="thruster up" type="button" data-thruster="+y">+Y</button>
+          <button class="thruster left" type="button" data-thruster="-x">-X</button>
+          <button class="thruster right" type="button" data-thruster="+x">+X</button>
+          <button class="thruster down" type="button" data-thruster="-y">-Y</button>
+        </div>
+        <label class="range">
+          <span>Throttle</span>
+          <input id="throttle" type="range" min="0.15" max="1" step="0.05" value="1">
+        </label>
+        <label class="range">
+          <span id="collisionStrengthLabel">Collision 40 m/s</span>
+          <input id="collisionStrength" type="range" min="1" max="180" step="1" value="40">
+        </label>
+        <button id="newCollision" class="wide" type="button">New collision</button>
+      </section>
+
+      <section id="kickControls" class="controls hidden" aria-label="Kick controls">
+        <div class="kick-grid">
+          <button class="kick" type="button" data-kick="+y">+Y</button>
+          <button class="kick" type="button" data-kick="-x">-X</button>
+          <button class="kick" type="button" data-kick="+x">+X</button>
+          <button class="kick" type="button" data-kick="-y">-Y</button>
+        </div>
+        <label class="range">
+          <span id="kickStrengthLabel">Kick 12 m/s</span>
+          <input id="kickStrength" type="range" min="1" max="180" step="1" value="12">
+        </label>
+        <div class="meter" aria-label="Kick energy">
+          <span id="kickEnergyBar"></span>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="Simulation controls">
+        <label class="range">
+          <span>Rate</span>
+          <input id="simRate" type="range" min="20" max="180" step="10" value="90">
+        </label>
+        <div class="actions">
+          <button id="pauseButton" type="button">Pause</button>
+          <button id="resetButton" type="button">Reset</button>
+        </div>
+      </section>
+    </aside>
+
+    <main class="stage">
+      <canvas id="gameCanvas"></canvas>
+      <div id="banner" class="banner">Training reservoir...</div>
+    </main>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Computing with strange matter – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+<section id="top">
+  <p class="kicker">reservoir computing • biological • unconventional • computation • memristive networks</p>
+
+  <h3>Computing with strange matter: why and how is biological matter playing Doom these days</h3>
+
+  <p><em>June 2026</em></p>
+
+  <p>
+    <img src="/assets/images/doom1.png" alt="The image of an analog signal" class="blog-image" />
+  </p>
+
+  <p>
+    This post is a bit of a commentary on a simple but slightly unsettling, at least to outsiders,
+    idea which is coming back in fashion: computation does not have to be done by silicon logic gates alone.
+    I did not have much time to polish this, but I wanted to get it out before things get even more out of hand.
+  </p>
+
+  <p>
+    A living neural culture, a bucket of water, an optical cavity, a mechanical oscillator, or a memristive
+    circuit can all be used as computational substrates, provided we know how to drive them and how to read them.
+    When I hear about “neurons playing Doom,” I do not think about a tiny brain with a screen, but a tiny brain
+    <em>in front of a</em> screen, which is basically me in 1995. However, in recent months this has been all over
+    the news because of the work of Cortical Labs, a company that has developed a platform for interfacing living
+    neurons with digital environments.
+  </p>
+
+  <p>
+    I visited Cortical Labs in Melbourne in December 2024, if I am not mistaken, and at that time they were setting
+    up the CL1. I saw the racks, I met the team, and I was deeply impressed. I have always thought that neuromorphic
+    systems should be democratized, in the sense that there should be a way to access these systems without needing
+    specialized labs. These should be platforms that many people can use, and that is what Cortical Labs is trying
+    to do. Kudos to them for that. They are building a platform that allows researchers to deploy code to living
+    neural cultures and observe how they process information.
+  </p>
+
+  <p>
+    The fact that they are using Doom as a benchmark is a bit of a publicity stunt, of course, but it is also a useful
+    test of whether the system can be coupled to a complex digital environment and produce meaningful adaptive responses.
+    We are used to using digital computers to play games, typically using reinforcement learning algorithms. That is a
+    well-established field. But the idea that a living neural culture can do it is remarkable. The key reason is that
+    I have seen the data and I know how complicated this is. The neurons are not just responding to static images. They
+    are responding to a stream of electrical stimulation that encodes the game state, and their collective activity is
+    being decoded into game actions. This is a closed-loop system in which the biological substrate is part of the control loop.
+  </p>
+
+  <p>
+    I am absolutely supportive of this kind of research, simply because it will lead to more research on the subject
+    while reducing the overall costs. I had this idea a few years back regarding memristive systems, but I think the
+    biological case is even more striking. The fact that we can use living neurons as part of a computational system
+    is a powerful demonstration of the idea that computation can be done in many different ways, and that we should not
+    limit ourselves to silicon logic. It is not about replacing digital computers, but about exploring the computational
+    potential of strange matter.
+  </p>
+
+  <p>
+    The first public demonstration of this approach was with Pong. I was talking a couple of days ago with Alon Loeffler
+    from Cortical Labs, and he told me that they have been able to train the neurons to play Pong, and that they are now
+    working on Doom. I forgot the precise order of all the steps, and whether they were using reinforcement learning for
+    Pong or not, but the broader point is clear. Doom is richer than Pong, and it is a more interesting test of the system's
+    ability to learn and adapt.
+  </p>
+
+  <p>
+    The point is not that this is a good way to build a games console. It is a benchmark for closed-loop adaptive behavior.
+    I think this is about a strange hybrid system in which there is an interplay between classical computing architectures
+    and unconventional ones. The question is: what is the matter? Literally.
+  </p>
+
+  <p>
+    Recently, Herbert Jaeger, Beatriz Noheda and Wilfred van der Wiel wrote a manuscript on
+    <a href="https://arxiv.org/abs/2307.15408" target="_blank">formal computing frameworks with physical systems</a>.
+    They also have a shorter manuscript in Nature Communications about this. The paper is not always easy to read, but it
+    gives a sense that something is moving in the background of the computing world. People are starting to think about
+    computation in a more physical way, and that is exciting. We are going back, to some extent, to the pre-Turing era,
+    when computation was not yet formalized as a purely symbolic process.
+  </p>
+
+  <p>
+    We are rediscovering the fact that matter itself can compute, and that we can use it in ways that are not just emulating
+    digital logic. Many people are trying to free themselves from the constructs that the Turing machine gave us, and to think
+    about computation in a more general way. This is not about replacing digital computers. They are there exactly because,
+    as a result of Shannon's and Hamming's work and many others, there is a formal way of doing error correction for those
+    devices. The key issue is that digitization is thresholding. It is an extremely nonlinear operation that allows us to
+    abstract away from the messy details of physical systems. But it is not the only way to do computation.
+  </p>
+
+  <p>
+    In some cases, it may be more efficient to use the physical dynamics directly, without trying to force them into a digital
+    mold. It is about expanding our notion of what computation can be, and what substrates can compute. Quantum computing is,
+    to me at least, a step in that direction, trying to keep a balance between the quantum analog and the digital.
+  </p>
+
+  <p>
+    Computing architectures are complicated objects, but if one thinks about it, it boils down to a few key ingredients.
+    There is an input, there is an internal state, and there is an output. We call these typically encoding and decoding,
+    and the part in the middle is the computation. In reality, computation is the whole thing. The input is some signal
+    that we feed into the system. The internal state is some high-dimensional representation of that signal, which may also
+    have memory of the past. The output is some function of the internal state that gives us the answer we want.
+  </p>
+
+  <p>
+    The standard image of computation is still the digital computer: bits, gates, memory addresses, instructions, arithmetic
+    units. But there is another tradition, older and in some ways more physical, in which one does not design every operation
+    explicitly. Instead, one takes a dynamical system, feeds it a signal, lets its internal state respond, and then learns how
+    to read out the answer. The system is not programmed in the ordinary sense. It is used.
+  </p>
+
+  <p>
+    This is the basic idea behind <em>reservoir computing</em>. A reservoir computer has three parts. First, an input signal is
+    injected into a dynamical system. Second, the system evolves, producing a high-dimensional internal response with memory of
+    the recent past. Third, a simple readout, often just a linear map, is trained to extract the desired output. The reservoir
+    itself is usually not trained. Its job is to transform time-dependent inputs into a rich collection of nonlinear,
+    history-dependent features.
+  </p>
+
+  <p>
+    In equations, one may write this schematically as
+  </p>
+
+  <p class="math equation-block">
+    $$
+    x_{t+1}=F(x_t,u_t),
+    \qquad
+    y_t=W_{\mathrm{out}}x_t.
+    $$
+  </p>
+
+  <p>
+    Here \(u_t\) is the input, \(x_t\) is the internal state of the reservoir, and \(y_t\) is the output. The complicated part
+    is hidden in \(F\), the dynamics of the reservoir. The trained part is only \(W_{\mathrm{out}}\). This is why reservoir
+    computing is so attractive for unconventional hardware: one does not need to manufacture a perfect digital processor.
+    One only needs a physical system with sufficiently rich dynamics, fading memory, and a usable input-output interface.
+  </p>
+
+  <p>
+    This is also why reservoir computing provides a natural language for recent biological and physical computing experiments.
+    The question is no longer: can this object implement NAND gates? The question is: can this object be driven, can it remember,
+    can it separate signals, and can one train a readout from its internal state?
+  </p>
+
+  <div class="toc">
+    <strong>Contents</strong>
+    <ul>
+      <li><a href="#reservoir">1. Reservoir computing: using dynamics instead of designing algorithms</a></li>
+      <li><a href="#cortical">2. Cortical Labs and biological reservoirs</a></li>
+      <li><a href="#doom">3. Why make neurons play Doom?</a></li>
+      <li><a href="#physical">4. Physical systems as computers</a></li>
+      <li><a href="#somn">5. SOMN: a self-organizing memristive network</a></li>
+      <li><a href="#memristive-model">6. A closed memristive-network equation</a></li>
+      <li><a href="#control">7. From memory to control</a></li>
+    </ul>
+  </div>
+
+  <div class="hr"></div>
+</section>
+
+<section id="reservoir">
+  <h4>1. Reservoir computing: using dynamics instead of designing algorithms</h4>
+
+  <p>
+    A useful way to think about reservoir computing is that it separates computation into two parts: a physical transformation
+    and a learned interpretation. The reservoir transforms the input into internal motion. The readout interprets this motion.
+  </p>
+
+  <p>
+    This is different from the usual deep-learning picture, where many layers of parameters are adjusted by backpropagation.
+    In reservoir computing, the internal network may be random, fixed, biological, optical, mechanical, chemical, or electronic.
+    One does not usually optimize all its microscopic degrees of freedom. Instead, one relies on the fact that a nonlinear dynamical
+    system naturally mixes signals, stores recent history, and creates a high-dimensional representation of the input.
+  </p>
+
+  <p>
+    This sounds abstract, but the recipe is very concrete. Drive the system with a signal. Measure many internal variables.
+    Fit a linear map from those measured variables to the desired answer. Then deploy the system, often in closed loop.
+  </p>
+
+  <p>
+    The reservoir therefore behaves a little like a complicated pond. You throw stones into it, waves interfere, and the pattern
+    on the surface contains information about what was thrown in recently. You do not control every water molecule. You only learn
+    how to read the waves.
+  </p>
+
+  <p>
+    This is why physical reservoirs are interesting. Matter already computes in the sense that it evolves. The question is whether
+    we can make that evolution useful.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="cortical">
+  <h4>2. Cortical Labs and biological reservoirs</h4>
+
+  <p>
+    Cortical Labs is one of the more striking examples of this idea. Their systems use living neurons grown on a silicon interface.
+    The neurons are not a metaphor for a neural network. They are actual biological cells, electrically stimulated and electrically
+    recorded through an electrode array.
+  </p>
+
+  <p>
+    The company calls its current platform CL1, a biological computer designed to let researchers deploy code to living neural
+    cultures and observe how they process information. The basic loop is reservoir-like. A digital system translates information
+    from a task into stimulation patterns. The neural culture responds with spiking activity. That activity is recorded, decoded,
+    and used to affect the task. The biological system is therefore placed inside an input-output loop.
+  </p>
+
+  <p>
+    One can think of this as a strange hybrid. The environment is digital. The interface is electronic. The adaptive medium is
+    biological. The computation is not located in any one of these pieces alone, but in the closed loop between them.
+  </p>
+
+  <p>
+    This is important. When people hear that neurons are “playing a game,” it is tempting to imagine a tiny brain with a screen.
+    That is not what is happening. The neurons receive structured electrical stimulation derived from the game state, and their
+    collective electrical response is mapped back into game actions. The biological culture is not seeing pixels in the human sense.
+    It is being coupled to a task through an artificial sensory-motor interface.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="doom">
+  <h4>3. Why make neurons play Doom?</h4>
+
+  <p>
+    The public-facing result that attracted attention was the use of living neurons interfaced with Cortical Labs' platform to
+    play <em>Doom</em>. This follows an earlier line of experiments in which neural cultures were trained on simpler games such as
+    <em>Pong</em>. The point is not that this is a good way to build a games console. It is a benchmark for closed-loop adaptive
+    behavior.
+  </p>
+
+  <p>
+    <em>Pong</em> is almost one-dimensional: track the ball, move the paddle. <em>Doom</em>, even in a simplified setup, is richer:
+    there is movement, orientation, obstacles, enemies, damage, and delayed consequences. This makes it a more interesting test
+    of whether a biological substrate can be coupled to a digital world and produce meaningful adaptive responses.
+  </p>
+
+  <p>
+    The mechanism is again reservoir-like. The game state is encoded into electrical signals. These signals stimulate the neurons.
+    The neurons respond through patterns of activity. A decoder maps those patterns into actions such as moving or shooting.
+    Feedback from the game changes the subsequent stimulation. The system is therefore not simply classifying static images.
+    It is embedded in a dynamical loop.
+  </p>
+
+  <p>
+    One should be careful not to oversell this. The performance is primitive compared with ordinary software. But that is not the
+    interesting comparison. The interesting point is that a living, adaptive physical substrate can be used as part of a computational
+    control loop at all. It is a powerful demonstration of the idea that computation can be done in many different ways, and that we
+    should not limit ourselves to silicon logic.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="physical">
+  <h4>4. Physical systems as computers</h4>
+
+  <p>
+    Biological reservoirs are only one instance of a broader trend. Many groups are exploring computation with physical systems:
+    photonic reservoirs, spintronic devices, mechanical metamaterials, chemical oscillators, soft matter, and memristive networks.
+    These systems are very different physically, but the computational philosophy is similar.
+  </p>
+
+  <p>
+    Rather than forcing matter to imitate a conventional processor, one asks what the matter already does well. Does it oscillate?
+    Does it synchronize? Does it remember? Does it relax slowly? Does it respond nonlinearly? Does it separate inputs into different
+    regions of state space? If yes, then perhaps it can serve as a computational substrate.
+  </p>
+
+  <p>
+    This is a reversal of the usual engineering instinct. We normally try to suppress the messy dynamics of matter so that clean
+    digital logic remains. Reservoir computing does the opposite. It uses the mess.
+  </p>
+
+  <p>
+    Memristive systems are particularly natural in this context because they combine nonlinearity with memory. A memristor is a
+    circuit element whose resistance depends on its internal state, and that internal state depends on the history of the current
+    or voltage applied to it. In other words, memory is not added externally. It is part of the device physics.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="somn">
+  <h4>5. SOMN: a self-organizing memristive network</h4>
+
+  <p>
+    Let me now move from living neurons to a substrate that is not alive, but that is also not quite a conventional circuit:
+    a self-organizing memristive network, or SOMN. The acronym is ugly, but the object is beautiful. A SOMN is a network
+    of nanoscale resistive-memory elements whose conductances change when they are electrically stimulated. In the most common
+    experimental examples, these networks are made from nanowires or nanoparticles. They are not laid down one by one like
+    transistors in a clean digital architecture. They are often grown, deposited, or assembled in a way that produces a dense,
+    irregular, strongly interconnected physical graph.
+  </p>
+
+  <p>
+    That irregularity is not a defect. It is the point. In a conventional digital circuit, disorder is usually the enemy because
+    the aim is to make every logical operation reproducible, thresholded, and independent of microscopic accidents. In a SOMN,
+    the disorder is part of the computational material. The network has many possible conduction pathways. When voltage is applied,
+    some junctions become more conductive, others relax, and the effective circuit reorganizes itself. The system has memory because
+    its present conductance depends on its past stimulation. It has nonlinearity because the response is not proportional to the
+    input. It has collective behavior because all of this happens under Kirchhoff constraints: the current and voltage distributions
+    are global objects, not local decorations placed on independent edges.
+  </p>
+
+  <p>
+    This is why I find the comparison with biological matter useful, even if one should not push it too far. In a biological neural
+    culture, the adaptive units are cells and synapses. In a SOMN, the adaptive units are memristive junctions and conduction paths.
+    In both cases, the substrate is not merely storing numbers. It is changing its own effective wiring as it is driven. This is the
+    sense in which the network is self-organizing. The input does not simply pass through a fixed filter. It reshapes the filter.
+  </p>
+
+  <p>
+    The recent perspective by myself, Gianluca Milano, Adam Stieg, Carlo Ricciardi, Simon Brown, and Zdenka Kuncic,
+    <a href="https://arxiv.org/abs/2509.00747" target="_blank"><em>Self-Organising Memristive Networks as Physical Learning Systems</em></a>,
+    makes precisely this point. SOMNs should not be understood only as another way of implementing artificial neural networks.
+    They are better viewed as physical learning systems: matter whose intrinsic dynamics can be harnessed for adaptation,
+    classification, memory, and control. This is not the usual neuromorphic story in which one first writes down an algorithm
+    inspired by the brain and then asks hardware to execute it. The more interesting possibility is that some of the learning
+    is already in the physics.
+  </p>
+
+  <p>
+    At the microscopic level, the relevant effect is resistive switching. In a nanowire network, for instance, the junctions between
+    wires can change conductance because ions move, conductive filaments form or rupture, and atomic-scale rearrangements modify the
+    local transport. A single junction can therefore behave a little like a synapse: its conductance depends on its recent electrical
+    history. But the crucial step is to stop thinking about a single junction. A SOMN is a network, and networks do things that single
+    devices do not. A local conductance change modifies the current distribution, which changes the fields elsewhere, which changes
+    the probability that other junctions switch. The network responds to itself.
+  </p>
+
+  <p>
+    This feedback is where the physics becomes interesting. The network can show short-term plasticity, because recently activated
+    pathways remain temporarily easier to activate. It can show longer-lived changes, because repeated stimulation can reinforce
+    certain conduction paths. It can show avalanche-like dynamics, because one switching event can redistribute voltages and trigger
+    others. It can also show transitions between low-conductance and high-conductance regimes, which is why statistical physics enters
+    naturally. One is not just measuring a device characteristic. One is watching a disordered adaptive system move between collective
+    states.
+  </p>
+
+  <p>
+    This is also why these systems are not simply noisy resistors. A noisy resistor fluctuates around a fixed response. A SOMN changes
+    the response itself. The network has an internal state, even if that state is not directly addressable junction by junction. In
+    fact, the lack of microscopic addressability is part of the appeal. Biological brains do not give us access to every synapse as an
+    individually programmable variable either. Yet they compute. A SOMN asks whether a much simpler abiotic material can do something
+    analogous: not in the sense of being intelligent, but in the sense of using collective physical adaptation as a resource.
+  </p>
+
+  <p>
+    In reservoir-computing language, the SOMN is a reservoir because an input voltage signal drives the network into a high-dimensional
+    internal trajectory. The measurable output may be a set of terminal currents, voltages, effective conductances, or selected internal
+    variables in a simulation. The task is not to control every microscopic junction. The task is to stimulate the system, let its memory
+    and nonlinearity expand the input into a richer dynamical representation, and then train a readout.
+  </p>
+
+  <p class="math equation-block">
+    $$
+    E(t) \longrightarrow w(t), I(t), V(t) \longrightarrow y(t).
+    $$
+  </p>
+
+  <p>
+    Here \(E(t)\) denotes the external drive, while \(w(t)\) represents the internal memory variables of the memristive network.
+    The readout \(y(t)\) may be a classification, a prediction, or a control signal. The important point is that the intermediate
+    state is not an artificial hidden layer stored in RAM. It is a physical state of matter.
+  </p>
+
+  <p>
+    This gives a slightly different way of thinking about learning. In software, learning usually means changing parameters in an
+    explicit model. In a SOMN, learning can also mean guiding the substrate into a useful dynamical regime. One can use the network
+    as a reservoir, keeping the physical system fixed during readout training. Or one can exploit the adaptive conductance changes
+    themselves, so that the substrate participates more directly in learning. This is why SOMNs sit somewhere between reservoir
+    computing, neuromorphic engineering, adaptive matter, and statistical mechanics.
+  </p>
+
+  <p>
+    There is also a practical motivation. If one wants intelligence at the edge — in a sensor, a robot, a medical device, or an
+    autonomous system — then sending all data to a giant server is often wasteful. The physical world produces continuous, noisy,
+    time-dependent signals. A physical learning system that sits directly at the interface with those signals, processes them in
+    situ, and adapts with low power is conceptually very attractive. Whether SOMNs become a mature technology is a separate question.
+    But the direction is clear: stop separating sensing, memory, computation, and adaptation into different boxes when matter can
+    sometimes do several of these things at once.
+  </p>
+
+  <p>
+    So the right mental image is not a tiny digital computer made out of nanowires. It is closer to an adaptive electrical material.
+    You perturb it, it reorganizes, it remembers, it relaxes, and if you are clever enough you can use that trajectory as a computation.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="memristive-model">
+  <h4>6. A closed memristive-network equation</h4>
+
+  <p>
+    The advantage of SOMNs is that they look messy enough to be useful. The danger is that they look so messy that one might be
+    tempted to describe them only phenomenologically. That would be a mistake. One of the nice things about memristive circuits is
+    that, under reasonable assumptions, one can write closed equations for the internal memory variables of the whole network.
+    These equations do not ignore the circuit constraints. On the contrary, the constraints appear explicitly.
+  </p>
+
+  <p>
+    A useful compact model for this kind of network appears in
+    <a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.95.022140" target="_blank"><em>The complex dynamics of memristive circuits: analytical results and universal slow relaxation</em></a>
+    and in related work on the graph-theoretic description of memristive networks. In one common form, the memory vector \(w(t)\)
+    evolves according to an equation of the type
+  </p>
+
+  <p class="math equation-block">
+    $$
+    \frac{dw}{dt}
+    =
+    -\frac{w}{\beta}
+    +
+    \frac{\alpha}{V_0}
+    \Omega
+    \left(I-\xi W \Omega\right)^{-1}
+    E(t),
+    $$
+  </p>
+
+  <p>
+    with
+  </p>
+
+  <p class="math equation-block">
+    $$
+    W=\mathrm{diag}(w_1,\ldots,w_N),
+    \qquad
+    \xi=\frac{R_{\mathrm{off}}-R_{\mathrm{on}}}{R_{\mathrm{off}}}.
+    $$
+  </p>
+
+  <p>
+    Here \(w_i(t)\) is the internal state of the \(i\)-th memristive element. Roughly speaking, it tells us where that element sits
+    between a high-resistance and a low-resistance state. The vector \(E(t)\) represents the external voltage sources or effective
+    driving signal applied to the network. The parameter \(\beta\) sets a relaxation timescale, while \(\alpha\) and \(V_0\) set the
+    strength and scale of the driven response. The parameter \(\xi\) measures the contrast between the two limiting resistances of
+    the memristor.
+  </p>
+
+  <p>
+    The first term, \(-w/\beta\), is the boring but essential part: memory fades. Without some fading memory, a reservoir can become
+    too rigid, carrying the scars of old inputs forever. The second term is the interesting part. It says that the drive does not
+    simply act independently on each memristor. It is filtered through the topology and instantaneous state of the whole circuit.
+    That is the role of the matrix
+  </p>
+
+  <p class="math equation-block">
+    $$
+    \Omega
+    \left(I-\xi W\Omega\right)^{-1}.
+    $$
+  </p>
+
+  <p>
+    The matrix \(\Omega\) is a projector determined by the circuit graph. If \(B\) is the node-edge incidence matrix, then one useful
+    expression is
+  </p>
+
+  <p class="math equation-block">
+    $$
+    \Omega = I-B^T(BB^T)^+B,
+    $$
+  </p>
+
+  <p>
+    where the plus sign denotes the Moore-Penrose pseudoinverse. This projector encodes Kirchhoff constraints. It removes
+    unphysical edge configurations and keeps only the degrees of freedom compatible with the circuit topology. In other words,
+    the graph is not a decoration around the dynamics. The graph is inside the dynamics.
+  </p>
+
+  <p>
+    This is the mathematical reason why SOMNs are not just collections of isolated memory elements. A voltage applied at one part
+    of the network changes the current distribution everywhere, subject to the graph constraints. That redistribution changes the
+    evolution of other memory variables, which changes the effective resistance landscape, which changes the current distribution
+    again. The inverse matrix is not just algebraic clutter. It is the signature of feedback.
+  </p>
+
+  <p>
+    This also clarifies why topology matters. A tree, a dense random graph, a lattice, and a scale-free network do not merely give
+    different wiring diagrams. They give different projectors, different cycles, different correlations, and different dynamical
+    responses. In a reservoir-computing setting, that means they give different computational features. Some topologies may store
+    input history well but be too linear. Others may be highly nonlinear but forget too quickly. Others may sit close to a transition
+    where small inputs produce large, structured responses. That last regime is often where reservoir computing becomes interesting.
+  </p>
+
+  <p>
+    The SOMN perspective paper emphasizes precisely this bridge between microscopic physics and macroscopic learning. At the junction
+    scale, one has ionic motion, filament formation, tunneling, and local conductance changes. At the network scale, one has plasticity,
+    avalanches, phase transitions, and long-range correlations. At the computational scale, one asks whether these dynamics can be
+    used for memory, classification, prediction, and control. The same object is therefore a device, a circuit, a disordered physical
+    system, and a learning substrate.
+  </p>
+
+  <p>
+    Mean-field models are useful here because experiments often measure global quantities such as effective conductance, not every
+    microscopic junction state. A mean-field theory replaces the full network by a reduced description in terms of macroscopic
+    variables, for instance the average conductance or the fraction of active junctions. This loses microscopic detail, but it
+    can reveal transitions between low- and high-conductance regimes, the effect of voltage thresholds, and the conditions under
+    which the network switches collectively rather than gradually.
+  </p>
+
+  <p>
+    From the point of view of computation, this is not a side issue. A reservoir needs both memory and separability. If it forgets
+    instantly, it cannot process temporal signals. If it remembers everything too strongly, it becomes saturated and unresponsive.
+    If it is too linear, it cannot generate useful features. If it is too nonlinear, it may become unstable or chaotic in the wrong
+    way. The computational sweet spot is usually a balance: enough memory, enough nonlinearity, enough stability, and enough
+    sensitivity to input. In memristive networks, these properties are physical. They are controlled by device timescales, resistance
+    contrast, network topology, stimulation protocol, and operating point.
+  </p>
+
+  <p>
+    This is also the lesson of the work with Forrest Sheldon and Artemy Kolchinsky on the computational capacity of LRC, memristive,
+    and hybrid reservoirs:
+    <a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.106.045310" target="_blank"><em>Computational capacity of lrc, memristive, and hybrid reservoirs</em></a>.
+    Purely linear circuits are good at memory but poor at nonlinear transformations. Purely memristive circuits provide nonlinear
+    memory, but one still has to tune them carefully. Hybrid reservoirs, where inductors, capacitors, resistors, and memristive
+    elements are combined, can trade memory against nonlinearity in a more controlled way. This is important because it moves the
+    discussion away from the vague statement “memristors are brain-like” toward the more useful engineering question: what functions
+    can this physical reservoir approximate, and how does that capacity scale with system size?
+  </p>
+
+  <p>
+    So the model equation above is not just a toy. It is a compact way of saying something physically important: the computation
+    performed by a memristive network is the result of memory, nonlinearity, and Kirchhoff-constrained topology acting together.
+    That is exactly why such a network is a natural candidate for reservoir computing.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+<section id="control">
+  <h4>7. From memory to control: a memristive reservoir for satellite dynamics</h4>
+
+  <p>
+    Up to this point, I have described the reservoir as something that transforms signals. But the really interesting case is when
+    the reservoir is placed inside a control loop. This brings us back to the biological example. The neurons in Cortical Labs'
+    system are not merely classifying a frozen frame from a game. Their activity changes the game, and the changed game produces
+    the next input. The same closed-loop structure appears in the satellite-control toy model.
+  </p>
+
+  <p>
+    The setup is simple in spirit. There is a satellite, or more precisely a dynamical system representing the satellite's motion.
+    There is a reference orbit we would like it to follow. A perturbation pushes the satellite away from that reference. The controller
+    observes some error signal, for instance the difference between the current state and the desired state, and produces a thrust
+    command. The question is whether a reservoir with memory can help produce a useful control signal.
+  </p>
+
+  <p>
+    Schematically, the loop is
+  </p>
+
+  <p class="math equation-block">
+    $$
+    \text{orbit error}
+    \longrightarrow
+    \text{encoding}
+    \longrightarrow
+    \text{memristive reservoir}
+    \longrightarrow
+    \text{linear readout}
+    \longrightarrow
+    \text{thrust}
+    \longrightarrow
+    \text{new orbit error}.
+    $$
+  </p>
+
+  <p>
+    This is the entire philosophy of reservoir control in one line. The memristive network is not solving the equations of orbital
+    mechanics symbolically. It is not deriving a control law in the way one would in a classical control textbook. Instead, the
+    orbital error is converted into a time-dependent electrical drive \(E(t)\). That drive pushes the memristive network through
+    a trajectory of internal states \(w(t)\). A readout then maps those states to a thrust command.
+  </p>
+
+  <p class="math equation-block">
+    $$
+    u_{\mathrm{thrust}}(t)=W_{\mathrm{out}}\,\phi(w(t)).
+    $$
+  </p>
+
+  <p>
+    Here \(\phi(w(t))\) denotes the reservoir features. In the simplest implementation, \(\phi(w)=w\), so the readout is just a
+    linear combination of memory variables. In a slightly richer implementation, one may include currents, voltages, delayed states,
+    nonlinear functions of \(w\), or combinations of these. The point is that the trainable part remains simple. The complexity is
+    delegated to the physical dynamics.
+  </p>
+
+  <p>
+    The satellite itself can be represented by a state vector \(s(t)\), containing positions and velocities, evolving under natural
+    dynamics plus a control input:
+  </p>
+
+  <p class="math equation-block">
+    $$
+    \dot{s}(t)=f(s(t)) + G(s(t))u_{\mathrm{thrust}}(t).
+    $$
+  </p>
+
+  <p>
+    The reference orbit \(s_{\mathrm{ref}}(t)\) gives an error
+  </p>
+
+  <p class="math equation-block">
+    $$
+    e(t)=s(t)-s_{\mathrm{ref}}(t).
+    $$
+  </p>
+
+  <p>
+    This error is encoded as the reservoir drive:
+  </p>
+
+  <p class="math equation-block">
+    $$
+    E(t)=A_{\mathrm{in}}e(t),
+    $$
+  </p>
+
+  <p>
+    where \(A_{\mathrm{in}}\) is an input mask or encoding matrix. The reservoir then evolves according to the memristive network
+    equation, and the readout produces the thrust. During training, one adjusts \(W_{\mathrm{out}}\), not the whole reservoir. This is
+    the great practical convenience of reservoir computing: the difficult nonlinear temporal expansion is performed by the substrate,
+    while the learning problem is often reduced to a regression problem.
+  </p>
+
+  <p>
+    In a standard supervised version, one first generates examples of good corrective behavior. These may come from a known controller,
+    an optimal-control calculation, a hand-designed stabilizing policy, or a set of simulated trajectories where the desired thrust is
+    known. The reservoir is driven by the corresponding error signals, producing a time series of internal states. One then solves
+  </p>
+
+  <p class="math equation-block">
+    $$
+    W_{\mathrm{out}}
+    =
+    \arg\min_W
+    \sum_t
+    \left\|
+    u_{\mathrm{target}}(t)-W\phi(w(t))
+    \right\|^2
+    +
+    \lambda \|W\|^2,
+    $$
+  </p>
+
+  <p>
+    where the last term is the usual ridge regularization. After training, the target controller is removed. The satellite is perturbed,
+    the error drives the reservoir, and the reservoir readout generates the thrust in real time.
+  </p>
+
+  <p>
+    Why use a reservoir here at all? Because control is not just a function of the instantaneous error. In many dynamical systems,
+    what matters is the recent history: whether the satellite is moving toward or away from the reference orbit, whether the error is
+    growing or shrinking, whether a correction has already been applied, and how the system has responded. A memoryless controller
+    sees only a snapshot. A reservoir sees a fading trace of the recent past.
+  </p>
+
+  <p>
+    This is exactly where a memristive reservoir is conceptually natural. The memory variables \(w_i(t)\) are not extra registers
+    attached to the circuit. They are the circuit. The network carries a physical trace of previous inputs, and because the response
+    is nonlinear, that trace is not merely a moving average. It is a structured, topology-dependent embedding of the recent error
+    history. The readout can then use this embedding to produce a control action.
+  </p>
+
+  <p>
+    In the browser toy I made,
+    <a href="/simulations/satellite_ctdv_package/index.html" target="_blank">try it yourself</a>,
+    this idea is presented in a deliberately playful way. In one mode, you perturb the satellite and correct it manually by firing
+    thrusters. In the reservoir-control mode, the perturbation is fed into the memristive reservoir, and the readout attempts to pull
+    the trajectory back toward the reference orbit. The longer notes are here:
+    <a href="/simulations/satellite_ctdv_package/ctdv-satellite-reservoir-control.html" target="_blank">satellite reservoir-control notes</a>.
+  </p>
+
+
+  <p>
+    The toy is not meant to claim that this is the optimal way to control a satellite. A serious spacecraft controller must deal with
+    constraints, uncertainty, fuel limits, actuator saturation, safety margins, verification, and all the things that make real control
+    engineering difficult. The point is more basic and, I think, more interesting: a physical reservoir can be coupled to a dynamical
+    environment and used as part of a feedback controller.
+    One can see in the gif below how the reservoir learns to produce a thrust that counteracts 
+    the perturbation and stabilizes the orbit.
+    <img src="/blog/images/satellite_ctdv.gif" alt="Satellite Reservoir Control">
+  </p>
+
+  <p>
+    This places the memristive example and the Cortical Labs example in the same conceptual family. In one case, the environment is
+    a game and the substrate is a living neural culture. In the other, the environment is an orbital dynamical system and the substrate
+    is a memristive network. The details are completely different, but the architecture is the same:
+  </p>
+
+  <p class="math equation-block">
+    $$
+    \text{state of world}
+    \rightarrow
+    \text{physical substrate}
+    \rightarrow
+    \text{action}
+    \rightarrow
+    \text{new state of world}.
+    $$
+  </p>
+
+  <p>
+    Once this loop is closed, the substrate is no longer just a passive device being measured. It becomes part of the causal structure
+    of the task. Its memory affects the action, the action affects the environment, and the environment drives the next state of the
+    substrate. This is where unconventional computing becomes more than an exotic way to classify data. It becomes a way to build
+    adaptive physical agents.
+  </p>
+
+  <p>
+    There is a deeper point here about what we mean by computation. A Turing machine computes by manipulating symbols according to
+    rules. A digital computer implements this idea with astonishing reliability by using thresholded logic and error correction. A
+    reservoir computer computes differently. It computes by being a dynamical system whose response can be interpreted. A memristive
+    reservoir computes by letting electrical memory, nonlinearity, and topology do part of the work. A biological reservoir computes
+    by letting living excitable tissue adapt inside a feedback loop.
+  </p>
+
+  <p>
+    None of this replaces digital computers. In fact, all of these demonstrations still rely on ordinary computers for encoding,
+    decoding, measurement, simulation, training, and analysis. But they change the role of the digital computer. The digital machine
+    is no longer necessarily the place where all computation happens. It can become the scaffold around another physical substrate.
+    It can stimulate, measure, train, and stabilize a piece of strange matter that performs the transformation we need.
+  </p>
+
+  <p>
+    That, to me, is the real story behind neurons playing games and memristive networks controlling toy satellites. The headline is
+    weird, but the underlying question is serious: what kinds of matter can be made computational, and what kinds of tasks become
+    easier when memory and dynamics are already built into the material?
+  </p>
+
+  <p>
+    SOMNs are one answer. Biological neural cultures are another. Optical cavities, spintronic systems, soft matter, chemical media,
+    and mechanical metamaterials are others. They are all reminders that computation is not only what happens after we have cleaned
+    matter up into bits. Sometimes computation begins before that, in the messy physical evolution we usually try to suppress.
+  </p>
+
+  <div class="hr"></div>
+</section>
+
+
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
