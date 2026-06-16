@@ -1,0 +1,2 @@
+success,relative_residual,max_pattern_residual,max_network_fp_residual,n_patterns,n_edges,n_nonzero_edges,sum_conductance,all_hurwitz
+1,0.00208074277963,2.11234336583e-15,1.03554709841e-15,1,120,120,12,1

@@ -1,0 +1,5 @@
+epsilon,n_initial,n_fixed_points_found,n_stable_found,largest_basin_fraction,smallest_basin_count,max_residual,max_real_eig_worst,regime
+0.0,200,8,8,0.17,15,1.9357399876532503e-16,-1.1298437881283523,weak
+0.02,200,8,8,0.175,18,3.925231146709438e-16,-1.072078438912574,weak
+0.2,200,8,8,0.2,17,3.8714799753065006e-16,-0.33749744557424755,intermediate
+2.0,200,2,2,0.56,88,4.910148818092704e-16,-0.5253981093619176,strong

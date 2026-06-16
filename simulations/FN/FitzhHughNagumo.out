@@ -1,0 +1,28 @@
+\BOOKMARK [1][-]{section.1}{What these notes are about}{}% 1
+\BOOKMARK [1][-]{section.2}{The NDR memristor and the FitzHugh\205Nagumo motif}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{The NDR memristor}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{The FitzHugh\205Nagumo circuit motif}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{Circuit equations for the coupled network}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{Network topology and the incidence matrix}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{Kirchhoff's laws and the conductance Laplacian}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{The FitzHugh\205Nagumo equations and their NDR realisation}{}% 8
+\BOOKMARK [2][-]{subsection.4.1}{The FitzHugh\205Nagumo equations}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.2}{Identifying \040and \040with FN variables}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.3}{The coupled FN network in dimensionless form}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.4}{Voltage sources in the intermediate network}{section.4}% 12
+\BOOKMARK [1][-]{section.5}{Equilibria and nullclines of the isolated motif}{}% 13
+\BOOKMARK [1][-]{section.6}{Persistence and stability under weak coupling}{}% 14
+\BOOKMARK [1][-]{section.7}{Equilibria and stability of the coupled network}{}% 15
+\BOOKMARK [1][-]{section.8}{Connection with neural ODEs}{}% 16
+\BOOKMARK [1][-]{section.9}{Training the resistive mesh as an associative memory}{}% 17
+\BOOKMARK [2][-]{subsection.9.1}{Patterns as target equilibria}{section.9}% 18
+\BOOKMARK [2][-]{subsection.9.2}{Algebraic pretraining by nonnegative least squares}{section.9}% 19
+\BOOKMARK [2][-]{subsection.9.3}{Compatibility restrictions imposed by passivity}{section.9}% 20
+\BOOKMARK [2][-]{subsection.9.4}{Stability of learned memories}{section.9}% 21
+\BOOKMARK [2][-]{subsection.9.5}{Trajectory-level recall training}{section.9}% 22
+\BOOKMARK [2][-]{subsection.9.6}{What the architecture can and cannot store}{section.9}% 23
+\BOOKMARK [1][-]{section.10}{Numerical experiment: 8 by 8 digit memories}{}% 24
+\BOOKMARK [2][-]{subsection.10.1}{Experimental setup}{section.10}% 25
+\BOOKMARK [2][-]{subsection.10.2}{Learned resistor mesh}{section.10}% 26
+\BOOKMARK [2][-]{subsection.10.3}{Recall from corrupted initial conditions}{section.10}% 27
+\BOOKMARK [2][-]{subsection.10.4}{What the experiment tells us}{section.10}% 28

@@ -395,6 +395,46 @@ def _unique_sorted_curve(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.n
     return np.asarray(xs), np.asarray(ys)
 
 
+def compute_ols_limit_theory(r: float, lam: float, beta: BetaSpec,
+                             s_grid: np.ndarray) -> TheoryCurve:
+    """Exact lambda=0 limit for p<N, where Lasso reduces to OLS."""
+    if r >= 1.0:
+        raise ValueError("lambda=0 is the OLS limit; this exact branch needs r < 1.")
+
+    s_used = np.asarray(s_grid, dtype=float)
+    s_used = s_used[s_used > -0.999]
+    if s_used.size < 3:
+        raise ValueError("Need at least three s points with s > -1 for lambda=0.")
+    s_used = np.sort(s_used)
+
+    a = (1.0 - r) / (2.0 * r)
+    Phi = a * np.log1p(s_used)
+    xi = a / (1.0 + s_used)
+    psi = Phi - s_used * xi
+    i0 = int(np.argmin(np.abs(s_used)))
+    psi = psi - psi[i0]
+
+    e_grid, I_grid = _unique_sorted_curve(xi, psi)
+    if I_grid.size:
+        I_grid = I_grid - np.nanmin(I_grid)
+
+    return TheoryCurve(
+        r=r,
+        lam=lam,
+        beta=beta,
+        e_mean=a,
+        v_per_p=a,
+        s_grid=s_used,
+        Phi_grid=Phi,
+        xi_grid=xi,
+        psi_grid=psi,
+        e_grid=e_grid,
+        I_grid=I_grid,
+        status=np.ones(s_used.size, dtype=int),
+        theta=np.empty((s_used.size, 0), dtype=float),
+    )
+
+
 def compute_theory(r: float, lam: float, beta: BetaSpec,
                    s_grid: np.ndarray | None = None,
                    n_hermite_z: int = 80,
@@ -409,6 +449,9 @@ def compute_theory(r: float, lam: float, beta: BetaSpec,
         raise ValueError("lambda must be nonnegative")
 
     grid_input = default_s_grid() if s_grid is None else np.asarray(s_grid, dtype=float)
+    if lam == 0.0:
+        return compute_ols_limit_theory(r, lam, beta, grid_input)
+
     quad = make_quadrature(beta, n_hermite_z, n_hermite_beta)
     rng = np.random.default_rng(seed)
 
@@ -768,6 +811,15 @@ def plot_group(lam: float, groups_for_r: list[Group], theory: TheoryCurve,
         counts, total_n = streaming_histogram(
             [rn.path for rn in g.runs], bins=bins, chunk_lines=chunk_lines
         )
+        declared_n = g.samples * len(g.runs)
+        if declared_n > 0 and total_n > 0:
+            rel_gap = abs(total_n - declared_n) / max(total_n, declared_n)
+            if rel_gap > 0.05:
+                print(
+                    f"  warning: {g.samples_str} for p={g.p}, N={g.N} "
+                    f"declares {declared_n:.3g} samples, but read {total_n:.3g} lines.",
+                    file=sys.stderr,
+                )
         e_emp, I_emp = empirical_rate(counts, total_n, g.p, centers,
                                       min_count=min_count)
         curves.append({
@@ -825,8 +877,8 @@ def plot_group(lam: float, groups_for_r: list[Group], theory: TheoryCurve,
             g = c["group"]
             label = (
                 rf"MC $p={g.p}$, $N={g.N}$, "
-                rf"{g.samples_str}/run x {len(g.runs)} "
-                rf"($N_{{tot}}\approx {c['total_n']:.1e}$)"
+                rf"files={len(g.runs)}, "
+                rf"$N_{{tot}}\approx {c['total_n']:.1e}$"
             )
             ax_top.plot(c["e"], c["I"], marker, ms=2.8, color=col,
                         label=label, alpha=0.85)
@@ -975,7 +1027,7 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"  p={g.p:>4d}  N={g.N:>4d}  beta0={g.beta0:g}  "
             f"samples={g.samples_str:>8s}  reps=[{reps}]  "
-            f"total={g.total_samples:.2e}"
+            f"declared_total={g.total_samples:.2e}"
         )
 
     by_r_beta0: dict[tuple[float, float], list[Group]] = {}

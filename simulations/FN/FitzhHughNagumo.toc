@@ -1,0 +1,28 @@
+\contentsline {section}{\numberline {1}What these notes are about}{2}{section.1}
+\contentsline {section}{\numberline {2}The NDR memristor and the FitzHugh--Nagumo motif}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}The NDR memristor}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}The FitzHugh--Nagumo circuit motif}{4}{subsection.2.2}
+\contentsline {section}{\numberline {3}Circuit equations for the coupled network}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}Network topology and the incidence matrix}{5}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Kirchhoff's laws and the conductance Laplacian}{6}{subsection.3.2}
+\contentsline {section}{\numberline {4}The FitzHugh--Nagumo equations and their NDR realisation}{6}{section.4}
+\contentsline {subsection}{\numberline {4.1}The FitzHugh--Nagumo equations}{6}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Identifying $\phi $ and $\xi $ with FN variables}{7}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}The coupled FN network in dimensionless form}{8}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Voltage sources in the intermediate network}{8}{subsection.4.4}
+\contentsline {section}{\numberline {5}Equilibria and nullclines of the isolated motif}{9}{section.5}
+\contentsline {section}{\numberline {6}Persistence and stability under weak coupling}{10}{section.6}
+\contentsline {section}{\numberline {7}Equilibria and stability of the coupled network}{12}{section.7}
+\contentsline {section}{\numberline {8}Connection with neural ODEs}{13}{section.8}
+\contentsline {section}{\numberline {9}Training the resistive mesh as an associative memory}{14}{section.9}
+\contentsline {subsection}{\numberline {9.1}Patterns as target equilibria}{14}{subsection.9.1}
+\contentsline {subsection}{\numberline {9.2}Algebraic pretraining by nonnegative least squares}{15}{subsection.9.2}
+\contentsline {subsection}{\numberline {9.3}Compatibility restrictions imposed by passivity}{16}{subsection.9.3}
+\contentsline {subsection}{\numberline {9.4}Stability of learned memories}{16}{subsection.9.4}
+\contentsline {subsection}{\numberline {9.5}Trajectory-level recall training}{17}{subsection.9.5}
+\contentsline {subsection}{\numberline {9.6}What the architecture can and cannot store}{17}{subsection.9.6}
+\contentsline {section}{\numberline {10}Numerical experiment: 8 by 8 digit memories}{18}{section.10}
+\contentsline {subsection}{\numberline {10.1}Experimental setup}{18}{subsection.10.1}
+\contentsline {subsection}{\numberline {10.2}Learned resistor mesh}{18}{subsection.10.2}
+\contentsline {subsection}{\numberline {10.3}Recall from corrupted initial conditions}{19}{subsection.10.3}
+\contentsline {subsection}{\numberline {10.4}What the experiment tells us}{21}{subsection.10.4}

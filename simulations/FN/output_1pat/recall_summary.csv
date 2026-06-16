@@ -1,0 +1,2 @@
+pattern_id,pattern_label,n_trials,exact_recall_fraction,mean_input_hamming,mean_final_hamming,max_final_hamming,stable_fraction,max_residual,worst_max_real_eig
+0,csv_0,50,1.0,4.94,0.0,0,1.0,1.355199909595506e-15,-0.7999999999999977
