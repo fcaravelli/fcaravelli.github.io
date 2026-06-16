@@ -1,5 +1,11 @@
 [
     {
+    "title": "Self-organizing systems and conservation laws for emergent computing systems",
+    "date": "2026-06-17",
+    "file": "2026-06-17-consint1.html",
+    "tags": ["dynamical systems","conservation laws", "emergent computation"]
+   }  ,      
+    {
     "title": "Doom, reservoir computing, and Cortical Labs",
     "date": "2026-06-02",
     "file": "2026-06-02-doom1.html",
@@ -38,7 +44,7 @@
     {
     "title": "The second law, statistically speaking",
     "date": "2026-04-05",
-    "file": "2026-04-05-secondlaw1.html",
+    "file": "2026-04-05-entropy1.html",
     "tags": ["statistical mechanics", "thermodynamics", "second law", "Jarzynski"]
   }  ,  
   {

@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Self-organizing systems and conservation laws – Francesco Caravelli</title>
+  <title>Self-organizing systems and conservation laws for emergent computing systems – Francesco Caravelli</title>
 
   <link rel="stylesheet" href="../assets/css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
@@ -93,7 +93,6 @@
   <div class="layout">
     <div id="sidebar"></div>
 
-```
 <main class="content">
 
   <ins class="adsbygoogle"
@@ -108,32 +107,45 @@
 
   <section id="top">
     <p class="kicker">nonequilibrium • complex systems • physical intelligence</p>
-    <h3>Self-organizing systems and conservation laws</h3>
+    <h3>Self-organizing systems and conservation laws for emergent computing systems</h3>
     <p><em>June 17th, 2026</em></p>
 
     <p class="callout">
-      This post discusses a recent paper I co-authored,
-      <em>A Unifying Approach to Self-Organizing Systems Interacting via Conservation Laws</em>.
-      A less technical version may also appear on
-      <a href="https://fcompl.substack.com/" target="_blank">Substack</a>. The manuscript appeared in April but I found the time to talk about it
-      only now. The paper is technical, but the message is simple: many self-organizing systems are
-      not mysterious because they are complicated. They become intelligible when we identify the
-      constraints that organize their motion.
-      ps. I have found the time because Pisa has the known Luminara celebrations (for S. Ranieri)
-      and on the 17th we have a free day - I can write a blog post.
-      It's going to be a quick one, but I hope it is useful.
+      This post is about a recent paper I co-authored,
+      <em>A Unifying Approach to Self-Organizing Systems Interacting via Conservation Laws</em>. The manuscript appeared in
+      April; I only found the time to write about it now. It is collaboration with a few colleagues - in order of appearance
+      Frank Barrows, Guanming Zhang, Satyam Anand, Zixi Chen, Jonathan Lin, Aman Desai, Stefano Martiniani, and myself.
+      Let me say thanks to all the collaborators, who contributed to this effort!
+      Stefano visited Los Alamos around 3 years and then I visted NYU at least twice to work on this project. 
+      The initial idea was work on the optimization part only, and the emergence of 
+      particle swarms out of the dynamics. Then, we realized that this could be generalized. I had already
+      done some calculations on the slime moulds and never published the results. 
+      Actually, Zixi was also working on this part time while at Courant, from the point of view of 
+      optimization. While the paper is technical, the message is
+      simple: many self-organizing systems are not mysterious because they are complicated. They become
+      intelligible once we identify the constraints that organize their motion.
     </p>
 
    <figure class="post-figure">
       <img src="images/Luminara.jpg" alt="The Luminara in Pisa, June 16th, 2026">
       <figcaption>
-        <strong>Luminara</strong> The Luminara celebration in Pisa, with all the farolitos at the Arno river.
+        <strong>Luminara.</strong> The Luminara celebration in Pisa, with all the farolitos along the Arno.
       </figcaption>
-    </figure>    
+    </figure>
+
+    <p>
+      I am writing this on a free day. Pisa stops for the feast of S. Ranieri, the banks of the Arno are
+      lined with thousands of <em>farolitos</em> - small oil lamps in glass cups - and the whole city goes
+      out to watch points of light reorganize themselves on moving water. It is, if you are the kind of
+      person who cannot quite switch off, an embarrassingly on-brand thing to contemplate while supposedly
+      relaxing: a few thousand little flames, a current that has to carry what passes through it, and a
+      pattern that emerges from the constraint rather than from any single lamp deciding anything. I told
+      myself this would be a quick post. We will see.
+    </p>
 
     <p>
       One of the pleasures of working on complex systems is that, after a while, the same animal
-      starts appearing under different disguises - and we are trained to see the pattern. 
+      starts appearing under different disguises - and one is trained to see it. 
       It may be an electrical circuit, a fluid network,
       a mechanical structure, a biological organism, or an optimization algorithm. The vocabulary
       changes. The equations change. The figures in the papers certainly change. But underneath,
@@ -144,61 +156,65 @@
     <p>
       Electrons do not simply disappear at a node. Fluid does not vanish inside a pipe. Forces
       cannot fail to balance forever in an elastic network. Cytoplasm in a slime mould tube has to
-      go somewhere. These are almost embarrassingly elementary statements, but we noticed that these
-      facts are rarely discussed in the literature. Conservation laws constrain
-      the dynamics, but they are often treated as a technical detail rather than a central organizing principle. 
-      The paper is an attempt to change that perspective and show that conservation laws
-      lead to a common mathematical structure, which we call a projector, that shapes the dynamics of many
-        different systems.
+      go somewhere. These are almost embarrassingly elementary statements, and that is precisely why
+      I find it strange how rarely they are treated as a starting point. Conservation laws constrain
+      the dynamics, but in most of the literature they are filed away as a technical detail rather than
+      as a central organizing principle. The paper is an attempt to change that emphasis and to show
+      that conservation laws lead to a common mathematical structure - which we call a projector - that
+      shapes the dynamics of many different systems.
     </p>
 
     <p>
-      In the paper I want to discuss here, we tried to make this idea precise. While it appeared a few months ago 
-      in press, but it has been in the making since 2021, when Fabio Traversa, Fabrizio Bonani, Michele Bonnin and published
-      the <a href="https://www.sciencedirect.com/science/article/abs/pii/S016727892300101X" target="_blank"> technical work on the subject</a>, focusing on memristive systems.
-       The central claim I want to push for 
-       is
-      that many physical, biological, and engineered systems can be understood through projection
-      operators generated by local conservation laws. These projectors do not merely simplify the
-      algebra. They define the subspace in which the dynamics actually lives.
+      In the paper I want to discuss here, we tried to make this idea precise. It has appeared in press
+      only recently, but it has been in the making since 2021, when Fabio Traversa, Fabrizio Bonani,
+      Michele Bonnin and collaborators published the
+      <a href="https://www.sciencedirect.com/science/article/abs/pii/S016727892300101X" target="_blank">technical work on the subject</a>,
+      focusing on memristive systems. The central claim I want to push for is that many physical,
+      biological, and engineered systems can be understood through projection operators generated by
+      local conservation laws. These projectors do not merely simplify the algebra. They define the
+      subspace in which the dynamics actually lives.
     </p>
 
     <p>
-      This is the kind of idea I like because it sits halfway between physics and computation.
-      It is not computation in the narrow sense of a CPU executing instructions (which has
-      gazillions advantages, as some key disadvantages). It is computation
-      in the older and more material sense: a physical system is prepared, constrained, driven, and
-      allowed to relax or adapt. The answer, if there is one, is read from the organization that
-      emerges. Your brain is not a CPU. It is a network of neurons constrained by physics. 
-      The same is true of slime moulds, spring networks, and memristive circuits. 
-      They are not simulating algorithms. They are physical systems.
-      Here we will not discuss computation per se, but that any computing system
-      based on self-organization must be a form of physical system, and therefore subject to physical constraints.
+      This is the kind of idea I like, because it sits halfway between physics and computation.
+      It is not computation in the narrow sense of a CPU executing instructions (which has a gazillion
+      advantages, along with some key disadvantages). It is computation in the older and more material
+      sense: a physical system is prepared, constrained, driven, and allowed to relax or adapt. The
+      answer, if there is one, is read off from the organization that emerges. Your brain is not a CPU.
+      It is a network of neurons constrained by physics. The same is true of slime moulds, spring
+      networks, and memristive circuits. They are not simulating algorithms. They <em>are</em> physical
+      systems. I will not argue here about whether they compute in any deep sense - only that any computing
+      system based on self-organization must be a physical system, and is therefore subject to physical
+      constraints. That much is not negotiable.
     </p>
 
     <figure class="post-figure">
       <img src="images/slimemoulds.png" alt="Slime mould forming a transport network">
       <figcaption>
-        <strong>Figure 1.</strong> A slime mould network experiment.. taken from the internet,
-        but this belongs to a set of experiments done by <a href="https://royalsocietypublishing.org/rsta/article/373/2046/20140216/114937/Slime-mould-processors-logic-gates-and" target="_blank">Andy Adamatzky</a> and colleagues, who have been studying slime moulds as adaptive flow networks for a long time. The point is that the same projective structure that appears in circuits also appears in the way slime moulds transport cytoplasm through their tubes. The network is not a passive drawing of the system. 
+        <strong>Figure 1.</strong> A slime mould network experiment, taken from the internet, but belonging
+        to a set of experiments by <a href="https://royalsocietypublishing.org/rsta/article/373/2046/20140216/114937/Slime-mould-processors-logic-gates-and" target="_blank">Andy Adamatzky</a>
+        and colleagues, who have studied slime moulds as adaptive flow networks for a long time. The same
+        projective structure that appears in circuits also appears in the way slime moulds transport
+        cytoplasm through their tubes. The network is not a passive drawing of the system - it is the system.
       </figcaption>
     </figure>
 
     <p>
       The biological example is the one that catches the eye, so let us put it upfront. Slime moulds
-      are absurdly cool. The original group bringing slime mould to the attention of the scientific community 
-      is led by <a href="https://www.science.org/doi/10.1126/science.1177894" target="_blank">Nakagaki et al</a> (first author of that paper was Atsushi Tero) in Japan (our models are based on theirs as well). Slime moulds have no (central) brain, no central controller, and no blueprint of the problem
-      they are solving. Yet they form networks, reinforce useful tubes, retract useless ones, and
-      adapt to the environment in ways that look uncomfortably close to problem solving. They are
-      not doing graph theory in their head. They do not have a head. The graph theory is in the
-      body.
+      are absurdly cool. The group that first brought them to the attention of the wider physics community
+      is led by <a href="https://www.science.org/doi/10.1126/science.1177894" target="_blank">Nakagaki et al</a>
+      (the first author of that paper was Atsushi Tero) in Japan; our models are based on theirs as well.
+      Slime moulds have no central brain, no controller, and no blueprint of the problem they are solving.
+      Yet they form networks, reinforce useful tubes, retract useless ones, and adapt to their environment
+      in ways that look uncomfortably close to problem solving. They are not doing graph theory in their
+      head. They do not have a head. The graph theory is in the body.
     </p>
 
     <div class="toc">
       <strong>Contents</strong>
       <ul>
         <li><a href="#laws">1. The shared grammar of very different systems</a></li>
-        <li><a href="#projectors">2. Projectors are not decoration</a></li>
+        <li><a href="#projectors">2. Projectors are not (just) decoration</a></li>
         <li><a href="#memristors">3. PrEDS, memristive networks, and projective reduction</a></li>
         <li><a href="#slime">4. Slime moulds as adaptive flow networks</a></li>
         <li><a href="#springs">5. Springs, physical learning, and elastic constraints</a></li>
@@ -220,6 +236,14 @@
       we even specify the resistors, capacitors, sources, or memristors. Kirchhoff's current law says
       that currents must balance at nodes. Kirchhoff's voltage law says that voltage drops must be
       compatible around loops.
+    </p>
+
+    <p>
+      It is worth pausing on how old this is. Kirchhoff wrote those laws in 1845, while still a student,
+      and the remarkable thing is how little of the physics he needed to do it. He did not need to know
+      what the components were. The constraints come from the topology of the graph, not from the devices
+      hanging off it. That separation - structure first, materials second - is the whole spirit of what
+      follows, and it is a lesson the field has had to relearn several times under different names.
     </p>
 
     <p>
@@ -309,7 +333,7 @@
       This is the part of the story that I find conceptually important. A conservation law is not
       just an equation you impose after the fact. It shapes the possible motions of the system. Once
       this is understood, projectors become physical objects in disguise: they encode what the network
-      permits.
+      permits, and - just as importantly - what it forbids.
     </p>
 
     <p>
@@ -349,9 +373,9 @@
     <figure class="post-figure">
       <img src="images/disorderedmem.jpg" alt="Disordered memristive network">
       <figcaption>
-        <strong>Figure 2.</strong> A disordered memristive network, ideally with color-coded
-        conductance or memory states. This figure should visually carry the idea that the computation
-        is not located in one device, but in the collective constrained dynamics of the network. Taken from <a href="https://iopscience.iop.org/article/10.1088/2632-959X/ad2999" target="_blank">Baccetti et al (2023)</a>.
+        <strong>Figure 2.</strong> A disordered memristive network. The computation is not located in any
+        single device, but in the collective constrained dynamics of the network as a whole. Taken from
+        <a href="https://iopscience.iop.org/article/10.1088/2632-959X/ad2999" target="_blank">Baccetti et al (2023)</a>.
       </figcaption>
     </figure>
 
@@ -420,7 +444,8 @@
     <p>
       The first term evolves the system inside the projected structure. The second term damps the
       part that lives outside it. This is a very compact way of saying that the long-time dynamics
-      is confined to the subspace selected by \(\Omega\).
+      is confined to the subspace selected by \(\Omega\). The parameter \(\alpha\) controls how
+      impatiently the system forgets whatever the constraints do not allow.
     </p>
 
     <p>
@@ -457,7 +482,8 @@
     <p>
       where \(D_{ij}\) is the tube diameter, \(L_{ij}\) is the tube length, and \(p_i-p_j\) is the
       pressure difference between the two nodes. The fourth power is the whole game: a modest
-      change in diameter can dramatically change the conductance of a tube.
+      change in diameter can dramatically change the conductance of a tube. A slime mould that thickens
+      a channel slightly is, without knowing it, doing something very nonlinear to its own wiring.
     </p>
 
     <p>
@@ -541,7 +567,8 @@
     <p>
       These spring networks are interesting because they make the phrase "learning machine" almost
       literal. The material changes its internal parameters so that future mechanical responses are
-      different. It is not software running on hardware. The hardware is the dynamical system.
+      different. It is not software running on hardware. The hardware is the dynamical system, and
+      there is no layer in between for an algorithm to hide in.
     </p>
 
     <p>
@@ -560,8 +587,9 @@
       The second main contribution of the paper is the mean-field theory. Mean-field methods are
       often introduced as a way to avoid dealing with all the microscopic details of a system.
       Replace the crowd by its average. Replace the local mess by an effective field. This can be
-      useful, but it can also be dangerous if it erases the structure that made the system
-      interesting in the first place.
+      useful, but it can also be dangerous if it erases the very structure that made the system
+      interesting in the first place. A mean field that throws away the network is, more often than
+      we admit, a mean field that has thrown away the physics.
     </p>
 
     <p>
@@ -579,7 +607,8 @@
       which maps a population of replicas or agents onto their average. This does not mean that
       the original graph-based projectors become irrelevant. Rather, the graph projector describes
       the constrained response of each physical system, while the mean-field projector describes
-      the collective behavior of an ensemble or lifted representation.
+      the collective behavior of an ensemble or lifted representation. The two live at different
+      levels and do not compete.
     </p>
 
     <p>
@@ -652,13 +681,17 @@
     <p>
       The intuition is very nice. Some particles may find better parts of the landscape. Because
       the swarm is coupled, they can pull the others. The population can concentrate near deeper
-      minima rather than spreading passively among all available local wells.
+      minima rather than spreading passively among all available local wells. This is, if you like,
+      the optimization analogue of what the slime mould does with its tubes: a few good channels drag
+      the rest of the organism along.
     </p>
 
     <figure class="post-figure">
       <img src="images/ackley.png" alt="PrEDS swarm density converging to a global minimum">
       <figcaption>
-        <strong>Figure 3.</strong> Plot from the Barrows et al manuscript referred in this blog.
+        <strong>Figure 3.</strong> From the manuscript discussed in this post. On an Ackley-type landscape,
+        the non-interacting density spreads among many local minima, while the interacting PrEDS density
+        concentrates near the global minimum.
       </figcaption>
     </figure>
 
@@ -670,10 +703,10 @@
     </p>
 
     <p>
-      This is not a claim that projectors magically solve optimization. Nothing does. But it is a
-      principled bridge between self-organizing physical systems and collective optimization. The
-      same mathematical structure that appears in circuits, slime moulds, and springs also produces
-      a swarm-like search dynamics.
+      This is not a claim that projectors magically solve optimization. Nothing does, and anyone who
+      tells you otherwise is selling something. But it is a principled bridge between self-organizing
+      physical systems and collective optimization. The same mathematical structure that appears in
+      circuits, slime moulds, and springs also produces a swarm-like search dynamics.
     </p>
 
     <p>
@@ -702,10 +735,11 @@
     </p>
 
     <p>
-      This gives a useful way to think about unconventional computing. We should not only ask what
-      device is nonlinear, what material has memory, or what biological system looks clever. We
-      should ask what is conserved, what is constrained, and what projector the system is secretly
-      using.
+      This gives a useful way to think about unconventional computing, and I would go so far as to
+      say it is a better first question than the usual ones. We tend to ask which device is nonlinear,
+      which material has memory, or which biological system looks clever. I think we should first ask
+      what is conserved, what is constrained, and what projector the system is secretly using. The rest
+      tends to follow from there.
     </p>
 
     <p>
@@ -729,6 +763,13 @@
       And sometimes, hidden inside those laws, there is a projector.
     </p>
 
+    <p class="note">
+      Ps. I wrote this in an afternoon, between the procession and the lights, in the city of Galileo -
+      a man who had a few things to say about how matter moves under constraint. If a figure looks rough
+      or a sentence runs long, blame the farolitos. The technical statements are in the manuscript, where
+      they belong; this was only meant to convey the shape of the idea. As I said: a quick one.
+    </p>
+
     <div class="hr"></div>
   </section>
 
@@ -747,7 +788,6 @@
   </script>
 
 </main>
-```
 
   </div>
 
