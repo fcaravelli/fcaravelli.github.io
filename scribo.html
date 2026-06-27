@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Scribo</title>
+<title>Scribo — handwritten AI whiteboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <script>
 window.MathJax = {
@@ -65,8 +65,9 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 #selrect{position:absolute;z-index:20;border:2px dashed #d0a020;background:rgba(255,220,120,.18);
   display:none;pointer-events:none}
 #selresize{position:absolute;right:-8px;bottom:-8px;width:16px;height:16px;
-  background:#d0a020;border:2px solid #fff;border-radius:50%;cursor:nwse-resize;
-  pointer-events:auto;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+  background:#2a6a3a;border:2px solid #fff;border-radius:50%;cursor:nwse-resize;
+  pointer-events:auto;box-shadow:0 1px 3px rgba(0,0,0,.3);display:none}
+#selrect.scaling #selresize{display:block}
 /* Floating "ask about selection" toolbar */
 #selbar{position:absolute;z-index:21;display:none;gap:6px;align-items:center;
   background:#fff;border:2px solid #d0a020;border-radius:10px;padding:6px 8px;
@@ -621,7 +622,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       <p>Pick an ink colour and thickness, then draw on the board with a stylus, finger, or mouse. The <b>⬜ erase</b> tool rubs out strokes. The board grows downward as you fill it.</p>
 
       <p class="hsec">🆎 Typed text &amp; equations</p>
-      <p>Click <b>🆎 text</b>, then click where you want text. A floating bar lets you choose font, size and colour. Tick <b>parse LaTeX</b> to render maths — type <code>$E=mc^2$</code> for inline or <code>$$…$$</code> for a centred equation.</p>
+      <p>Click <b>🆎 text</b>, then click where you want text. A floating bar lets you choose font, size and colour. Tick <b>parse LaTeX</b> to render maths — type <code>$E=mc^2$</code> for inline or <code>$$…$$</code> for a centred equation. <b>Double-click</b> a LaTeX text block later to edit it.</p>
 
       <p class="hsec">🖼 Images</p>
       <p>Click <b>🖼 image</b> to pick a file, or just drag-and-drop / paste an image onto the board. Click an image to select it, drag to move, pull the blue corner to resize, or hit ✕ / Delete to remove.</p>
@@ -1111,6 +1112,28 @@ document.getElementById('clrbtn').addEventListener('click',()=>{
 // ════════════════════════════════════════
 let textColor = '#1a1208';
 let pendingTextPos = null;   // {x,y} in canvas coords where text will land
+let editingBlock = null;     // a .text-block being re-edited
+
+// Double-click a LaTeX text overlay to edit it (text, font, size, colour).
+function wireTextEdit(block){
+  block.style.cursor='pointer';
+  const open=(e)=>{
+    e.preventDefault(); e.stopPropagation();
+    if(tool==='select') return;             // don't hijack while selecting
+    editingBlock=block; pendingTextPos=null;
+    document.getElementById('fmt-text').value = block.dataset.src||'';
+    document.getElementById('fmt-font').value = block.dataset.font||"'Caveat', cursive";
+    document.getElementById('fmt-size').value = block.dataset.size||28;
+    document.getElementById('fmt-latex').checked = true;
+    // set colour swatch
+    textColor = block.dataset.color||'#1a1208';
+    fmt.querySelectorAll('.fcc').forEach(s=>s.classList.toggle('on', s.dataset.c===textColor));
+    const r=block.getBoundingClientRect();
+    showFmtAt(r.left, r.bottom);
+    toast('Editing text — change it and hit Place ✓',2000);
+  };
+  block.addEventListener('dblclick',open);
+}
 const fmt = document.getElementById('fmt');
 
 function setTextTool(on){
@@ -1168,6 +1191,7 @@ function clearSelection(){
   selrect.style.display='none';
   selrect.style.pointerEvents='none';
   selrect.style.cursor='default';
+  selrect.classList.remove('scaling');
   selbar.classList.remove('show');
   selBox=null; lassoPts=null; clickCorner=null;
   lassoCv.style.display='none';
@@ -1195,6 +1219,9 @@ selmodeBtn.addEventListener('click',()=>{
 function drawSelRect(x0,y0,x1,y1){
   const x=Math.min(x0,x1), y=Math.min(y0,y1), w=Math.abs(x1-x0), h=Math.abs(y1-y0);
   selrect.style.display='block';
+  // while building/idle, the rect must NOT intercept clicks (so the 2nd
+  // corner click reaches the canvas). Only move/scale modes enable it.
+  if(!moveMode){ selrect.style.pointerEvents='none'; }
   selrect.style.left=x+'px'; selrect.style.top=y+'px';
   selrect.style.width=w+'px'; selrect.style.height=h+'px';
   selBox={x,y,w,h};
@@ -1409,8 +1436,9 @@ selscaleBtn.addEventListener('click',()=>{
   scaleMode=!scaleMode;
   if(scaleMode && moveMode){ moveMode=false; selmoveBtn.classList.remove('on'); }
   selscaleBtn.classList.toggle('on',scaleMode);
+  selrect.classList.toggle('scaling',scaleMode);
   selrect.style.pointerEvents = scaleMode ? 'none' : (moveMode?'auto':'none'); // handle has its own pointer-events
-  toast(scaleMode ? 'Drag the corner ⤡ to grow/shrink the contents' : 'Resize off', 1800);
+  toast(scaleMode ? 'Drag the green corner ⤡ to grow/shrink the contents' : 'Resize off', 1800);
 });
 
 (function(){
@@ -1481,20 +1509,35 @@ function showFmtAt(clientX, clientY){
   fmt.style.left=left+'px'; fmt.style.top=top+'px';
   setTimeout(()=>document.getElementById('fmt-text').focus(),30);
 }
-function hideFmt(){ fmt.classList.remove('show'); document.getElementById('fmt-text').value=''; pendingTextPos=null; }
+function hideFmt(){ fmt.classList.remove('show'); document.getElementById('fmt-text').value=''; pendingTextPos=null; editingBlock=null; }
 
 document.getElementById('fmt-cancel').addEventListener('click',hideFmt);
 document.getElementById('fmt-place').addEventListener('click',placeText);
 
 function placeText(){
   const text=document.getElementById('fmt-text').value;
-  if(!text.trim() || !pendingTextPos){ hideFmt(); return; }
+  if(!text.trim()){ hideFmt(); return; }
   const font=document.getElementById('fmt-font').value;
   const size=parseInt(document.getElementById('fmt-size').value)||28;
   const useLatex=document.getElementById('fmt-latex').checked;
-  const {x,y}=pendingTextPos;
 
   if(hintVisible){ ctx.clearRect(0,0,canvas.width,canvas.height); hintVisible=false; }
+
+  // EDITING an existing LaTeX overlay?
+  if(editingBlock){
+    const blk=editingBlock; editingBlock=null;
+    const x=parseFloat(blk.style.left)||0, y=parseFloat(blk.style.top)||0;
+    blk.style.fontFamily=font; blk.style.fontSize=size+'px'; blk.style.color=textColor;
+    blk.dataset.src=text; blk.dataset.font=font; blk.dataset.size=size; blk.dataset.color=textColor;
+    blk.innerHTML=segsToHtml(text);
+    if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([blk]).then(()=>{
+      const b=y+blk.offsetHeight; if(b>maxY){maxY=b;growIfNeeded();}
+    });
+    hideFmt(); return;
+  }
+
+  if(!pendingTextPos){ hideFmt(); return; }
+  const {x,y}=pendingTextPos;
 
   if(useLatex){
     // HTML overlay so MathJax can render; positioned on #paper
@@ -1502,9 +1545,10 @@ function placeText(){
     block.className='text-block';
     block.style.cssText=`position:absolute;left:${x}px;top:${y}px;z-index:6;`+
       `max-width:calc(100% - ${x}px - 16px);font-family:${font};font-size:${size}px;`+
-      `color:${textColor};line-height:1.4;white-space:pre-wrap;word-break:break-word;pointer-events:none;`;
-    block.dataset.src=text;
+      `color:${textColor};line-height:1.4;white-space:pre-wrap;word-break:break-word;cursor:pointer;`;
+    block.dataset.src=text; block.dataset.font=font; block.dataset.size=size; block.dataset.color=textColor;
     block.innerHTML=segsToHtml(text);
+    wireTextEdit(block);
     paper.appendChild(block);
     if(window.MathJax&&MathJax.typesetPromise){
       MathJax.typesetPromise([block]).then(()=>{
@@ -1896,7 +1940,7 @@ function restorePage(idx){
     const tmp=document.createElement('div');
     tmp.innerHTML=html;
     const el=tmp.firstElementChild;
-    if(el){ paper.appendChild(el);
+    if(el){ paper.appendChild(el); wireTextEdit(el);
       if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([el]); }
   });
   // restore image overlays (re-wire drag/resize since listeners don't survive HTML)
