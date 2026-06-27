@@ -56,7 +56,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 #selecttool.on{background:#ffe6a0;border-color:#d0a020}
 #selmode{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
        padding:2px 8px;font-family:'Caveat',cursive;font-size:14px;cursor:pointer;color:#5a4030;flex-shrink:0}
-#lassocanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:19;pointer-events:none;display:none}
+#lassocanvas{z-index:19;pointer-events:none;display:none}
 #selscale{background:#e8f0e8;color:#2a6a3a}
 #selscale:hover{background:#d6ecd6}
 #selscale.on{background:#2a6a3a;color:#fff}
@@ -200,7 +200,8 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 }
 #paper::before{content:'';position:absolute;top:0;left:64px;bottom:0;
                width:2px;background:var(--margin-line);pointer-events:none;z-index:0}
-#board{position:absolute;top:0;left:0;width:100%;height:100%;touch-action:none;cursor:crosshair;z-index:1}
+#board,#lassocanvas{position:absolute;top:0;left:0;touch-action:none;z-index:1}
+#board{cursor:crosshair}
 .claude-block{position:absolute;left:80px;z-index:5;max-width:calc(100% - 96px);pointer-events:none}
 .claude-text{font-family:'Caveat',cursive;font-size:22px;line-height:1.55;
              color:var(--claude);white-space:pre-wrap;word-break:break-word}
@@ -2236,8 +2237,8 @@ function lowestInkY(){
 
 function contentBottom(){
   let bottom = lowestInkY();
-  // include existing AI reply overlays
-  document.querySelectorAll('.claude-block').forEach(b=>{
+  // include every overlay: AI replies, typed LaTeX text, and images
+  document.querySelectorAll('.claude-block, .text-block, .img-block').forEach(b=>{
     const top = parseFloat(b.style.top) || 0;
     bottom = Math.max(bottom, top + b.offsetHeight);
   });
