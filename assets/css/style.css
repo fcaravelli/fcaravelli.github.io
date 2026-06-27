@@ -84,6 +84,34 @@ body {
   text-decoration: underline;
 }
 
+.tool-preview {
+  margin: 2rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.18);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.tool-preview h3 {
+  margin-top: 0;
+  font-family: 'Merriweather', serif;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #bde5d7;
+  color: #333;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.button-link:hover {
+  background: #a9d9c8;
+  color: #111;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .layout {
