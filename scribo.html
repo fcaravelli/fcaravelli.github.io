@@ -641,7 +641,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       <p>Install <a href="https://ollama.com" target="_blank">Ollama</a>, run <code>ollama pull qwen2.5vl:7b</code>, then choose <b>Local (Ollama)</b> in Settings. Nothing leaves your computer. If connection fails, start it with <code>OLLAMA_ORIGINS=* ollama serve</code>.</p>
 
       <p class="hsec">💾 Saving</p>
-      <p><b>PNG</b> = flat image (ink, text, images). <b>PDF</b> = print-ready with rendered equations — wait for “Ready ✓”, then print. <b>HTML</b> = full re-openable snapshot with live maths.</p>
+      <p><b>Save project (.scribo)</b> stores everything — all pages, drawings, text, images and AI chats — so you can reopen it later with <b>Open project</b> and keep working. Scribo also <b>auto-saves</b> to your browser as you go, and offers to restore your last session when you return. For sharing or printing: <b>PNG</b> = flat image; <b>PDF</b> = print-ready with rendered equations (wait for “Ready ✓”, then print); <b>HTML</b> = re-openable view-only snapshot with live maths.</p>
 
       <p class="hsec">🔒 Privacy</p>
       <p>No server, no tracking. Your keys and settings live only in this browser's local storage on your device; requests go straight to the provider you pick. See the ⓘ About box for details.</p>
@@ -653,7 +653,17 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 <!-- Save modal -->
 <div class="modal" id="savemodal">
   <div class="mbox" id="savebox">
-    <h2>💾 Save board</h2>
+    <h2>💾 Save &amp; open</h2>
+    <button class="sopt" id="save-project" style="border-color:#5a8ad0;background:#eef4fc">
+      📁 Save project (.scribo)
+      <span>All pages, drawings, text, images &amp; AI chats — reopen and keep working</span>
+    </button>
+    <button class="sopt" id="open-project">
+      📂 Open project (.scribo)
+      <span>Load a previously saved Scribo project</span>
+    </button>
+    <input type="file" id="projfile" accept=".scribo,application/json" style="display:none">
+    <div style="height:1px;background:var(--rule);margin:4px 0 10px"></div>
     <button class="sopt" id="save-png">
       🖼 Image (.png)
       <span>Flattens drawing, typed text &amp; dropped images into one image</span>
@@ -664,7 +674,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
     </button>
     <button class="sopt" id="save-html">
       📋 HTML snapshot
-      <span>Everything incl. live LaTeX &amp; AI replies — re-openable</span>
+      <span>Everything incl. live LaTeX &amp; AI replies — re-openable, view-only</span>
     </button>
     <button class="mcancel" id="savecancel">cancel</button>
   </div>
@@ -1343,6 +1353,7 @@ document.getElementById('selerase').addEventListener('click',()=>{
     ctx.restore();
   }
   clearSelection();
+  scheduleAutosave();
   toast('Erased ✓',1200);
 });
 
@@ -1581,6 +1592,7 @@ function placeText(){
     if(cy>maxY){maxY=cy;growIfNeeded();}
   }
   hideFmt();
+  scheduleAutosave();
 }
 
 // ════════════════════════════════════════
@@ -1609,6 +1621,7 @@ function addImage(src, x, y, w){
     block.style.height=(W*ratio)+'px';
     const b=(y||boardNextY)+W*ratio;
     if(b>maxY){maxY=b;growIfNeeded();}
+    scheduleAutosave();
   };
   wireImgBlock(block);
   selectImg(block);
@@ -1823,7 +1836,7 @@ canvas.addEventListener('touchend',e=>{
   endDraw();
 });
 
-function endDraw(){drawing=false;ctx.globalCompositeOperation='source-over';}
+function endDraw(){ if(drawing){ drawing=false; scheduleAutosave(); } ctx.globalCompositeOperation='source-over'; }
 function doStroke(x,y){
   if(hintVisible){ ctx.clearRect(0,0,canvas.width,canvas.height); hintVisible=false; }
   ctx.beginPath();
@@ -1978,6 +1991,7 @@ function switchPage(idx){
   currentPage=idx;
   restorePage(idx);
   renderTabs();
+  scheduleAutosave();
   toast('Page '+(idx+1),900);
 }
 
@@ -1987,6 +2001,7 @@ document.getElementById('addpage').addEventListener('click',()=>{
   currentPage=pages.length-1;
   restorePage(currentPage);
   renderTabs();
+  scheduleAutosave();
   toast('New page added ✓',1200);
 });
 
@@ -1997,6 +2012,7 @@ document.getElementById('delpage').addEventListener('click',()=>{
   if(currentPage>=pages.length) currentPage=pages.length-1;
   restorePage(currentPage);
   renderTabs();
+  scheduleAutosave();
   toast('Page deleted',1200);
 });
 
@@ -2303,6 +2319,7 @@ function placeBoardReply(text){
     boardNextY = boxTop + boxH + 40;
     maxY = Math.max(maxY, boardNextY);
     scroll.scrollTo({top:block.offsetTop-40, behavior:'smooth'});
+    scheduleAutosave();
   };
 
   if(window.MathJax&&MathJax.typesetPromise){
@@ -2447,6 +2464,59 @@ const savemodal=document.getElementById('savemodal');
 document.getElementById('savebtn').addEventListener('click',()=>savemodal.classList.add('open'));
 document.getElementById('savecancel').addEventListener('click',()=>savemodal.classList.remove('open'));
 savemodal.addEventListener('click',e=>{if(e.target===savemodal)savemodal.classList.remove('open');});
+
+// ════════════════════════════════════════
+// SAVE / OPEN PROJECT (.scribo) — full editable state
+// ════════════════════════════════════════
+document.getElementById('save-project').addEventListener('click',()=>{
+  savemodal.classList.remove('open');
+  snapshotCurrent();                       // flush current page into pages[]
+  const project = {
+    format: 'scribo-project',
+    version: 1,
+    savedAt: new Date().toISOString(),
+    currentPage,
+    pages                                  // already fully serializable
+  };
+  const blob=new Blob([JSON.stringify(project)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='scribo-'+dateStamp()+'.scribo';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Project saved ✓',1600);
+});
+
+document.getElementById('open-project').addEventListener('click',()=>{
+  document.getElementById('projfile').click();
+});
+document.getElementById('projfile').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    let data;
+    try{ data=JSON.parse(reader.result); }catch(err){ toast('Not a valid .scribo file',2400); return; }
+    if(!data || data.format!=='scribo-project' || !Array.isArray(data.pages)){
+      toast('Not a valid Scribo project',2400); return;
+    }
+    if(!confirm('Open this project? Any unsaved work in the current session will be replaced.')) return;
+    savemodal.classList.remove('open');
+    loadProject(data);
+  };
+  reader.readAsText(f);
+  e.target.value='';
+});
+
+function loadProject(data){
+  // normalize each page so older/newer fields don't break restore
+  pages = data.pages.map(p=>Object.assign(blankPage(), p));
+  currentPage = Math.min(data.currentPage||0, pages.length-1);
+  loadStateFromPage(pages[currentPage]);
+  restorePage(currentPage);
+  renderTabs();
+  toast('Project loaded ✓',1600);
+}
+
 
 // Build a flattened canvas: paper bg + ruled lines + ink + image overlays.
 // (LaTeX/Claude text overlays are SVG/HTML and aren't baked here — those
@@ -2644,10 +2714,60 @@ function toast(msg,dur){toastEl.textContent=msg;toastEl.style.display='block';cl
 function hideToast(){toastEl.style.display='none';}
 
 // ════════════════════════════════════════
+// AUTOSAVE — quietly persist work to localStorage; offer restore on launch
+// ════════════════════════════════════════
+const AUTOSAVE_KEY='scribo_autosave_v1';
+let autosaveTimer=null, autosaveWarned=false;
+
+function doAutosave(){
+  try{
+    snapshotCurrent();
+    const payload=JSON.stringify({
+      format:'scribo-project', version:1,
+      savedAt:new Date().toISOString(),
+      currentPage, pages
+    });
+    localStorage.setItem(AUTOSAVE_KEY, payload);
+  }catch(e){
+    // localStorage quota exceeded (big images/many pages) — warn once, don't nag
+    if(!autosaveWarned){
+      autosaveWarned=true;
+      toast('Auto-save is full — use 📁 Save project to keep your work',3500);
+    }
+  }
+}
+// debounce so rapid edits don't thrash storage
+function scheduleAutosave(){
+  clearTimeout(autosaveTimer);
+  autosaveTimer=setTimeout(doAutosave, 1500);
+}
+// flush immediately when leaving the page
+window.addEventListener('beforeunload', ()=>{ try{ doAutosave(); }catch(e){} });
+
+// Check for a saved session on launch and offer to restore it
+function offerRestore(){
+  let raw;
+  try{ raw=localStorage.getItem(AUTOSAVE_KEY); }catch(e){ return; }
+  if(!raw) return;
+  let data; try{ data=JSON.parse(raw); }catch(e){ return; }
+  if(!data || !Array.isArray(data.pages) || !data.pages.length) return;
+  // skip if it's just one empty page (nothing worth restoring)
+  const meaningful = data.pages.some(p=>p.img || (p.blocks&&p.blocks.length) ||
+    (p.textBlocks&&p.textBlocks.length) || (p.imgBlocks&&p.imgBlocks.length) ||
+    (p.convHistory&&p.convHistory.length));
+  if(!meaningful) return;
+  const when = data.savedAt ? new Date(data.savedAt).toLocaleString() : 'last session';
+  if(confirm('Scribo found your previous work (saved '+when+').\n\nRestore it?')){
+    loadProject(data);
+  }
+}
+
+// ════════════════════════════════════════
 // BOOT
 // ════════════════════════════════════════
 initPages();
 drawWelcomeHint();
+offerRestore();
 </script>
 </body>
 </html>
