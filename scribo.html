@@ -418,6 +418,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
   <div class="tbr">
     <select id="modelpick" title="Active AI model"></select>
     <span id="key-status" class="missing">no key</span>
+    <span id="verify-badge" title="Verify mode is on — answers get checked by a second model" style="display:none;font-family:'Patrick Hand',cursive;font-size:12px;color:#2a6a3a;background:#d4ecd8;border:1px solid #9ccba6;border-radius:6px;padding:2px 7px;cursor:pointer">🔍 verify</span>
     <button class="abtn" id="settingsbtn">⚙</button>
     <button class="abtn" id="helpbtn">❔ help</button>
     <button class="abtn" id="aboutbtn">ⓘ</button>
@@ -850,6 +851,17 @@ let model  = models[provider];
 let maxTokens = parseInt(localStorage.getItem('wb_maxtokens')) || 4096;
 let verifyMode = localStorage.getItem('wb_verify')==='1';
 let checker = localStorage.getItem('wb_checker') || '';   // "provider|model" of the checking model
+// Ensure the checker always has a sensible default (a model different from the solver).
+function ensureChecker(){
+  if(checker) return;
+  checker = provider==='claude' ? 'gemini|gemini-2.5-flash' : 'claude|claude-sonnet-4-6';
+}
+ensureChecker();
+// Show/hide the toolbar "🔍 verify" badge to reflect verify mode.
+function updateVerifyBadge(){
+  const b=document.getElementById('verify-badge');
+  if(b) b.style.display = verifyMode ? '' : 'none';
+}
 let lineGap = parseInt(localStorage.getItem('wb_linegap')) || 40;
 let showRules = localStorage.getItem('wb_showrules')!=='0';
 let showMargin = localStorage.getItem('wb_showmargin')!=='0';
@@ -1199,6 +1211,8 @@ document.getElementById('settingssave').addEventListener('click', () => {
   maxTokens = parseInt(document.getElementById('tokslider').value) || 4096;
   verifyMode = document.getElementById('verifytoggle').checked;
   checker = document.getElementById('checkerpick').value || checker;
+  ensureChecker();
+  updateVerifyBadge();
   localStorage.setItem('wb_verify', verifyMode?'1':'0');
   localStorage.setItem('wb_checker', checker);
   localStorage.setItem('wb_linegap', lineGap);
@@ -3195,6 +3209,8 @@ function offerRestore(){
 initPages();
 drawWelcomeHint();
 offerRestore();
+updateVerifyBadge();
+document.getElementById('verify-badge').addEventListener('click', openSettings);
 </script>
 </body>
 </html>
