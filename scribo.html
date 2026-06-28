@@ -914,6 +914,26 @@ function aiName(){
   return 'Claude';
 }
 
+// Provider + specific model, e.g. "Claude · Sonnet 4.6", for board reply labels.
+function aiLabel(prov, mdl){
+  prov = prov || provider;
+  mdl  = mdl  || models[prov] || model;
+  const cat = (typeof MODEL_CATALOG!=='undefined') ? MODEL_CATALOG[prov] : null;
+  let short = mdl;
+  if(cat){
+    const found = cat.items.find(([id])=>id===mdl);
+    if(found) short = found[1];
+  }
+  // friendly provider name
+  const pname = prov==='gemini' ? 'Gemini'
+              : prov==='deepseek' ? 'DeepSeek'
+              : prov==='local' ? 'Local'
+              : 'Claude';
+  // avoid silly repetition like "Gemini · Gemini 2.5 Flash"
+  return short && !short.toLowerCase().startsWith(pname.toLowerCase())
+       ? pname+' · '+short : (short || pname);
+}
+
 const keyStatus = document.getElementById('key-status');
 const settingsmodal = document.getElementById('settingsmodal');
 const apikeyinput   = document.getElementById('apikeyinput');
@@ -1611,7 +1631,7 @@ document.getElementById('selask').addEventListener('click', async ()=>{
       'You are a brilliant collaborator on a shared handwritten whiteboard. The user has selected only a part of the board to ask about. Respond about that part.\n'+
       'Rules: plain prose + LaTeX only (no markdown). $...$ inline, $$...$$ display. Concise. Direct, physicist-collaborator tone.');
     convHistory.push({role:'assistant',content:reply});
-    placeBoardReply(reply);
+    await placeBoardReply(reply);
     hideToast();
     clearSelection();
     setSelectTool(false);
@@ -2649,7 +2669,7 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
       'You are a brilliant collaborator on a shared handwritten whiteboard. Respond to what you see.\n'+
       'Rules: plain prose + LaTeX only (no markdown **/#/bullets). $...$ inline, $$...$$ display. 2–5 sentences + equations. Direct, physicist-collaborator tone.');
     convHistory.push({role:'assistant',content:reply});
-    placeBoardReply(reply);
+    await placeBoardReply(reply);
     hideToast();
     await maybeVerify(userContent, reply);
   }catch(err){hideToast();toast('Error: '+err.message,3000);}
@@ -2661,11 +2681,12 @@ async function maybeVerify(userContent, answerText){
   if(!verifyMode) return;
   const [cprov,cmodel]=(checker||'').split('|');
   const cname = (MODEL_CATALOG[cprov]?.name)||'checker';
+  const clabel = aiLabel(cprov, cmodel);
   toast('🔍 '+cname+' is checking the answer…');
   try{
     const verdict = await runVerification(userContent, answerText);
-    placeBoardReply(verdict, {
-      label: '🔍 Checked by '+cname,
+    await placeBoardReply(verdict, {
+      label: '🔍 Checked by '+clabel,
       tint: '#bfe6c4',
       labelColor: '#2a6a3a',
       checkStyle: true
@@ -2673,7 +2694,13 @@ async function maybeVerify(userContent, answerText){
     hideToast();
   }catch(err){
     hideToast();
-    toast('Check failed: '+err.message, 3000);
+    // surface the failure on the board so it's not missed
+    await placeBoardReply('Verification could not run: '+err.message, {
+      label: '🔍 Check failed',
+      tint: '#f3c9c9',
+      labelColor: '#9a3030',
+      checkStyle: false
+    });
   }
 }
 
@@ -2711,7 +2738,7 @@ function contentBottom(){
 // ════════════════════════════════════════
 function placeBoardReply(text, opts){
   opts = opts || {};
-  const label = opts.label || ('✦ '+aiName());
+  const label = opts.label || ('✦ '+aiLabel());
   const tint  = opts.tint  || '#aaccff';   // answer = blue; check = green
   const labelColor = opts.labelColor || '#1a3e7a';
   // Anchor the reply just below whatever is currently on the board,
@@ -2736,44 +2763,47 @@ function placeBoardReply(text, opts){
 
   // 2. After layout (and LaTeX typeset), draw the box to fit the text,
   //    grow the canvas if needed, advance the cursor, and scroll into view.
-  const finalize = ()=>{
-    const PAD_TOP = 26, PAD_BOTTOM = 22;
-    const h = block.offsetHeight;                 // true rendered height
-    const boxTop = boardNextY - PAD_TOP;
-    const boxH   = h + PAD_TOP + PAD_BOTTOM;
+  return new Promise((resolve)=>{
+    const finalize = ()=>{
+      const PAD_TOP = 26, PAD_BOTTOM = 22;
+      const h = block.offsetHeight;                 // true rendered height
+      const boxTop = boardNextY - PAD_TOP;
+      const boxH   = h + PAD_TOP + PAD_BOTTOM;
 
-    const need = boxTop + boxH + 80;
-    if(need > canvas.height){
-      const tmp=document.createElement('canvas');
-      tmp.width=canvas.width; tmp.height=canvas.height;
-      tmp.getContext('2d').drawImage(canvas,0,0);
-      canvas.height=need; paper.style.minHeight=need+'px';
-      ctx.drawImage(tmp,0,0);
+      const need = boxTop + boxH + 80;
+      if(need > canvas.height){
+        const tmp=document.createElement('canvas');
+        tmp.width=canvas.width; tmp.height=canvas.height;
+        tmp.getContext('2d').drawImage(canvas,0,0);
+        canvas.height=need; paper.style.minHeight=need+'px';
+        ctx.drawImage(tmp,0,0);
+      }
+
+      ctx.save();
+      ctx.globalAlpha=0.15; ctx.fillStyle=tint;
+      ctx.beginPath();
+      if(ctx.roundRect){ ctx.roundRect(74, boxTop, canvas.width-90, boxH, 10); }
+      else { ctx.rect(74, boxTop, canvas.width-90, boxH); }
+      ctx.fill();
+      ctx.globalAlpha=1;
+      ctx.font='bold 15px "Patrick Hand",cursive'; ctx.fillStyle=labelColor;
+      ctx.fillText(label, 80, boxTop - 6);
+      ctx.restore();
+
+      block.style.visibility='visible';   // reveal only now that it's laid out
+      boardNextY = boxTop + boxH + 40;
+      maxY = Math.max(maxY, boardNextY);
+      scroll.scrollTo({top:block.offsetTop-40, behavior:'smooth'});
+      scheduleAutosave();
+      resolve();
+    };
+
+    if(window.MathJax&&MathJax.typesetPromise){
+      MathJax.typesetPromise([td]).then(finalize).catch(finalize);
+    }else{
+      finalize();
     }
-
-    ctx.save();
-    ctx.globalAlpha=0.15; ctx.fillStyle=tint;
-    ctx.beginPath();
-    if(ctx.roundRect){ ctx.roundRect(74, boxTop, canvas.width-90, boxH, 10); }
-    else { ctx.rect(74, boxTop, canvas.width-90, boxH); }
-    ctx.fill();
-    ctx.globalAlpha=1;
-    ctx.font='bold 15px "Patrick Hand",cursive'; ctx.fillStyle=labelColor;
-    ctx.fillText(label, 80, boxTop - 6);
-    ctx.restore();
-
-    block.style.visibility='visible';   // reveal only now that it's laid out
-    boardNextY = boxTop + boxH + 40;
-    maxY = Math.max(maxY, boardNextY);
-    scroll.scrollTo({top:block.offsetTop-40, behavior:'smooth'});
-    scheduleAutosave();
-  };
-
-  if(window.MathJax&&MathJax.typesetPromise){
-    MathJax.typesetPromise([td]).then(finalize);
-  }else{
-    finalize();
-  }
+  });
 }
 
 // ════════════════════════════════════════
