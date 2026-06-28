@@ -426,7 +426,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
     <button class="abtn" id="aboutbtn">ⓘ</button>
     <button class="abtn" id="panelbtn">💬 chat</button>
     <button class="abtn" id="clrbtn">🗑</button>
-    <button class="abtn" id="savebtn">💾 save</button>
+    <button class="abtn" id="savebtn">💾 save / open</button>
     <button class="abtn" id="askbtn">✉ Ask AI</button>
   </div>
 </div>
@@ -1534,21 +1534,25 @@ selmodeBtn.addEventListener('click',()=>{
 });
 
 // Show the box rect from two canvas-space points
+function canvasScale(){
+  const r = canvas.getBoundingClientRect();
+  return { sx: r.width / (canvas.width||1), sy: r.height / (canvas.height||1) };
+}
 function drawSelRect(x0,y0,x1,y1){
   const x=Math.min(x0,x1), y=Math.min(y0,y1), w=Math.abs(x1-x0), h=Math.abs(y1-y0);
+  selBox={x,y,w,h};                 // stored in CANVAS pixels (for cropping)
+  const {sx,sy}=canvasScale();      // convert to CSS px for the DOM overlay
   selrect.style.display='block';
-  // while building/idle, the rect must NOT intercept clicks (so the 2nd
-  // corner click reaches the canvas). Only move/scale modes enable it.
   if(!moveMode){ selrect.style.pointerEvents='none'; }
-  selrect.style.left=x+'px'; selrect.style.top=y+'px';
-  selrect.style.width=w+'px'; selrect.style.height=h+'px';
-  selBox={x,y,w,h};
+  selrect.style.left=(x*sx)+'px'; selrect.style.top=(y*sy)+'px';
+  selrect.style.width=(w*sx)+'px'; selrect.style.height=(h*sy)+'px';
 }
 function positionSelBar(){
-  // place the action bar below whichever selection exists
+  // place the action bar below whichever selection exists (CSS px)
+  const {sx,sy}=canvasScale();
   let bx,by;
-  if(selBox){ bx=selBox.x; by=selBox.y+selBox.h+8; }
-  else if(lassoPts){ const b=lassoBounds(); bx=b.x; by=b.y+b.h+8; }
+  if(selBox){ bx=selBox.x*sx; by=(selBox.y+selBox.h)*sy+8; }
+  else if(lassoPts){ const b=lassoBounds(); bx=b.x*sx; by=(b.y+b.h)*sy+8; }
   else return;
   selbar.classList.add('show');
   selbar.style.left=bx+'px'; selbar.style.top=by+'px';
@@ -1586,11 +1590,20 @@ function drawLassoPath(){
 // Crop the current selection (box or lasso) to a base64 PNG for the AI
 async function cropSelection(){
   const b = selBox || lassoBounds();
-  const {x,y,w,h}=b;
+  // clamp to the canvas so we never read outside its pixel bounds (which
+  // yields a blank image on some browsers)
+  let x = Math.max(0, Math.round(b.x));
+  let y = Math.max(0, Math.round(b.y));
+  let w = Math.round(b.w);
+  let h = Math.round(b.h);
+  if(x + w > canvas.width)  w = canvas.width  - x;
+  if(y + h > canvas.height) h = canvas.height - y;
+  w = Math.max(1, w); h = Math.max(1, h);
   const out=document.createElement('canvas');
-  out.width=Math.max(1,Math.round(w)); out.height=Math.max(1,Math.round(h));
+  out.width=w; out.height=h;
   const o=out.getContext('2d');
-  o.fillStyle='#f8f4ec'; o.fillRect(0,0,out.width,out.height);
+  o.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()||'#f8f4ec';
+  o.fillRect(0,0,out.width,out.height);
   // For lasso, clip to the polygon so only the looped area shows
   if(lassoPts){
     o.save(); o.beginPath();
@@ -2276,23 +2289,36 @@ function restorePage(idx){
   } else {
     drawWelcomeHint();
   }
-  // restore overlays
+  // restore AI reply overlays. Rebuild from the RAW source (dataset.src) and
+  // re-run MathJax, rather than re-inserting already-rendered SVG (which breaks
+  // when reopened in a fresh document / saved project).
   p.blocks.forEach(b=>{
     const block=document.createElement('div');
     block.className='claude-block';
     block.style.top=b.top;
-    if(b.src) block.dataset.src=b.src;
-    block.innerHTML=b.html;
+    if(b.src){
+      block.dataset.src=b.src;
+      const td=document.createElement('div');
+      td.className='claude-text';
+      td.innerHTML=segsToHtml(b.src);
+      block.appendChild(td);
+    } else {
+      block.innerHTML=b.html;   // legacy fallback for older saves with no src
+    }
     paper.appendChild(block);
     if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([block]);
   });
-  // restore LaTeX text overlays
+  // restore LaTeX text overlays. Rebuild content from raw src so MathJax
+  // re-renders cleanly (re-inserting old SVG can show blank equations).
   (p.textBlocks||[]).forEach(html=>{
     const tmp=document.createElement('div');
     tmp.innerHTML=html;
     const el=tmp.firstElementChild;
-    if(el){ paper.appendChild(el); wireTextEdit(el);
-      if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([el]); }
+    if(el){
+      if(el.dataset && el.dataset.src) el.innerHTML = segsToHtml(el.dataset.src);
+      paper.appendChild(el); wireTextEdit(el);
+      if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([el]);
+    }
   });
   // restore image overlays (re-wire drag/resize since listeners don't survive HTML)
   (p.imgBlocks||[]).forEach(html=>{
@@ -2777,6 +2803,7 @@ function placeBoardReply(text, opts){
         tmp.getContext('2d').drawImage(canvas,0,0);
         canvas.height=need; paper.style.minHeight=need+'px';
         ctx.drawImage(tmp,0,0);
+        if(typeof fitLasso==='function') fitLasso();   // keep overlay aligned
       }
 
       ctx.save();
