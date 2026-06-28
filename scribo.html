@@ -1587,7 +1587,10 @@ function drawLassoPath(){
   lctx.restore();
 }
 
-// Crop the current selection (box or lasso) to a base64 PNG for the AI
+// Crop the current selection (box or lasso) to a base64 PNG for the AI.
+// Returns { b64, extraText } — extraText carries the source of any AI-reply or
+// LaTeX-text overlays inside the region (they're HTML overlays, not canvas
+// pixels, so they wouldn't otherwise appear in the cropped image).
 async function cropSelection(){
   const b = selBox || lassoBounds();
   // clamp to the canvas so we never read outside its pixel bounds (which
@@ -1622,7 +1625,28 @@ async function cropSelection(){
     }
   }
   if(lassoPts) o.restore();
-  return out.toDataURL('image/png').split(',')[1];
+
+  // Gather text/LaTeX from AI-reply (.claude-block) and typed (.text-block)
+  // overlays that fall inside the selected region, in top-to-bottom order.
+  const overlayTexts=[];
+  const collect=(sel,labelFn)=>{
+    document.querySelectorAll(sel).forEach(el=>{
+      const ex=parseFloat(el.style.left)||80;
+      const ey=parseFloat(el.style.top)||0;
+      const eh=el.offsetHeight||0, ew=el.offsetWidth||0;
+      // intersect with selection box (use bounding box for lasso too)
+      if(ex < x+w && ex+ew > x && ey < y+h && ey+eh > y){
+        const src=el.dataset.src || el.textContent.trim();
+        if(src) overlayTexts.push({y:ey, text:labelFn(src)});
+      }
+    });
+  };
+  collect('.claude-block', s=>'[an earlier AI reply in this region]: '+s);
+  collect('.text-block',   s=>'[typed note in this region]: '+s);
+  overlayTexts.sort((a,b)=>a.y-b.y);
+  const extraText = overlayTexts.map(o=>o.text).join('\n\n');
+
+  return { b64: out.toDataURL('image/png').split(',')[1], extraText };
 }
 
 function haveSelection(){ return (selBox && selBox.w>6 && selBox.h>6) || (lassoPts && lassoPts.length>3); }
@@ -1632,11 +1656,12 @@ document.getElementById('selask').addEventListener('click', async ()=>{
   if(!haveSelection()){ toast('Make a selection first',1600); return; }
   const q=document.getElementById('selq').value.trim();
   toast(aiName()+' is reading the selection…');
-  const b64=await cropSelection();
+  const { b64, extraText } = await cropSelection();
   const userContent=[
     {type:'image',source:{type:'base64',media_type:'image/png',data:b64}},
     {type:'text',text: (q?q+'\n\n':'') +
-      'This image is only a selected part of my whiteboard. Please respond about just this portion. Use $...$ inline and $$...$$ for display equations.'}
+      'This image is only a selected part of my whiteboard. Please respond about just this portion. Use $...$ inline and $$...$$ for display equations.' +
+      (extraText ? '\n\nThe selected region also contains the following (which may not all be visible in the image):\n'+extraText : '')}
   ];
   convHistory.push({role:'user',content:userContent});
   try{
