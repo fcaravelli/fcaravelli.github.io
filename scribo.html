@@ -2547,38 +2547,62 @@ async function askGemini(messages, systemPrompt, key){
 // DeepSeek — OpenAI-compatible endpoint, V4 models support vision via image_url.
 async function askDeepSeek(messages, systemPrompt, key){
   key = key || apiKey;
-  // Convert Anthropic-format → OpenAI chat format
-  const oms = [{ role:'system', content: systemPrompt }];
-  for(const m of messages){
-    const role = m.role==='assistant' ? 'assistant' : 'user';
-    if(typeof m.content === 'string'){
-      oms.push({ role, content: m.content });
-    } else {
-      const parts=[];
-      for(const block of m.content){
-        if(block.type==='text') parts.push({ type:'text', text:block.text });
-        else if(block.type==='image')
-          parts.push({ type:'image_url',
-            image_url:{ url:'data:'+block.source.media_type+';base64,'+block.source.data } });
+  // Build OpenAI-format messages. `dropImages` strips image blocks for the
+  // text-only fallback (some DeepSeek endpoints/accounts reject image_url).
+  function buildMessages(dropImages){
+    const oms = [{ role:'system', content: systemPrompt }];
+    for(const m of messages){
+      const role = m.role==='assistant' ? 'assistant' : 'user';
+      if(typeof m.content === 'string'){
+        oms.push({ role, content: m.content });
+      } else {
+        const parts=[]; let hadImage=false;
+        for(const block of m.content){
+          if(block.type==='text') parts.push({ type:'text', text:block.text });
+          else if(block.type==='image'){
+            hadImage=true;
+            if(!dropImages) parts.push({ type:'image_url',
+              image_url:{ url:'data:'+block.source.media_type+';base64,'+block.source.data } });
+          }
+        }
+        if(dropImages && hadImage)
+          parts.push({ type:'text', text:'[An image was attached but this model can\'t read images — answer from the text and our conversation as best you can, and say if you need the content described.]' });
+        // collapse to plain string if it's just one text part
+        oms.push({ role, content: parts.length===1 && parts[0].type==='text' ? parts[0].text : parts });
       }
-      oms.push({ role, content: parts });
     }
+    return oms;
   }
-  const res = await fetch('https://api.deepseek.com/chat/completions',{
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+key },
-    body: JSON.stringify({ model, messages: oms, max_tokens: maxTokens, stream:false })
-  });
-  const data = await res.json().catch(()=>({}));
-  if(!res.ok || data.error){
-    const e=new Error(data.error?.message || ('DeepSeek API error HTTP '+res.status));
-    e.status=res.status; throw e;
+
+  async function call(dropImages){
+    const res = await fetch('https://api.deepseek.com/chat/completions',{
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+key },
+      body: JSON.stringify({ model, messages: buildMessages(dropImages), max_tokens: maxTokens, stream:false })
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok || data.error){
+      const e=new Error(data.error?.message || ('DeepSeek API error HTTP '+res.status));
+      e.status=res.status; e._raw=(data.error?.message||'')+' '+res.status; throw e;
+    }
+    const choice = data.choices?.[0];
+    const txt = choice?.message?.content || '';
+    if(!txt) throw new Error('Empty response from DeepSeek');
+    if(choice.finish_reason === 'length') return txt + ' …[reply was cut off]';
+    return txt;
   }
-  const choice = data.choices?.[0];
-  const txt = choice?.message?.content || '';
-  if(!txt) throw new Error('Empty response from DeepSeek');
-  if(choice.finish_reason === 'length') return txt + ' …[reply was cut off]';
-  return txt;
+
+  try{
+    return await call(false);                       // try with image first
+  }catch(e){
+    const m=(e.message||'').toLowerCase();
+    // If the model rejected the image content, retry text-only.
+    if(m.includes('image_url') || m.includes('image') || m.includes('multimodal') || m.includes('vision') || m.includes('deserialize')){
+      toast('DeepSeek couldn\u2019t read the image — answering from text only',2800);
+      return await call(true);
+    }
+    throw e;
+  }
 }
 
 // BOARD: "Reply, Claude" — vision turn
