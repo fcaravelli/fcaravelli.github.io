@@ -16,6 +16,9 @@ window.MathJax = {
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* Strip native macOS/WebKit button chrome so custom styling shows in Tauri.
+   Do NOT reset background here — let each button's own CSS/inline style set it. */
+button{-webkit-appearance:none;appearance:none;font:inherit;color:inherit}
 :root{
   --paper:#f8f4ec;
   --rule:#ddd4be;
@@ -39,7 +42,8 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 }
 .tl{font-size:15px;color:#6a5040;font-weight:700;white-space:nowrap}
 .vsep{width:1px;height:26px;background:var(--rule);margin:0 1px;flex-shrink:0}
-.cc{width:24px;height:24px;border-radius:50%;border:3px solid transparent;cursor:pointer;
+.cc{-webkit-appearance:none;appearance:none;margin:0;padding:0;
+    width:24px;height:24px;border-radius:50%;border:3px solid transparent;cursor:pointer;
     transition:transform .15s,border-color .15s;flex-shrink:0}
 .cc:hover{transform:scale(1.2)}
 .cc.on{border-color:#4a2808}
