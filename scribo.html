@@ -29,6 +29,7 @@ button{-webkit-appearance:none;appearance:none;font:inherit;color:inherit}
   --toolbar:#f0e8d8;
   --panel:300px;
   --tbh:52px;
+  --line-gap:40px;
 }
 html,body{height:100%;overflow:hidden;background:var(--paper);}
 body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
@@ -47,6 +48,9 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
     transition:transform .15s,border-color .15s;flex-shrink:0}
 .cc:hover{transform:scale(1.2)}
 .cc.on{border-color:#4a2808}
+.pcc{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:7px;
+    border:2px solid var(--rule);cursor:pointer;flex-shrink:0;padding:0}
+.pcc.on{border-color:#1a3e7a;border-width:3px}
 .ss{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
     padding:2px 7px;font-family:'Caveat',cursive;font-size:14px;cursor:pointer;color:#5a4030;flex-shrink:0}
 .ss.on,.ss:hover{background:#ddd0b8}
@@ -56,6 +60,11 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 #texttool{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
        padding:2px 8px;font-family:'Caveat',cursive;font-size:14px;cursor:pointer;color:#5a4030;flex-shrink:0}
 #texttool.on{background:#cfe0ff;border-color:#5a8ad0}
+#shapetool{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
+       padding:2px 8px;font-family:'Caveat',cursive;font-size:14px;cursor:pointer;color:#5a4030;flex-shrink:0}
+#shapetool.on{background:#d4ecd8;border-color:#3a8a50}
+#shapepick{font-family:'Caveat',cursive;font-size:14px;border:2px solid var(--rule);
+       border-radius:6px;padding:2px 6px;background:var(--paper);cursor:pointer;flex-shrink:0;color:#3a5040}
 #selecttool{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
        padding:2px 8px;font-family:'Caveat',cursive;font-size:14px;cursor:pointer;color:#5a4030;flex-shrink:0}
 #selecttool.on{background:#ffe6a0;border-color:#d0a020}
@@ -199,8 +208,8 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
   position:relative;width:100%;min-height:100%;
   background-image:
     linear-gradient(var(--margin-line) 1px,transparent 1px),
-    repeating-linear-gradient(transparent,transparent 39px,var(--rule) 39px,var(--rule) 40px);
-  background-size:100% 100%,100% 40px;
+    repeating-linear-gradient(transparent,transparent calc(var(--line-gap) - 1px),var(--rule) calc(var(--line-gap) - 1px),var(--rule) var(--line-gap));
+  background-size:100% 100%,100% var(--line-gap);
   background-position:0 60px,0 0;
 }
 #paper::before{content:'';position:absolute;top:0;left:64px;bottom:0;
@@ -281,7 +290,8 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
        display:none;align-items:center;justify-content:center;z-index:200}
 .modal.open{display:flex}
 .mbox{background:var(--paper);border:2px solid var(--rule);border-radius:16px;
-      padding:24px 26px;width:92%;font-family:'Caveat',cursive}
+      padding:24px 26px;width:92%;font-family:'Caveat',cursive;
+      max-height:88vh;overflow-y:auto}
 .mbox h2{font-size:23px;color:#1a3e7a;margin-bottom:14px;display:flex;align-items:center;gap:7px}
 
 /* settings */
@@ -392,6 +402,14 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
   <div class="vsep"></div>
   <button id="erase">⬜ erase</button>
   <button id="texttool">🆎 text</button>
+  <button id="shapetool">📐 shapes</button>
+  <select id="shapepick" title="Shape to draw" style="display:none">
+    <option value="line">╱ line</option>
+    <option value="arrow">→ arrow</option>
+    <option value="rect">▭ rectangle</option>
+    <option value="ellipse">◯ ellipse</option>
+    <option value="triangle">△ triangle</option>
+  </select>
   <button id="selecttool">🔲 select</button>
   <button id="selmode" title="Switch between box and lasso selection">▭ box</button>
   <button id="imgtool">🖼 image</button>
@@ -466,6 +484,33 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 <div class="modal" id="settingsmodal">
   <div class="mbox" id="settingsbox">
     <h2>⚙ Settings</h2>
+
+    <div style="background:#f4f0e6;border:1.5px solid #d8cdb4;border-radius:9px;padding:11px 12px;margin-bottom:18px">
+      <label class="flabel" style="margin-bottom:8px;font-weight:700">📐 Board appearance</label>
+      <label class="flabel" style="margin-bottom:4px;font-size:13px">Paper colour</label>
+      <div id="papercolors" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="pcc on" data-bg="#f8f4ec" style="background:#f8f4ec" title="Cream"></button>
+        <button class="pcc" data-bg="#ffffff" style="background:#ffffff" title="White"></button>
+        <button class="pcc" data-bg="#fbf7e8" style="background:#fbf7e8" title="Ivory"></button>
+        <button class="pcc" data-bg="#eef2e6" style="background:#eef2e6" title="Mint"></button>
+        <button class="pcc" data-bg="#e9eef5" style="background:#e9eef5" title="Cool blue"></button>
+        <button class="pcc" data-bg="#f3e9e9" style="background:#f3e9e9" title="Blush"></button>
+        <button class="pcc" data-bg="#2b2b30" style="background:#2b2b30" title="Dark"></button>
+      </div>
+      <label class="flabel" style="margin-bottom:2px;font-size:13px">
+        Line spacing — <span id="lineval">40</span> px
+      </label>
+      <input type="range" id="linespacing" min="24" max="72" step="2" value="40"
+             style="width:100%;accent-color:#1a3e7a;margin-bottom:10px">
+      <label class="flabel" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;margin-bottom:6px">
+        <input type="checkbox" id="showrules" checked style="width:15px;height:15px;accent-color:#1a3e7a;cursor:pointer">
+        Show ruled lines
+      </label>
+      <label class="flabel" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;margin-bottom:0">
+        <input type="checkbox" id="showmargin" checked style="width:15px;height:15px;accent-color:#1a3e7a;cursor:pointer">
+        Show red margin line
+      </label>
+    </div>
 
     <label class="flabel" style="margin-bottom:9px">AI provider</label>
     <div class="mgrid" id="providergrid" style="margin-bottom:18px">
@@ -590,6 +635,19 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       Higher = longer answers, fewer cut-offs, slightly slower &amp; pricier. ~700 tokens ≈ a paragraph.
     </p>
 
+    <div style="background:#f3eef8;border:1.5px solid #cbbfdc;border-radius:9px;padding:11px 12px;margin-bottom:18px">
+      <label class="flabel" style="margin-bottom:6px;display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="verifytoggle" style="width:16px;height:16px;accent-color:#6a4a9a;cursor:pointer">
+        🔍 Verify answers with a second model
+      </label>
+      <p style="font-family:'Patrick Hand',cursive;font-size:12px;color:#7a6090;margin:0 0 8px;line-height:1.5">
+        After the first model answers, a second model checks it — confirming, flagging errors, or correcting. The check appears as a 🔍 block below the answer.
+      </p>
+      <label class="flabel" for="checkerpick" style="margin-bottom:4px;font-size:13px">Checker model</label>
+      <select id="checkerpick" style="width:100%;font-family:'Patrick Hand',cursive;font-size:13px;
+        border:2px solid var(--rule);border-radius:7px;padding:6px 8px;background:var(--paper);cursor:pointer"></select>
+    </div>
+
     <button id="settingssave">Save</button>
     <button class="mcancel" id="settingscancel">cancel</button>
   </div>
@@ -639,7 +697,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
     <h2>❔ How to use Scribo</h2>
     <div id="helpbody">
       <p class="hsec">✍️ Writing &amp; drawing</p>
-      <p>Pick an ink colour and thickness, then draw on the board with a stylus, finger, or mouse. The <b>⬜ erase</b> tool rubs out strokes. The board grows downward as you fill it.</p>
+      <p>Pick an ink colour and thickness, then draw on the board with a stylus, finger, or mouse. The <b>⬜ erase</b> tool rubs out strokes. The board grows downward as you fill it. In <b>⚙ Settings → Board appearance</b> you can change the line spacing or hide the ruled / margin lines.</p>
 
       <p class="hsec">🆎 Typed text &amp; equations</p>
       <p>Click <b>🆎 text</b>, then click where you want text. A floating bar lets you choose font, size and colour. Tick <b>parse LaTeX</b> to render maths — type <code>$E=mc^2$</code> for inline or <code>$$…$$</code> for a centred equation. <b>Double-click</b> a LaTeX text block later to edit it.</p>
@@ -650,11 +708,14 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       <p class="hsec">✉ Asking the AI</p>
       <p>Click <b>🔲 select</b>, then choose <b>▭ box</b> or <b>◯ lasso</b> mode. In box mode, <b>click two corners</b> to set the area. In lasso mode, draw a freehand loop around what you want. Then the bar lets you <b>✉ Ask</b> the AI about just that region, <b>✥ move</b> it (contents and AI text travel together), <b>⤡ resize</b> to scale the contents bigger/smaller (box only — drag the corner), or <b>⌫ erase</b> everything inside. The <b>💬 chat</b> panel is for typed back-and-forth.</p>
 
+      <p class="hsec">📐 Shapes</p>
+      <p>Click <b>📐 shapes</b> and pick a shape (line, arrow, rectangle, ellipse, triangle) from the dropdown beside it. Drag on the board to draw it in your current ink colour and thickness — hold <b>Shift</b> for even proportions (square, circle, equilateral). Switch back to a pen colour to free-draw again.</p>
+
       <p class="hsec">📄 Pages</p>
       <p>Each tab is a separate page with its own drawing <i>and</i> its own conversation. Use <b>＋ page</b> / <b>🗑 page</b> to add or remove them.</p>
 
       <p class="hsec">🤖 Choosing the AI</p>
-      <p>The toolbar dropdown switches model on the fly. In <b>⚙ Settings</b> you choose a provider — Claude, Gemini, or Local (Ollama) — and add one or more API keys per provider. If a key hits a limit, Scribo auto-switches to your next key for that provider. The <b>Max reply length</b> slider controls how long answers can be.</p>
+      <p>The toolbar dropdown switches model on the fly. In <b>⚙ Settings</b> you choose a provider — Claude, Gemini, DeepSeek, or Local (Ollama) — and add one or more API keys per provider. If a key hits a limit, Scribo auto-switches to your next key for that provider. The <b>Max reply length</b> slider controls how long answers can be. Turn on <b>🔍 Verify answers</b> to have a second model (your choice) independently check each answer — its verdict appears in a green 🔍 block below the reply.</p>
 
       <p class="hsec">🖥 Local models (free, private)</p>
       <p>Install <a href="https://ollama.com" target="_blank">Ollama</a>, run <code>ollama pull qwen2.5vl:7b</code>, then choose <b>Local (Ollama)</b> in Settings. Nothing leaves your computer. If connection fails, start it with <code>OLLAMA_ORIGINS=* ollama serve</code>.</p>
@@ -787,6 +848,21 @@ let ollamaURL = localStorage.getItem('wb_ollama_url') || 'http://localhost:11434
 let apiKey = activeKey(provider);
 let model  = models[provider];
 let maxTokens = parseInt(localStorage.getItem('wb_maxtokens')) || 4096;
+let verifyMode = localStorage.getItem('wb_verify')==='1';
+let checker = localStorage.getItem('wb_checker') || '';   // "provider|model" of the checking model
+let lineGap = parseInt(localStorage.getItem('wb_linegap')) || 40;
+let showRules = localStorage.getItem('wb_showrules')!=='0';
+let showMargin = localStorage.getItem('wb_showmargin')!=='0';
+let paperBg = localStorage.getItem('wb_paperbg') || '#f8f4ec';
+
+// Apply board appearance (paper colour, ruled-line spacing + visibility).
+function applyAppearance(){
+  document.documentElement.style.setProperty('--paper', paperBg);
+  document.documentElement.style.setProperty('--line-gap', lineGap+'px');
+  document.documentElement.style.setProperty('--rule', showRules ? '#ddd4be' : 'transparent');
+  document.documentElement.style.setProperty('--margin-line', showMargin ? '#e8b8b8' : 'transparent');
+}
+applyAppearance();
 
 const PROVIDERS = {
   claude: {
@@ -835,7 +911,7 @@ function syncKeyStatus() {
   }
   const pool=keyPools[provider]||[];
   const ok = pool.length>0;
-  const name = provider === 'gemini' ? 'Gemini' : 'Claude';
+  const name = aiName();
   keyStatus.textContent = ok ? ('🔑 '+name + (pool.length>1?' ('+(keyIdx[provider]+1)+'/'+pool.length+')':'')) : 'no key';
   keyStatus.className   = ok ? 'ok' : 'missing';
 }
@@ -961,24 +1037,43 @@ function buildModelPick(){
     MODEL_CATALOG[prov].items.forEach(([id,lbl])=>{
       const o=document.createElement('option');
       o.value = prov+'|'+id;
-      o.textContent = lbl;
-      if(!avail) o.disabled = true;
-      if(prov===provider && id===models[prov]) o.selected = true;
+      o.textContent = lbl + (avail?'':' — needs key');
       og.appendChild(o);
     });
     modelpick.appendChild(og);
   });
+  // Explicitly show the *active* provider+model (never a disabled one).
+  modelpick.value = provider+'|'+(models[provider]||'');
+}
+
+// Populate the checker-model selector (Settings). Lists every model across
+// providers; the chosen one verifies answers when Verify mode is on.
+function buildCheckerPick(){
+  const sel=document.getElementById('checkerpick');
+  if(!sel) return;
+  sel.innerHTML='';
+  Object.keys(MODEL_CATALOG).forEach(prov=>{
+    const og=document.createElement('optgroup');
+    og.label=MODEL_CATALOG[prov].name;
+    MODEL_CATALOG[prov].items.forEach(([id,lbl])=>{
+      const o=document.createElement('option');
+      o.value=prov+'|'+id; o.textContent=lbl;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+  // default the checker to a different provider than the solver if unset
+  if(!checker){
+    const other = provider==='claude' ? 'gemini|gemini-2.5-flash' : 'claude|claude-sonnet-4-6';
+    checker = other;
+  }
+  sel.value = checker;
 }
 
 // Switching from the dropdown updates provider+model live and persists.
 modelpick.addEventListener('change', ()=>{
   const [prov,id] = modelpick.value.split('|');
-  if(!provAvailable(prov)){
-    toast('Add a '+MODEL_CATALOG[prov].name+' key in ⚙ Settings first', 2600);
-    buildModelPick();           // revert selection
-    openSettings();
-    return;
-  }
+  // switch provider + model regardless; if it has no key, guide to Settings
   provider = prov;
   models[prov] = id;
   apiKey = activeKey(provider);
@@ -987,6 +1082,11 @@ modelpick.addEventListener('change', ()=>{
   localStorage.setItem('wb_model_'+prov, id);
   syncKeyStatus();
   buildModelPick();
+  if(!provAvailable(prov)){
+    toast('Add a '+MODEL_CATALOG[prov].name+' key in ⚙ Settings to use it', 2600);
+    openSettings();
+    return;
+  }
   toast('Now using '+MODEL_CATALOG[prov].name+' · '+id.replace(/-\d{8}$/,''), 1600);
 });
 buildModelPick();
@@ -996,14 +1096,46 @@ function openSettings() {
   const slider = document.getElementById('tokslider');
   slider.value = maxTokens;
   document.getElementById('tokval').textContent = maxTokens;
+  document.getElementById('verifytoggle').checked = verifyMode;
+  buildCheckerPick();
+  document.getElementById('linespacing').value = lineGap;
+  document.getElementById('lineval').textContent = lineGap;
+  document.getElementById('showrules').checked = showRules;
+  document.getElementById('showmargin').checked = showMargin;
+  document.querySelectorAll('#papercolors .pcc').forEach(b=>b.classList.toggle('on', b.dataset.bg===paperBg));
   settingsmodal.classList.add('open');
 }
 // live token value as the slider moves
 document.getElementById('tokslider').addEventListener('input', e=>{
   document.getElementById('tokval').textContent = e.target.value;
 });
+// live board-appearance preview as controls change
+document.getElementById('linespacing').addEventListener('input', e=>{
+  lineGap = parseInt(e.target.value)||40;
+  document.getElementById('lineval').textContent = lineGap;
+  applyAppearance();
+});
+document.getElementById('showrules').addEventListener('change', e=>{
+  showRules = e.target.checked; applyAppearance();
+});
+document.getElementById('showmargin').addEventListener('change', e=>{
+  showMargin = e.target.checked; applyAppearance();
+});
+// paper colour swatches
+document.querySelectorAll('#papercolors .pcc').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#papercolors .pcc').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); paperBg=b.dataset.bg; applyAppearance();
+}));
 document.getElementById('settingsbtn').addEventListener('click', openSettings);
-document.getElementById('settingscancel').addEventListener('click', () => settingsmodal.classList.remove('open'));
+document.getElementById('settingscancel').addEventListener('click', () => {
+  // revert any live appearance preview to the last-saved values
+  lineGap = parseInt(localStorage.getItem('wb_linegap')) || 40;
+  showRules = localStorage.getItem('wb_showrules')!=='0';
+  showMargin = localStorage.getItem('wb_showmargin')!=='0';
+  paperBg = localStorage.getItem('wb_paperbg') || '#f8f4ec';
+  applyAppearance();
+  settingsmodal.classList.remove('open');
+});
 settingsmodal.addEventListener('click', e => { if(e.target===settingsmodal) settingsmodal.classList.remove('open'); });
 
 // provider buttons — switch provider
@@ -1065,6 +1197,14 @@ document.getElementById('settingssave').addEventListener('click', () => {
   apiKey = activeKey(provider);
   model  = models[provider];
   maxTokens = parseInt(document.getElementById('tokslider').value) || 4096;
+  verifyMode = document.getElementById('verifytoggle').checked;
+  checker = document.getElementById('checkerpick').value || checker;
+  localStorage.setItem('wb_verify', verifyMode?'1':'0');
+  localStorage.setItem('wb_checker', checker);
+  localStorage.setItem('wb_linegap', lineGap);
+  localStorage.setItem('wb_showrules', showRules?'1':'0');
+  localStorage.setItem('wb_showmargin', showMargin?'1':'0');
+  localStorage.setItem('wb_paperbg', paperBg);
   localStorage.setItem('wb_provider', provider);
   saveKeyPool('claude'); saveKeyPool('gemini'); saveKeyPool('deepseek');
   localStorage.setItem('wb_model_claude', models.claude);
@@ -1136,6 +1276,8 @@ document.querySelectorAll('.cc').forEach(b=>b.addEventListener('click',()=>{
   document.getElementById('erase').classList.remove('on');
   document.getElementById('texttool').classList.remove('on');
   document.getElementById('selecttool').classList.remove('on');
+  const sb=document.getElementById('shapetool'); if(sb){sb.classList.remove('on');} 
+  document.getElementById('shapepick').style.display='none';
   clearSelection();
   canvas.style.cursor='crosshair'; hideFmt();
 }));
@@ -1145,6 +1287,7 @@ document.querySelectorAll('.ss').forEach(b=>b.addEventListener('click',()=>{
 }));
 document.getElementById('erase').addEventListener('click',()=>{
   if(tool==='text') setTextTool(false);
+  if(tool==='shape') setShapeTool(false);
   tool=tool==='eraser'?'pen':'eraser';
   document.getElementById('erase').classList.toggle('on',tool==='eraser');
 });
@@ -1193,6 +1336,7 @@ function setTextTool(on){
     tool='text';
     document.getElementById('texttool').classList.add('on');
     document.getElementById('erase').classList.remove('on');
+    if(typeof setShapeTool==='function'){ document.getElementById('shapetool').classList.remove('on'); document.getElementById('shapepick').style.display='none'; }
     canvas.style.cursor='text';
     toast('Click on the board where you want text',1800);
   } else {
@@ -1227,6 +1371,7 @@ function setSelectTool(on){
     document.getElementById('selecttool').classList.add('on');
     document.getElementById('texttool').classList.remove('on');
     document.getElementById('erase').classList.remove('on');
+    if(document.getElementById('shapetool')){ document.getElementById('shapetool').classList.remove('on'); document.getElementById('shapepick').style.display='none'; }
     canvas.style.cursor='crosshair';
     fitLasso();
     toast(selMode==='box'
@@ -1255,6 +1400,90 @@ document.getElementById('selecttool').addEventListener('click',()=>{
   setSelectTool(tool!=='select');
 });
 document.getElementById('selcancel').addEventListener('click',()=>{ clearSelection(); });
+
+// ════════════════════════════════════════
+// SHAPES TOOL — drag to draw line/arrow/rect/ellipse/triangle
+// ════════════════════════════════════════
+let shapeStart=null, shapeDrawing=false;
+let shapeKind = localStorage.getItem('wb_shape') || 'line';
+const shapeBtn = document.getElementById('shapetool');
+const shapePick = document.getElementById('shapepick');
+shapePick.value = shapeKind;
+
+function setShapeTool(on){
+  if(on){
+    tool='shape';
+    shapeBtn.classList.add('on');
+    shapePick.style.display='';
+    document.getElementById('selecttool').classList.remove('on');
+    document.getElementById('texttool').classList.remove('on');
+    document.getElementById('erase').classList.remove('on');
+    canvas.style.cursor='crosshair';
+    toast('Drag to draw a '+shapeKind+'  (Shift = even proportions)',2200);
+  } else {
+    tool='pen';
+    shapeBtn.classList.remove('on');
+    shapePick.style.display='none';
+    lctx.clearRect(0,0,lassoCv.width,lassoCv.height);
+    lassoCv.style.display='none';
+  }
+}
+shapeBtn.addEventListener('click',()=> setShapeTool(tool!=='shape'));
+shapePick.addEventListener('change',()=>{
+  shapeKind=shapePick.value;
+  localStorage.setItem('wb_shape',shapeKind);
+  if(tool!=='shape') setShapeTool(true);
+});
+
+// Draw a shape onto a 2D context (used for both preview and final commit).
+function drawShapeOn(c, a, b, kind, even){
+  let x0=a.x, y0=a.y, x1=b.x, y1=b.y;
+  if(even && (kind==='rect'||kind==='ellipse'||kind==='triangle')){
+    const s=Math.max(Math.abs(x1-x0),Math.abs(y1-y0));
+    x1 = x0 + Math.sign(x1-x0||1)*s;
+    y1 = y0 + Math.sign(y1-y0||1)*s;
+  }
+  c.save();
+  c.strokeStyle=penColor; c.lineWidth=penSize; c.lineCap='round'; c.lineJoin='round';
+  c.beginPath();
+  if(kind==='line' || kind==='arrow'){
+    c.moveTo(x0,y0); c.lineTo(x1,y1); c.stroke();
+    if(kind==='arrow'){
+      const ang=Math.atan2(y1-y0,x1-x0), head=Math.max(12,penSize*4);
+      c.beginPath();
+      c.moveTo(x1,y1);
+      c.lineTo(x1-head*Math.cos(ang-Math.PI/6), y1-head*Math.sin(ang-Math.PI/6));
+      c.moveTo(x1,y1);
+      c.lineTo(x1-head*Math.cos(ang+Math.PI/6), y1-head*Math.sin(ang+Math.PI/6));
+      c.stroke();
+    }
+  } else if(kind==='rect'){
+    c.strokeRect(Math.min(x0,x1),Math.min(y0,y1),Math.abs(x1-x0),Math.abs(y1-y0));
+  } else if(kind==='ellipse'){
+    const cx=(x0+x1)/2, cy=(y0+y1)/2, rx=Math.abs(x1-x0)/2, ry=Math.abs(y1-y0)/2;
+    c.ellipse(cx,cy,rx,ry,0,0,Math.PI*2); c.stroke();
+  } else if(kind==='triangle'){
+    // isosceles: apex at top-center, base along the bottom
+    const minX=Math.min(x0,x1), maxX=Math.max(x0,x1), minY=Math.min(y0,y1), maxY2=Math.max(y0,y1);
+    c.moveTo((minX+maxX)/2, minY);
+    c.lineTo(minX, maxY2);
+    c.lineTo(maxX, maxY2);
+    c.closePath(); c.stroke();
+  }
+  c.restore();
+}
+function previewShape(a,b,even){
+  lctx.clearRect(0,0,lassoCv.width,lassoCv.height);
+  drawShapeOn(lctx, a, b, shapeKind, even);
+}
+function commitShape(a,b,even){
+  lctx.clearRect(0,0,lassoCv.width,lassoCv.height);
+  if(hintVisible){ ctx.clearRect(0,0,canvas.width,canvas.height); hintVisible=false; }
+  drawShapeOn(ctx, a, b, shapeKind, even);
+  const by=Math.max(a.y,b.y); if(by>maxY){maxY=by;growIfNeeded();}
+  scheduleAutosave();
+}
+
 
 // Toggle box / lasso mode
 const selmodeBtn=document.getElementById('selmode');
@@ -1369,6 +1598,7 @@ document.getElementById('selask').addEventListener('click', async ()=>{
     hideToast();
     clearSelection();
     setSelectTool(false);
+    await maybeVerify(userContent, reply);
   }catch(err){ hideToast(); toast('Error: '+err.message,3000); }
 });
 
@@ -1814,6 +2044,11 @@ canvas.addEventListener('mousedown',e=>{
     }
     return;
   }
+  if(tool==='shape'){
+    const p=getPos(e); shapeStart=p; shapeDrawing=true;
+    lassoCv.style.display='block';
+    return;
+  }
   drawing=true;const p=getPos(e);lx=p.x;ly=p.y;
 });
 canvas.addEventListener('mousemove',e=>{
@@ -1822,6 +2057,11 @@ canvas.addEventListener('mousemove',e=>{
     cr.style.display='none';
     if(selMode==='lasso' && lassoDrawing){ const p=getPos(e); lassoPts.push({x:p.x,y:p.y}); drawLassoPath(); }
     else if(selMode==='box' && clickCorner){ const p=getPos(e); drawSelRect(clickCorner.x,clickCorner.y,p.x,p.y); } // live preview to 2nd corner
+    return;
+  }
+  if(tool==='shape'){
+    cr.style.display='none';
+    if(shapeDrawing){ const p=getPos(e); previewShape(shapeStart,p,e.shiftKey); }
     return;
   }
   const sz=tool==='eraser'?32:penSize*6+6;
@@ -1833,6 +2073,10 @@ canvas.addEventListener('mousemove',e=>{
 canvas.addEventListener('mouseup',e=>{
   if(tool==='select'){
     if(selMode==='lasso' && lassoDrawing){ lassoDrawing=false; if(lassoPts.length>3) positionSelBar(); else clearSelection(); }
+    return;
+  }
+  if(tool==='shape'){
+    if(shapeDrawing){ const p=getPos(e); commitShape(shapeStart,p,e.shiftKey); shapeDrawing=false; }
     return;
   }
   endDraw();
@@ -1858,6 +2102,12 @@ canvas.addEventListener('touchstart',e=>{
     }
     return;
   }
+  if(tool==='shape'){
+    e.preventDefault();
+    const p=getPos(e); shapeStart=p; shapeDrawing=true;
+    lassoCv.style.display='block';
+    return;
+  }
   e.preventDefault();drawing=true;const p=getPos(e);lx=p.x;ly=p.y;
 },{passive:false});
 canvas.addEventListener('touchmove',e=>{
@@ -1867,11 +2117,20 @@ canvas.addEventListener('touchmove',e=>{
     else if(selMode==='box' && clickCorner){ const p=getPos(e); drawSelRect(clickCorner.x,clickCorner.y,p.x,p.y); }
     return;
   }
+  if(tool==='shape'){
+    e.preventDefault();
+    if(shapeDrawing){ const p=getPos(e); previewShape(shapeStart,p,false); }
+    return;
+  }
   e.preventDefault();if(!drawing)return;const p=getPos(e);doStroke(p.x,p.y);if(p.y>maxY){maxY=p.y;growIfNeeded();}
 },{passive:false});
 canvas.addEventListener('touchend',e=>{
   if(tool==='select'){
     if(selMode==='lasso' && lassoDrawing){ lassoDrawing=false; if(lassoPts.length>3) positionSelBar(); else clearSelection(); }
+    return;
+  }
+  if(tool==='shape'){
+    if(shapeDrawing){ const p=getPos(e); commitShape(shapeStart,p,false); shapeDrawing=false; }
     return;
   }
   endDraw();
@@ -2133,6 +2392,47 @@ function shouldRotateKey(err){
          m.includes('invalid x-api-key') || m.includes('authentication');
 }
 
+// ── VERIFY MODE: a second model checks the first model's answer ──
+// Temporarily switches the global provider/model to the checker, sends the
+// original prompt+image plus the answer, asks for a verification, restores.
+async function runVerification(userContent, answerText){
+  const [cprov, cmodel] = (checker||'').split('|');
+  if(!cprov || !cmodel) throw new Error('No checker model selected');
+  if(cprov!=='local' && (keyPools[cprov]||[]).length===0)
+    throw new Error('Checker ('+MODEL_CATALOG[cprov].name+') has no API key');
+
+  // save current globals
+  const save = { provider, model, apiKey };
+  provider = cprov; model = cmodel; apiKey = activeKey(cprov);
+
+  // build a fresh, single-turn conversation for the checker
+  const checkMessages = [{
+    role:'user',
+    content: [
+      ...userContent,   // original image + prompt
+      {type:'text', text:
+        'Above is a problem from a whiteboard and below is another AI\'s proposed answer to it. '+
+        'Verify it carefully and independently. Check the reasoning and any equations step by step. '+
+        'Then give a short verdict: state clearly whether it is correct, partially correct, or wrong. '+
+        'If there is an error, point to exactly where and give the correction. If it is correct, say so briefly and note anything worth adding. '+
+        'Be rigorous and skeptical — do not just agree. Use $...$ inline and $$...$$ for display equations, plain prose only.\n\n'+
+        '--- PROPOSED ANSWER ---\n'+answerText }
+    ]
+  }];
+  try{
+    const verdict = await askLLM(checkMessages,
+      'You are a rigorous, skeptical reviewer checking another AI\'s work on a shared whiteboard. '+
+      'Your job is to catch mistakes, not to be agreeable. Verify independently and report plainly. '+
+      'Plain prose + LaTeX only (no markdown). Concise.');
+    return verdict;
+  } finally {
+    // restore the solver globals no matter what
+    provider = save.provider; model = save.model; apiKey = save.apiKey;
+    syncKeyStatus();
+  }
+}
+
+
 // Local models via Ollama's /api/chat. Vision models (Qwen-VL) accept an
 // `images` array of base64 strings per message.
 async function askOllama(messages, systemPrompt){
@@ -2307,9 +2607,31 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
     convHistory.push({role:'assistant',content:reply});
     placeBoardReply(reply);
     hideToast();
+    await maybeVerify(userContent, reply);
   }catch(err){hideToast();toast('Error: '+err.message,3000);}
   finally{askbtn.disabled=false;}
 });
+
+// If Verify mode is on, run the checker and place a 🔍 block below the answer.
+async function maybeVerify(userContent, answerText){
+  if(!verifyMode) return;
+  const [cprov,cmodel]=(checker||'').split('|');
+  const cname = (MODEL_CATALOG[cprov]?.name)||'checker';
+  toast('🔍 '+cname+' is checking the answer…');
+  try{
+    const verdict = await runVerification(userContent, answerText);
+    placeBoardReply(verdict, {
+      label: '🔍 Checked by '+cname,
+      tint: '#bfe6c4',
+      labelColor: '#2a6a3a',
+      checkStyle: true
+    });
+    hideToast();
+  }catch(err){
+    hideToast();
+    toast('Check failed: '+err.message, 3000);
+  }
+}
 
 // ════════════════════════════════════════
 // BOARD: find the true bottom of all content
@@ -2343,10 +2665,14 @@ function contentBottom(){
 // ════════════════════════════════════════
 // BOARD: place AI reply as overlay, always below existing content
 // ════════════════════════════════════════
-function placeBoardReply(text){
+function placeBoardReply(text, opts){
+  opts = opts || {};
+  const label = opts.label || ('✦ '+aiName());
+  const tint  = opts.tint  || '#aaccff';   // answer = blue; check = green
+  const labelColor = opts.labelColor || '#1a3e7a';
   // Anchor the reply just below whatever is currently on the board,
   // never overlapping the user's latest handwriting or prior replies.
-  const GAP_ABOVE_LABEL = 34;   // room for the "✦ Claude/Gemini" label
+  const GAP_ABOVE_LABEL = 34;   // room for the label
   const startY = Math.max(boardNextY, contentBottom() + 48 + GAP_ABOVE_LABEL);
   boardNextY = startY;
 
@@ -2358,12 +2684,13 @@ function placeBoardReply(text){
   block.style.visibility='hidden';
   const td=document.createElement('div');
   td.className='claude-text';
+  if(opts.checkStyle) td.style.color='#2a6a3a';
   td.innerHTML=segsToHtml(text);
   block.dataset.src = text;          // keep raw source for clean PDF re-render
   block.appendChild(td);
   paper.appendChild(block);
 
-  // 2. After layout (and LaTeX typeset), draw the blue box to fit the text,
+  // 2. After layout (and LaTeX typeset), draw the box to fit the text,
   //    grow the canvas if needed, advance the cursor, and scroll into view.
   const finalize = ()=>{
     const PAD_TOP = 26, PAD_BOTTOM = 22;
@@ -2371,7 +2698,6 @@ function placeBoardReply(text){
     const boxTop = boardNextY - PAD_TOP;
     const boxH   = h + PAD_TOP + PAD_BOTTOM;
 
-    // ensure the canvas is tall enough for the box + label
     const need = boxTop + boxH + 80;
     if(need > canvas.height){
       const tmp=document.createElement('canvas');
@@ -2381,17 +2707,15 @@ function placeBoardReply(text){
       ctx.drawImage(tmp,0,0);
     }
 
-    // blue tint sized to the actual text
     ctx.save();
-    ctx.globalAlpha=0.15; ctx.fillStyle='#aaccff';
+    ctx.globalAlpha=0.15; ctx.fillStyle=tint;
     ctx.beginPath();
     if(ctx.roundRect){ ctx.roundRect(74, boxTop, canvas.width-90, boxH, 10); }
     else { ctx.rect(74, boxTop, canvas.width-90, boxH); }
     ctx.fill();
     ctx.globalAlpha=1;
-    // label sits just above the box
-    ctx.font='bold 15px "Patrick Hand",cursive'; ctx.fillStyle='#1a3e7a';
-    ctx.fillText('✦ '+aiName(), 80, boxTop - 6);
+    ctx.font='bold 15px "Patrick Hand",cursive'; ctx.fillStyle=labelColor;
+    ctx.fillText(label, 80, boxTop - 6);
     ctx.restore();
 
     block.style.visibility='visible';   // reveal only now that it's laid out
