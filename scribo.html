@@ -304,13 +304,13 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 .keyrow .kdel{background:#e8d0d0;color:#9a3030;border:none;border-radius:5px;width:22px;height:22px;cursor:pointer;font-size:13px;flex-shrink:0}
 .keyrow .kdel:hover{background:#f0c0c0}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px}
-.mbtn,.provbtn,.gmbtn,.lmbtn{background:var(--toolbar);border:2px solid var(--rule);border-radius:9px;
+.mbtn,.provbtn,.gmbtn,.lmbtn,.dsbtn{background:var(--toolbar);border:2px solid var(--rule);border-radius:9px;
       padding:9px 10px;cursor:pointer;text-align:left;
       font-family:'Caveat',cursive;font-size:16px;color:#2a1a0a;transition:background .15s,border-color .15s}
-.mbtn:hover,.provbtn:hover,.gmbtn:hover,.lmbtn:hover{background:#ddd0b8}
-.mbtn.on,.provbtn.on,.gmbtn.on,.lmbtn.on{background:#ddeaff;border-color:#5a8ad0;color:#1a3e7a}
-.mbtn .mtag,.provbtn .mtag,.gmbtn .mtag,.lmbtn .mtag{font-family:'Patrick Hand',cursive;font-size:11px;color:#7a9aba;display:block;margin-top:2px}
-.mbtn.on .mtag,.provbtn.on .mtag,.gmbtn.on .mtag,.lmbtn.on .mtag{color:#4a7ab0}
+.mbtn:hover,.provbtn:hover,.gmbtn:hover,.lmbtn:hover,.dsbtn:hover{background:#ddd0b8}
+.mbtn.on,.provbtn.on,.gmbtn.on,.lmbtn.on,.dsbtn.on{background:#ddeaff;border-color:#5a8ad0;color:#1a3e7a}
+.mbtn .mtag,.provbtn .mtag,.gmbtn .mtag,.lmbtn .mtag,.dsbtn .mtag{font-family:'Patrick Hand',cursive;font-size:11px;color:#7a9aba;display:block;margin-top:2px}
+.mbtn.on .mtag,.provbtn.on .mtag,.gmbtn.on .mtag,.lmbtn.on .mtag,.dsbtn.on .mtag{color:#4a7ab0}
 #settingssave{
   width:100%;background:#1a3e7a;color:#fff;border:none;border-radius:9px;
   padding:8px 0;font-family:'Caveat',cursive;font-size:19px;cursor:pointer;font-weight:700;margin-bottom:7px
@@ -477,6 +477,10 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
         Gemini (Google)
         <span class="mtag">Generous free tier</span>
       </button>
+      <button class="provbtn" data-p="deepseek">
+        DeepSeek
+        <span class="mtag">Cheap · V4 vision</span>
+      </button>
       <button class="provbtn" data-p="local">
         Local (Ollama)
         <span class="mtag">Free · private · no key</span>
@@ -550,6 +554,16 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       <button class="gmbtn" data-m="gemini-3-pro">
         Gemini 3 Pro
         <span class="mtag">Most capable</span>
+      </button>
+    </div>
+    <div class="mgrid" id="deepseekmodels" style="display:none">
+      <button class="dsbtn on" data-m="deepseek-v4-flash">
+        DeepSeek V4 Flash ✦
+        <span class="mtag">Cheap · fast · vision</span>
+      </button>
+      <button class="dsbtn" data-m="deepseek-v4-pro">
+        DeepSeek V4 Pro
+        <span class="mtag">Stronger reasoning</span>
       </button>
     </div>
     <div class="mgrid" id="localmodels" style="display:none">
@@ -740,14 +754,16 @@ function loadKeyPool(prov, legacy){
 }
 let keyPools = {
   claude: loadKeyPool('claude', 'wb_key_claude') ,
-  gemini: loadKeyPool('gemini', 'wb_key_gemini')
+  gemini: loadKeyPool('gemini', 'wb_key_gemini'),
+  deepseek: loadKeyPool('deepseek', 'wb_key_deepseek')
 };
 // also honor the very old generic 'wb_key' for claude
 if(keyPools.claude.length===0){ const v=localStorage.getItem('wb_key'); if(v) keyPools.claude=[v]; }
 
 let keyIdx = {
   claude: parseInt(localStorage.getItem('wb_keyidx_claude'))||0,
-  gemini: parseInt(localStorage.getItem('wb_keyidx_gemini'))||0
+  gemini: parseInt(localStorage.getItem('wb_keyidx_gemini'))||0,
+  deepseek: parseInt(localStorage.getItem('wb_keyidx_deepseek'))||0
 };
 function activeKey(prov){
   const pool=keyPools[prov]||[];
@@ -763,6 +779,7 @@ function saveKeyPool(prov){
 let models = {
   claude: localStorage.getItem('wb_model_claude') || 'claude-sonnet-4-6',
   gemini: localStorage.getItem('wb_model_gemini') || 'gemini-2.5-flash',
+  deepseek: localStorage.getItem('wb_model_deepseek') || 'deepseek-v4-flash',
   local:  localStorage.getItem('wb_model_local')  || 'qwen2.5vl:7b'
 };
 let ollamaURL = localStorage.getItem('wb_ollama_url') || 'http://localhost:11434';
@@ -784,6 +801,12 @@ const PROVIDERS = {
     placeholder: 'AIza…',
     prefix: 'AIza'
   },
+  deepseek: {
+    label: 'DeepSeek API key',
+    link: 'https://platform.deepseek.com/api_keys',
+    placeholder: 'sk-…',
+    prefix: 'sk-'
+  },
   local: {
     label: 'Local (Ollama)',
     link: 'https://ollama.com',
@@ -795,6 +818,7 @@ const PROVIDERS = {
 // Display name of the currently selected AI, for labels on the board/chat.
 function aiName(){
   if(provider==='gemini') return 'Gemini';
+  if(provider==='deepseek') return 'DeepSeek';
   if(provider==='local')  return (models.local||'').startsWith('deepseek') ? 'DeepSeek' : 'Qwen';
   return 'Claude';
 }
@@ -884,9 +908,11 @@ function applyProviderUI(){
   // model grids
   document.getElementById('claudemodels').style.display = provider==='claude' ? 'grid' : 'none';
   document.getElementById('geminimodels').style.display = provider==='gemini' ? 'grid' : 'none';
+  document.getElementById('deepseekmodels').style.display = provider==='deepseek' ? 'grid' : 'none';
   document.getElementById('localmodels').style.display  = provider==='local'  ? 'grid' : 'none';
   // highlight selected model in the active grid
-  const sel = provider==='claude' ? '.mbtn' : provider==='gemini' ? '.gmbtn' : '.lmbtn';
+  const sel = provider==='claude' ? '.mbtn' : provider==='gemini' ? '.gmbtn'
+            : provider==='deepseek' ? '.dsbtn' : '.lmbtn';
   document.querySelectorAll(sel).forEach(b=>b.classList.toggle('on', b.dataset.m===models[provider]));
 }
 
@@ -904,6 +930,10 @@ const MODEL_CATALOG = {
     ['gemini-2.5-pro','Gemini 2.5 Pro'],
     ['gemini-3.5-flash','Gemini 3.5 Flash'],
     ['gemini-3-pro','Gemini 3 Pro'],
+  ]},
+  deepseek: { name:'DeepSeek', items:[
+    ['deepseek-v4-flash','DeepSeek V4 Flash'],
+    ['deepseek-v4-pro','DeepSeek V4 Pro'],
   ]},
   local: { name:'Local (Ollama)', items:[
     ['qwen2.5vl:7b','Qwen2.5-VL 7B'],
@@ -1004,6 +1034,11 @@ document.querySelectorAll('#localmodels .lmbtn').forEach(b => b.addEventListener
   document.querySelectorAll('#localmodels .lmbtn').forEach(x => x.classList.remove('on'));
   b.classList.add('on'); models.local = b.dataset.m;
 }));
+// deepseek model buttons
+document.querySelectorAll('#deepseekmodels .dsbtn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#deepseekmodels .dsbtn').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); models.deepseek = b.dataset.m;
+}));
 
 // Ollama "Test connection" button
 document.getElementById('ollamatest').addEventListener('click', async ()=>{
@@ -1031,9 +1066,10 @@ document.getElementById('settingssave').addEventListener('click', () => {
   model  = models[provider];
   maxTokens = parseInt(document.getElementById('tokslider').value) || 4096;
   localStorage.setItem('wb_provider', provider);
-  saveKeyPool('claude'); saveKeyPool('gemini');
+  saveKeyPool('claude'); saveKeyPool('gemini'); saveKeyPool('deepseek');
   localStorage.setItem('wb_model_claude', models.claude);
   localStorage.setItem('wb_model_gemini', models.gemini);
+  localStorage.setItem('wb_model_deepseek', models.deepseek);
   localStorage.setItem('wb_model_local', models.local);
   localStorage.setItem('wb_ollama_url', ollamaURL);
   localStorage.setItem('wb_maxtokens', maxTokens);
@@ -2058,6 +2094,8 @@ async function askLLM(messages, systemPrompt){
   if(pool.length===0) throw new Error('No API key set for '+aiName());
   const callOne = (k)=> provider==='gemini'
     ? askGemini(messages, systemPrompt, k)
+    : provider==='deepseek'
+    ? askDeepSeek(messages, systemPrompt, k)
     : askClaudeAPI(messages, systemPrompt, k);
 
   let startIdx = keyIdx[provider]||0;
@@ -2206,7 +2244,43 @@ async function askGemini(messages, systemPrompt, key){
   return text;
 }
 
-// ════════════════════════════════════════
+// DeepSeek — OpenAI-compatible endpoint, V4 models support vision via image_url.
+async function askDeepSeek(messages, systemPrompt, key){
+  key = key || apiKey;
+  // Convert Anthropic-format → OpenAI chat format
+  const oms = [{ role:'system', content: systemPrompt }];
+  for(const m of messages){
+    const role = m.role==='assistant' ? 'assistant' : 'user';
+    if(typeof m.content === 'string'){
+      oms.push({ role, content: m.content });
+    } else {
+      const parts=[];
+      for(const block of m.content){
+        if(block.type==='text') parts.push({ type:'text', text:block.text });
+        else if(block.type==='image')
+          parts.push({ type:'image_url',
+            image_url:{ url:'data:'+block.source.media_type+';base64,'+block.source.data } });
+      }
+      oms.push({ role, content: parts });
+    }
+  }
+  const res = await fetch('https://api.deepseek.com/chat/completions',{
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+key },
+    body: JSON.stringify({ model, messages: oms, max_tokens: maxTokens, stream:false })
+  });
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok || data.error){
+    const e=new Error(data.error?.message || ('DeepSeek API error HTTP '+res.status));
+    e.status=res.status; throw e;
+  }
+  const choice = data.choices?.[0];
+  const txt = choice?.message?.content || '';
+  if(!txt) throw new Error('Empty response from DeepSeek');
+  if(choice.finish_reason === 'length') return txt + ' …[reply was cut off]';
+  return txt;
+}
+
 // BOARD: "Reply, Claude" — vision turn
 // ════════════════════════════════════════
 document.getElementById('askbtn').addEventListener('click', async ()=>{
