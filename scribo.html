@@ -215,6 +215,8 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 #paper::before{content:'';position:absolute;top:0;left:64px;bottom:0;
                width:2px;background:var(--margin-line);pointer-events:none;z-index:0}
 #board,#lassocanvas{position:absolute;top:0;left:0;touch-action:none;z-index:1}
+#welcomehint{position:absolute;top:140px;left:80px;z-index:2;pointer-events:none;
+  font-family:'Caveat',cursive;font-size:22px;color:rgba(160,140,100,.5)}
 #board{cursor:crosshair}
 .claude-block{position:absolute;left:80px;z-index:5;max-width:calc(100% - 96px);pointer-events:none}
 .claude-text{font-family:'Caveat',cursive;font-size:22px;line-height:1.55;
@@ -446,6 +448,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       <div id="paper">
         <canvas id="board"></canvas>
         <canvas id="lassocanvas"></canvas>
+        <div id="welcomehint">✏️&nbsp; Write here, then hit &nbsp;"✉ Ask AI"&nbsp; or chat in the panel →</div>
         <div id="selrect"><div id="selresize"></div></div>
         <div id="selbar">
           <input id="selq" type="text" placeholder="Ask about this part… (optional)">
@@ -1492,7 +1495,7 @@ function previewShape(a,b,even){
 }
 function commitShape(a,b,even){
   lctx.clearRect(0,0,lassoCv.width,lassoCv.height);
-  if(hintVisible){ ctx.clearRect(0,0,canvas.width,canvas.height); hintVisible=false; }
+  hideWelcomeHint();
   drawShapeOn(ctx, a, b, shapeKind, even);
   const by=Math.max(a.y,b.y); if(by>maxY){maxY=by;growIfNeeded();}
   scheduleAutosave();
@@ -1818,7 +1821,7 @@ function placeText(){
   const size=parseInt(document.getElementById('fmt-size').value)||28;
   const useLatex=document.getElementById('fmt-latex').checked;
 
-  if(hintVisible){ ctx.clearRect(0,0,canvas.width,canvas.height); hintVisible=false; }
+  hideWelcomeHint();
 
   // EDITING an existing LaTeX overlay?
   if(editingBlock){
@@ -1886,7 +1889,7 @@ function placeText(){
 let selectedImg = null;
 
 function addImage(src, x, y, w){
-  if(hintVisible){ ctx.clearRect(0,0,canvas.width,canvas.height); hintVisible=false; }
+  hideWelcomeHint();
   const block=document.createElement('div');
   block.className='img-block';
   const img=document.createElement('img');
@@ -2152,7 +2155,7 @@ canvas.addEventListener('touchend',e=>{
 
 function endDraw(){ if(drawing){ drawing=false; scheduleAutosave(); } ctx.globalCompositeOperation='source-over'; }
 function doStroke(x,y){
-  if(hintVisible){ ctx.clearRect(0,0,canvas.width,canvas.height); hintVisible=false; }
+  hideWelcomeHint();
   ctx.beginPath();
   if(tool==='eraser'){ctx.globalCompositeOperation='destination-out';ctx.lineWidth=30;}
   else{ctx.globalCompositeOperation='source-over';ctx.strokeStyle=penColor;ctx.lineWidth=penSize;}
@@ -2246,7 +2249,7 @@ function restorePage(idx){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   // restore drawing
   if(p.img){
-    hintVisible=false;
+    hideWelcomeHint();
     const im = new Image();
     im.onload = ()=>ctx.drawImage(im,0,0);
     im.src = p.img;
@@ -2331,12 +2334,14 @@ document.getElementById('delpage').addEventListener('click',()=>{
 });
 
 function drawWelcomeHint(){
-  ctx.save();
-  ctx.font='22px Caveat,cursive';
-  ctx.fillStyle='rgba(160,140,100,.4)';
-  ctx.fillText('✏️  Write here, then hit  "✉ Ask AI"  or chat in the panel →', 80, Math.max(scroll.clientHeight/2,80));
-  ctx.restore();
+  const el=document.getElementById('welcomehint');
+  if(el) el.style.display='';
   hintVisible=true;
+}
+function hideWelcomeHint(){
+  const el=document.getElementById('welcomehint');
+  if(el) el.style.display='none';
+  hintVisible=false;
 }
 
 // Initialize first page after canvas is ready (called at bottom)
@@ -2628,6 +2633,7 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
 
   const askbtn=document.getElementById('askbtn');
   askbtn.disabled=true; toast(aiName()+' is reading…');
+  hideWelcomeHint();
 
   const b64=canvas.toDataURL('image/png').split(',')[1];
   const userContent=[
