@@ -63,6 +63,10 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 #shapetool{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
        padding:2px 8px;font-family:'Caveat',cursive;font-size:14px;cursor:pointer;color:#5a4030;flex-shrink:0}
 #shapetool.on{background:#d4ecd8;border-color:#3a8a50}
+#undobtn{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
+  padding:2px 9px;font-family:'Caveat',cursive;font-size:14px;cursor:pointer;color:#5a4030;flex-shrink:0}
+#undobtn:hover:not(:disabled){background:#ece3d2}
+#undobtn:disabled{opacity:.4;cursor:default}
 #shapepick,#shapestyle{font-family:'Caveat',cursive;font-size:14px;border:2px solid var(--rule);
        border-radius:6px;padding:2px 6px;background:var(--paper);cursor:pointer;flex-shrink:0;color:#3a5040}
 #selecttool{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
@@ -441,6 +445,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
   <button id="selmode" title="Switch between box and lasso selection">▭ box</button>
   <button id="imgtool">🖼 image</button>
   <input type="file" id="imgfile" accept="image/*" style="display:none">
+  <button id="undobtn" title="Undo (Cmd/Ctrl+Z)" disabled>↶ undo</button>
 
   <div class="tbr">
     <select id="modelpick" title="Active AI model"></select>
@@ -474,7 +479,6 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
         <canvas id="board"></canvas>
         <canvas id="lassocanvas"></canvas>
         <div id="welcomehint">✏️&nbsp; Write here, then hit &nbsp;"✉ Ask AI"&nbsp; or chat in the panel →</div>
-        <button id="pastepop" style="display:none">📋 Paste here</button>
         <div id="selrect"><div id="selresize"></div></div>
         <div id="selbar">
           <input id="selq" type="text" placeholder="Ask about this part… (optional)">
@@ -743,6 +747,9 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 
       <p class="hsec">✉ Asking the AI</p>
       <p>Click <b>🔲 select</b>, then choose <b>▭ box</b> or <b>◯ lasso</b> mode. In box mode, <b>click two corners</b> to set the area. In lasso mode, draw a freehand loop around what you want. Then the bar lets you <b>✉ Ask</b> the AI about just that region, <b>⧉ copy</b> it (then <b>double-tap</b> anywhere to paste it as a movable image), <b>✥ move</b> it (contents and AI text travel together), <b>⤡ resize</b> to scale the contents bigger/smaller (box only — drag the corner), or <b>⌫ erase</b> everything inside. The <b>💬 chat</b> panel is for typed back-and-forth. Use the <b>📎</b> button there to attach files (PDFs, images, text/code/data) as context for the AI's reply — PDFs are read natively by Claude; other models read images and text files.</p>
+
+      <p class="hsec">↶ Undo</p>
+      <p>The <b>↶ undo</b> button (or <b>Cmd/Ctrl+Z</b>) reverses your recent board actions — strokes, shapes, pastes, erases, typed text, and AI replies — up to 25 steps back. Undo history is per page and resets when you switch pages.</p>
 
       <p class="hsec">📐 Shapes</p>
       <p>Click <b>📐 shapes</b> and pick a shape (line, arrow, rectangle, ellipse, triangle) from the dropdown beside it. Choose a <b>line style</b> (solid, dashed, dotted) and set the <b>line width</b> with the slider. <b>Tap once to set the start point, then tap again for the end point</b> — or drag in one motion. Hold <b>Shift</b> for even proportions (square, circle, equilateral). Switch back to a pen colour to free-draw again.</p>
@@ -1576,6 +1583,7 @@ function previewShape(a,b,even){
 }
 function commitShape(a,b,even){
   lctx.clearRect(0,0,lassoCv.width,lassoCv.height);
+  pushUndo();
   hideWelcomeHint();
   drawShapeOn(ctx, a, b, shapeKind, even);
   const by=Math.max(a.y,b.y); if(by>maxY){maxY=by;growIfNeeded();}
@@ -1741,6 +1749,7 @@ document.getElementById('selask').addEventListener('click', async ()=>{
 // ── Erase everything inside the selection ──
 document.getElementById('selerase').addEventListener('click',()=>{
   if(!haveSelection()){ toast('Make a selection first',1500); return; }
+  pushUndo();
   if(selBox){
     const {x,y,w,h}=selBox;
     ctx.clearRect(x,y,w,h);
@@ -1766,59 +1775,52 @@ document.getElementById('selerase').addEventListener('click',()=>{
 
 // ── Copy / paste a selected region ──
 // Copy rasterizes the region (ink + images, clipped for lasso) to a PNG kept
-// in memory; double-tapping the board pastes it as a draggable image overlay.
+// in memory. After copying, "paste mode" arms: the next click on the board
+// drops the copy wherever you click. Esc (or copying again) cancels.
 let clipboardRegion = null;   // { dataURL, w, h }
+let pasteArmed = false;
 document.getElementById('selcopy').addEventListener('click', async ()=>{
   if(!haveSelection()){ toast('Make a selection first',1500); return; }
   const b = selBox || lassoBounds();
   const { b64 } = await cropSelection();
   clipboardRegion = { dataURL:'data:image/png;base64,'+b64, w:Math.round(b.w), h:Math.round(b.h) };
   clearSelection();
-  toast('Copied ✓  — double-tap the board to paste',2400);
+  armPaste();
 });
-
-// Double-tap / double-click the board → offer to paste the copied region there.
-const pastePop = document.getElementById('pastepop');
-let pasteAt = null;
-function showPaste(clientX, clientY){
-  if(!clipboardRegion){ return; }
-  const pr = paper.getBoundingClientRect();
-  // position in CSS px within #paper (where img-blocks and the popover live)
-  const px = clientX - pr.left;
-  const py = clientY - pr.top;
-  pasteAt = { x:px, y:py };
-  pastePop.style.left = px+'px';
-  pastePop.style.top  = py+'px';
-  pastePop.style.display = '';
+function armPaste(){
+  if(!clipboardRegion) return;
+  pasteArmed = true;
+  canvas.style.cursor = 'copy';
+  toast('Click where you want to paste  (Esc to cancel)', 3000);
 }
-function hidePaste(){ pastePop.style.display='none'; pasteAt=null; }
-pastePop.addEventListener('click', (e)=>{
-  e.stopPropagation();
-  if(!clipboardRegion || !pasteAt){ hidePaste(); return; }
-  // convert CSS-px paste point to canvas px for addImage (which positions in canvas px)
+function doPasteAt(clientX, clientY){
+  if(!clipboardRegion) return;
+  const r = canvas.getBoundingClientRect();
   const {sx,sy}=canvasScale();
-  addImage(clipboardRegion.dataURL, pasteAt.x/sx, pasteAt.y/sy, clipboardRegion.w);
-  hidePaste();
+  const x = (clientX - r.left)/sx;
+  const y = (clientY - r.top)/sy;
+  pushUndo();
+  addImage(clipboardRegion.dataURL, x, y, clipboardRegion.w);
+  pasteArmed = false;
+  canvas.style.cursor = (tool==='pen'||tool==='eraser') ? 'crosshair' : 'default';
   toast('Pasted ✓',1200);
-});
-// mouse double-click
-canvas.addEventListener('dblclick', e=>{
-  if(tool==='text' || tool==='shape') return;   // these use clicks for placement
-  if(clipboardRegion) showPaste(e.clientX, e.clientY);
-});
-// touch double-tap
-let lastTap=0;
-canvas.addEventListener('touchend', e=>{
-  if(tool==='shape' || tool==='text') return;
-  const now=Date.now();
-  if(now-lastTap < 300 && clipboardRegion && e.changedTouches[0]){
-    const t=e.changedTouches[0];
-    showPaste(t.clientX, t.clientY);
+}
+// Intercept the next click on the board when paste is armed, before the
+// drawing/shape/select handlers run (capture phase).
+canvas.addEventListener('mousedown', e=>{
+  if(pasteArmed){ e.preventDefault(); e.stopPropagation(); doPasteAt(e.clientX, e.clientY); }
+}, true);
+canvas.addEventListener('touchstart', e=>{
+  if(pasteArmed && e.touches[0]){ e.preventDefault(); e.stopPropagation(); doPasteAt(e.touches[0].clientX, e.touches[0].clientY); }
+}, true);
+// Esc cancels paste mode
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && pasteArmed){
+    pasteArmed=false;
+    canvas.style.cursor=(tool==='pen'||tool==='eraser')?'crosshair':'default';
+    toast('Paste cancelled',1200);
   }
-  lastTap=now;
 });
-// dismiss the paste popover when clicking elsewhere
-document.addEventListener('mousedown', e=>{ if(e.target!==pastePop) hidePaste(); });
 
 // ── Move mode (works for box and lasso) ──
 let moveMode=false;
@@ -1992,6 +1994,7 @@ document.getElementById('fmt-place').addEventListener('click',placeText);
 function placeText(){
   const text=document.getElementById('fmt-text').value;
   if(!text.trim()){ hideFmt(); return; }
+  pushUndo();
   const font=document.getElementById('fmt-font').value;
   const size=parseInt(document.getElementById('fmt-size').value)||28;
   const useLatex=document.getElementById('fmt-latex').checked;
@@ -2249,7 +2252,7 @@ canvas.addEventListener('mousedown',e=>{
     }
     return;
   }
-  drawing=true;const p=getPos(e);lx=p.x;ly=p.y;
+  pushUndo();drawing=true;const p=getPos(e);lx=p.x;ly=p.y;
 });
 canvas.addEventListener('mousemove',e=>{
   if(tool==='text'){ cr.style.display='none'; return; }
@@ -2312,7 +2315,7 @@ canvas.addEventListener('touchstart',e=>{
     }
     return;
   }
-  e.preventDefault();drawing=true;const p=getPos(e);lx=p.x;ly=p.y;
+  e.preventDefault();pushUndo();drawing=true;const p=getPos(e);lx=p.x;ly=p.y;
 },{passive:false});
 canvas.addEventListener('touchmove',e=>{
   if(tool==='select'){
@@ -2428,6 +2431,7 @@ function snapshotCurrent(){
 // Restore a page into the live canvas/overlays/chat
 function restorePage(idx){
   restoring=true;
+  undoStack=[]; if(typeof undoBtn!=='undefined'&&undoBtn) undoBtn.disabled=true;
   const p = pages[idx];
   // clear current overlays & chat
   document.querySelectorAll('.claude-block, .text-block, .img-block').forEach(e=>e.remove());
@@ -2922,6 +2926,7 @@ function contentBottom(){
 // ════════════════════════════════════════
 function placeBoardReply(text, opts){
   opts = opts || {};
+  pushUndo();
   const label = opts.label || ('✦ '+aiLabel());
   const tint  = opts.tint  || '#aaccff';   // answer = blue; check = green
   const labelColor = opts.labelColor || '#1a3e7a';
@@ -3484,9 +3489,73 @@ function toast(msg,dur){toastEl.textContent=msg;toastEl.style.display='block';cl
 function hideToast(){toastEl.style.display='none';}
 
 // ════════════════════════════════════════
-// AUTOSAVE — quietly persist work to localStorage; offer restore on launch
+// UNDO — snapshot stack of board state (canvas + overlays). Capped to limit memory.
 // ════════════════════════════════════════
-const AUTOSAVE_KEY='scribo_autosave_v1';
+const UNDO_LIMIT = 25;
+let undoStack = [];
+const undoBtn = document.getElementById('undobtn');
+
+function snapshotBoard(){
+  return {
+    img: canvas.toDataURL('image/png'),
+    h: canvas.height,
+    blocks: Array.from(document.querySelectorAll('.claude-block')).map(b=>({top:b.style.top, src:b.dataset.src||'', html:b.innerHTML})),
+    textBlocks: Array.from(document.querySelectorAll('.text-block')).map(b=>b.outerHTML),
+    imgBlocks: Array.from(document.querySelectorAll('.img-block')).map(b=>{const c=b.cloneNode(true);c.classList.remove('sel');return c.outerHTML;})
+  };
+}
+// Call BEFORE a board-changing action to make it undoable.
+function pushUndo(){
+  try{
+    undoStack.push(snapshotBoard());
+    if(undoStack.length>UNDO_LIMIT) undoStack.shift();
+    undoBtn.disabled = undoStack.length===0;
+  }catch(e){}
+}
+function doUndo(){
+  if(!undoStack.length) return;
+  const s = undoStack.pop();
+  undoBtn.disabled = undoStack.length===0;
+  // clear overlays
+  document.querySelectorAll('.claude-block, .text-block, .img-block').forEach(e=>e.remove());
+  // restore canvas
+  canvas.height = s.h; paper.style.minHeight = s.h+'px';
+  if(typeof fitLasso==='function') fitLasso();
+  const im=new Image();
+  im.onload=()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(im,0,0); };
+  im.src = s.img;
+  // restore reply blocks (rebuild from raw source so MathJax re-renders)
+  s.blocks.forEach(b=>{
+    const block=document.createElement('div'); block.className='claude-block'; block.style.top=b.top;
+    if(b.src){ block.dataset.src=b.src; const td=document.createElement('div'); td.className='claude-text'; td.innerHTML=segsToHtml(b.src); block.appendChild(td); }
+    else block.innerHTML=b.html;
+    paper.appendChild(block);
+    if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([block]);
+  });
+  s.textBlocks.forEach(html=>{
+    const tmp=document.createElement('div'); tmp.innerHTML=html; const el=tmp.firstElementChild;
+    if(el){ if(el.dataset&&el.dataset.src) el.innerHTML=segsToHtml(el.dataset.src); paper.appendChild(el); wireTextEdit(el);
+      if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([el]); }
+  });
+  s.imgBlocks.forEach(html=>{
+    const tmp=document.createElement('div'); tmp.innerHTML=html; const el=tmp.firstElementChild;
+    if(el){ paper.appendChild(el); wireImgBlock(el); }
+  });
+  selectedImg=null;
+  scheduleAutosave();
+  toast('Undone',900);
+}
+undoBtn.addEventListener('click', doUndo);
+document.addEventListener('keydown', e=>{
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='z' && !e.shiftKey){
+    // ignore when typing in an input/textarea/editable
+    const t=e.target;
+    if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable)) return;
+    e.preventDefault(); doUndo();
+  }
+});
+
+
 let autosaveTimer=null, autosaveWarned=false;
 
 function doAutosave(){
