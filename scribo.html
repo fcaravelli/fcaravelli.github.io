@@ -700,6 +700,15 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       </p>
     </div>
 
+    <div style="background:#f4f0e6;border:1.5px solid #d8cdb4;border-radius:9px;padding:11px 12px;margin-bottom:18px">
+      <label class="flabel" style="margin-bottom:6px;font-weight:700">🧹 Storage</label>
+      <p style="font-family:'Patrick Hand',cursive;font-size:12px;color:#7a6a50;margin:0 0 8px;line-height:1.5">
+        Auto-save keeps your work in this browser. If it fills up (large images/PDFs), clear it here. This only deletes the auto-saved snapshot — your saved <b>.scribo</b> files and the current board are untouched.
+      </p>
+      <div style="font-family:'Patrick Hand',cursive;font-size:12px;color:#5a4030;margin-bottom:8px">Auto-save size: <span id="autosaveSize">—</span></div>
+      <button id="clearautosave" style="font-family:'Caveat',cursive;font-size:15px;background:#f3e0e0;border:2px solid #d8b0b0;color:#9a3030;border-radius:8px;padding:5px 14px;cursor:pointer">Clear auto-save now</button>
+    </div>
+
     <button id="settingssave">Save</button>
     <button class="mcancel" id="settingscancel">cancel</button>
   </div>
@@ -1198,6 +1207,7 @@ function openSettings() {
   document.getElementById('tokval').textContent = maxTokens;
   document.getElementById('verifytoggle').checked = verifyMode;
   document.getElementById('citetoggle').checked = citeMode;
+  if(typeof refreshAutosaveSize==='function') refreshAutosaveSize();
   buildCheckerPick();
   document.getElementById('linespacing').value = lineGap;
   document.getElementById('lineval').textContent = lineGap;
@@ -3685,6 +3695,32 @@ function scheduleAutosave(){
 }
 // flush immediately when leaving the page
 window.addEventListener('beforeunload', ()=>{ try{ doAutosave(); }catch(e){} });
+
+// Storage maintenance: report size + clear the auto-save snapshot on command.
+function autosaveBytes(){
+  try{ const v=localStorage.getItem(AUTOSAVE_KEY); return v? v.length : 0; }catch(e){ return 0; }
+}
+function fmtBytes(n){
+  if(n<1024) return n+' B';
+  if(n<1024*1024) return (n/1024).toFixed(0)+' KB';
+  return (n/1024/1024).toFixed(1)+' MB';
+}
+function refreshAutosaveSize(){
+  const el=document.getElementById('autosaveSize');
+  if(el) el.textContent = autosaveBytes()? fmtBytes(autosaveBytes()) : 'empty';
+}
+function clearAutosave(){
+  try{ localStorage.removeItem(AUTOSAVE_KEY); }catch(e){}
+  autosaveWarned=false;
+  refreshAutosaveSize();
+  toast('Auto-save cleared ✓',1600);
+}
+const clearBtn=document.getElementById('clearautosave');
+if(clearBtn) clearBtn.addEventListener('click', ()=>{
+  if(confirm('Clear the auto-saved snapshot from this browser?\n\nYour current board stays as-is, and any saved .scribo files are untouched. Auto-save will start fresh from here.')){
+    clearAutosave();
+  }
+});
 
 // Check for a saved session on launch and offer to restore it
 function offerRestore(){
