@@ -63,9 +63,9 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 #shapetool{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
        padding:2px 8px;font-family:'Caveat',cursive;font-size:14px;cursor:pointer;color:#5a4030;flex-shrink:0}
 #shapetool.on{background:#d4ecd8;border-color:#3a8a50}
-#undobtn{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
+#undobtn,#pdftool{background:var(--paper);border:2px solid var(--rule);border-radius:6px;
   padding:2px 9px;font-family:'Caveat',cursive;font-size:14px;cursor:pointer;color:#5a4030;flex-shrink:0}
-#undobtn:hover:not(:disabled){background:#ece3d2}
+#undobtn:hover:not(:disabled),#pdftool:hover{background:#ece3d2}
 #undobtn:disabled{opacity:.4;cursor:default}
 #shapepick,#shapestyle{font-family:'Caveat',cursive;font-size:14px;border:2px solid var(--rule);
        border-radius:6px;padding:2px 6px;background:var(--paper);cursor:pointer;flex-shrink:0;color:#3a5040}
@@ -445,6 +445,8 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
   <button id="selmode" title="Switch between box and lasso selection">▭ box</button>
   <button id="imgtool">🖼 image</button>
   <input type="file" id="imgfile" accept="image/*" style="display:none">
+  <button id="pdftool" title="Load a PDF onto the board to annotate">📑 PDF</button>
+  <input type="file" id="pdffile" accept="application/pdf,.pdf" style="display:none">
   <button id="undobtn" title="Undo (Cmd/Ctrl+Z)" disabled>↶ undo</button>
 
   <div class="tbr">
@@ -688,6 +690,16 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
         border:2px solid var(--rule);border-radius:7px;padding:6px 8px;background:var(--paper);cursor:pointer"></select>
     </div>
 
+    <div style="background:#eef3ec;border:1.5px solid #c2d4bd;border-radius:9px;padding:11px 12px;margin-bottom:18px">
+      <label class="flabel" style="margin-bottom:6px;display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="citetoggle" style="width:16px;height:16px;accent-color:#2a6a3a;cursor:pointer">
+        📚 Cite sources for technical results
+      </label>
+      <p style="font-family:'Patrick Hand',cursive;font-size:12px;color:#5a7a50;margin:0;line-height:1.5">
+        Asks the AI to name theorems/results and point to a reference (original paper or a page like Wikipedia / nLab / MathWorld). Note: references come from the model's memory and can be wrong — treat them as leads to verify, not citations of record.
+      </p>
+    </div>
+
     <button id="settingssave">Save</button>
     <button class="mcancel" id="settingscancel">cancel</button>
   </div>
@@ -747,6 +759,12 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 
       <p class="hsec">✉ Asking the AI</p>
       <p>Click <b>🔲 select</b>, then choose <b>▭ box</b> or <b>◯ lasso</b> mode. In box mode, <b>click two corners</b> to set the area. In lasso mode, draw a freehand loop around what you want. Then the bar lets you <b>✉ Ask</b> the AI about just that region, <b>⧉ copy</b> it (then <b>double-tap</b> anywhere to paste it as a movable image), <b>✥ move</b> it (contents and AI text travel together), <b>⤡ resize</b> to scale the contents bigger/smaller (box only — drag the corner), or <b>⌫ erase</b> everything inside. The <b>💬 chat</b> panel is for typed back-and-forth. Use the <b>📎</b> button there to attach files (PDFs, images, text/code/data) as context for the AI's reply — PDFs are read natively by Claude; other models read images and text files.</p>
+
+      <p class="hsec">📑 PDF annotation</p>
+      <p>Click <b>📑 PDF</b> to load a PDF onto the board — its pages render down the page and you can draw, highlight, write, add shapes or text on top with any tool. The annotated result saves and exports (PNG/PDF/HTML) like everything else on the board.</p>
+
+      <p class="hsec">📚 Citing sources</p>
+      <p>In <b>⚙ Settings</b>, turn on <b>📚 Cite sources for technical results</b> and the AI will name theorems/results and point to references (original papers, Wikipedia, nLab, etc.). References come from the model's training, so verify them — they're leads, not citations of record.</p>
 
       <p class="hsec">↶ Undo</p>
       <p>The <b>↶ undo</b> button (or <b>Cmd/Ctrl+Z</b>) reverses your recent board actions — strokes, shapes, pastes, erases, typed text, and AI replies — up to 25 steps back. Undo history is per page and resets when you switch pages.</p>
@@ -892,6 +910,7 @@ let apiKey = activeKey(provider);
 let model  = models[provider];
 let maxTokens = parseInt(localStorage.getItem('wb_maxtokens')) || 4096;
 let verifyMode = localStorage.getItem('wb_verify')==='1';
+let citeMode = localStorage.getItem('wb_cite')==='1';
 let checker = localStorage.getItem('wb_checker') || '';   // "provider|model" of the checking model
 // Ensure the checker always has a sensible default (a model different from the solver).
 function ensureChecker(){
@@ -946,6 +965,13 @@ const PROVIDERS = {
 };
 
 // Display name of the currently selected AI, for labels on the board/chat.
+// When the "cite sources" setting is on, append an instruction asking the model
+// to reference theorems / named results. Returns '' when off.
+function citeSuffix(){
+  if(!citeMode) return '';
+  return '\nWhen you state a named theorem, lemma, standard result, or established method, briefly cite a source: the original paper (author, year) if well known, and/or a canonical reference page (Wikipedia, nLab, MathWorld, a standard textbook). Put references in plain prose at the end of the relevant point. Only cite references you are confident about; if unsure of the exact source, say so rather than inventing a citation, DOI, or page number.';
+}
+
 function aiName(){
   if(provider==='gemini') return 'Gemini';
   if(provider==='deepseek') return 'DeepSeek';
@@ -1171,6 +1197,7 @@ function openSettings() {
   slider.value = maxTokens;
   document.getElementById('tokval').textContent = maxTokens;
   document.getElementById('verifytoggle').checked = verifyMode;
+  document.getElementById('citetoggle').checked = citeMode;
   buildCheckerPick();
   document.getElementById('linespacing').value = lineGap;
   document.getElementById('lineval').textContent = lineGap;
@@ -1272,6 +1299,8 @@ document.getElementById('settingssave').addEventListener('click', () => {
   model  = models[provider];
   maxTokens = parseInt(document.getElementById('tokslider').value) || 4096;
   verifyMode = document.getElementById('verifytoggle').checked;
+  citeMode = document.getElementById('citetoggle').checked;
+  localStorage.setItem('wb_cite', citeMode?'1':'0');
   checker = document.getElementById('checkerpick').value || checker;
   ensureChecker();
   updateVerifyBadge();
@@ -1736,7 +1765,7 @@ document.getElementById('selask').addEventListener('click', async ()=>{
   try{
     const reply=await askLLM(convHistory,
       'You are a brilliant collaborator on a shared handwritten whiteboard. The user has selected only a part of the board to ask about. Respond about that part.\n'+
-      'Rules: plain prose + LaTeX only (no markdown). $...$ inline, $$...$$ display. Concise. Direct, physicist-collaborator tone.');
+      'Rules: plain prose + LaTeX only (no markdown). $...$ inline, $$...$$ display. Concise. Direct, physicist-collaborator tone.'+citeSuffix());
     convHistory.push({role:'assistant',content:reply});
     await placeBoardReply(reply);
     hideToast();
@@ -2174,6 +2203,73 @@ document.getElementById('imgfile').addEventListener('change',e=>{
   const y = scroll.scrollTop + 80;
   fileToImage(f, 80, y);
   e.target.value='';
+});
+
+// ════════════════════════════════════════
+// PDF ANNOTATION — render PDF pages onto the canvas as a backdrop to draw on
+// ════════════════════════════════════════
+let pdfjsLoading = null;
+function loadPdfJs(){
+  if(window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  if(pdfjsLoading) return pdfjsLoading;
+  pdfjsLoading = new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload=()=>{
+      try{ window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }catch(e){}
+      res(window.pdfjsLib);
+    };
+    s.onerror=()=>rej(new Error('Could not load the PDF engine (check your connection)'));
+    document.head.appendChild(s);
+  });
+  return pdfjsLoading;
+}
+document.getElementById('pdftool').addEventListener('click',()=>document.getElementById('pdffile').click());
+document.getElementById('pdffile').addEventListener('change',async e=>{
+  const f=e.target.files[0]; e.target.value='';
+  if(!f) return;
+  toast('Loading PDF…');
+  try{
+    const pdfjs = await loadPdfJs();
+    const buf = await f.arrayBuffer();
+    const pdf = await pdfjs.getDocument({data:buf}).promise;
+    pushUndo();
+    hideWelcomeHint();
+    // render pages stacked down the board, fit to the board's pixel width
+    const margin = 80;                      // left/right margin on the board
+    const targetW = canvas.width - margin*2;
+    let y = Math.max(contentBottom()+40, 40);   // start below existing content
+    for(let i=1;i<=pdf.numPages;i++){
+      const page = await pdf.getPage(i);
+      const vp1 = page.getViewport({scale:1});
+      const scale = targetW / vp1.width;
+      const vp = page.getViewport({scale});
+      const tmp=document.createElement('canvas');
+      tmp.width=Math.ceil(vp.width); tmp.height=Math.ceil(vp.height);
+      await page.render({canvasContext:tmp.getContext('2d'), viewport:vp}).promise;
+      // ensure the board is tall enough
+      const need = y + tmp.height + 40;
+      if(need > canvas.height){
+        const keep=document.createElement('canvas');
+        keep.width=canvas.width; keep.height=canvas.height;
+        keep.getContext('2d').drawImage(canvas,0,0);
+        canvas.height=need; paper.style.minHeight=need+'px';
+        ctx.drawImage(keep,0,0);
+        if(typeof fitLasso==='function') fitLasso();
+      }
+      ctx.drawImage(tmp, margin, y);
+      y += tmp.height + 24;                 // gap between pages
+      maxY=Math.max(maxY,y);
+      toast('Rendering PDF… page '+i+'/'+pdf.numPages);
+    }
+    scroll.scrollTo({top:Math.max(0, contentBottom()-scroll.clientHeight+120), behavior:'smooth'});
+    scheduleAutosave();
+    hideToast();
+    toast('PDF loaded — annotate with any tool ✓',2200);
+  }catch(err){
+    hideToast();
+    toast('PDF error: '+err.message, 3200);
+  }
 });
 
 // drag-and-drop onto the board
@@ -2855,9 +2951,9 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
   try{
     const reply=await askLLM(convHistory,
       'You are a brilliant collaborator on a shared handwritten whiteboard. Respond to what you see.\n'+
-      'Rules: plain prose + LaTeX only (no markdown **/#/bullets). $...$ inline, $$...$$ display. 2–5 sentences + equations. Direct, physicist-collaborator tone.');
+      'Rules: plain prose + LaTeX only (no markdown **/#/bullets). $...$ inline, $$...$$ display. 2–5 sentences + equations. Direct, physicist-collaborator tone.'+citeSuffix());
     convHistory.push({role:'assistant',content:reply});
-    await placeBoardReply(reply);
+    try{ await placeBoardReply(reply); }catch(e){ console.error('placeBoardReply',e); }
     hideToast();
     await maybeVerify(userContent, reply);
   }catch(err){hideToast();toast('Error: '+err.message,3000);}
@@ -2866,8 +2962,10 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
 
 // If Verify mode is on, run the checker and place a 🔍 block below the answer.
 async function maybeVerify(userContent, answerText){
-  if(!verifyMode) return;
+  if(!verifyMode){ return; }
+  ensureChecker();
   const [cprov,cmodel]=(checker||'').split('|');
+  if(!cprov){ toast('Verify is on but no checker is set — open ⚙ Settings',3000); return; }
   const cname = (MODEL_CATALOG[cprov]?.name)||'checker';
   const clabel = aiLabel(cprov, cmodel);
   toast('🔍 '+cname+' is checking the answer…');
@@ -2879,16 +2977,18 @@ async function maybeVerify(userContent, answerText){
       labelColor: '#2a6a3a',
       checkStyle: true
     });
-    hideToast();
+    // make sure the check is visible even on a tall board
+    scroll.scrollTo({top:Math.max(0, contentBottom()-scroll.clientHeight+140), behavior:'smooth'});
+    toast('🔍 Check added below the answer ✓',1800);
   }catch(err){
     hideToast();
-    // surface the failure on the board so it's not missed
     await placeBoardReply('Verification could not run: '+err.message, {
       label: '🔍 Check failed',
       tint: '#f3c9c9',
       labelColor: '#9a3030',
       checkStyle: false
     });
+    scroll.scrollTo({top:Math.max(0, contentBottom()-scroll.clientHeight+140), behavior:'smooth'});
   }
 }
 
@@ -3129,11 +3229,14 @@ async function sendChat(includeBoard){
     const reply=await askLLM(chatHistory,
       'You are a thoughtful collaborator on a shared physics/math whiteboard.\n'+
       'Reply in plain prose + LaTeX. Use $...$ inline and $$...$$ for display equations.\n'+
-      'No markdown formatting (no **, no #, no bullet lists). Be concise and direct.');
+      'No markdown formatting (no **, no #, no bullet lists). Be concise and direct.'+citeSuffix());
     thk.remove();
     chatHistory.push({role:'assistant',content:reply});
     appendChatMsg('claude',reply);
-    if(document.getElementById('writecb').checked) placeBoardReply(reply);
+    if(document.getElementById('writecb').checked){
+      await placeBoardReply(reply);
+      await maybeVerify(content, reply);
+    }
   }catch(err){
     thk.remove();
     appendChatMsg('claude','⚠️ '+err.message);
