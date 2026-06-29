@@ -3193,38 +3193,59 @@ mjx-container svg{max-width:100%!important;height:auto!important}
 document.getElementById('save-html').addEventListener('click',()=>{
   savemodal.classList.remove('open');toast('Preparing…');
   const cdata=canvas.toDataURL('image/png');
-  const cb=Array.from(document.querySelectorAll('.claude-block')).map(b=>
-    `<div class="claude-block" style="top:${b.style.top}">${b.innerHTML}</div>`).join('\n');
-  const tb=Array.from(document.querySelectorAll('.text-block')).map(b=>b.outerHTML).join('\n');
-  // image overlays: strip selection chrome (handles/buttons) for the export
+  const W=canvas.width, H=canvas.height;
+  // Rebuild reply blocks from RAW LaTeX source so MathJax renders cleanly in
+  // the exported file (re-inserting already-rendered SVG shows blank math).
+  const cb=Array.from(document.querySelectorAll('.claude-block')).map(b=>{
+    const src=b.dataset.src || b.querySelector('.claude-text')?.textContent || '';
+    return `<div class="claude-block" style="top:${b.style.top}"><div class="claude-text">${segsToHtml(src)}</div></div>`;
+  }).join('\n');
+  const tb=Array.from(document.querySelectorAll('.text-block')).map(b=>{
+    const src=b.dataset.src || b.textContent || '';
+    const style=b.getAttribute('style')||'';
+    return `<div class="text-block" style="${style}">${segsToHtml(src)}</div>`;
+  }).join('\n');
   const ib=Array.from(document.querySelectorAll('.img-block')).map(b=>{
     const x=b.style.left, y=b.style.top, w=b.style.width, h=b.style.height;
     const src=b.querySelector('img').src;
     return `<div style="position:absolute;left:${x};top:${y};width:${w};height:${h};z-index:7;">`+
            `<img src="${src}" style="width:100%;height:100%;border-radius:3px;"></div>`;
   }).join('\n');
+  const paperBgNow=getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()||'#f8f4ec';
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
 <title>Scribo ${dateStamp()}</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
-<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'},startup:{typeset:true}};<\/script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\\\(','\\\\)']],displayMath:[['$$','$$'],['\\\\[','\\\\]']]},svg:{fontCache:'local'},startup:{typeset:true}};<\/script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"><\/script>
 <style>
-body{background:#f8f4ec;margin:0;font-family:'Caveat',cursive;}
-#paper{position:relative;min-height:100vh;
-background-image:repeating-linear-gradient(transparent,transparent 39px,#ddd4be 39px,#ddd4be 40px);
-background-size:100% 40px;}
-#paper::before{content:'';position:absolute;top:0;left:64px;bottom:0;width:2px;background:#e8b8b8;}
-.claude-block{position:absolute;left:80px;z-index:5;max-width:calc(100% - 96px);}
+html,body{background:${paperBgNow};margin:0;font-family:'Caveat',cursive;}
+/* fixed-width stage so absolute block positions (canvas px) line up exactly,
+   scaled down responsively on smaller screens */
+#stage{position:relative;width:${W}px;height:${H}px;margin:0 auto;transform-origin:top left;}
+#stage img.base{position:absolute;top:0;left:0;width:${W}px;z-index:1;pointer-events:none;}
+.claude-block{position:absolute;left:80px;z-index:5;max-width:${W-96}px;}
 .claude-text{font-family:'Caveat',cursive;font-size:22px;line-height:1.55;color:#1a3e7a;white-space:pre-wrap;word-break:break-word;}
-.text-block{position:absolute;}
-.lblock{display:block;text-align:center;margin:6px 0;}
+.text-block{position:absolute;z-index:6;}
+.lblock{display:block;text-align:center;margin:6px 0;overflow-x:auto;}
+mjx-container{max-width:100%!important}
+mjx-container svg{max-width:100%!important;height:auto!important}
 </style></head><body>
-<div id="paper">
-<img src="${cdata}" style="position:absolute;top:0;left:0;width:100%;z-index:1;pointer-events:none;">
+<div id="stage">
+<img class="base" src="${cdata}">
 ${cb}
 ${tb}
 ${ib}
-</div></body></html>`;
+</div>
+<script>
+  function fit(){
+    var s=document.getElementById('stage');
+    var scale=Math.min(1, document.documentElement.clientWidth/${W});
+    s.style.transform='scale('+scale+')';
+    document.body.style.height=(${H}*scale)+'px';
+  }
+  window.addEventListener('resize',fit); fit();
+<\/script>
+</body></html>`;
   const bl=new Blob([html],{type:'text/html'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(bl);
