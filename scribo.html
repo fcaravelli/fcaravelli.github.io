@@ -263,6 +263,17 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 /* ── Input area ── */
 #inputarea{border-top:2px solid var(--rule);padding:9px 9px 11px;background:var(--toolbar);flex-shrink:0}
 #inputrow{display:flex;gap:6px;align-items:flex-end}
+#attachbtn{flex-shrink:0;width:38px;height:38px;border:2px solid var(--rule);border-radius:9px;
+  background:var(--paper);font-size:17px;cursor:pointer;color:#5a4030;line-height:1}
+#attachbtn:hover{background:#ece3d2}
+#attachbtn.has{border-color:#5a8ad0;background:#e8f0fb}
+#attachrow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px}
+#attachrow:empty{display:none}
+.fchip{display:flex;align-items:center;gap:5px;background:#e8f0fb;border:1px solid #b8cfe8;
+  border-radius:7px;padding:3px 6px 3px 8px;font-family:'Patrick Hand',cursive;font-size:12px;color:#1a3e7a;max-width:160px}
+.fchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fchip button{border:none;background:none;color:#9a3030;cursor:pointer;font-size:14px;line-height:1;padding:0 2px;flex-shrink:0}
+.fchip.bad{background:#f6e0e0;border-color:#e0b0b0;color:#9a3030}
 #msginput{
   flex:1;background:var(--paper);border:2px solid var(--rule);border-radius:9px;
   padding:7px 10px;font-family:'Caveat',cursive;font-size:18px;color:var(--ink);
@@ -470,7 +481,12 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
     </div>
     <div id="chatlog"></div>
     <div id="inputarea">
+      <div id="attachrow"></div>
       <div id="inputrow">
+        <button id="attachbtn" title="Attach a file (PDF, image, text, code, data)">📎</button>
+        <input type="file" id="chatfile" multiple
+          accept=".pdf,.txt,.md,.csv,.tsv,.json,.tex,.py,.js,.ts,.c,.cpp,.h,.java,.m,.r,.jl,.html,.css,.xml,.yaml,.yml,.log,image/*"
+          style="display:none">
         <textarea id="msginput" rows="1" placeholder="Type anything… $x^2$ for LaTeX"></textarea>
         <button id="sendchat">➤</button>
       </div>
@@ -710,7 +726,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       <p>Click <b>🖼 image</b> to pick a file, or just drag-and-drop / paste an image onto the board. Click an image to select it, drag to move, pull the blue corner to resize, or hit ✕ / Delete to remove.</p>
 
       <p class="hsec">✉ Asking the AI</p>
-      <p>Click <b>🔲 select</b>, then choose <b>▭ box</b> or <b>◯ lasso</b> mode. In box mode, <b>click two corners</b> to set the area. In lasso mode, draw a freehand loop around what you want. Then the bar lets you <b>✉ Ask</b> the AI about just that region, <b>✥ move</b> it (contents and AI text travel together), <b>⤡ resize</b> to scale the contents bigger/smaller (box only — drag the corner), or <b>⌫ erase</b> everything inside. The <b>💬 chat</b> panel is for typed back-and-forth.</p>
+      <p>Click <b>🔲 select</b>, then choose <b>▭ box</b> or <b>◯ lasso</b> mode. In box mode, <b>click two corners</b> to set the area. In lasso mode, draw a freehand loop around what you want. Then the bar lets you <b>✉ Ask</b> the AI about just that region, <b>✥ move</b> it (contents and AI text travel together), <b>⤡ resize</b> to scale the contents bigger/smaller (box only — drag the corner), or <b>⌫ erase</b> everything inside. The <b>💬 chat</b> panel is for typed back-and-forth. Use the <b>📎</b> button there to attach files (PDFs, images, text/code/data) as context for the AI's reply — PDFs are read natively by Claude; other models read images and text files.</p>
 
       <p class="hsec">📐 Shapes</p>
       <p>Click <b>📐 shapes</b> and pick a shape (line, arrow, rectangle, ellipse, triangle) from the dropdown beside it. Drag on the board to draw it in your current ink colour and thickness — hold <b>Shift</b> for even proportions (square, circle, equilateral). Switch back to a pen colour to free-draw again.</p>
@@ -2876,13 +2892,96 @@ msginput.addEventListener('keydown',e=>{
 sendchat.addEventListener('click',()=>sendChat(false));
 boardsendbtn.addEventListener('click',()=>sendChat(true));
 
+// ════════════════════════════════════════
+// CHAT FILE ATTACHMENTS — PDF / image / text sent to the AI as context
+// ════════════════════════════════════════
+let chatAttachments = [];   // [{name, kind:'pdf'|'image'|'text', data/b64/text, media}]
+const attachBtn  = document.getElementById('attachbtn');
+const chatFileIn = document.getElementById('chatfile');
+const attachRow  = document.getElementById('attachrow');
+const MAX_ATTACH_BYTES = 18*1024*1024;   // ~18MB guard
+
+attachBtn.addEventListener('click', ()=> chatFileIn.click());
+chatFileIn.addEventListener('change', async e=>{
+  for(const f of Array.from(e.target.files)) await addAttachment(f);
+  chatFileIn.value='';
+  renderAttachments();
+});
+
+async function addAttachment(file){
+  if(file.size > MAX_ATTACH_BYTES){
+    chatAttachments.push({name:file.name, kind:'bad', note:'too large (max 18MB)'});
+    return;
+  }
+  const lower=file.name.toLowerCase();
+  const isImg = file.type.startsWith('image/');
+  const isPdf = file.type==='application/pdf' || lower.endsWith('.pdf');
+  try{
+    if(isImg){
+      const b64 = await fileToB64(file);
+      chatAttachments.push({name:file.name, kind:'image', b64, media:file.type||'image/png'});
+    } else if(isPdf){
+      const b64 = await fileToB64(file);
+      chatAttachments.push({name:file.name, kind:'pdf', b64});
+    } else {
+      // treat as text/code/data
+      const text = await file.text();
+      // guard against huge text blowing up the prompt
+      const clipped = text.length>200000 ? text.slice(0,200000)+'\n…[truncated]' : text;
+      chatAttachments.push({name:file.name, kind:'text', text:clipped});
+    }
+  }catch(err){
+    chatAttachments.push({name:file.name, kind:'bad', note:'could not read'});
+  }
+}
+function fileToB64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(String(r.result).split(',')[1]);
+    r.onerror=()=>rej(new Error('read failed'));
+    r.readAsDataURL(file);
+  });
+}
+function renderAttachments(){
+  attachRow.innerHTML='';
+  chatAttachments.forEach((a,i)=>{
+    const chip=document.createElement('div');
+    chip.className='fchip'+(a.kind==='bad'?' bad':'');
+    const icon = a.kind==='image'?'🖼':a.kind==='pdf'?'📄':a.kind==='bad'?'⚠️':'📝';
+    chip.innerHTML='<span>'+icon+' '+escAttr(a.name)+(a.note?' ('+a.note+')':'')+'</span>';
+    const x=document.createElement('button'); x.textContent='✕'; x.title='Remove';
+    x.addEventListener('click',()=>{ chatAttachments.splice(i,1); renderAttachments(); });
+    chip.appendChild(x);
+    attachRow.appendChild(chip);
+  });
+  attachBtn.classList.toggle('has', chatAttachments.some(a=>a.kind!=='bad'));
+}
+function escAttr(s){ return String(s).replace(/[<>&"]/g,c=>({ '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;' }[c])); }
+
+// Build content blocks from queued attachments, in Anthropic format.
+// Native PDF reading is Claude-only; other providers get a heads-up note.
+function attachmentBlocks(){
+  const blocks=[];
+  for(const a of chatAttachments){
+    if(a.kind==='image') blocks.push({type:'image',source:{type:'base64',media_type:a.media,data:a.b64}});
+    else if(a.kind==='pdf'){
+      if(provider==='claude') blocks.push({type:'document',source:{type:'base64',media_type:'application/pdf',data:a.b64}});
+      else blocks.push({type:'text',text:'[A PDF named "'+a.name+'" was attached, but the current model can\'t read PDFs directly. Switch to Claude to have it read the PDF, or tell me what you need from it.]'});
+    }
+    else if(a.kind==='text') blocks.push({type:'text',text:'[Attached file: '+a.name+']\n```\n'+a.text+'\n```'});
+  }
+  return blocks;
+}
+
 async function sendChat(includeBoard){
   if(!requireKey()) return;
   const text=msginput.value.trim();
-  if(!text&&!includeBoard) return;
+  const hasAttach = chatAttachments.some(a=>a.kind!=='bad');
+  if(!text&&!includeBoard&&!hasAttach) return;
 
   sendchat.disabled=true; boardsendbtn.disabled=true;
-  if(text) appendChatMsg('user',text);
+  const attachNames = chatAttachments.filter(a=>a.kind!=='bad').map(a=>a.name);
+  if(text||attachNames.length) appendChatMsg('user', text + (attachNames.length?(text?'\n':'')+'📎 '+attachNames.join(', '):''));
   msginput.value=''; msginput.style.height='auto';
 
   const content=[];
@@ -2893,8 +2992,12 @@ async function sendChat(includeBoard){
       content.push({type:'image',source:{type:'base64',media_type:'image/png',data:b64}});
     }
   }
-  content.push({type:'text',text: text||'Please look at my whiteboard and respond.'});
+  // attached files become context for the reply
+  for(const blk of attachmentBlocks()) content.push(blk);
+  content.push({type:'text',text: text || (hasAttach?'Please look at the attached file(s) and respond.':'Please look at my whiteboard and respond.')});
   chatHistory.push({role:'user',content});
+  // clear the attachment queue now that they're sent
+  chatAttachments=[]; renderAttachments();
 
   const thk=document.createElement('div');
   thk.className='thinking';thk.innerHTML='<span></span><span></span><span></span>';
