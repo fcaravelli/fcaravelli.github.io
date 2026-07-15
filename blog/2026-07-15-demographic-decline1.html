@@ -137,16 +137,21 @@
           I wanted to gather some data and make these thoughts a bit more quantitative.. here we go.
         </p>
 
+  
+
     <div class="toc">
       <strong>Contents</strong>
       <ul>
         <li><a href="#wave">1. The demographic tsunami</a></li>
-        <li><a href="#lag">2. Why universities are hit late</a></li>
-        <li><a href="#model">3. A simple model: cohorts, choices, departments</a></li>
-        <li><a href="#fields">4. Why not all faculties decline in the same way</a></li>
-        <li><a href="#thresholds">5. Thresholds, closures, and phase transitions</a></li>
-        <li><a href="#geography">6. Geography: the migration feedback loop</a></li>
-        <li><a href="#interpretation">7. What this probably means</a></li>
+        <li><a href="#data">2. What I am actually modelling here</a></li>
+        <li><a href="#lag">3. Why universities are hit late</a></li>
+        <li><a href="#model">4. A toy model: cohorts, choices, departments</a></li>
+        <li><a href="#fields">5. Why not all faculties decline in the same way</a></li>
+        <li><a href="#thresholds">6. Thresholds, closures, and institutional phase transitions</a></li>
+        <li><a href="#geography">7. Geography: the migration feedback loop</a></li>
+        <li><a href="#economy-ai">8. The second and third waves: economics and AI</a></li>
+        <li><a href="#career">9. A note on academic careers</a></li>
+        <li><a href="#interpretation">10. What this probably means</a></li>
       </ul>
     </div>
 
@@ -187,7 +192,7 @@
     </p>
 
     <p>
-      The effect is especially visible in countries such as Italy, where low fertility has now lasted long enough that it is no longer a fluctuation. It is a structural feature. What makes Italy particularly interesting is that the demographic decline is also coupled to migration. Some parts of the country lose young people not only because fewer are born, but because those who are born often leave.
+      This is also why I think the demographic story is easy to underestimate. We usually observe institutions in cross-section: this school is open, that university is hiring, this department has students, that city is still alive. But demography is not a cross-section. It is a conveyor belt. The age pyramid is not only a picture of society today; it is a timetable of what will arrive later.
     </p>
 
     <figure class="post-figure">
@@ -198,18 +203,59 @@
     </figure>
 
     <p>
-      This plot is not meant to be the final word. It is a toy model, but a useful one. The blue curve is the age-18 cohort, which is the cleanest proxy for the new students entering the university system. The orange curve is a weighted 18-24 pool, which better represents the students who are already inside the system. The difference between the two is important. Universities do not collapse the moment the first small cohort arrives. They feel the pressure gradually, because older cohorts are still present. But once several small cohorts accumulate, the decline becomes hard to hide.
+      The plot above is not meant to be a forecast in the strict sense. It is a sketch of the mechanism. The blue curve is the age-18 cohort, which is the cleanest proxy for new university entrants. The orange curve is a weighted 18-24 pool, which better represents the students who are already inside the system. The difference between the two matters. Universities do not feel the full shock the moment one small cohort arrives. They feel it when several smaller cohorts are simultaneously moving through the system.
     </p>
 
     <p>
-      That is when demography stops being a statistic and becomes an administrative problem. It becomes a problem of courses that no longer fill, departments that cannot justify new hires, regional campuses that become expensive to maintain, and universities that start to compete for a shrinking pool of students.
+      This is when demography stops being a statistic and becomes an administrative problem. It becomes a problem of courses that no longer fill, departments that cannot justify new hires, regional campuses that become expensive to maintain, and universities that begin to compete for a shrinking pool of students.
+    </p>
+
+    <div class="hr"></div>
+  </section>
+
+  <section id="data">
+    <h4>2. What I am actually modelling here</h4>
+
+    <p>
+      Before going further, I should be honest about what these plots are and what they are not. They are not an official forecast. They are not a ministry model. They are not even, yet, a properly calibrated demographic projection. They are a first attempt to make a qualitative intuition quantitative enough that one can argue with it.
+    </p>
+
+    <p>
+      The inputs I used are deliberately coarse. For Italy, the relevant empirical fact is the large fall in births from the late 2000s to the present. I used an Italy-like birth-cohort curve, with relatively high cohorts around 2008 and much smaller cohorts in the 2020s. I then propagated these cohorts forward into university-entry years. This gives the basic demographic pressure.
+    </p>
+
+    <p>
+      Then I added a second ingredient: students do not all choose the same subjects. The model therefore assigns broad field shares to social sciences/law/economics, STEM, health, and humanities/arts/education. For the first run, I used broad current-style shares, roughly:
+    </p>
+
+    <ul>
+      <li>Social sciences, law, and economics: about 35%;</li>
+      <li>STEM: about 29%;</li>
+      <li>Health: about 18%;</li>
+      <li>Humanities, arts, and education: about 18%.</li>
+    </ul>
+
+    <p>
+      These numbers should be treated as scaffolding. The right version of this exercise should use official enrollment data by year, region, discipline, gender, and ideally degree class. One should then estimate how field shares have actually changed over the last twenty or thirty years, rather than assuming a stylized drift.
+    </p>
+
+    <p>
+      I also added synthetic departments. Each department has a baseline size, a field, and a threshold below which it becomes “stressed.” This is again a simplification. In the real world, a department does not close simply because a line in a model crosses a threshold. It can be protected by politics, prestige, research income, medical-school status, national strategic interest, or simply institutional inertia. Conversely, it can be vulnerable because it is small, regional, expensive, or administratively unlucky.
+    </p>
+
+    <p>
+      So the point of the plots is not that the numbers are exact. The point is that the structure is plausible. Demography pushes down. Field preferences redistribute students. Thresholds turn smooth decline into abrupt institutional change. Geography can amplify everything.
+    </p>
+
+    <p>
+      In other words, I am not trying to say: “this department will close in this year.” I am trying to develop a language for a system in which cohort decline, student choice, institutional thresholds, and migration interact.
     </p>
 
     <div class="hr"></div>
   </section>
 
   <section id="lag">
-    <h4>2. Why universities are hit late</h4>
+    <h4>3. Why universities are hit late</h4>
 
     <p>
       Universities are strange institutions because they are both very old and very dependent on a very narrow age window. A university can have medieval buildings, ancient ceremonies, and departments that feel permanent, but its financial and pedagogical life depends every year on a new inflow of young people.
@@ -241,18 +287,14 @@
     </p>
 
     <p>
-      This is also why the age pyramid is such a powerful object. It is not just a picture of society today. It is a conveyor belt. The bottom of the pyramid is the future of schools. The middle of the pyramid is the future of universities. The upper part is the future of pensions and healthcare. In a country with a narrowing base, the future pressure is already visible.
+      The possible offsets are important, though. One could imagine more international students, more adult learners, more students returning for retraining, or more students choosing university rather than directly entering work. These effects may delay the shock. In some countries, they may be large. But in regions that are not especially attractive to international students, or that are already losing young people internally, I would not assume that they are enough.
     </p>
 
     <div class="hr"></div>
   </section>
 
   <section id="model">
-    <h4>3. A simple model: cohorts, choices, departments</h4>
-
-    <p>
-      To make the argument a bit less qualitative, I built a simple model. It is deliberately not too sophisticated, because the purpose is not to pretend to forecast every university in Italy. The purpose is to see the mechanism.
-    </p>
+    <h4>4. A toy model: cohorts, choices, departments</h4>
 
     <p>
       The model has three layers. First, there is the demographic pool $S_t$, which is the number of potential university students. Second, students choose fields. Third, departments receive enrollments and may become non-viable if they fall below a threshold.
@@ -288,22 +330,11 @@
     </p>
 
     <p>
-      This distinction matters a lot. If the student pool declines by 35%, that does not mean every faculty declines by 35%. Medicine may be protected by professional demand and limited places. Computer science may gain share because students and families associate it with future employment. Humanities may lose both from demography and from a declining share of student preferences. Social sciences may sit somewhere in the middle.
+      This is where the assumptions become shaky, and it is good that they are visible. I assumed that humanities lose share, social sciences lose somewhat less, and STEM and health gain share. This seems plausible to me, but it should be estimated, not assumed. The correct way to do this would be to collect the time series of Italian enrollments by discipline and fit the change in $p_{f,t}$ directly.
     </p>
 
     <p>
-      In the illustrative run, I started with broad field shares:
-    </p>
-
-    <ul>
-      <li>Social sciences, law, and economics: about 35%;</li>
-      <li>STEM: about 29%;</li>
-      <li>Health: about 18%;</li>
-      <li>Humanities, arts, and education: about 18%.</li>
-    </ul>
-
-    <p>
-      Then I allowed these shares to drift in a stylized way. Humanities lose share. Social sciences lose somewhat less. STEM and health gain share. Again, this is not yet the final empirical model. The right version should use real enrollment data by year, discipline, gender, and region. But even this simple version already shows the key effect: demographic decline does not spread evenly.
+      Even then, extrapolation would be dangerous. Student preferences are not physical constants. They respond to wages, family expectations, labor-market anxiety, public narratives, AI, tuition, local availability, and immigration policy. A large technological shock can change field shares. A recession can change field shares. A new professional licensing rule can change field shares. So this is a model of a mechanism, not an oracle.
     </p>
 
     <figure class="post-figure">
@@ -314,14 +345,14 @@
     </figure>
 
     <p>
-      The most important feature of the plot is not the exact number. It is the ordering. In this toy model, humanities and social sciences become fragile first, while STEM and health are partially protected by changing preferences. This is the kind of thing one would expect in a real system too, although the precise ranking would depend on local labor markets, institutional prestige, and policy choices.
+      The useful thing in the plot is the relative movement. In this toy model, humanities and social sciences become fragile earlier, while STEM and health are partially protected by changing preferences. I would not read the exact dates too literally. What I would read literally is the fact that a demographic shock can be very unequal across fields.
     </p>
 
     <div class="hr"></div>
   </section>
 
   <section id="fields">
-    <h4>4. Why not all faculties decline in the same way</h4>
+    <h4>5. Why not all faculties decline in the same way</h4>
 
     <p>
       A university is not a single container filled with students. It is more like a set of communicating vessels. There is literature, medicine, economics, law, engineering, physics, mathematics, nursing, philosophy, languages, architecture, computer science, psychology, and many other reservoirs. Some of these reservoirs exchange students, but not all students are interchangeable.
@@ -336,7 +367,7 @@
     </p>
 
     <p>
-      In the simulation, each department has a baseline size, a field, and a viability threshold. I added randomness because real departments are not identical. Some are small but prestigious. Some are large but fragile. Some are protected by local politics. Some are expensive to run. Some are in cities that continue to attract students. Others are in places from which young people are already leaving.
+      The violin plots below are therefore not “data” in the strict sense. They are simulated distributions of departments, generated to show how the spread can widen as the demographic shock propagates. Some departments remain above threshold; others fall below. This lower tail is what matters institutionally.
     </p>
 
     <figure class="post-figure">
@@ -358,7 +389,7 @@
   </section>
 
   <section id="thresholds">
-    <h4>5. Thresholds, closures, and phase transitions</h4>
+    <h4>6. Thresholds, closures, and institutional phase transitions</h4>
 
     <p>
       Departments do not close smoothly. This is another reason why the problem is hard to perceive. A department can lose students for years and still remain open. It can compensate by increasing teaching loads, not replacing retirements, merging courses, relying on temporary contracts, or cross-listing programs with other departments.
@@ -385,7 +416,7 @@
     </p>
 
     <p>
-      If many departments have thresholds between, say, 60% and 75% of their original enrollment, then very little happens while the system remains above that band. But once the demographic curve enters that band, many departments become stressed at nearly the same time. The transition looks sudden even though the underlying demographic decline was slow.
+      This is where the model becomes suggestive. If many departments have thresholds between, say, 60% and 75% of their original enrollment, then very little happens while the system remains above that band. But once the demographic curve enters that band, many departments become stressed at nearly the same time. The transition looks sudden even though the underlying demographic decline was slow.
     </p>
 
     <figure class="post-figure">
@@ -407,7 +438,7 @@
   </section>
 
   <section id="geography">
-    <h4>6. Geography: the migration feedback loop</h4>
+    <h4>7. Geography: the migration feedback loop</h4>
 
     <p>
       The next complication is geography. And in Italy, geography is not a detail. It is probably central.
@@ -501,8 +532,68 @@
     <div class="hr"></div>
   </section>
 
+  <section id="economy-ai">
+    <h4>8. The second and third waves: economics and AI</h4>
+
+    <p>
+      Demography is not the only force acting on universities. It is simply the most mechanical one. There are at least two other waves arriving at the same time: economic uncertainty and artificial intelligence.
+    </p>
+
+    <p>
+      Economic uncertainty matters because fertility is not only a cultural variable. It is also tied to housing, income, work stability, childcare, and expectations about the future. If young adults do not feel that they can afford children, they delay or avoid having them. This is true in Italy, but it is not only an Italian story. The United States, which for a long time looked demographically more resilient than Europe, has also seen low fertility. Recent provisional U.S. data show only small fluctuations around low levels rather than a return to replacement fertility. China is an even more dramatic case: births have fallen sharply, and the country is now facing the consequences of a very fast demographic transition.
+    </p>
+
+    <p>
+      This matters for universities because economic anxiety can worsen the same mechanism I have described above. Fewer children today means fewer students tomorrow. But economic uncertainty also affects field choices today. Families may push students toward degrees perceived as safer. Students may avoid long academic paths. Governments may protect professional degrees and cut fields seen as less directly connected to employment. This means that a fertility shock and an economic shock can reinforce each other.
+    </p>
+
+    <p>
+      The third wave is AI. I do not think anyone knows exactly what AI will do to universities. But it would be strange to assume it will do nothing. It may reduce demand for certain kinds of degrees. It may increase demand for others. It may change how students learn, how exams are designed, how universities certify knowledge, and how much families are willing to pay for traditional instruction. It may also change the labor market that students are trying to enter.
+    </p>
+
+    <p>
+      For universities this is dangerous because AI does not need to destroy the entire system to have a large effect. It only needs to change marginal demand, marginal costs, and marginal credibility. If demographic decline has already pushed some departments close to threshold, AI-driven changes in demand or teaching could push them over.
+    </p>
+
+    <p>
+      We are already seeing signs that the old idea of the permanent academic job is less permanent than many people believed. In the United Kingdom, for instance, Nottingham has faced strong criticism over proposed cuts in Physics and Astronomy, with plans reported to reduce the department from 71 to 51 staff. Exeter has also been reported to be consulting on significant job cuts, with humanities and social sciences particularly exposed. These cases have their own local causes, including the financial structure of UK universities and the post-Brexit environment, so they should not be treated as simple demographic examples. But they are useful signals. They show that even STEM and even established universities are not immune to institutional contraction.
+    </p>
+
+    <p>
+      In this sense, the university system is being squeezed from three sides. Demography reduces the number of future students. Economic uncertainty changes fertility and student choices. AI changes the value proposition of higher education itself. Any one of these would be difficult. Together, they make the next twenty years unusually uncertain.
+    </p>
+
+    <div class="hr"></div>
+  </section>
+
+  <section id="career">
+    <h4>9. A note on academic careers</h4>
+
+    <p>
+      There is an uncomfortable personal implication here. If one is entering the university system at thirty, and wants to remain there for more than twenty years, one is not entering a stationary system. One is entering a system that may be structurally smaller by the time one reaches fifty.
+    </p>
+
+    <p>
+      This does not mean that nobody should become an academic. That would be too strong, and also not what I believe. There will still be excellent universities, excellent departments, and excellent careers. But the risk profile is changing. The assumption that a permanent academic position is a kind of insulated life contract is becoming less convincing.
+    </p>
+
+    <p>
+      This is particularly true for fields and regions exposed to all three forces: demographic decline, weak local economies, and technological substitution. A young academic in a growing field, at a strong institution, in a region attracting students, may be fine. A young academic in a shrinking field, at a financially fragile institution, in a region losing young people, faces a very different distribution of outcomes.
+    </p>
+
+    <p>
+      One way to say this is that academic careers have become more path-dependent. The institution, field, and geography matter more than before. The average university may survive, but the variance between universities may increase. Some places will become stronger by absorbing students and faculty from weaker places. Others will quietly hollow out.
+    </p>
+
+    <p>
+      For someone planning a career, this means that the question is not only “can I get a permanent job?” but also “what will this institution, this region, and this field look like in twenty years?” That is a much harder question, and not one that the academic labor market is very honest about.
+    </p>
+
+    <div class="hr"></div>
+  </section>
+
   <section id="interpretation">
-    <h4>7. What this probably means</h4>
+    <h4>10. What this probably means</h4>
 
     <p>
       So what should one expect? I do not think the most likely scenario is that many universities suddenly disappear. Institutions are good at surviving. They merge, rename, reorganize, and stretch themselves. The first effect will probably be less dramatic and more pervasive: fewer programs, fewer local options, fewer small departments, fewer duplicated degrees, and more concentration.
@@ -539,3 +630,48 @@
     <div class="hr"></div>
   </section>
 
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
