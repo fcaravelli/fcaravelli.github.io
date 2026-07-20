@@ -333,6 +333,8 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 .keyrow.on .kdot{background:#1a3e7a;border-color:#1a3e7a}
 .keyrow .ktext{flex:1;color:#3a4a5a;font-family:monospace;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
 .keyrow .kdel{background:#e8d0d0;color:#9a3030;border:none;border-radius:5px;width:22px;height:22px;cursor:pointer;font-size:13px;flex-shrink:0}
+.keyrow .kcopy{background:#dfe8f2;border:none;border-radius:5px;width:22px;height:22px;cursor:pointer;font-size:12px;flex-shrink:0;padding:0}
+.keyrow .kcopy:hover{background:#cbdcf0}
 .keyrow .kdel:hover{background:#f0c0c0}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px}
 .mbtn,.provbtn,.gmbtn,.lmbtn,.dsbtn{background:var(--toolbar);border:2px solid var(--rule);border-radius:9px;
@@ -1038,9 +1040,11 @@ function renderKeyList(){
     const masked = k.length>12 ? k.slice(0,6)+'…'+k.slice(-4) : k;
     row.innerHTML=`<span class="kdot" title="Use this key"></span>`+
       `<span class="ktext" title="Click to use">${masked}</span>`+
+      `<button class="kcopy" title="Copy full key">📋</button>`+
       `<button class="kdel" title="Remove">✕</button>`;
     row.querySelector('.kdot').addEventListener('click',()=>selectKey(i));
     row.querySelector('.ktext').addEventListener('click',()=>selectKey(i));
+    row.querySelector('.kcopy').addEventListener('click',(e)=>{ e.stopPropagation(); copyKey(k); });
     row.querySelector('.kdel').addEventListener('click',()=>removeKey(i));
     list.appendChild(row);
   });
@@ -1054,6 +1058,21 @@ function renderKeyList(){
 function selectKey(i){
   keyIdx[provider]=i; apiKey=activeKey(provider);
   saveKeyPool(provider); renderKeyList(); syncKeyStatus(); buildModelPick();
+}
+// Copy the full (unmasked) key to the clipboard.
+async function copyKey(k){
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(k);
+    } else {
+      const ta=document.createElement('textarea'); ta.value=k;
+      ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); ta.remove();
+    }
+    toast('API key copied to clipboard ✓',1600);
+  }catch(e){
+    toast('Couldn’t copy automatically — key: '+k, 6000);
+  }
 }
 function removeKey(i){
   keyPools[provider].splice(i,1);
