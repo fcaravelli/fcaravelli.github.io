@@ -1412,6 +1412,7 @@ document.getElementById('clrbtn').addEventListener('click',()=>{
   document.querySelectorAll('.claude-block, .text-block, .img-block').forEach(e=>e.remove());
   convHistory.length=0; chatHistory.length=0;
   boardNextY=80; maxY=80;
+  transcript=''; frontier=0;
   document.getElementById('chatlog').innerHTML='';
   drawWelcomeHint();
   toast('Page cleared ✓',1400);
@@ -2504,24 +2505,30 @@ function blankPage(){
     textBlocks: [],       // LaTeX text overlays (outerHTML)
     imgBlocks: [],        // image overlays (outerHTML)
     chatHtml: '',         // saved chat log innerHTML
-    scrollTop: 0
+    scrollTop: 0,
+    transcript: '',       // running text transcription of ink above the frontier
+    frontier: 0           // y (canvas px): everything above is already in transcript
   };
 }
 
 // Live pointers to the current page's state (kept in sync)
-let convHistory, chatHistory, boardNextY;
+let convHistory, chatHistory, boardNextY, transcript, frontier;
 
 function loadStateFromPage(p){
   convHistory = p.convHistory;
   chatHistory = p.chatHistory;
   boardNextY  = p.boardNextY;
   maxY        = p.maxY;
+  transcript  = p.transcript || '';
+  frontier    = p.frontier || 0;
 }
 function saveStateToPage(p){
   p.convHistory = convHistory;
   p.chatHistory = chatHistory;
   p.boardNextY  = boardNextY;
   p.maxY        = maxY;
+  p.transcript  = transcript;
+  p.frontier    = frontier;
 }
 
 // Snapshot the current page (canvas + overlays + chat) into pages[currentPage]
@@ -2950,6 +2957,72 @@ async function askDeepSeek(messages, systemPrompt, key){
 
 // BOARD: "Reply, Claude" — vision turn
 // ════════════════════════════════════════
+// ════════════════════════════════════════
+// WINDOWED VISION — keep the image under Claude's size cap on long boards.
+// Send only the recent region as an image; older ink is carried as text
+// (transcribed once as it scrolls out of the window).
+// ════════════════════════════════════════
+const MAX_IMG_EDGE = 1500;   // downscale so no edge exceeds this (well under the ~8000 cap)
+const WINDOW_H     = 1400;   // how much board height (canvas px) to show as image
+
+// Strip image blocks from all but the most recent user turn, so the request
+// doesn't grow with every ask (older visual context lives in the transcript).
+function pruneOldImages(history){
+  let lastImgTurn = -1;
+  for(let i=0;i<history.length;i++){
+    const c=history[i].content;
+    if(Array.isArray(c) && c.some(b=>b.type==='image')) lastImgTurn=i;
+  }
+  for(let i=0;i<history.length;i++){
+    if(i===lastImgTurn) continue;
+    const m=history[i];
+    if(Array.isArray(m.content) && m.content.some(b=>b.type==='image')){
+      m.content = m.content.map(b=> b.type==='image'
+        ? {type:'text',text:'[earlier board image — see transcription in context]'}
+        : b);
+    }
+  }
+}
+
+// Rasterize a vertical slice [y0,y1) of the board (ink + image overlays),
+// downscaled to keep within MAX_IMG_EDGE. Returns {b64, y0, y1} or null.
+function cropRegionImage(y0, y1){
+  y0 = Math.max(0, Math.floor(y0));
+  y1 = Math.min(canvas.height, Math.ceil(y1));
+  const h = y1 - y0, w = canvas.width;
+  if(h < 2 || w < 2) return null;
+  const scale = Math.min(1, MAX_IMG_EDGE / Math.max(w, h));
+  const ow = Math.max(1, Math.round(w*scale)), oh = Math.max(1, Math.round(h*scale));
+  const out = document.createElement('canvas'); out.width=ow; out.height=oh;
+  const o = out.getContext('2d');
+  o.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()||'#f8f4ec';
+  o.fillRect(0,0,ow,oh);
+  o.drawImage(canvas, 0,y0,w,h, 0,0,ow,oh);
+  document.querySelectorAll('.img-block').forEach(bk=>{
+    const im=bk.querySelector('img'); if(!im) return;
+    const bx=parseFloat(bk.style.left)||0, by=parseFloat(bk.style.top)||0;
+    const bw=parseFloat(bk.style.width)||0, bh=parseFloat(bk.style.height)||0;
+    if(by < y1 && by+bh > y0){
+      try{ o.drawImage(im, bx*scale, (by-y0)*scale, bw*scale, bh*scale); }catch(e){}
+    }
+  });
+  return { b64: out.toDataURL('image/png').split(',')[1], y0, y1 };
+}
+
+// Transcribe a board region to text (one model call) so it can be carried as
+// text after it scrolls out of the image window.
+async function transcribeRegion(y0, y1){
+  const crop = cropRegionImage(y0, y1);
+  if(!crop) return '';
+  const msgs=[{role:'user',content:[
+    {type:'image',source:{type:'base64',media_type:'image/png',data:crop.b64}},
+    {type:'text',text:'Transcribe everything in this image faithfully to text: handwriting, equations, and any diagrams (describe diagrams briefly in [brackets]). Use $...$ / $$...$$ for math. Output only the transcription, no commentary.'}
+  ]}];
+  try{
+    return await askLLM(msgs, 'You are a precise transcriber. Reproduce the content exactly as text; do not solve or comment.');
+  }catch(e){ return ''; }
+}
+
 document.getElementById('askbtn').addEventListener('click', async ()=>{
   if(!requireKey()) return;
   const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
@@ -2959,14 +3032,27 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
   askbtn.disabled=true; toast(aiName()+' is reading…');
   hideWelcomeHint();
 
-  const b64=canvas.toDataURL('image/png').split(',')[1];
-  const userContent=[
-    {type:'image',source:{type:'base64',media_type:'image/png',data:b64}},
-    {type:'text',text: convHistory.length===0
-      ? 'This is our shared whiteboard. I have written or drawn something. Please read it and reply as a collaborator — direct, warm, intellectually engaged. Use $...$ inline and $$...$$ for display equations.'
-      : 'I have added more to the board. Continue our conversation.'}
-  ];
+  const bottom = contentBottom();
+  // image window: last WINDOW_H px, never above the transcribed frontier
+  const winY0 = Math.max(frontier, Math.max(0, bottom - WINDOW_H));
+  const crop = cropRegionImage(winY0, bottom + 4);
+  const priorText = transcript.trim();
+
+  const parts=[];
+  if(crop) parts.push({type:'image',source:{type:'base64',media_type:'image/png',data:crop.b64}});
+  let promptText;
+  if(convHistory.length===0 && !priorText){
+    promptText = 'This is our shared whiteboard. I have written or drawn something. Please read it and reply as a collaborator — direct, warm, intellectually engaged. Use $...$ inline and $$...$$ for display equations.';
+  } else {
+    promptText = 'I have added more to the board (shown in the image is the most recent region). Continue our conversation.';
+  }
+  if(priorText){
+    promptText += '\n\nFor context, here is the transcription of earlier parts of the board that are no longer shown in the image:\n"""\n'+priorText+'\n"""';
+  }
+  parts.push({type:'text',text:promptText});
+  const userContent=parts;
   convHistory.push({role:'user',content:userContent});
+  pruneOldImages(convHistory);   // keep only the latest turn's image in the request
 
   try{
     const reply=await askLLM(convHistory,
@@ -2976,6 +3062,18 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
     try{ await placeBoardReply(reply); }catch(e){ console.error('placeBoardReply',e); }
     hideToast();
     await maybeVerify(userContent, reply);
+    // Advance the transcription frontier: transcribe the ink region we just
+    // showed (above the current reply) so future asks carry it as text and the
+    // image window can move on. Only when the board has grown past a threshold.
+    if(bottom - frontier > WINDOW_H){
+      const upTo = bottom - Math.floor(WINDOW_H*0.4);   // keep recent overlap live as image
+      if(upTo > frontier + 100){
+        toast('Saving earlier board as text…');
+        const t = await transcribeRegion(frontier, upTo);
+        if(t){ transcript = (transcript ? transcript+'\n\n' : '') + t; frontier = upTo; }
+        hideToast();
+      }
+    }
   }catch(err){hideToast();toast('Error: '+err.message,3000);}
   finally{askbtn.disabled=false;}
 });
