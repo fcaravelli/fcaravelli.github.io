@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Who owns the debate on inequality? – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math {
+      margin: 1rem 0;
+    }
+
+    img.hero {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    .note {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .hr {
+      height: 1px;
+      background: rgba(0,0,0,0.12);
+      margin: 1.25rem 0;
+    }
+
+    .toc {
+      background: rgba(0,0,0,0.03);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+    }
+
+    .toc a {
+      text-decoration: none;
+    }
+
+    .callout {
+      background: rgba(0,0,0,0.04);
+      border-left: 4px solid rgba(0,0,0,0.18);
+      padding: 0.9rem 1rem;
+      border-radius: 10px;
+    }
+
+    .kicker {
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      opacity: .8;
+    }
+
+    code.inline {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                   "Liberation Mono", "Courier New", monospace;
+      font-size: 0.92em;
+    }
+
+    figure.post-figure {
+      margin: 1.5rem 0;
+    }
+
+    figure.post-figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    figure.post-figure figcaption {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-top: 0.65rem;
+    }
+
+    .equation-block {
+      overflow-x: auto;
+    }
+
+    .data-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 0.8rem;
+      margin: 1.4rem 0;
+    }
+
+    .data-item {
+      background: rgba(0,0,0,0.035);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .data-item strong {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .references li {
+      margin-bottom: 0.85rem;
+    }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+  <script defer
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+
+  <script defer
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: {
+        "\\mathbbm": "\\mathbb"
+      },
+      ignoredTags: [
+        "script", "noscript", "style", "textarea", "pre", "code"
+      ]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+
+      const timer = setInterval(() => {
+        tries++;
+
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn(
+            "KaTeX auto-render not available."
+          );
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+
+      window.addEventListener(
+        "load",
+        () => window.__renderAllMath(),
+        { once: true }
+      );
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-format="fluid"
+        data-ad-layout-key="-ef+6k-30-ac+ty"
+        data-ad-client="ca-pub-6719988103594554"
+        data-ad-slot="9710109684"></ins>
+
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">
+          inequality • academic publishing • political economy
+        </p>
+
+        <h3>Who owns the debate on inequality?</h3>
+
+        <p><em>July 20th, 2026</em></p>
+
+        <p class="callout">
+          This is not an accusation against the journalists or editors who
+          wrote the article discussed below. It is an attempt to follow a
+          simple question: when a powerful institution asks society to debate
+          inequality, what can we learn by examining the institution itself?
+        </p>
+
+        <p>
+          On 16 July 2026, <em>Nature</em> published an editorial entitled
+          “Why there needs to be a global debate on inequality.” The article
+          discussed an ambitious report proposing a more equal distribution
+          of wealth, a global wealth tax, a global justice fund and a
+          substantial transfer of resources towards health, education and
+          climate adaptation. I agree, almost completely. The "almost" is important here, 
+          at least to who writes.
+        </p>
+
+        <p>
+          I agree with the central premise. Inequality is not a secondary
+          issue that can be postponed until after climate change, political
+          instability or technological disruption have been solved.
+          Distribution affects how all of these problems are experienced and
+          whether proposed solutions will be politically accepted.
+        </p>
+
+        <p>
+          But the editorial also made me curious. Who owns
+          <em>Nature</em>? Where do the revenues produced by scientific
+          publishing go? And who benefits when the business performs well?
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#editorial">1. The editorial</a></li>
+            <li><a href="#ownership">2. Who owns Nature?</a></li>
+            <li><a href="#money">3. Following the money</a></li>
+            <li><a href="#wealth">4. The individual level</a></li>
+            <li><a href="#point">5. The point is not hypocrisy</a></li>
+            <li><a href="#references">Sources and notes</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="editorial">
+        <h4>1. The editorial</h4>
+
+        <p>
+          The article is based on the <em>Global Justice Report</em>,
+          coordinated by economists at the World Inequality Lab. I am fairly
+          sure that who wrote the article cares about the issue. Indeed, I commend them
+          for bringing up the issue.
+          
+          The report considers a future in which higher living standards, ecological
+          constraints and a much more equal distribution of economic
+          resources are addressed together rather than as separate problems.
+        </p>
+
+        <p>
+          Among its more radical proposals are highly progressive taxes on
+          wealth and income, a global redistribution fund, shorter working
+          hours and a sovereign fund that would gradually acquire a portion
+          of the world’s productive capital.
+        </p>
+
+        <p>
+          One can disagree with the assumptions, the political feasibility or
+          the precise numbers. The editorial itself acknowledges that some of
+          the proposals are utopian. Nevertheless, its call for a serious
+          debate is reasonable. What matters is that the debate should not
+          remain abstract.
+        </p>
+
+        <p>
+          Inequality is generated and reproduced through actual institutions:
+          firms, property rights, financial vehicles, inheritance,
+          universities, governments and markets. Scientific publishing is one
+          of those institutions.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="ownership">
+        <h4>2. Who owns <em>Nature</em>?</h4>
+
+        <p>
+          <em>Nature</em> is one of the principal brands of Springer Nature.
+          The company was created in 2015 by combining Nature Publishing
+          Group, Macmillan Education and Springer Science+Business Media.
+          Springer Nature was subsequently listed on the Frankfurt Stock
+          Exchange in October 2024.
+        </p>
+
+        <p>
+          According to Springer Nature’s official shareholder information,
+          updated on 1 June 2026, the ownership structure was:
+        </p>
+
+        <div class="data-box">
+          <div class="data-item">
+            <strong>50.6%</strong>
+            Holtzbrinck Publishing Group
+          </div>
+
+          <div class="data-item">
+            <strong>32.1%</strong>
+            BC Partners-controlled investment vehicle
+          </div>
+
+          <div class="data-item">
+            <strong>16.1%</strong>
+            Public free float
+          </div>
+
+          <div class="data-item">
+            <strong>1.2%</strong>
+            Other shareholders
+          </div>
+        </div>
+
+        <p>
+          Holtzbrinck is a privately held and family-owned German publishing
+          group. The second-largest block is held through Springer
+          Science+Business Media Galileo Participation S.à r.l., which
+          Springer Nature identifies as a majority-owned and controlled
+          indirect subsidiary of funds advised by BC Partners.
+        </p>
+
+        <p>
+          It is therefore not quite correct to describe <em>Nature</em> as
+          simply “owned by a billionaire,” because the corporate chain is
+          more complicated than that. Nor is every euro earned by Springer
+          Nature transferred directly to one person.
+        </p>
+
+        <p>
+          It is correct, however, to say that the largest portion of the
+          company is controlled by a private family-owned group, while
+          another large portion is controlled through private-equity funds.
+          Only a relatively small part of the company is freely traded on the
+          stock market.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="money">
+        <h4>3. Following the money</h4>
+
+        <p>
+          The financial reports make the scale of the business visible.
+          Springer Nature reported revenue of approximately €1.93 billion in
+          2025 and adjusted operating profit of approximately €543.6 million.
+          Its Research division, which includes scientific journals and
+          related services, produced €486.4 million of that adjusted operating
+          profit.
+        </p>
+
+        <div class="data-box">
+          <div class="data-item">
+            <strong>€1.926bn</strong>
+            2025 group revenue
+          </div>
+
+          <div class="data-item">
+            <strong>€543.6m</strong>
+            Adjusted operating profit
+          </div>
+
+          <div class="data-item">
+            <strong>€486.4m</strong>
+            Research-segment adjusted operating profit
+          </div>
+
+          <div class="data-item">
+            <strong>€165.1m</strong>
+            Dividend distribution approved in 2026
+          </div>
+        </div>
+
+        <p>
+          These numbers do not demonstrate wrongdoing. A publisher has
+          employees, technology costs, offices, legal responsibilities,
+          digital infrastructure and long-term investments. Revenue is not
+          the same as personal income, and operating profit is not the same as
+          cash paid to owners.
+        </p>
+
+        <p>
+          But profits can eventually reach owners through dividends, share
+          sales and changes in the value of their holdings. For the 2025
+          financial year, Springer Nature approved a dividend of €0.83 per
+          share, corresponding to a total distribution of approximately
+          €165.1 million. The company states that its policy is to distribute
+          approximately half of adjusted consolidated net income.
+        </p>
+
+        <p>
+          A shareholder owning 50.6% of the company would, in a simplified
+          proportional calculation, be associated with roughly €83.5 million
+          of this distribution:
+        </p>
+
+        <div class="equation-block">
+          $$
+          0.506 \times 165.1\ \text{million euros}
+          \simeq 83.5\ \text{million euros}.
+          $$
+        </div>
+
+        <p class="note">
+          This is an estimate of the dividend attributable to the shareholding
+          block, not a claim that this amount was paid personally to Stefan
+          von Holtzbrinck. The stake is held through corporate structures, and
+          the subsequent allocation of funds within a privately held group is
+          not fully visible from Springer Nature’s public reports.
+        </p>
+
+        <p>
+          This distinction is essential. The relevant observation is not that
+          one identifiable individual receives every euro. It is that income
+          generated by a vast international research system ultimately
+          produces returns for a comparatively narrow ownership structure.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="wealth">
+        <h4>4. The individual level</h4>
+
+        <p>
+          Stefan von Holtzbrinck is the chair of Springer Nature’s
+          Supervisory Board and the chief executive of the family-owned
+          Holtzbrinck Publishing Group. Public rich lists have consistently
+          classified him as a billionaire.
+        </p>
+
+        <p>
+          Historical wealth estimates should be treated with caution.
+          Privately held companies do not have a continuously observable
+          market price, and rich lists infer values from partial information.
+          They are estimates, not audited personal balance sheets.
+        </p>
+
+        <p>
+          With that qualification, published German rich-list data estimated
+          Stefan von Holtzbrinck’s wealth at roughly €1 billion in 2005 and
+          around €4.8 billion in 2024. It would be tempting to interpret this
+          as a precise increase caused by Springer Nature. That conclusion
+          would be unjustified.
+        </p>
+
+        <p>
+          The Holtzbrinck group owns other publishing and investment assets,
+          corporate structures changed during this period, and valuation
+          methods changed when Springer Nature became publicly traded. The
+          2024 flotation gave the market a visible price for an asset that had
+          previously been valued privately. Part of the apparent jump can
+          therefore reflect better price discovery rather than newly created
+          wealth in that single year.
+        </p>
+
+        <p>
+          We can make a firmer statement about Springer Nature’s salaried
+          leadership. Its 2025 remuneration report records €2.253 million in
+          remuneration granted and owed to chief executive Frank Vrancken
+          Peeters for the year. His contractual target remuneration,
+          including long-term incentives, was €3.3 million.
+        </p>
+
+        <p>
+          Once again, there is nothing illegal or hidden here: these figures
+          are disclosed in the annual report. But they matter when thinking
+          about the institutional setting in which calls for redistribution
+          are produced.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="point">
+        <h4>5. The point is not hypocrisy</h4>
+
+        <p>
+          The easy conclusion would be to accuse <em>Nature</em> of
+          hypocrisy: a profitable publisher, ultimately controlled by wealthy
+          owners, publishes an editorial asking for greater equality.
+        </p>
+
+        <p>
+          I do not think that is the most interesting conclusion.
+        </p>
+
+        <p>
+          The editorial staff of a scientific journal is not identical to its
+          shareholders. A serious institution should be capable of publishing
+          evidence and arguments that are uncomfortable for its owners.
+          Indeed, editorial independence is valuable precisely because it can
+          produce this separation.
+        </p>
+
+        <p>
+          The more important point is that inequality is not external to the
+          production of knowledge. Researchers write papers, provide peer
+          review and often perform editorial work. Much of the underlying
+          research is publicly financed. Universities and libraries then pay
+          for access, while authors or funders increasingly pay article
+          processing charges for open-access publication.
+        </p>
+
+        <p>
+          Springer Nature itself explains that the budgets of its principal
+          Research customers depend substantially on public investment in
+          universities, research and teaching. Its annual report also notes
+          that under open access the payment moves from readers towards
+          authors, generally through research funding.
+        </p>
+
+        <p>
+          There is therefore a circular structure:
+        </p>
+
+        <div class="equation-block">
+          $$
+          \text{public funding}
+          \longrightarrow
+          \text{research}
+          \longrightarrow
+          \text{articles and peer review}
+          \longrightarrow
+          \text{publishing revenue}
+          \longrightarrow
+          \text{profits and returns to capital}.
+          $$
+        </div>
+
+        <p>
+          This does not imply that publishers add no value. They organize
+          editorial processes, maintain archives and platforms, coordinate
+          production, protect brands and provide forms of quality control.
+          The proper question is not whether the value added is exactly zero.
+        </p>
+
+        <p>
+          The question is how the value jointly produced by researchers,
+          universities, funders, editors and publishers should be divided.
+          That is itself a question of inequality.
+        </p>
+
+        <p>
+          Perhaps this is the most productive way to read the editorial. A
+          global debate on inequality should not only identify inequality in
+          distant industries, tax havens or abstract macroeconomic models. It
+          should also examine the institutions through which the debate is
+          communicated.
+        </p>
+
+        <p>
+          Scientific publishing is unusually well suited for this discussion
+          because researchers occupy several positions at once. We are the
+          authors, referees, readers, editors, customers and, frequently
+          through our taxes, the original funders of the work.
+        </p>
+
+        <p>
+          The problem is therefore not that <em>Nature</em> discussed
+          inequality. The problem would be to discuss inequality everywhere
+          except at home.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="references">
+        <h4>Sources and notes</h4>
+
+        <ol class="references">
+          <li>
+            <em>Nature</em>, “Why there needs to be a global debate on
+            inequality,” editorial, 16 July 2026, vol. 655, p. 547.
+            The title, date and page number are taken from the printed page
+            reproduced above.
+          </li>
+
+          <li>
+            Springer Nature,
+            <a href="https://ir.springernature.com/shareholder-structure"
+               target="_blank" rel="noopener noreferrer">
+              Shareholder Structure
+            </a>,
+            last updated 1 June 2026. This is the source for the 50.6%,
+            32.1%, 16.1% and 1.2% ownership figures.
+          </li>
+
+          <li>
+            Springer Nature,
+            <a href="https://group.springernature.com/gp/group/about-us"
+               target="_blank" rel="noopener noreferrer">
+              About Us
+            </a>.
+            This page describes the 2015 formation of Springer Nature and its
+            2024 listing on the Frankfurt Stock Exchange.
+          </li>
+
+          <li>
+            Springer Nature,
+            <a href="https://annualreport.springernature.com/2025/"
+               target="_blank" rel="noopener noreferrer">
+              Annual Report 2025
+            </a>.
+            The report records 2025 revenue of €1,926.4 million and adjusted
+            operating profit of €543.6 million.
+          </li>
+
+          <li>
+            Springer Nature, Annual Report 2025, Combined Group Management
+            Report, section on revenue and adjusted operating profit by
+            segment. The Research segment reported adjusted operating profit
+            of €486.4 million in 2025.
+          </li>
+
+          <li>
+            Springer Nature,
+            <a href="https://ir.springernature.com/dividend"
+               target="_blank" rel="noopener noreferrer">
+              Dividend information
+            </a>.
+            The Annual General Meeting approved a dividend of €0.83 per
+            share, totalling €165,077,860.87, paid from 2 June 2026.
+          </li>
+
+          <li>
+            Springer Nature, Annual Report 2025,
+            <a href="https://annualreport.springernature.com/2025/files/sn-ar-25-remuneration-report.pdf"
+               target="_blank" rel="noopener noreferrer">
+              Remuneration Report
+            </a>.
+            The report records €2.253 million in remuneration granted and
+            owed to CEO Franciscus Vrancken Peeters for 2025 and target
+            remuneration of €3.3 million.
+          </li>
+
+          <li>
+            Springer Nature, Annual Report 2025, Consolidated Financial
+            Statements. The company reported a 2025 net result attributable
+            to ordinary equity holders of €355.7 million and an adjusted net
+            result of €384.5 million.
+          </li>
+
+          <li>
+            Manager Magazin’s historical list of wealthy Germans estimated
+            Stefan von Holtzbrinck’s wealth at approximately €1 billion in
+            2005. Later published lists placed the estimate at approximately
+            €4.8 billion in 2024. These figures are third-party estimates and
+            should not be interpreted as audited accounts or as wealth
+            generated exclusively by Springer Nature.
+          </li>
+
+          <li>
+            Stefanie Haustein et al.,
+            <a href="https://arxiv.org/abs/2407.16551"
+               target="_blank" rel="noopener noreferrer">
+              “Estimating global article processing charges paid to six
+              publishers for open access between 2019 and 2023”
+            </a>,
+            2024. The study estimates APC expenditure across major scholarly
+            publishers and discusses the limited transparency of global APC
+            payments.
+          </li>
+        </ol>
+
+        <p class="note">
+          Correction note: an earlier AI-generated summary claimed that
+          Holtzbrinck had received regulatory approval in July 2026 to acquire
+          BC Partners’ remaining Springer Nature stake. I found no reliable
+          primary source supporting that statement. It also conflicts with
+          Springer Nature’s official shareholder structure, which still
+          identified the BC Partners-controlled vehicle as holding 32.1% on
+          1 June 2026. I have therefore not used the claim.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+        style="display:block; text-align:center;"
+        data-ad-layout="in-article"
+        data-ad-format="fluid"
+        data-ad-client="ca-pub-6719988103594554"
+        data-ad-slot="2406334732"></ins>
+
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch(
+          "../partials/sidebar.html",
+          { cache: "no-store" }
+        );
+
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath =
+          window.location.pathname.split("/").pop();
+
+        const links = sidebarContainer.querySelectorAll("a");
+
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) {
+            link.classList.add("active");
+          }
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
