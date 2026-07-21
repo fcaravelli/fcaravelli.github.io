@@ -1823,13 +1823,17 @@ async function cropSelection(){
 
   // Gather text/LaTeX from AI-reply (.claude-block) and typed (.text-block)
   // overlays that fall inside the selected region, in top-to-bottom order.
+  // Overlays are positioned in CSS px within #paper; selBox is in canvas px.
+  // Convert overlay coords to canvas px via the current scale before testing.
   const overlayTexts=[];
+  const {sx,sy}=canvasScale();
   const collect=(sel,labelFn)=>{
     document.querySelectorAll(sel).forEach(el=>{
-      const ex=parseFloat(el.style.left)||80;
-      const ey=parseFloat(el.style.top)||0;
-      const eh=el.offsetHeight||0, ew=el.offsetWidth||0;
-      // intersect with selection box (use bounding box for lasso too)
+      const exCss=parseFloat(el.style.left)||80;
+      const eyCss=parseFloat(el.style.top)||0;
+      const ewCss=el.offsetWidth||0, ehCss=el.offsetHeight||0;
+      // to canvas px
+      const ex=exCss/sx, ey=eyCss/sy, ew=ewCss/sx, eh=ehCss/sy;
       if(ex < x+w && ex+ew > x && ey < y+h && ey+eh > y){
         const src=el.dataset.src || el.textContent.trim();
         if(src) overlayTexts.push({y:ey, text:labelFn(src)});
@@ -1855,8 +1859,9 @@ document.getElementById('selask').addEventListener('click', async ()=>{
   const userContent=[
     {type:'image',source:{type:'base64',media_type:'image/png',data:b64}},
     {type:'text',text: (q?q+'\n\n':'') +
-      'This image is only a selected part of my whiteboard. Please respond about just this portion. Use $...$ inline and $$...$$ for display equations.' +
-      (extraText ? '\n\nThe selected region also contains the following (which may not all be visible in the image):\n'+extraText : '')}
+      (extraText
+        ? 'I selected a region of my whiteboard. The image may look mostly blank because the content there is AI replies / typed notes rather than handwriting. Here is that content — treat it as the substance of the selection and respond about it:\n"""\n'+extraText+'\n"""'
+        : 'This image is only a selected part of my whiteboard. Please respond about just this portion. Use $...$ inline and $$...$$ for display equations.')}
   ];
   convHistory.push({role:'user',content:userContent});
   try{
@@ -2534,10 +2539,10 @@ document.getElementById('pdfselask').addEventListener('click',async ()=>{
       'You are a brilliant collaborator helping the user read and understand a PDF. They select regions to ask about. Plain prose + LaTeX only. Concise, direct, physicist-collaborator tone.'+citeSuffix());
     pdfConv.push({role:'assistant',content:reply});
     // Put the answer on the scratch board (visible beside the reader) AND in chat.
+    hideToast();
+    await placeBoardReply(reply, { label:'✦ '+aiLabel()+'  ·  PDF p'+pdfPageNum });
     appendChatMsg('user','[PDF p'+pdfPageNum+' selection] '+(q||''));
     appendChatMsg('claude',reply);
-    try{ await placeBoardReply(reply, { label:'✦ '+aiLabel()+'  ·  PDF p'+pdfPageNum }); }catch(e){ console.error(e); }
-    hideToast();
     await maybeVerify(userContent, reply);   // verification lands on the board too
     clearPdfSel();
   }catch(err){ hideToast(); toast('Error: '+err.message,3000); }
