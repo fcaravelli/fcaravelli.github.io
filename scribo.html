@@ -755,6 +755,16 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       </p>
     </div>
 
+    <div style="background:#eef1f6;border:1.5px solid #bfc9dc;border-radius:9px;padding:11px 12px;margin-bottom:18px">
+      <label class="flabel" style="margin-bottom:6px;display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="texttoggle" style="width:16px;height:16px;accent-color:#3a5a9a;cursor:pointer">
+        📝 Send board as text (transcribe), not image
+      </label>
+      <p style="font-family:'Patrick Hand',cursive;font-size:12px;color:#5a6a8a;margin:0;line-height:1.5">
+        On ✉ Ask, the board is transcribed to text and sent as text instead of an image — no image-size limits, cheaper, and works with text-only models. Only new regions are transcribed each time (earlier text is reused). A vision model is still used once to do the transcription.
+      </p>
+    </div>
+
     <div style="background:#f4f0e6;border:1.5px solid #d8cdb4;border-radius:9px;padding:11px 12px;margin-bottom:18px">
       <label class="flabel" style="margin-bottom:6px;font-weight:700">🧹 Storage</label>
       <p style="font-family:'Patrick Hand',cursive;font-size:12px;color:#7a6a50;margin:0 0 8px;line-height:1.5">
@@ -975,6 +985,7 @@ let model  = models[provider];
 let maxTokens = parseInt(localStorage.getItem('wb_maxtokens')) || 4096;
 let verifyMode = localStorage.getItem('wb_verify')==='1';
 let citeMode = localStorage.getItem('wb_cite')==='1';
+let textMode = localStorage.getItem('wb_textmode')==='1';
 let checker = localStorage.getItem('wb_checker') || '';   // "provider|model" of the checking model
 // Ensure the checker always has a sensible default (a model different from the solver).
 function ensureChecker(){
@@ -1279,6 +1290,7 @@ function openSettings() {
   document.getElementById('tokval').textContent = maxTokens;
   document.getElementById('verifytoggle').checked = verifyMode;
   document.getElementById('citetoggle').checked = citeMode;
+  document.getElementById('texttoggle').checked = textMode;
   if(typeof refreshAutosaveSize==='function') refreshAutosaveSize();
   buildCheckerPick();
   document.getElementById('linespacing').value = lineGap;
@@ -1383,6 +1395,8 @@ document.getElementById('settingssave').addEventListener('click', () => {
   verifyMode = document.getElementById('verifytoggle').checked;
   citeMode = document.getElementById('citetoggle').checked;
   localStorage.setItem('wb_cite', citeMode?'1':'0');
+  textMode = document.getElementById('texttoggle').checked;
+  localStorage.setItem('wb_textmode', textMode?'1':'0');
   checker = document.getElementById('checkerpick').value || checker;
   ensureChecker();
   updateVerifyBadge();
@@ -2519,11 +2533,12 @@ document.getElementById('pdfselask').addEventListener('click',async ()=>{
     const reply=await askLLM(pdfConv,
       'You are a brilliant collaborator helping the user read and understand a PDF. They select regions to ask about. Plain prose + LaTeX only. Concise, direct, physicist-collaborator tone.'+citeSuffix());
     pdfConv.push({role:'assistant',content:reply});
-    // answer goes to the chat panel and (optionally) the scratch board
+    // Put the answer on the scratch board (visible beside the reader) AND in chat.
     appendChatMsg('user','[PDF p'+pdfPageNum+' selection] '+(q||''));
     appendChatMsg('claude',reply);
+    try{ await placeBoardReply(reply, { label:'✦ '+aiLabel()+'  ·  PDF p'+pdfPageNum }); }catch(e){ console.error(e); }
     hideToast();
-    await maybeVerify(userContent, reply);
+    await maybeVerify(userContent, reply);   // verification lands on the board too
     clearPdfSel();
   }catch(err){ hideToast(); toast('Error: '+err.message,3000); }
 });
@@ -3279,30 +3294,50 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
   if(!pixels.some(p=>p!==0)){toast('✏️ Write something first!',1800);return;}
 
   const askbtn=document.getElementById('askbtn');
-  askbtn.disabled=true; toast(aiName()+' is reading…');
+  askbtn.disabled=true;
   hideWelcomeHint();
 
   const bottom = contentBottom();
-  // image window: last WINDOW_H px, never above the transcribed frontier
-  const winY0 = Math.max(frontier, Math.max(0, bottom - WINDOW_H));
-  const crop = cropRegionImage(winY0, bottom + 4);
-  const priorText = transcript.trim();
-
   const parts=[];
-  if(crop) parts.push({type:'image',source:{type:'base64',media_type:'image/png',data:crop.b64}});
-  let promptText;
-  if(convHistory.length===0 && !priorText){
-    promptText = 'This is our shared whiteboard. I have written or drawn something. Please read it and reply as a collaborator — direct, warm, intellectually engaged. Use $...$ inline and $$...$$ for display equations.';
+  let userContent;
+
+  if(textMode){
+    // ── TEXT MODE: transcribe any new region, then send the whole board as text ──
+    if(bottom - frontier > 40){
+      toast('Transcribing the board…');
+      const t = await transcribeRegion(frontier, bottom+4);
+      if(t){ transcript = (transcript ? transcript+'\n\n' : '') + t; frontier = bottom; }
+    }
+    toast(aiName()+' is thinking…');
+    const boardText = transcript.trim() || '(the board appears blank)';
+    const intro = convHistory.length===0
+      ? 'This is the full text transcription of my handwritten whiteboard. Read it and reply as a collaborator — direct, warm, intellectually engaged.'
+      : 'Here is the current full text transcription of my whiteboard (updated with what I just added). Continue our conversation.';
+    parts.push({type:'text', text: intro+'\n\n"""\n'+boardText+'\n"""'});
+    userContent=parts;
+    convHistory.push({role:'user',content:userContent});
+    pruneOldImages(convHistory);   // no images anyway, keeps history lean
   } else {
-    promptText = 'I have added more to the board (shown in the image is the most recent region). Continue our conversation.';
+    // ── IMAGE MODE (default): windowed image + prior transcript as context ──
+    toast(aiName()+' is reading…');
+    const winY0 = Math.max(frontier, Math.max(0, bottom - WINDOW_H));
+    const crop = cropRegionImage(winY0, bottom + 4);
+    const priorText = transcript.trim();
+    if(crop) parts.push({type:'image',source:{type:'base64',media_type:'image/png',data:crop.b64}});
+    let promptText;
+    if(convHistory.length===0 && !priorText){
+      promptText = 'This is our shared whiteboard. I have written or drawn something. Please read it and reply as a collaborator — direct, warm, intellectually engaged. Use $...$ inline and $$...$$ for display equations.';
+    } else {
+      promptText = 'I have added more to the board (shown in the image is the most recent region). Continue our conversation.';
+    }
+    if(priorText){
+      promptText += '\n\nFor context, here is the transcription of earlier parts of the board that are no longer shown in the image:\n"""\n'+priorText+'\n"""';
+    }
+    parts.push({type:'text',text:promptText});
+    userContent=parts;
+    convHistory.push({role:'user',content:userContent});
+    pruneOldImages(convHistory);
   }
-  if(priorText){
-    promptText += '\n\nFor context, here is the transcription of earlier parts of the board that are no longer shown in the image:\n"""\n'+priorText+'\n"""';
-  }
-  parts.push({type:'text',text:promptText});
-  const userContent=parts;
-  convHistory.push({role:'user',content:userContent});
-  pruneOldImages(convHistory);   // keep only the latest turn's image in the request
 
   try{
     const reply=await askLLM(convHistory,
@@ -3312,11 +3347,9 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
     try{ await placeBoardReply(reply); }catch(e){ console.error('placeBoardReply',e); }
     hideToast();
     await maybeVerify(userContent, reply);
-    // Advance the transcription frontier: transcribe the ink region we just
-    // showed (above the current reply) so future asks carry it as text and the
-    // image window can move on. Only when the board has grown past a threshold.
-    if(bottom - frontier > WINDOW_H){
-      const upTo = bottom - Math.floor(WINDOW_H*0.4);   // keep recent overlap live as image
+    // In image mode, advance the frontier so the image window can move on.
+    if(!textMode && bottom - frontier > WINDOW_H){
+      const upTo = bottom - Math.floor(WINDOW_H*0.4);
       if(upTo > frontier + 100){
         toast('Saving earlier board as text…');
         const t = await transcribeRegion(frontier, upTo);
@@ -3329,7 +3362,7 @@ document.getElementById('askbtn').addEventListener('click', async ()=>{
 });
 
 // If Verify mode is on, run the checker and place a 🔍 block below the answer.
-async function maybeVerify(userContent, answerText){
+async function maybeVerify(userContent, answerText, target){
   if(!verifyMode){ return; }
   ensureChecker();
   const [cprov,cmodel]=(checker||'').split('|');
@@ -3339,24 +3372,32 @@ async function maybeVerify(userContent, answerText){
   toast('🔍 '+cname+' is checking the answer…');
   try{
     const verdict = await runVerification(userContent, answerText);
-    await placeBoardReply(verdict, {
-      label: '🔍 Checked by '+clabel,
-      tint: '#bfe6c4',
-      labelColor: '#2a6a3a',
-      checkStyle: true
-    });
-    // make sure the check is visible even on a tall board
-    scroll.scrollTo({top:Math.max(0, contentBottom()-scroll.clientHeight+140), behavior:'smooth'});
-    toast('🔍 Check added below the answer ✓',1800);
+    if(target==='chat'){
+      appendChatMsg('claude','🔍 Checked by '+clabel+':\n\n'+verdict);
+      toast('🔍 Check added ✓',1600);
+    } else {
+      await placeBoardReply(verdict, {
+        label: '🔍 Checked by '+clabel,
+        tint: '#bfe6c4',
+        labelColor: '#2a6a3a',
+        checkStyle: true
+      });
+      scroll.scrollTo({top:Math.max(0, contentBottom()-scroll.clientHeight+140), behavior:'smooth'});
+      toast('🔍 Check added below the answer ✓',1800);
+    }
   }catch(err){
     hideToast();
-    await placeBoardReply('Verification could not run: '+err.message, {
-      label: '🔍 Check failed',
-      tint: '#f3c9c9',
-      labelColor: '#9a3030',
-      checkStyle: false
-    });
-    scroll.scrollTo({top:Math.max(0, contentBottom()-scroll.clientHeight+140), behavior:'smooth'});
+    if(target==='chat'){
+      appendChatMsg('claude','🔍 Check failed: '+err.message);
+    } else {
+      await placeBoardReply('Verification could not run: '+err.message, {
+        label: '🔍 Check failed',
+        tint: '#f3c9c9',
+        labelColor: '#9a3030',
+        checkStyle: false
+      });
+      scroll.scrollTo({top:Math.max(0, contentBottom()-scroll.clientHeight+140), behavior:'smooth'});
+    }
   }
 }
 
