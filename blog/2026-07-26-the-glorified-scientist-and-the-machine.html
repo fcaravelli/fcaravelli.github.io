@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>The glorified scientist and the machine – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math {
+      margin: 1rem 0;
+    }
+
+    img.hero {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    .note {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .hr {
+      height: 1px;
+      background: rgba(0,0,0,0.12);
+      margin: 1.25rem 0;
+    }
+
+    .toc {
+      background: rgba(0,0,0,0.03);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+    }
+
+    .toc a {
+      text-decoration: none;
+    }
+
+    .callout {
+      background: rgba(0,0,0,0.04);
+      border-left: 4px solid rgba(0,0,0,0.18);
+      padding: 0.9rem 1rem;
+      border-radius: 10px;
+    }
+
+    .kicker {
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      opacity: .8;
+    }
+
+    code.inline {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                   "Liberation Mono", "Courier New", monospace;
+      font-size: 0.92em;
+    }
+
+    figure.post-figure {
+      margin: 1.5rem 0;
+    }
+
+    figure.post-figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    figure.post-figure figcaption {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-top: 0.65rem;
+    }
+
+    blockquote {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: rgba(0,0,0,0.035);
+      border-left: 4px solid rgba(0,0,0,0.18);
+      border-radius: 10px;
+      font-style: italic;
+    }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+  <script defer
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+
+  <script defer
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: {
+        "\\mathbbm": "\\mathbb"
+      },
+      ignoredTags: [
+        "script", "noscript", "style", "textarea", "pre", "code"
+      ]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+
+      const timer = setInterval(() => {
+        tries++;
+
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available.");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+
+      window.addEventListener(
+        "load",
+        () => window.__renderAllMath(),
+        { once: true }
+      );
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-format="fluid"
+        data-ad-layout-key="-ef+6k-30-ac+ty"
+        data-ad-client="ca-pub-6719988103594554"
+        data-ad-slot="9710109684"></ins>
+
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">
+          artificial intelligence • scientific discovery • knowledge
+        </p>
+
+        <h3>The glorified scientist and the machine</h3>
+
+        <p><em>July 26th, 2026</em></p>
+
+
+
+        <p>
+          There are many conversations these days about the ability of
+          LLMs to generate genuinely new results in Mathematics and Physics.
+          I have seen a fair amount of panic in academic chats, on LinkedIn,
+          at conferences and in private conversations.
+        </p>
+
+        <p>
+          I have been worried about this for roughly two years. What surprises
+          me is not that scientists are worried now. What surprises me is how
+          little urgency there was while the consequences appeared remote,
+          and how quickly the discussion changed once academic employment,
+          authorship and prestige seemed to be at stake.
+        </p>
+
+        <p>
+          We are often remarkably capable of turning a blind eye to people
+          dying under bombs in a foreign country, while becoming suddenly
+          alert when our own jobs may be threatened. Physicists are not
+          necessarily intellectuals. Some are. Others merely perform the
+          social role of the intellectual.
+        </p>
+
+        <p>
+          Yet beneath the panic lies a serious epistemological question:
+          what does it mean to discover something when the key step is
+          produced by a machine?
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#credit">1. Who deserves credit?</a></li>
+            <li><a href="#knowledge">2. Knowledge without authorship</a></li>
+            <li><a href="#intelligence">3. Knowledge is not intelligence</a></li>
+            <li><a href="#prestige">4. Science, prestige and mimetic desire</a></li>
+            <li><a href="#publishing">5. What happens to publishing?</a></li>
+            <li><a href="#physics">6. Why physics may be different</a></li>
+            <li><a href="#process">7. The process is part of the result</a></li>
+            <li><a href="#after">8. What comes after the glorified scientist?</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="credit">
+        <h4>1. Who deserves credit?</h4>
+
+        <p>
+          Suppose someone writes a prompt and an AI system solves an open
+          problem. Does the person who wrote the prompt deserve scientific
+          credit?
+        </p>
+
+        <p>
+          The first answer is almost embarrassingly literal: credit was
+          certainly required, although initially it was credit for tokens.
+          This implies simply that money was somehow the source of the solution. The person who paid for the tokens may have been
+          the one who wrote the prompt, but this creates an inequality (or rather, exhacerbates an existing one) between those who can afford 
+          to pay for tokens and those who cannot. The question of credit is therefore not only epistemological, but also social.
+          But there is a more serious answer. A good question can be as
+          important as its answer. Choosing the problem, recognizing that it
+          is tractable, stating it correctly and understanding why it matters
+          are all intellectual acts.
+        </p>
+
+        <p>
+          Two years ago, my good friend YTL told me in his office that he was
+          beginning to place the arrival of large language models on the same
+          historical plane as the atomic bomb. We had independently reached
+          something close to the same conclusion.
+        </p>
+
+        <p>
+          At that time I was already impressed by the number of correct and
+          useful things these systems could produce. But the human remained
+          visibly inside the loop. One had to ask repeatedly, redirect the
+          argument, repair errors and assemble fragments into a coherent
+          result.
+        </p>
+
+        <p>
+          The difference today is not merely quantitative. In some cases the
+          loop has become much shorter. A problem is stated once, a solution
+          appears and a paper-like presentation follows. I have seen various people
+          alerting the community lately. Even where the result
+          is imperfect, the direction of travel is difficult to miss.
+        </p>
+
+        <p>
+          Around the time I effectively and physically left Los Alamos, I
+          heard rumours that managers were already discussing whether
+          scientists could eventually be replaced by AI. Replacing scientists
+          wholesale would be a serious mistake. The more uncomfortable
+          question is whether some institutions might attempt it anyway.
+        </p>
+
+        <p>
+          Universities face a related problem. Who learns when the solution
+          is immediate? Who teaches? Who decides which problem is worth
+          solving? What becomes of scientific training when the apprentice can
+          summon an answer without acquiring the habits that once made the
+          answer possible?
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="knowledge">
+        <h4>2. Knowledge without authorship</h4>
+
+        <p>
+          What follow is a familiar experience for me. You go to bed thinking about an
+          equation. During the night something continues to work on it. In the
+          morning the solution is suddenly present: an <em>aha</em> moment.
+        </p>
+
+        <p>
+          Did you derive the result?
+        </p>
+
+        <p>
+          It was produced by your brain, or by some part of your brain. But it
+          was not produced by the conscious sequence of steps that you usually
+          identify as yourself. The boundary between discovering a result and
+          receiving it is already less clean than we often pretend.
+        </p>
+
+        <p>
+          Epistemology contains an even stranger version of the problem. If I
+          ask God for the solution to an equation and God answers, can the
+          answer count as knowledge? Oddly enough, the answer can be yes.
+          Knowledge has traditionally been described, with important
+          qualifications, as justified true belief.
+        </p>
+
+        <p>
+          The qualification matters. The Gettier problem shows that a belief
+          may be true and apparently justified while still being true by
+          accident (if continuously say it's 6 pm, at certain point you'll be right anyway). 
+          But the central point survives: knowledge is not normally
+          defined by the biological identity of the entity from which the
+          information arrived. But who verifies the result? Who checks that it is correct? Who understands why it is
+  correct? Who can explain it to others? These were all human acts. 
+        </p>
+
+        <p>
+          A proposed result must be true, or at least survive the strongest
+          available attempts at verification. It must also be connected to
+          reasons that justify accepting it. Whether the first suggestion came
+          from a colleague, a dream, a divine revelation or a machine may be
+          psychologically important without being epistemologically decisive.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="intelligence">
+        <h4>3. Knowledge is not intelligence</h4>
+
+        <p>
+          The question of intelligence is more difficult.
+        </p>
+
+        <p>
+          Current language models are usually engaged through a task. We ask
+          them to solve a particular equation, prove a statement, write a
+          program or compare two ideas. Intelligence in the broader human
+          sense involves something more mobile: the ability to enter a
+          problem, leave it, carry a structure elsewhere and recognize that
+          the same structure has reappeared in another disguise. This point 
+          of view is not new. It was already emphasized by Douglas Hofstadter in his 1979 book <em>Gödel, Escher, Bach</em>.
+        </p>
+
+
+        <p>
+          Douglas Hofstadter has long argued that analogy is not a decorative
+          feature of thought but one of its central mechanisms. Even the
+          acquisition of knowledge can be described in these terms. In
+          predictive accounts of cognition, associated with Randall O’Reilly
+          and many others before him, the brain continuously anticipates what
+          comes next and adjusts its internal structure according to the
+          discrepancy between prediction and observation.
+        </p>
+
+        <p>
+          Prediction itself is a form of analogy. We use previously acquired
+          regularities to guess what the next state of the world will be.
+          Learning occurs when the world refuses the analogy and forces us to
+          modify it. We solve a problem when we recognize that a structure we have seen before is
+          present in a new context. Otherwise we do a "random" search to find a solution.
+        </p>
+
+        <p>
+          Scientific intelligence therefore does more than answer. It
+          selects, transfers, abandons, reframes and returns. It recognizes
+          that a tool from one field may illuminate another. It may notice,
+          for example, that an idea from parton physics can be connected to
+          many-body localization. The analogy itself can be the important
+          contribution, even before the calculation is complete.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="prestige">
+        <h4>4. Science, prestige and mimetic desire</h4>
+
+        <p>
+          Scientists often say that they care about results. I suspect that
+          many care at least as much about the prestige attached to having
+          their name associated with those results.
+        </p>
+
+        <p>
+          This is not necessarily a moral failure. Prestige is part of the
+          incentive structure of science. It allocates jobs, grants,
+          invitations, authority and attention. But it can gradually replace
+          the purpose it was meant to reward.
+        </p>
+
+        <p>
+          René Girard’s idea of mimetic desire is useful here. We learn what
+          to desire by observing what others desire. A community that visibly
+          rewards recognition will train its younger members to seek
+          recognition. The production of knowledge becomes the route to the
+          object that appears socially valuable: prestige.
+        </p>
+
+        <p>
+          This creates a peculiar crisis when machines begin to produce the
+          results. If the purpose of science is knowledge, then better
+          machines are an extraordinary success. If the purpose is the
+          glorification of scientists, then the same machines are an
+          existential threat.
+        </p>
+
+        <p>
+          The question is therefore not only whether AI can do science. It is
+          whether we do science to generate new knowledge or to become
+          glorified scientists.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="publishing">
+        <h4>5. What happens to publishing?</h4>
+
+        <p>
+          There are, mathematically speaking, only three possibilities for the
+          future volume of scientific publishing: more papers, the same number
+          of papers or fewer papers.
+        </p>
+
+        <p>
+          My expectation is that we will first see a sharp increase. Producing
+          a technically competent manuscript is becoming cheaper and faster.
+          Once the bottleneck moves from calculation and writing to attention
+          and verification, the number of submissions can rise much more
+          quickly than the capacity of journals, referees or repositories to
+          absorb them.
+        </p>
+
+        <p>
+          An exponential increase is not sustainable, especially for
+          relatively small infrastructures such as arXiv. At some point the
+          system will attempt to impose friction: limits on yearly
+          submissions, stronger identity requirements, higher screening
+          thresholds, proof certificates or restrictions tied to
+          institutions.
+        </p>
+
+        <p>
+          I would be curious to see how large groups with fifty people and a
+          principal investigator appearing on every paper respond to a strict
+          personal submission quota.
+        </p>
+
+        <p>
+          After the flood may come contraction. If most incremental
+          calculations can be generated automatically, then publishing every
+          variation may lose its social value. The literature could become
+          simultaneously larger, less readable and less important.
+        </p>
+
+        <p>
+          Personally, I stopped opening arXiv every morning around 2015. I
+          still read papers, of course, but I no longer treat the daily list as
+          a meaningful map of scientific reality. AI may simply make that
+          mismatch impossible to ignore.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="physics">
+        <h4>6. Why physics may be different</h4>
+
+        <p>
+          Mathematical research will probably feel the transformation before
+          experimental physics. Physics remains, at its core, an experimental
+          science: <em>veritas per experimentum</em>.
+        </p>
+
+        <p>
+          We may prove theorems, derive bounds and construct elegant formal
+          structures, but when these activities detach completely from
+          observation they become mathematical physics. Physics begins with
+          the attempt to organize experimental regularities into a model,
+          identify the effective variables and decide which idealizations are
+          justified.
+        </p>
+
+        <p>
+          This does not make physics safe. Incremental work will be strongly
+          affected first. If the problem is to extend an expansion,
+          solve a known equation in a slightly different regime or apply an
+          established method to a nearby model, or improve a bound, AI will increasingly be able
+          to do much of the work.
+        </p>
+
+        <p>
+          I do not use <em>incremental</em> here as an insult. Most science is
+          incremental, and it must be. Large conceptual changes are built from
+          many smaller advances.
+        </p>
+
+        <p>
+          But deep work in a genuinely new area requires more than local
+          optimization. It requires deciding that two distant bodies of
+          knowledge belong together. It requires the movement in and out of
+          formal systems that we call analogy, taste or physical intuition.
+          AI may eventually transform this level as well. For now, it is the
+          level at which the human contribution remains most visible.
+        </p>
+
+        <p>
+          The important word, however, is <em>for now</em>.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="process">
+        <h4>7. The process is part of the result</h4>
+
+        <p>
+          Science itself does not care whether a result was produced by a
+          human, a dream, a revelation or an LLM. We care because we are
+          human, and because for most of our history we were the principal
+          agents in that cycle.
+        </p>
+
+        <p>
+          The analogy with climate change is imperfect but useful. The Earth
+          does not care about global warming. It is a piece of rock moving
+          through space. We care because the altered climate affects human and
+          non-human life. I do not have air conditioning at home, so I care
+          rather directly.
+        </p>
+
+        <p>
+          In the same way, science as an abstract process of producing valid
+          descriptions does not care who performs the derivation. But we care
+          about the experience of doing it.
+        </p>
+
+        <p>
+          I may be lucky enough to live another forty years. After that I will
+          not care either way. What saddens me is the possibility that my son
+          may never experience the peculiar joy of trying a thousand times to
+          prove something, failing, carrying the problem for days and then
+          suddenly seeing how it works.
+        </p>
+
+        <p>
+          Difficulty, trial and error are not merely obstacles placed before
+          learning. They are part of learning. If solutions arrive too easily,
+          we may lose not only the training produced by struggle but also the
+          joy of trying.
+        </p>
+
+        <p>
+          There is a scene in the Italian film <em>La profezia
+          dell’armadillo</em> in which Adriano Panatta reflects on the
+          difference between playing correctly and creating beauty. To
+          paraphrase the idea:
+        </p>
+
+        <blockquote>
+          Some people play the game correctly; others create beauty. You can
+          hear it in the sound of the ball. The greatest players do not merely
+          hit it: they make it sing. Statistics cannot fully measure this, and
+          words cannot explain it. Those who have experienced it recognize it
+          immediately.
+        </blockquote>
+
+        <p>
+          Physics has something similar. The process matters. A clean
+          three-line proof can be better than a long and technically correct
+          derivation. A good physical argument has rhythm, compression and
+          inevitability. It does not merely arrive at the answer; it reveals
+          why the answer had to be there. Many good scientist know the result before they write it down. The derivation is a performance, not a
+          mere calculation.
+        </p>
+
+        <p>
+          Pace matters as well. I do not particularly enjoy prompting.
+          Prompting feels unnatural as a way of doing science. It separates
+          the production of an object from the continuous movement of thought.
+        </p>
+
+        <p>
+          I do use AI. I try, however, to limit how I use it. For example, I
+          use <a href="fcaravelli.github.io/scribo.html" target="_blank">Scribo</a> to work from handwritten notes and then bring AI into the
+          process. Writing by hand changes the pace. It keeps me inside the
+          derivation rather than placing me outside it as a reader and
+          inspector of generated results.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="after">
+        <h4>8. What comes after the glorified scientist?</h4>
+
+        <p>
+          AI-generated mathematics and theoretical work will still have to be
+          checked. In that sense these systems resemble a one-way function:
+          they may produce objects that are difficult to obtain but "relatively
+          easy" to verify once a formal proof is available.
+        </p>
+
+        <p>
+          Systems such as Lean or PhysLean may therefore become increasingly important.
+          The social unit of scientific work may shift from the individual
+          derivation to a pipeline consisting of conjecture, machine
+          generation, formal verification, experimental comparison and human
+          interpretation.
+        </p>
+
+        <p>
+          Perhaps the figure of the glorified scientist will disappear. We
+          may become something closer to modern farmers: operators of machines
+          whose internal complexity vastly exceeds our individual capacity,
+          responsible for choosing where to steer them, what to cultivate and
+          what counts as a healthy result.
+        </p>
+
+        <p>
+          The machinery may consist of data centres, automated laboratories,
+          theorem provers, robotic experimental platforms and models
+          interacting with other models. The scientist may become less an
+          isolated genius and more a driver, curator, critic and designer of
+          questions.
+        </p>
+
+        <p>
+          We are living through a transformation comparable, perhaps, to the
+          invention of agriculture, formal reason, industrial machinery or
+          the atomic bomb. What emerges on the other side will be another
+          equilibrium.
+        </p>
+
+        <p>
+          I remain uncertain whether it will be a better one.
+        </p>
+
+        <p>
+          What I learned from the transitions from Web 1.0 to Web 2.0 and then
+          to the various promises of Web 3.0 is that the experience on the
+          other side is often thinner than the one we imagined. More
+          efficient, more scalable and less human.
+        </p>
+
+        <p>
+          I hope this time will be different.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+        style="display:block; text-align:center;"
+        data-ad-layout="in-article"
+        data-ad-format="fluid"
+        data-ad-client="ca-pub-6719988103594554"
+        data-ad-slot="2406334732"></ins>
+
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch(
+          "../partials/sidebar.html",
+          { cache: "no-store" }
+        );
+
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath =
+          window.location.pathname.split("/").pop();
+
+        const links = sidebarContainer.querySelectorAll("a");
+
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) {
+            link.classList.add("active");
+          }
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
