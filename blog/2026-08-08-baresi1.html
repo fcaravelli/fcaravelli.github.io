@@ -10,7 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 
   <style>
-    p.math { margin: 1rem 0; }
+
+    p.math {
+      margin: 1rem 0;
+    }
 
     img.hero {
       max-width: 100%;
@@ -80,62 +83,43 @@
     }
 
 
-    /* Background-video section */
+    /* --------------------------------------------------------- */
+    /* Playable YouTube video                                    */
+    /* --------------------------------------------------------- */
 
-    #fokker-planck-equation {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      padding: 2rem 0;
-      color: #222;
+    .video-figure {
+      margin: 2rem 0;
     }
 
-    #fokker-planck-equation .fp-video-background {
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .video-wrap iframe {
       position: absolute;
       inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    #fokker-planck-equation .fp-video-background iframe {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 177.78vh;
-      height: 100vh;
-      min-width: 100%;
-      min-height: 56.25vw;
-      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
       border: 0;
     }
 
-    /* Light veil above the video so the text remains readable. */
-    #fokker-planck-equation::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      background: rgba(255, 255, 255, 0.88);
-      pointer-events: none;
+    .video-figure figcaption {
+      margin-top: 0.65rem;
+      font-size: 0.95rem;
+      opacity: 0.8;
     }
 
-    /* All section content sits above both the video and the veil. */
-    #fokker-planck-equation > *:not(.fp-video-background) {
-      position: relative;
-      z-index: 2;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      #fokker-planck-equation .fp-video-background {
-        display: none;
-      }
-    }
   </style>
+
 
   <script async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
     crossorigin="anonymous"></script>
+
 
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -146,53 +130,95 @@
   <script defer
           src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 
+
   <script defer>
+
     const KATEX_RENDER_OPTS = {
+
       delimiters: [
         { left: "$$", right: "$$", display: true },
         { left: "\\[", right: "\\]", display: true },
         { left: "$", right: "$", display: false },
         { left: "\\(", right: "\\)", display: false }
       ],
+
       throwOnError: false,
-      macros: { "\\mathbbm": "\\mathbb" },
-      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+
+      macros: {
+        "\\mathbbm": "\\mathbb"
+      },
+
+      ignoredTags: [
+        "script",
+        "noscript",
+        "style",
+        "textarea",
+        "pre",
+        "code"
+      ]
     };
 
+
     function renderKatexIn(el) {
+
       if (!el) return;
+
       if (typeof renderMathInElement !== "function") return;
+
       renderMathInElement(el, KATEX_RENDER_OPTS);
+
     }
 
+
     function whenKatexReady(cb) {
+
       const maxTries = 300;
+
       let tries = 0;
 
       const timer = setInterval(() => {
+
         tries++;
 
         if (typeof renderMathInElement === "function") {
+
           clearInterval(timer);
+
           cb();
+
         } else if (tries >= maxTries) {
+
           clearInterval(timer);
+
           console.warn(
             "KaTeX auto-render not available (renderMathInElement missing)."
           );
+
         }
+
       }, 10);
+
     }
+
 
     function renderAllMath() {
-      renderKatexIn(document.querySelector("main.content"));
+
+      renderKatexIn(
+        document.querySelector("main.content")
+      );
+
     }
 
+
     window.__renderAllMath = function () {
+
       whenKatexReady(renderAllMath);
+
     };
 
+
     document.addEventListener("DOMContentLoaded", () => {
+
       window.__renderAllMath();
 
       window.addEventListener(
@@ -200,8 +226,11 @@
         () => window.__renderAllMath(),
         { once: true }
       );
+
     });
+
   </script>
+
 </head>
 
 
@@ -210,6 +239,7 @@
   <div class="layout">
 
     <div id="sidebar"></div>
+
 
     <main class="content">
 
@@ -226,6 +256,11 @@
       </script>
 
 
+
+      <!-- ========================================================= -->
+      <!-- TOP                                                        -->
+      <!-- ========================================================= -->
+
       <section id="top">
 
         <p class="kicker">
@@ -236,32 +271,43 @@
           From Franco Baresi to the Fokker-Planck equation, and back
         </h3>
 
-        <p><em>August 8th, 2026</em></p>
+        <p>
+          <em>August 8th, 2026</em>
+        </p>
+
 
         <div class="toc">
+
           <strong>Contents</strong>
+
           <ul>
+
             <li>
               <a href="#franco-baresi">
                 1. From Franco Baresi to the current crisis in science
               </a>
             </li>
+
             <li>
               <a href="#fokker-planck-equation">
                 2. The Fokker-Planck equation
               </a>
             </li>
+
             <li>
               <a href="#ness">
                 3. Solving for NESS states with cyclic control
               </a>
             </li>
+
             <li>
               <a href="#conclusions">
                 4. Conclusions
               </a>
             </li>
+
           </ul>
+
         </div>
 
         <div class="hr"></div>
@@ -269,32 +315,40 @@
       </section>
 
 
+
       <!-- ========================================================= -->
-      <!-- 1. BARESI                                                 -->
+      <!-- 1. BARESI                                                  -->
       <!-- ========================================================= -->
 
       <section id="franco-baresi">
 
-        <h4>1. From Franco Baresi to the current crisis in science</h4>
+        <h4>
+          1. From Franco Baresi to the current crisis in science
+        </h4>
+
 
         <!--
         FIGURE:
         Franco Baresi, preferably with the number 6 AC Milan shirt.
         -->
 
+
         <p>
           It might seem a hard sell to connect Franco Baresi with the
           Fokker-Planck equation. Bear with me.
         </p>
 
+
         <p>
           In the 1980s and 1990s, Franco Baresi was the historic captain of
           AC Milan. He took the helm after Gianni Rivera, whom I admit I did not
-          remember from my childhood as I wasn't born then, and became one of the players who transformed the way Milan
-          defended. I was an enthusiastic Milan supporter as a child, in large
+          remember from my childhood as I wasn't born then, and became one of
+          the players who transformed the way Milan defended.
+          I was an enthusiastic Milan supporter as a child, in large
           part because of him. If I close my eyes, I can still remember almost
           every player of the 1992–1995 teams.
         </p>
+
 
         <p>
           Baresi retired in 1997, at the age of 37, and Paolo Maldini eventually
@@ -304,6 +358,7 @@
           probably tells you how badly these childhood memories refuse to go away.
         </p>
 
+
         <p>
           After Baresi's passing a few days ago, I first became rather nostalgic,
           and then rather annoyed. AC Milan was bought some years ago by a
@@ -312,14 +367,16 @@
           attend a friendly match in the US rather than the funeral.
         </p>
 
+
         <p>
           I found this disrespectful, but more than that, I thought it was a sign
           of the times. One replaces history with money, and the past with the
           present. There is nothing wrong with the present, obviously. The problem
           begins when the present behaves as if nothing came before it.
-          One of the drawbacks of capitalist societies is that we give a price to almost everything,
-          while often failing to value the things we should actually care about.
+          One of the drawbacks of capitalistic societies is that we give value
+          to everything, while not valuing the things we should care about.
         </p>
+
 
         <p>
           I am using Baresi here as a segue into science, because I sometimes have
@@ -328,30 +385,40 @@
           why we started doing this in the first place.
         </p>
 
+
         <p>
           The point was not to be the first person to upload a paper. It was not
           even necessarily to be the first person to obtain a result. The point
-          was to understand something about the world. It was not about "paper capitalism", or simply "publish or perish".
+          was to understand something about the world. It was not about
+          "Paper Capitalism", or "Publish or Perish".
         </p>
+
 
         <p>
           A few days ago I attended a meeting in which a well-established scientist
           told a room full of young students that they should essentially not waste
-          too much time trying to understand the world (this scientist 
-          did not use these words, but that is the message I received).
-          Instead, the advice was to
-          use tools such as GPT, Claude, or whatever comes next to squeeze out as
-          many papers as possible while the present publication system still works.
-          The argument was, essentially, that since everybody now assumes you wrote the paper with AI anyway,
-          you may as well accept it and use it. Fair enough.
+          too much time trying to understand the world
+          (this scientist did not use these words, but that is the message I received).
+          Instead, the advice was to use tools such as GPT, Claude, or whatever
+          comes next to squeeze out as many papers as possible while the present
+          publication system still works.
         </p>
+
+
+        <p>
+          Anyway, because everybody assumes that you wrote a paper with AI,
+          the argument goes, you should just accept it and use it.
+          Fair enough.
+        </p>
+
 
         <p>
           You could tell that the students were not particularly happy with this.
-          They could also tell, I thought, that something was changing, but were not quite sure
-          what to make of it. I am not entirely sure what to make of it either.
-          But it is certainly a change.
+          They could also tell that something was changing, I thought, but were
+          not quite sure what to make of it. I am not entirely sure what to make
+          of it either. But it is certainly a change.
         </p>
+
 
         <p>
           I cannot think of many crises in science that are quite like the one we
@@ -362,14 +429,17 @@
           suggested demonstrating the bomb rather than using it without warning.
         </p>
 
+
         <p>
           But the scientific problem itself did not disappear. The argument moved
-          instead to political responsibility, arms control and nonproliferation, and to the question of
-          whether certain kinds of research should be pursued at all.
+          instead to political responsibility, arms control and nonproliferation,
+          and to the question of whether certain kinds of research should be
+          pursued at all.
           These crises tend to divide scientific communities. They create the
           Oppenheimers and the Tellers, the people arguing on opposite sides of a
           technological and moral divide.
         </p>
+
 
         <p>
           What seems different now is that the question is not only about the moral
@@ -378,14 +448,16 @@
           made an interesting observation: perhaps in some ways we are moving back
           toward the early twentieth century, when the scientific community was
           smaller and the number of papers being published was much smaller too.
-          Except that we already see something close to a singularity in the number of papers
+          Except, we already see a dramatic singularity in the number of papers
           appearing on the arXiv.
         </p>
+
 
         <p>
           I do not know. But my response to all of this, at least for the moment,
           is to do a little more science.
         </p>
+
 
         <!--
         OPTIONAL FIGURE / GIF:
@@ -395,23 +467,18 @@
       </section>
 
 
+
       <!-- ========================================================= -->
-      <!-- 2. FOKKER-PLANCK                                          -->
+      <!-- 2. FOKKER-PLANCK                                           -->
       <!-- ========================================================= -->
 
       <section id="fokker-planck-equation">
 
-        <div class="fp-video-background" aria-hidden="true">
-          <iframe
-            src="https://www.youtube.com/embed/JEq10L7u3SM?autoplay=1&mute=1&controls=0&loop=1&playlist=JEq10L7u3SM&modestbranding=1&playsinline=1"
-            title="Background video"
-            allow="autoplay; encrypted-media"
-            tabindex="-1">
-          </iframe>
-        </div>
 
+        <h4>
+          2. The Fokker-Planck equation
+        </h4>
 
-        <h4>2. The Fokker-Planck equation</h4>
 
         <p>
           Last week I attended a neuromorphic workshop in Los Alamos. In my talk,
@@ -421,20 +488,23 @@
           where the story starts.
         </p>
 
+
         <p>
           After the talk, I had a few discussions with Max Di Ventra about the
           implications of what we were finding and about some possible
           generalizations. I then spent part of the flight trying to understand
           how to deal with a Fokker-Planck equation under cyclic control, which was
-          essentially part of the question I had been thinking about.
+          part of the question, essentially.
         </p>
+
 
         <p>
           More precisely, I wanted to understand how to characterize, and then
           actually compute, the NESS — the non-equilibrium steady state — when the
-          generator itself changes periodically in time, and to do so analytically.
-          Thankfully, I had Risken's book with me, so I had a look.
+          generator itself changes periodically in time, analytically.
+          Thankfully, I had Risken with me, so I had a look.
         </p>
+
 
         <p>
           I had a few hours on the airplane, which is occasionally still one of
@@ -446,7 +516,39 @@
         </p>
 
 
-        <h5>2.1 From stochastic dynamics to the Fokker-Planck equation</h5>
+        <p>
+          And since we are about to discuss periodic driving, there is an
+          appropriate soundtrack: Fatboy Slim,
+          <em>Ya Mama (Push The Tempo)</em>.
+        </p>
+
+
+        <figure class="video-figure">
+
+          <div class="video-wrap">
+
+            <iframe
+              src="https://www.youtube.com/embed/JEq10L7u3SM"
+              title="Fatboy Slim - Ya Mama (Push The Tempo)"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+
+          </div>
+
+          <figcaption>
+            Fatboy Slim — <em>Ya Mama (Push The Tempo)</em>.
+            Entirely optional, but rather appropriate for what follows.
+          </figcaption>
+
+        </figure>
+
+
+
+        <h5>
+          2.1 From stochastic dynamics to the Fokker-Planck equation
+        </h5>
+
 
         <p>
           Let us begin with a fairly general stochastic system. Consider an
@@ -467,6 +569,7 @@
           \]
         </p>
 
+
         <p>
           The functions \(a_i(\mathbf{x},t)\) describe the deterministic drift,
           while the coefficients \(b_{i\alpha}(\mathbf{x},t)\) tell us how the
@@ -481,6 +584,7 @@
           \]
         </p>
 
+
         <p>
           A single solution of this stochastic equation gives us one trajectory.
           The Fokker-Planck description asks a different question: how does the
@@ -490,6 +594,7 @@
           \]
           evolve?
         </p>
+
 
         <p>
           The answer is the forward Kolmogorov, or Fokker-Planck, equation:
@@ -519,12 +624,19 @@
           \]
         </p>
 
+
         <p>
           One point is worth making immediately. There is no reason for either
-          the drift or the diffusion matrix to be independent of time. If they are time independent and,
-          under the usual detailed-balance conditions, the drift derives from a potential, then one recovers
-          the familiar Boltzmann-like exponential form for the stationary distribution. We can, however,
-          perfectly well have
+          the drift or the diffusion matrix to be independent of time.
+          If they are time independent and the drift has a gradient form,
+          then under the appropriate conditions the asymptotic stationary
+          distribution belongs to the familiar exponential, or Gibbs-like,
+          family.
+        </p>
+
+
+        <p>
+          We can, however, perfectly well have
           \[
               a_i=a_i(\mathbf{x},t),
               \qquad
@@ -535,7 +647,11 @@
         </p>
 
 
-        <h5>2.2 Probability as a conserved fluid</h5>
+
+        <h5>
+          2.2 Probability as a conserved fluid
+        </h5>
+
 
         <p>
           A useful way of reading the Fokker-Planck equation is as a continuity
@@ -547,6 +663,7 @@
           \]
           where \(\mathbf{J}\) is the probability current.
         </p>
+
 
         <p>
           In components,
@@ -564,6 +681,7 @@
           \]
         </p>
 
+
         <p>
           Probability therefore behaves, formally, like a conserved fluid moving
           through state space. Under the appropriate boundary conditions,
@@ -576,6 +694,7 @@
           Start with a normalized density and it remains normalized.
         </p>
 
+
         <p>
           This way of writing things also makes the difference between equilibrium
           and non-equilibrium particularly clear. In equilibrium, when detailed
@@ -585,8 +704,10 @@
           \]
         </p>
 
+
         <p>
-          A non-equilibrium steady state is more interesting. In the ordinary, time-independent case one may have
+          A non-equilibrium steady state is more interesting.
+          In the ordinary, time-independent case one may have
           \[
               \frac{\partial p}{\partial t}=0
           \]
@@ -594,25 +715,43 @@
           \[
               \mathbf{J}\neq0.
           \]
-          Under periodic control, the corresponding condition is instead
-          \[
-              p(\mathbf{x},t+T)=p(\mathbf{x},t),
-          \]
-          or equivalently
-          \[
-              \int_t^{t+T} \frac{\partial p}{\partial s}\,ds=0.
-          \]
-          The distribution need not be stationary at every instant; it returns to itself after one complete cycle,
-          while probability currents may remain non-zero throughout the cycle.
         </p>
 
+
         <p>
-          This distinction becomes even more interesting when the forcing itself
+          The density is stationary, but probability may still be circulating
+          through state space.
+        </p>
+
+
+        <p>
+          Under periodic control, the corresponding condition is instead
+          \[
+              p(\mathbf{x},t+T)
+              =
+              p(\mathbf{x},t),
+          \]
+          or, equivalently,
+          \[
+              \int_t^{t+T}
+              \frac{\partial p}{\partial s}\,ds
+              =
+              0.
+          \]
+        </p>
+
+
+        <p>
+          This distinction becomes particularly important when the forcing itself
           is cyclic.
         </p>
 
 
-        <h5>2.3 The Fokker-Planck operator</h5>
+
+        <h5>
+          2.3 The Fokker-Planck operator
+        </h5>
+
 
         <p>
           From now on it is convenient to hide the derivatives inside an operator.
@@ -627,6 +766,7 @@
               \mathcal{L}_t p.
           \]
         </p>
+
 
         <p>
           Explicitly,
@@ -643,6 +783,7 @@
           \]
         </p>
 
+
         <p>
           If the problem is autonomous,
           \[
@@ -658,11 +799,13 @@
           \]
         </p>
 
+
         <p>
           This is the standard Fokker-Planck exercise: find the null space of the
           generator, impose the boundary conditions and normalization, and obtain
           the stationary distribution.
         </p>
+
 
         <p>
           With a genuinely time-dependent generator this is no longer the right
@@ -673,6 +816,7 @@
           \]
           at every instant.
         </p>
+
 
         <p>
           Instead, introduce the propagator
@@ -692,6 +836,7 @@
           \]
         </p>
 
+
         <p>
           The \(\mathcal{T}\) is the time-ordering operator. We need it because,
           in general,
@@ -703,12 +848,17 @@
         </p>
 
 
-        <h5>2.4 What does "steady" mean under cyclic driving?</h5>
+
+        <h5>
+          2.4 What does "steady" mean under cyclic driving?
+        </h5>
+
 
         <p>
           Now we finally arrive at the problem that was bothering me on the
           airplane.
         </p>
+
 
         <p>
           Suppose the control is periodic with period \(T\), so that
@@ -721,9 +871,11 @@
           the system can forget its initial condition.
         </p>
 
+
         <p>
           What does a steady state mean in this case?
         </p>
+
 
         <p>
           The answer is that the asymptotic distribution does not need to become
@@ -735,11 +887,13 @@
           \]
         </p>
 
+
         <p>
           During a cycle the distribution can breathe, move and distort.
           One period later, however, it comes back to the same distribution.
           This is the periodic non-equilibrium steady state.
         </p>
+
 
         <p>
           The natural object to consider is therefore not the instantaneous
@@ -756,10 +910,12 @@
           \]
         </p>
 
+
         <p>
           I will call \(\mathcal{M}\) the cycle operator. One also encounters
           names such as period propagator or monodromy operator.
         </p>
+
 
         <p>
           The periodic steady-state problem is then simply
@@ -770,10 +926,12 @@
           \]
         </p>
 
+
         <p>
           We have traded the usual zero-eigenvalue problem for the generator for
           an eigenvalue-one problem for the full-cycle evolution.
         </p>
+
 
         <p>
           Once \(p_0\) is known at some chosen phase of the driving cycle,
@@ -796,7 +954,11 @@
         </p>
 
 
-        <h5>2.5 Stroboscopic stationarity</h5>
+
+        <h5>
+          2.5 Stroboscopic stationarity
+        </h5>
+
 
         <p>
           I find another way of saying this particularly useful. Imagine observing
@@ -807,6 +969,7 @@
           so that every observation is made at exactly the same phase of the
           external drive.
         </p>
+
 
         <p>
           Then
@@ -819,6 +982,7 @@
           dynamical system acting on probability distributions.
         </p>
 
+
         <p>
           Under the usual assumptions that make the dynamics mixing, repeated
           application of the cycle operator gives
@@ -829,10 +993,12 @@
           \]
         </p>
 
+
         <p>
           So the system is not stationary if I stare at it continuously, but it
           becomes perfectly stationary if I look at it stroboscopically.
         </p>
+
 
         <p>
           This is the first useful way to think about cyclic NESS states.
@@ -844,18 +1010,25 @@
       </section>
 
 
+
       <!-- ========================================================= -->
-      <!-- 3. NESS / RISKEN                                          -->
+      <!-- 3. NESS / RISKEN                                           -->
       <!-- ========================================================= -->
 
       <section id="ness">
 
-        <h4>3. Solving for NESS states with cyclic control</h4>
+
+        <h4>
+          3. Solving for NESS states with cyclic control
+        </h4>
+
 
         <p>
-          Let us now try to actually solve the problem using a Fourier expansion. The idea is to exploit the fact that the generator is periodic in time.
-          Let me call this, somewhat informally, the "Risken trick".
+          Let us now try to actually solve the problem using a Fourier expansion.
+          The idea is to exploit the fact that the generator is periodic in time.
+          Let me call this the "Risken trick".
         </p>
+
 
         <p>
           The cycle-operator formulation above is completely general, but it does
@@ -871,6 +1044,7 @@
           \]
         </p>
 
+
         <p>
           Suppose also that the Fokker-Planck generator depends affinely on the
           control parameter \(V\). Then we can write
@@ -882,6 +1056,7 @@
               V_1\cos(\omega t)\mathcal{L}_{B}.
           \]
         </p>
+
 
         <p>
           Let us absorb the factor \(V_1/2\) into
@@ -911,6 +1086,7 @@
           \]
         </p>
 
+
         <p>
           Now use the one fact we already know about the asymptotic state:
           it is periodic. We can therefore expand it in Fourier modes,
@@ -921,6 +1097,7 @@
               p_n(x)e^{in\omega t}.
           \]
         </p>
+
 
         <p>
           Because \(p(x,t)\) is real,
@@ -938,6 +1115,7 @@
           \]
         </p>
 
+
         <p>
           Substituting the Fourier series into the Fokker-Planck equation gives
           \[
@@ -951,6 +1129,7 @@
               \right).
           \]
         </p>
+
 
         <p>
           Define
@@ -975,9 +1154,11 @@
           \]
         </p>
 
+
         <p>
           This is the key simplification.
         </p>
+
 
         <p>
           We started with a time-dependent partial differential equation.
@@ -986,6 +1167,7 @@
           Nothing further away.
         </p>
 
+
         <p>
           There is a simple reason for this. The drive itself contains only the
           frequencies \(+\omega\) and \(-\omega\), and therefore multiplication by
@@ -993,7 +1175,11 @@
         </p>
 
 
-        <h5>3.1 From differential operators to matrices</h5>
+
+        <h5>
+          3.1 From differential operators to matrices
+        </h5>
+
 
         <p>
           The quantities \(p_n\) are still functions of \(x\), so the equation
@@ -1007,6 +1193,7 @@
           or simply by discretizing the \(x\)-coordinate.
         </p>
 
+
         <p>
           Let
           \[
@@ -1016,6 +1203,7 @@
           \]
           contain the coefficients of the \(n\)-th temporal harmonic.
         </p>
+
 
         <p>
           The operators then become matrices. Writing
@@ -1040,6 +1228,7 @@
           \]
         </p>
 
+
         <p>
           If we wrote the complete system at once, we would obtain the
           block-tridiagonal Floquet problem
@@ -1063,11 +1252,13 @@
           \]
         </p>
 
+
         <p>
           At this point we could truncate the Fourier hierarchy at some
           \(|n|\leq N\) and throw the whole thing at a sparse solver.
           There is nothing wrong with doing that.
         </p>
+
 
         <p>
           But there is a nicer trick, discussed by Risken in the context of
@@ -1077,7 +1268,11 @@
         </p>
 
 
-        <h5>3.2 The Risken trick</h5>
+
+        <h5>
+          3.2 The Risken trick
+        </h5>
+
 
         <p>
           Consider the positive-frequency branch. Write
@@ -1097,6 +1292,7 @@
               \mathbf{c}_{n-1}.
           \]
         </p>
+
 
         <p>
           Substitute this into
@@ -1125,6 +1321,7 @@
           \]
         </p>
 
+
         <p>
           Factoring out \(\mathbf{c}_{n-1}\),
           \[
@@ -1140,6 +1337,7 @@
               0.
           \]
         </p>
+
 
         <p>
           Therefore
@@ -1157,6 +1355,7 @@
               }
           \]
         </p>
+
 
         <p>
           Or, putting back the definition of \(\mathbf{A}_n\),
@@ -1177,9 +1376,11 @@
           \]
         </p>
 
+
         <p>
           And that is essentially the whole trick.
         </p>
+
 
         <p>
           The relation for \(\mathbf{S}_n\) contains
@@ -1187,6 +1388,7 @@
           \(\mathbf{S}_{n+3}\), and so on. In other words, it is a matrix continued
           fraction.
         </p>
+
 
         <p>
           To make this explicit, define
@@ -1217,6 +1419,7 @@
           \]
         </p>
 
+
         <p>
           Iterating,
           \[
@@ -1246,6 +1449,7 @@
           \]
         </p>
 
+
         <p>
           Finally,
           \[
@@ -1257,11 +1461,13 @@
           \]
         </p>
 
+
         <p>
           There is nothing mystical about the continued fraction.
           We are simply integrating out the higher Fourier harmonics one after
           another.
         </p>
+
 
         <p>
           If you prefer linear-algebra language, it is repeated block Gaussian
@@ -1270,7 +1476,11 @@
         </p>
 
 
-        <h5>3.3 Closing the fraction</h5>
+
+        <h5>
+          3.3 Closing the fraction
+        </h5>
+
 
         <p>
           Of course, on a computer we cannot descend from \(n=\infty\).
@@ -1279,6 +1489,7 @@
               \mathbf{c}_{N+1}=0.
           \]
         </p>
+
 
         <p>
           At the top of the hierarchy,
@@ -1296,10 +1507,12 @@
           \]
         </p>
 
+
         <p>
           As usual, \(N\) is not magic. Increase it until the answer stops changing.
           That gives a direct numerical convergence test.
         </p>
+
 
         <p>
           Once \(\mathbf{S}_1\) has been obtained,
@@ -1320,6 +1533,7 @@
           \]
         </p>
 
+
         <p>
           The negative-frequency branch is treated in exactly the same way.
           For a real Fokker-Planck generator,
@@ -1336,6 +1550,7 @@
           \]
         </p>
 
+
         <p>
           In particular,
           \[
@@ -1346,7 +1561,11 @@
         </p>
 
 
-        <h5>3.4 A closed equation for the averaged NESS</h5>
+
+        <h5>
+          3.4 A closed equation for the averaged NESS
+        </h5>
+
 
         <p>
           We can now eliminate every harmonic except \(n=0\).
@@ -1361,6 +1580,7 @@
               0.
           \]
         </p>
+
 
         <p>
           Using
@@ -1391,6 +1611,7 @@
           \]
         </p>
 
+
         <p>
           Since
           \[
@@ -1417,6 +1638,7 @@
           \]
         </p>
 
+
         <p>
           I like this expression because it shows what the method has actually
           accomplished. We began with an infinite collection of coupled temporal
@@ -1425,12 +1647,14 @@
           \(\mathbf{c}_0\).
         </p>
 
+
         <p>
           Notice that \(\mathbf{c}_0\) is not the full periodic state.
           It is its time average. But once \(\mathbf{c}_0\) is known, every other
           Fourier component follows from the recursive matrices
           \(\mathbf{S}_n\).
         </p>
+
 
         <p>
           The last ingredient is just probability normalization. If
@@ -1440,6 +1664,7 @@
               \mathbf{w}^T\mathbf{c}_0=1.
           \]
         </p>
+
 
         <p>
           Solve the effective equation together with this normalization,
@@ -1454,7 +1679,11 @@
         </p>
 
 
-        <h5>3.5 Linear response falls out as a limit</h5>
+
+        <h5>
+          3.5 Linear response falls out as a limit
+        </h5>
+
 
         <p>
           There is a nice check on the construction.
@@ -1475,6 +1704,7 @@
           \]
         </p>
 
+
         <p>
           Hence
           \[
@@ -1492,6 +1722,7 @@
           \]
         </p>
 
+
         <p>
           This is just the familiar linear-response resolvent.
           The poles of the operator
@@ -1504,6 +1735,7 @@
           response.
         </p>
 
+
         <p>
           So the matrix continued fraction is not some unrelated solution method.
           It contains linear response as its first approximation.
@@ -1514,10 +1746,12 @@
           and their negative-frequency counterparts.
         </p>
 
+
         <p>
           In this sense it gives a non-perturbative extension of the ordinary
           small-amplitude response calculation.
         </p>
+
 
         <p>
           And this was more or less the observation I was trying to reach on the
@@ -1530,13 +1764,18 @@
       </section>
 
 
+
       <!-- ========================================================= -->
-      <!-- 4. CONCLUSIONS                                             -->
+      <!-- 4. CONCLUSIONS                                              -->
       <!-- ========================================================= -->
 
       <section id="conclusions">
 
-        <h4>4. Conclusions</h4>
+
+        <h4>
+          4. Conclusions
+        </h4>
+
 
         <p>
           This has been a somewhat long road from Franco Baresi to matrix
@@ -1547,14 +1786,16 @@
           together very naturally for the problem I happened to be thinking about.
         </p>
 
+
         <p>
           That is, in fact, a large part of what I still enjoy about doing science.
           One encounters a problem, becomes confused by it, spends some time
           rearranging it, remembers something written decades ago, and suddenly
           the problem looks different. The point is not that nobody has ever seen
-          any of the ingredients before. The point is that now <em>I understand
-          why they fit together</em>.
+          any of the ingredients before. The point is that now
+          <em>I understand why they fit together</em>.
         </p>
+
 
         <p>
           This is also why I remain uneasy with the idea that the objective of
@@ -1566,10 +1807,12 @@
           different activities.
         </p>
 
+
         <p>
           Perhaps that distinction will disappear one day. For the moment, I do
           not think it has.
         </p>
+
 
         <p>
           So my response to the current crisis is not particularly sophisticated.
@@ -1578,21 +1821,29 @@
           Fokker-Planck equation.
         </p>
 
+
         <p>
-          Most importantly: watch an old video of Franco Baresi playing football. It is still a joy to watch,
-          especially those early-1990s Milan teams with Baresi, Maldini, Desailly, Costacurta, and the rest.
+          Most importantly: watch an old video of Franco Baresi playing football.
+          It is still a joy to watch. In particular, watch the Milan team of the
+          early 1990s, with Baresi, Maldini, Desailly, Costacurta, and the rest.
         </p>
 
       </section>
 
 
+
       <div class="hr"></div>
+
 
       <p>
-        <a href="../blog.html">← Back to Blog</a>
+        <a href="../blog.html">
+          ← Back to Blog
+        </a>
       </p>
 
+
       <div class="hr"></div>
+
 
 
       <ins class="adsbygoogle"
@@ -1606,15 +1857,20 @@
         (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
 
+
     </main>
 
   </div>
 
 
+
   <script>
+
     async function loadSidebar() {
 
-      const sidebarContainer = document.getElementById("sidebar");
+      const sidebarContainer =
+        document.getElementById("sidebar");
+
 
       try {
 
@@ -1623,33 +1879,63 @@
           { cache: "no-store" }
         );
 
-        const html = await response.text();
 
-        sidebarContainer.innerHTML = html;
+        const html =
+          await response.text();
+
+
+        sidebarContainer.innerHTML =
+          html;
+
 
         const currentPath =
-          window.location.pathname.split("/").pop();
+          window.location.pathname
+                .split("/")
+                .pop();
+
 
         const links =
           sidebarContainer.querySelectorAll("a");
 
+
         links.forEach(link => {
-          if (link.getAttribute("href") === currentPath) {
+
+          if (
+            link.getAttribute("href") === currentPath
+          ) {
+
             link.classList.add("active");
+
           }
+
         });
 
-        if (typeof window.__renderAllMath === "function") {
+
+        if (
+          typeof window.__renderAllMath === "function"
+        ) {
+
           window.__renderAllMath();
+
         }
 
+
       } catch (e) {
-        console.warn("Sidebar failed to load:", e);
+
+        console.warn(
+          "Sidebar failed to load:",
+          e
+        );
+
       }
+
     }
 
+
     loadSidebar();
+
   </script>
+
 
 </body>
 </html>
