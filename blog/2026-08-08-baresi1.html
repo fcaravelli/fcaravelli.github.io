@@ -84,15 +84,16 @@
 
     #fokker-planck-equation {
       position: relative;
+      isolation: isolate;
       overflow: hidden;
-      padding: 3rem 2rem;
-      color: inherit;
+      padding: 2rem 0;
+      color: #222;
     }
 
     #fokker-planck-equation .fp-video-background {
       position: absolute;
       inset: 0;
-      z-index: -2;
+      z-index: 0;
       overflow: hidden;
       pointer-events: none;
     }
@@ -109,18 +110,20 @@
       border: 0;
     }
 
+    /* Light veil above the video so the text remains readable. */
     #fokker-planck-equation::before {
       content: "";
       position: absolute;
       inset: 0;
-      z-index: -1;
-      background: rgba(255, 255, 255, 0.90);
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.88);
+      pointer-events: none;
     }
 
-    @media (prefers-color-scheme: dark) {
-      #fokker-planck-equation::before {
-        background: rgba(15, 15, 15, 0.88);
-      }
+    /* All section content sits above both the video and the veil. */
+    #fokker-planck-equation > *:not(.fp-video-background) {
+      position: relative;
+      z-index: 2;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -314,8 +317,8 @@
           of the times. One replaces history with money, and the past with the
           present. There is nothing wrong with the present, obviously. The problem
           begins when the present behaves as if nothing came before it.
-          One of the drawback of capitalistic societies is that we give value to everything,
-          while not valuing the things we should care about.
+          One of the drawbacks of capitalist societies is that we give a price to almost everything,
+          while often failing to value the things we should actually care about.
         </p>
 
         <p>
@@ -328,7 +331,7 @@
         <p>
           The point was not to be the first person to upload a paper. It was not
           even necessarily to be the first person to obtain a result. The point
-          was to understand something about the world. It was not about "Paper Capitalism", or "Publish or Perish".
+          was to understand something about the world. It was not about "paper capitalism", or simply "publish or perish".
         </p>
 
         <p>
@@ -339,13 +342,13 @@
           Instead, the advice was to
           use tools such as GPT, Claude, or whatever comes next to squeeze out as
           many papers as possible while the present publication system still works.
-          Anyway, because everybody assumes that you wrote a paper with AI, so you should just accept it and use it.
-          Fair enough.
+          The argument was, essentially, that since everybody now assumes you wrote the paper with AI anyway,
+          you may as well accept it and use it. Fair enough.
         </p>
 
         <p>
           You could tell that the students were not particularly happy with this.
-          They could also tell that something was changing, I thought, but were not quite sure
+          They could also tell, I thought, that something was changing, but were not quite sure
           what to make of it. I am not entirely sure what to make of it either.
           But it is certainly a change.
         </p>
@@ -375,7 +378,7 @@
           made an interesting observation: perhaps in some ways we are moving back
           toward the early twentieth century, when the scientific community was
           smaller and the number of papers being published was much smaller too.
-          Except, we already see a dramatic singularity in the number of papers
+          Except that we already see something close to a singularity in the number of papers
           appearing on the arXiv.
         </p>
 
@@ -422,15 +425,15 @@
           After the talk, I had a few discussions with Max Di Ventra about the
           implications of what we were finding and about some possible
           generalizations. I then spent part of the flight trying to understand
-          how to deal with a Fokker-Planck equation under cyclic control, which was 
-          part of the question, essentially.
+          how to deal with a Fokker-Planck equation under cyclic control, which was
+          essentially part of the question I had been thinking about.
         </p>
 
         <p>
           More precisely, I wanted to understand how to characterize, and then
           actually compute, the NESS — the non-equilibrium steady state — when the
-          generator itself changes periodically in time, analytically. 
-          Thankfully, I had the Risken with me, so I had a look.
+          generator itself changes periodically in time, and to do so analytically.
+          Thankfully, I had Risken's book with me, so I had a look.
         </p>
 
         <p>
@@ -518,9 +521,9 @@
 
         <p>
           One point is worth making immediately. There is no reason for either
-          the drift or the diffusion matrix to be independent of time. If they are, and the a's function
-          are in the form of a gradient, then we know the asymptotic distribution is an exponetial family.
-          We can however
+          the drift or the diffusion matrix to be independent of time. If they are time independent and,
+          under the usual detailed-balance conditions, the drift derives from a potential, then one recovers
+          the familiar Boltzmann-like exponential form for the stationary distribution. We can, however,
           perfectly well have
           \[
               a_i=a_i(\mathbf{x},t),
@@ -583,20 +586,24 @@
         </p>
 
         <p>
-          A non-equilibrium steady state is more interesting. One may have
+          A non-equilibrium steady state is more interesting. In the ordinary, time-independent case one may have
           \[
               \frac{\partial p}{\partial t}=0
-          \]
-          or
-        \[
-              \int_0^T \frac{\partial p}{\partial t} dt=0
           \]
           while at the same time
           \[
               \mathbf{J}\neq0.
           \]
-          The density is stationary, but probability is still circulating through
-          state space.
+          Under periodic control, the corresponding condition is instead
+          \[
+              p(\mathbf{x},t+T)=p(\mathbf{x},t),
+          \]
+          or equivalently
+          \[
+              \int_t^{t+T} \frac{\partial p}{\partial s}\,ds=0.
+          \]
+          The distribution need not be stationary at every instant; it returns to itself after one complete cycle,
+          while probability currents may remain non-zero throughout the cycle.
         </p>
 
         <p>
@@ -792,7 +799,7 @@
         <h5>2.5 Stroboscopic stationarity</h5>
 
         <p>
-          I find another way of saying that this is particularly useful. Imagine observing
+          I find another way of saying this particularly useful. Imagine observing
           the system only at
           \[
               0,\;T,\;2T,\;3T,\ldots
@@ -847,7 +854,7 @@
 
         <p>
           Let us now try to actually solve the problem using a Fourier expansion. The idea is to exploit the fact that the generator is periodic in time.
-          LEt me call this the "Risken trick".
+          Let me call this, somewhat informally, the "Risken trick".
         </p>
 
         <p>
@@ -1572,8 +1579,8 @@
         </p>
 
         <p>
-        Most importantly: watch an old video of Franco Baresi play football. It is still a joy to watch. 
-        In particular the team of the early 1990s with Baresi, Maldini, Desailly, Costacurta etc.
+          Most importantly: watch an old video of Franco Baresi playing football. It is still a joy to watch,
+          especially those early-1990s Milan teams with Baresi, Maldini, Desailly, Costacurta, and the rest.
         </p>
 
       </section>
