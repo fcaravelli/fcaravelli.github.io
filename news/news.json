@@ -1,14 +1,29 @@
 [
-  {
-   "title": "Blog: The glorified scientist and the machine",
-    "date": "2026-07-26",
-    "link": "blog/2026-07-26-the-glorified-scientist-and-the-machine.html"      
-  },     
+    {
+   "title": "Blog: From Franco Baresi to the Fokker-Planck equation, and back",
+    "date": "2026-08-07",
+    "link": "blog/2026-08-08-baresi1.html"
+  },  
   {
    "title": "Blog: From demographic boom to demographic decline: the future of universities in Europe",
     "date": "2026-07-15",
     "link": "blog/2026-07-15-demographic-decline1.html"      
-  },       
+  },  
+  {
+   "title": "Talk: I will be talking at the Smoluchowski Symposium, Rome, Italy",
+    "date": "2026-09-24",
+    "link": "https://smoluchowski.if.uj.edu.pl/index.php/Smoluchowski_Symposium_2026"  
+  },
+  {
+   "title": "Talk: I will be talking at the STC Symposium, Austin, USA",
+    "date": "2026-10-24",
+    "link": ""  
+  },
+  {
+   "title": "Blog: The glorified scientist and the machine",
+    "date": "2026-07-26",
+    "link": "blog/2026-07-26-the-glorified-scientist-and-the-machine.html"      
+  },  
   {
    "title": "Blog: Self-organizing systems and conservation laws for emergent computing systems",
     "date": "2026-06-17",
