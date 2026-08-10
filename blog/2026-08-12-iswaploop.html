@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>New globally controlled architectures based on iSWAPs with quantum error correction – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">quantum computing • global control • iSWAP • cyclic codes</p>
+
+            <h3>New globally controlled architectures based on iSWAPs with quantum error correction</h3>
+
+        <p><em>August 12th, 2026</em></p>
+
+
+        <img class="hero" src="images/Pkloo.png" alt="A schematic of the globally controlled architecture based on iSWAPs." height="400px">
+
+        <p>
+          There is a slightly paradoxical problem hiding inside the effort to build
+          larger quantum computers. We want more qubits, because error correction
+          requires many physical qubits for every logical one. But every time we add
+          another qubit, we also tend to add more wires, more control electronics,
+          more calibration parameters, more heat reaching the cryogenic stages, and
+          more opportunities for the machine to become difficult to operate.
+          For quantum computers to scale, we need to scale the control hardware as well as the quantum state.
+          I have talked in the past about the idea of global control <a href="2026-01-21-planckianryd.html" target="_blank" rel="noopener noreferrer">here</a>, 
+          in which a small number of control fields act on many qubits at once</a>. That approach was based on always-on interactions
+          inducing a transport of quantum information around the device. That however had a cost, e.g. an overhead in terms 
+          of auxiliary qubits necessary to perform these operations. The advantage was the theoretically massive
+          reduction in wiring. Most companies, also, have moved away from always-on interactions, 
+          and instead use pulsed interactions. 
+          In our recent work, we show that it is possible to design a globally controlled 
+          architecture that does not require any auxiliary qubits for the control mechanism itself, 
+          while still supporting quantum error correction. Planckian has a short blog post here 
+          <a href="https://www.planckian.co/2026/08/quantum-error-correction-with-global-control/" target="_blank">here</a>.
+        </p>
+
+        <p>
+          In our recent work, <em>Quantum error correction with global control</em>,
+          we explore a rather different architecture. Instead of giving every qubit
+          its own collection of control lines, we arrange the qubits on a ring and
+          manipulate many of them simultaneously. The trick is that the global
+          dynamics itself transports quantum information around the device. To the best of our knowledge, this is the first
+          time this was shown to be possible even in principle.
+        </p>
+        <p>
+          This leads to a globally controlled quantum computer with no auxiliary
+          qubits required merely to make the global-control mechanism work. Even
+          more importantly, its dynamics turns out to fit naturally with a family
+          of cyclic quantum error-correcting codes. The same symmetry that makes
+          the hardware simple is also what lets us perform most of the error
+          correction globally.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#wiring">1. The wiring problem</a></li>
+            <li><a href="#ring">2. Put the qubits on a ring</a></li>
+            <li><a href="#iswap">3. Moving information with iSWAPs</a></li>
+            <li><a href="#universality">4. One local control region is enough</a></li>
+            <li><a href="#cyclic">5. Why cyclic codes fit the machine</a></li>
+            <li><a href="#measurement">6. The remaining bottleneck: measurement</a></li>
+            <li><a href="#threshold">7. What happens to the error-correction threshold?</a></li>
+            <li><a href="#hardware">8. From the model to hardware</a></li>
+            <li><a href="#conclusion">9. The broader point</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="wiring">
+        <h4>1. The wiring problem</h4>
+
+        <p>
+          Local control is an extraordinarily useful abstraction. If I want to
+          rotate qubit number 137, I send a pulse to qubit number 137. If I want
+          to couple qubits 137 and 138, I activate their interaction. From the
+          perspective of an algorithm, this is exactly what one would like.
+        </p>
+
+        <p>
+          Physically, however, local addressability is expensive.
+          In a superconducting processor, qubits require control and readout
+          infrastructure. As the processor grows, this produces increasingly
+          complicated wiring, calibration and chip-layout constraints. At the
+          same time, all those lines have to enter a cryogenic environment in
+          which thermal load is a precious resource.
+        </p>
+
+        <p>
+          This is usually called the <em>wiring problem</em>. And it becomes
+          especially uncomfortable when thinking about fault tolerance, because
+          error correction asks us to increase the number of physical qubits by
+          orders of magnitude.
+        </p>
+
+        <p>
+          Global control offers an appealing alternative: instead of addressing
+          every qubit independently, one applies a small number of control fields
+          to many qubits at once.
+        </p>
+
+        <p>
+          But historically there has been a price to pay. Globally controlled
+          architectures generally need additional structure to distinguish one
+          part of the processor from another: different qubit species, pointers,
+          buffers, patterned frequencies, or auxiliary qubits used to move and
+          address quantum information.
+        </p>
+
+        <p>
+          This becomes particularly problematic once error correction enters the
+          story. The computational qubits must be protected, but so must the
+          auxiliary infrastructure on which the computation depends. Earlier
+          proposals therefore considered separate and interleaved correction
+          procedures for computational and auxiliary qubits.
+        </p>
+
+        <p>
+          At that point some of the simplicity promised by global control has
+          disappeared.
+        </p>
+
+        <div class="callout">
+          <strong>The question we ask is therefore:</strong>
+          can we retain the reduction in control complexity offered by global
+          control without introducing an entire auxiliary quantum architecture
+          that then needs its own error-correction machinery?
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="ring">
+        <h4>2. Put the qubits on a ring</h4>
+
+        <p>
+          Our starting point is deliberately simple, as it shows that in principle one can achieve 
+          universal quantum computation with global control with simple architectures. 
+          Take an even number $N$ of
+          qubits and arrange them on a closed ring. Neighboring qubits interact
+          through an XY exchange interaction, that however can be activated at will (pulsed) on either 
+          the even or odd bonds of the ring. The Hamiltonian is therefore
+        </p>
+
+        <div class="equation-block">
+          $$
+          V_{i,i+1}
+          =
+          \frac{1}{2}
+          \left(
+          \sigma_i^x \sigma_{i+1}^x
+          +
+          \sigma_i^y \sigma_{i+1}^y
+          \right).
+          $$
+        </div>
+
+        <p>
+          Now divide the bonds of the ring into two alternating sets. Think of
+          them as the red bonds and blue bonds in Fig. 1 of the paper. One global
+          control, which we call $g(t)$, acts on one set; another, $h(t)$, acts on
+          the other.
+        </p>
+
+        <p>
+          At one moment we activate every other bond. At the next moment we
+          activate the complementary set. So instead of individually commanding
+          hundreds of pairwise interactions, the processor repeatedly executes
+          two globally defined layers.
+        </p>
+
+        <!-- Suggested figure placement:
+        Fig. 1(a,c) from the paper works very well here.
+        -->
+
+        <p>
+          There is only one special region. At a single site of the ring we retain
+          local control: we can drive the qubit there individually and control the
+          two interactions connecting it to its neighbors.
+        </p>
+
+        <p>
+          This one locally addressable region is the symmetry-breaking ingredient
+          that eventually gives us universal quantum computation. Everywhere
+          else, the machine remains global. 
+        </p>
+
+        <p>
+          The important scaling observation is that the control structure does
+          not grow with $N$. Making the ring larger adds qubits, but does not
+          require us to add a new independent control channel for every new site.
+        </p>
+
+        <p>
+          And unlike earlier global-control constructions, we do not need buffer
+          or pointer qubits just to implement the addressing mechanism. The qubits
+          on the ring are the qubits carrying the computation.
+        </p>
+
+        <p>
+          An alternative approach is to bring the qubits, via the universal routing theorem we proved,
+          to a certain area of the chip, and then activate local iSWAP, compile into SWAP, and then
+          perform two qubits gates there. The advantage is that now we have a 
+          single local control region, and we can perform arbitrary single qubit gates there, at the cost
+          of a handful of lines into the device. As a principle, one can divide then global control into
+          global routing + local control. Global routing control' and compilation scales with the number of computational 
+          qubits, so in that region the architecture is key. However, 
+          you saved on the number of wires dramatically.
+          The local control region can be used to perform arbitrary single qubit gates, and two qubit gates, 
+          and then the qubits can be routed back to their original position. This is how one achieves
+          universality. With a modified architecture one can achieve also all-to-all effective connectivity.
+
+        </p>        
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="iswap">
+        <h4>3. Moving information with iSWAPs</h4>
+
+        <p>
+          Of course, having only one locally controlled site sounds rather
+          restrictive. What if the state I want to manipulate is sitting on the
+          opposite side of the ring?
+        </p>
+
+        <p>
+          This is where the exchange interaction becomes useful.
+        </p>
+
+        <p>
+          If two resonant qubits interact through the XY Hamiltonian for the
+          appropriate time, the resulting operation is an iSWAP. In our
+          convention, choosing
+        </p>
+
+        <div class="equation-block">
+          $$
+          \tau = \frac{3\pi}{2J}
+          $$
+        </div>
+
+        <p>
+          generates the iSWAP gate. An iSWAP exchanges the single-excitation
+          components of two neighboring qubits, but also introduces phases. If
+          our goal is simply to transport an arbitrary quantum state from one
+          site to the next, we would rather have a conventional SWAP.
+        </p>
+
+        <p>
+          One possibility we discuss is to synthesize that SWAP using three
+          iSWAP gates and global $\sqrt{X}$ rotations:
+        </p>
+
+        <div class="equation-block">
+          $$
+          \mathrm{SWAP}
+          =
+          (I\otimes\sqrt{X})
+          \,\mathrm{iSWAP}\,
+          (\sqrt{X}\otimes I)
+          \,\mathrm{iSWAP}\,
+          (I\otimes\sqrt{X})
+          \,\mathrm{iSWAP}.
+          $$
+        </div>
+
+        <p>
+          The key word here is <em>global</em>. These operations can be executed
+          simultaneously on all the appropriate pairs of the ring.
+        </p>
+
+        <p>
+          Alternating the two SWAP layers produces a very simple transport
+          dynamics. States on one parity sublattice move around the ring in one
+          direction while states on the other parity sublattice move in the
+          opposite direction. Repeating these layers lets us bring any chosen
+          quantum state to the locally controlled site.
+        </p>
+
+        <p>
+          A useful mental picture is a conveyor belt. The expensive equipment
+          stays in one place; the object that needs to be worked on is transported
+          to it.
+        </p>
+
+        <p>
+          Here, of course, what moves is not a physical qubit. What moves is the
+          quantum information stored in it.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="universality">
+        <h4>4. One local control region is enough</h4>
+
+        <p>
+          Once we can route an arbitrary state to the special site, single-qubit
+          operations are straightforward. We transport the target state there,
+          switch off the global interactions, and apply a resonant local drive.
+          This gives arbitrary rotations of that qubit.
+        </p>
+
+        <p>
+          Two-qubit gates are obtained in a similar spirit. The locally
+          controlled links adjacent to the special site can generate an iSWAP
+          between qubits brought into the control region.
+        </p>
+
+        <p>
+          Arbitrary single-qubit gates together with an entangling gate such as
+          iSWAP already form a universal gate set. The remaining question is therefore
+          purely one of routing: can the global dynamics bring the necessary
+          qubits into the region in which these gates are available?
+        </p>
+
+        <p>
+          The answer is yes.
+        </p>
+
+        <p>
+          One way of seeing this is through the effective connectivity graph in
+          Fig. 1(b) of the paper. Its vertices represent computational qubits, and
+          an edge connects two qubits if the global transport dynamics can bring
+          them simultaneously into the locally controlled region. For the simple
+          ring this graph is connected.
+        </p>
+
+        <p>
+          It is not all-to-all connected: some two-qubit gates have to be compiled
+          through a sequence of intermediate interactions. But connectedness is
+          enough for universality. In the Supplemental Material we make the
+          routing argument constructive and show explicitly that an arbitrary
+          qubit can be transported to an arbitrary target site with a worst-case
+          cost that scales as $O(N)$ global pulses.
+        </p>
+
+        <p>
+          So a device with predominantly global controls is not merely a quantum
+          memory or a special-purpose simulator. It can execute arbitrary quantum
+          computations.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="cyclic">
+        <h4>5. Why cyclic codes fit the machine</h4>
+
+        <p>
+          Universal computation is only part of the story. The real motivation
+          for reducing control complexity is fault tolerance, and that means
+          quantum error correction. In our paper we show that
+          our scheme is at least sufficient, for a single logical qubit, for a quantum
+          memory experiment.
+        </p>
+
+        <p>
+          Even in this case, there is an immediate difficulty. Standard syndrome-extraction circuits
+          contain many operations distributed across a processor. If every one
+          of those operations had to be performed by transporting a qubit to our
+          single local-control site, error correction would become hopelessly
+          serial. While one syndrome was being processed, errors would continue
+          accumulating elsewhere.
+        </p>
+
+        <p>
+          So instead of asking how to force an arbitrary error-correcting code
+          onto the architecture, we ask a more useful question:
+          <em>which error-correcting code naturally has the same symmetry as the
+          hardware?</em>
+        </p>
+
+        <p>
+          This leads us to cyclic stabilizer codes.
+        </p>
+
+        <p>
+          We consider a family of non-CSS $[[n,1,d]]$ cyclic codes. The stabilizer
+          generators are obtained by translating a base stabilizer cyclically
+          around the register. For the family studied in the paper, the number
+          of data qubits scales as
+        </p>
+
+        <div class="equation-block">
+          $$
+          n = 4d-7,
+          $$
+        </div>
+
+        <p>
+          for odd code distance $d$.
+        </p>
+
+        <p>
+          The important property for us is not merely that the code is drawn on
+          a circle. It is that its syndrome-extraction circuit consists of
+          translation-invariant operations that can be carried out in parallel
+          around that circle.
+        </p>
+
+        <p>
+          Data and syndrome qubits are placed in an alternating pattern. At each
+          stage of syndrome extraction, identical two-qubit gates act on disjoint
+          neighboring pairs, followed by the complementary set of pairs. This is
+          exactly what our two global interaction layers already know how to do.
+        </p>
+
+        <p>
+          The syndrome qubits effectively move around the ring, interacting in
+          turn with the data qubits necessary to build each stabilizer. The
+          computation of the syndrome can therefore be performed using global
+          iSWAPs and global single-qubit rotations, rather than a long sequence
+          of individually addressed gates.
+        </p>
+
+<img class="post-figure" src="images/Pkloo1.png" alt="Figure 1 of the manuscript with the architecture." height="400px">
+
+
+        <p>
+          This is really the central co-design idea of the work: the hardware
+          symmetry and the code symmetry are chosen so that they reinforce one
+          another.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="measurement">
+        <h4>6. The remaining bottleneck: measurement</h4>
+
+        <p>
+          There is, however, one thing the global gates cannot eliminate:
+          measurement.
+        </p>
+
+        <p>
+          After the stabilizer information has been accumulated into the syndrome
+          qubits, those qubits have to be read out. In the minimal architecture
+          we do not assume a dedicated local measurement line on every site.
+        </p>
+
+        <p>
+          Instead, the same transport dynamics comes to the rescue once more.
+          Syndrome states are moved around the ring until they reach a site with
+          local readout. They are measured and reset, the ring moves again, and
+          the next syndrome states arrive.
+        </p>
+
+        <p>
+          If there is only one measurement site, this works in principle, but the
+          measurement procedure becomes long. We therefore introduce $\ell$
+          measurement sites distributed around the ring.
+        </p>
+
+        <p>
+          If $n_s$ syndromes must be measured, the number of measurement rounds is
+        </p>
+
+        <div class="equation-block">
+          $$
+          M = \left\lceil \frac{n_s}{\ell} \right\rceil,
+          \qquad
+          n_s = n-1 = 4d-8.
+          $$
+        </div>
+
+        <p>
+          This exposes a useful architectural knob.
+        </p>
+
+        <p>
+          At one extreme, we use very little local wiring and accept more serial
+          measurement rounds. At the other, we install more readout sites and
+          recover more parallelism.
+        </p>
+
+        <p>
+          Rather than claiming that global control makes wiring disappear, the
+          architecture makes the trade-off explicit: how much local measurement
+          hardware are we willing to buy in exchange for faster error correction?
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="threshold">
+        <h4>7. What happens to the error-correction threshold?</h4>
+
+        <p>
+          We then simulate the cyclic code on this architecture.
+        </p>
+
+        <p>
+          We consider code distances $d=5$, $7$ and $9$, and simulate between
+          one and fifty consecutive rounds of syndrome extraction using
+          <code class="inline">Stim</code>. The noise model is phenomenological:
+          data qubits experience depolarizing noise while they wait during
+          syndrome measurement, and syndrome qubits experience measurement
+          errors modeled by a bit flip immediately before readout.
+        </p>
+
+        <p>
+          For decoding, we use the lookup-table decoder with a memory mechanism
+          described for these cyclic codes, allowing the decoder to account for
+          both spacelike and timelike errors.
+        </p>
+
+        <p>
+          The resulting logical-error curves are shown in Fig. 2 of the paper.
+          The point where the curves for different code distances cross gives
+          the threshold: below that physical error rate, increasing the code
+          distance improves the logical performance.
+        </p>
+
+<img class="post-figure" src="images/Pkloo2.png" alt="Logical error rate as a function of physical error rate for different code distances. The crossing point indicates the threshold." height="400px">
+
+        <p>
+          The interesting part is how strongly this threshold depends on the
+          amount of measurement parallelism.
+        </p>
+
+        <p>
+          With enough local measurement sites to read all syndromes in five
+          measurement rounds, we find a threshold of approximately
+          $0.23\%$. Reducing the measurement procedure to three rounds raises
+          it to approximately $0.35\%$. With two rounds, it reaches about
+          $0.47\%$.
+        </p>
+
+        <div class="equation-block">
+          $$
+          p_{\rm th}^{(5)} \simeq 0.23\%,
+          \qquad
+          p_{\rm th}^{(3)} \simeq 0.35\%,
+          \qquad
+          p_{\rm th}^{(2)} \simeq 0.47\%.
+          $$
+        </div>
+
+        <p>
+          The corresponding fraction of all data and syndrome qubits equipped
+          with local measurement is roughly $11\%$, $18\%$, and $26\%$,
+          respectively.
+        </p>
+
+        <p>
+          So we obtain error-correction thresholds in the $10^{-3}$ regime while
+          keeping local measurement confined to a fraction of the device.
+        </p>
+
+        <p>
+          This is particularly striking when compared with earlier estimates for
+          globally controlled architectures, which found thresholds on the order
+          of $10^{-10}$ once the limited parallelism of global control was taken
+          into account. The values we obtain are therefore almost seven orders of
+          magnitude larger.
+        </p>
+
+        <p>
+          That comparison should be read with the appropriate caveat. These
+          numbers are not universal hardware thresholds: they are the thresholds
+          obtained for the architecture, cyclic codes, decoder and
+          phenomenological noise model considered in our simulations. A
+          full device-level noise model will contain many more ingredients.
+        </p>
+
+        <p>
+          But the qualitative message is robust and, I think, more important:
+          limited local measurement does not automatically kill fault tolerance
+          in a globally controlled architecture. There is a continuous trade-off.
+          Add measurement sites, reduce the serial depth, and the threshold
+          systematically improves.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="hardware">
+        <h4>8. From the model to hardware</h4>
+
+        <p>
+          The architecture is naturally motivated by superconducting qubits,
+          where exchange-like XY interactions and iSWAP gates are already familiar
+          ingredients.
+        </p>
+
+        <p>
+          The cleanest theoretical version of the model assumes that the two
+          alternating sets of couplings can be globally turned on and off. In
+          practice, switching interactions completely off can be experimentally
+          demanding.
+        </p>
+
+        <p>
+          In the Supplemental Material we therefore discuss another realization.
+          Keep the XY interactions always on, and instead use global flux control
+          to move selected groups of superconducting qubits in and out of
+          resonance. Resonant neighboring qubits exchange excitations; strongly
+          detuned pairs effectively stop exchanging them.
+        </p>
+
+        <p>
+          By arranging a repeating pattern of qubit frequencies and globally
+          changing those frequencies, one can reproduce the alternating pattern
+          of iSWAP operations required by the routing protocol without having to
+          physically switch every coupling.
+        </p>
+
+        <p>
+          There are also several directions in which the architecture can be
+          pushed further.
+        </p>
+
+        <p>
+          The cyclic codes used here have an attractive linear scaling of qubit
+          number with code distance, but their stabilizer weights increase with
+          distance. They are therefore not quantum LDPC codes. Finding
+          globally driven qLDPC constructions adapted to this type of hardware is
+          an obvious and, in our view, particularly interesting next step.
+        </p>
+
+        <p>
+          The geometry can also be modified. In the Supplemental Material we
+          consider a "keyhole" architecture: a memory ring connected to a short
+          locally controlled corridor. The corridor acts as a small computational
+          workspace into which arbitrary pairs of states can be routed. This can
+          raise the effective connectivity all the way to all-to-all while keeping
+          most of the machine globally controlled.
+        </p>
+
+        <p>
+          At a still larger scale, one can imagine using individual rings as
+          logical building blocks and connecting many such rings into a
+          two-dimensional network. The same idea then repeats at another level:
+          transport quantum information to the place where the interaction is
+          available.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="conclusion">
+        <h4>9. The broader point</h4>
+
+        <p>
+          I find the most interesting aspect of this work to be the way several
+          constraints that initially look like disadvantages start helping once
+          they are considered together.
+        </p>
+
+        <p>
+          Global control removes much of the local wiring, but at first seems to
+          destroy addressability. Exchange dynamics restores that addressability
+          by moving quantum information. The translational symmetry of the
+          resulting dynamics then looks restrictive for error correction, until
+          we choose a cyclic code whose syndrome extraction has essentially the
+          same translational structure. Finally, local measurement remains a
+          bottleneck, but becomes a controllable engineering parameter rather than
+          an all-or-nothing requirement.
+        </p>
+
+        <p>
+          The circle is doing two jobs at once. It is the transport network of the
+          processor, and it is the natural geometry of the error-correcting code.
+        </p>
+
+        <p>
+          More generally, this is an example of something that will probably
+          become increasingly important as quantum computers grow: hardware,
+          control, compilation and error correction cannot always be designed
+          independently and connected afterward.
+        </p>
+
+        <p>
+          Sometimes the right question is not,
+          "How do we run the standard circuit on this unusual hardware?"
+        </p>
+
+        <p>
+          It is,
+          "What computation and what code does this hardware want to run?"
+        </p>
+
+        <p>
+          In our case, the answer starts with a ring, alternates two sets of
+          iSWAPs, and ends with a globally controlled architecture in which
+          fault-tolerant operation begins to look substantially less expensive
+          than one might have expected.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>

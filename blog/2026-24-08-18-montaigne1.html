@@ -1,0 +1,1188 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Montaigne, Peter Thiel, and the AI Rat Race – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">Montaigne • Peter Thiel • AI • Science • Competition</p>
+        <h3>de Montaigne, Peter Thiel, and the AI Rat Race</h3>
+        <p><em>August 9th, 2026</em></p>
+
+        <p>
+          A few years ago I left my position at Los Alamos. In retrospect, it was a good thing.
+          At the time, it did not feel like one.
+        </p>
+
+        <p>
+          Leaving a prestigious institution is strange because prestige has a peculiar
+          gravitational field. From the inside, one can be unhappy, uncertain, or simply aware
+          that something is no longer working. From the outside, however, leaving looks irrational.
+          There are positions one is supposed to want. Once one has obtained one, voluntarily
+          walking away from it can feel less like a decision and more like stepping off a ledge.
+        </p>
+
+        <p>
+          I have been thinking about this recently after watching, almost by accident, two very
+          different discussions. I was reading about the life of Michel de Montaigne. 
+          The algorithm then recommended to me a video  in which there was Peter Thiel's
+          famous Stanford lecture, <em>Competition Is for Losers</em>. I realized after that the person
+          who introduced him to the students/crowd was actually Sam Altman.. yuck.
+        </p>
+
+        <p>
+          The surprising thing is that both de Montaigne and Thiel are, in some sense, saying the same thing:
+          get out of the "rat race" (life!).
+        </p>
+
+        <p>
+          But they mean almost opposite things by it. The temporal closeness by which I  
+          discovered some peculiarities of these two very different thinkers made me realize that the current AI boom 
+          is producing a new kind of rat race. Thinking about the effects of AI on Science 
+          and the scientific community, I realized that the Montaignean and Thielian perspectives
+          are both relevant, but in very different ways. Next week who knows what I will discover.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#montaigne">1. Montaigne leaves the race</a></li>
+            <li><a href="#thiel">2. Thiel leaves the competition</a></li>
+            <li><a href="#ai">3. AI moves the scientific distribution</a></li>
+            <li><a href="#gaussian">4. A Gaussian model of scientific accessibility</a></li>
+            <li><a href="#redqueen">5. The Red Queen effect</a></li>
+            <li><a href="#commons">6. A tragedy of the scientific commons</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="montaigne">
+        <h4>1. Montaigne leaves the race</h4>
+
+        <p>
+          I have been reading about de Montaigne because of some analogies I saw with myself.
+          Michel de Montaigne was born in 1533 into a wealthy family near Bordeaux (unlike mine). 
+          He studied law,
+          became a magistrate, and eventually served in the Parlement of Bordeaux. These were not
+          marginal positions in sixteenth-century France. They belonged to precisely the world of
+          status, office, political connections, reputation, and public advancement that ambitious
+          men were expected to pursue.
+        </p>
+
+        <p>
+          Then, at the age of thirty-eight, Montaigne withdrew. Funnily enough, this is the same
+          age at which I decided to quite my LANL job.
+        </p>
+
+        <p>
+          He returned to his family estate, retired to a tower containing his library, and began
+          writing what became known today as the <em>Essais</em>. Note that <em>essai</em> in french 
+          means
+          an attempt, a trial, an experiment. Montaigne was not constructing a philosophical system
+          in the manner of someone trying to establish the final architecture of reality. He was
+          trying things out on himself, in practice.
+        </p>
+
+        <p>
+          His subject was, famously, de Montaigne. In the sense, he was a proto-psychologist, 
+          a proto-anthropologist, and a proto-sociologist. He was trying to understand the
+          human condition by observing himself and the people around him. He was trying to
+          understand the human condition in a way that was not abstract, but practical.
+        </p>
+
+        <p>
+          This can sound narcissistic until one reads him. What makes de Montaigne important is almost
+          the opposite. He distrusts grandiosity. He distrusts certainty. He distrusts the strange
+          human tendency to turn one's position in the social hierarchy into the measure of one's
+          existence.
+        </p>
+
+        <p>
+          His famous question was <em>Que sais-je?</em> &mdash; what do I know?
+        </p>
+
+        <p>
+          This was written in a century saturated with people who were quite certain that they knew.
+          Europe was being torn apart by political and religious conflict. de Montaigne's response was
+          not indifference, but a form of epistemic modesty. Human beings are fallible, 
+          real, inconsistent
+          creatures. In a way, the Nirvana, or philosophical wisdom begins partly by noticing this.
+          In the same way in which a crazy person might be the only sane one in a room full 
+          of people who are all pretending to be sane.
+        </p>
+
+        <p>
+          What I found attractive about de Montaigne is the way he approached his learning process. 
+          There is a wonderful Montaignean image that I keep returning to. He describes the need for
+          an <em>arrière-boutique</em>, literally a room behind the shop: a private interior place
+          that does not belong to one's profession, public identity, obligations, or status. 
+          AI makes me feel, right now, a form of <em>arriereboutiqueism</em> is needed.
+        </p>
+
+        <p>
+          This is what makes his retirement philosophically interesting. He did not leave one
+          competition in order to dominate another one. He was trying to recover the experience of
+          living before life had been completely translated into achievement. In a way,
+          this is what a few centuries later happened. The scientific revolution first,
+          the industrial revolution later, put humans at the center of the universe.
+          Right now, humans are being put at boundaries at such universe.
+          Imagine where God is placed right now, in the age of AI. I am not sure I want to know.
+        </p>
+
+        <p>
+          Near the end of his life, Montaigne's ideal was wonderfully unheroic: 
+          he wanted death to find him planting cabbages, unconcerned with death and 
+          even more unconcerned with the unfinished
+          state of his garden. I just bought a piece of land with that idea in mind.
+          How many parallels!
+        </p>
+
+        <p>
+          There is something almost offensive about this attitude to a modern professional culture.
+          The garden is unfinished. The work is unfinished. The CV is unfinished. The career is
+          unfinished. This sense of laisser-faire, of not needing to finish, is almost a form of 
+          anti-capitalist rebellion. 
+
+        </p>
+
+        <p>
+          And that is fine, maybe. But we were talking about Thiel.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="thiel">
+        <h4>2. Thiel leaves the competition</h4>
+
+        <p>
+          The discussion above about de Montaigne is not meant to be a historical comparison. 
+          de Montaigne was a sixteenth-century Frenchman. 
+          Peter Thiel is a twenty-first-century American. The two cannot be 
+          compared directly. One might dismiss Thiel as a Silicon Valley entrepreneur, 
+          a libertarian, or a billionaire. I do think that Thiel is a thinker as well.
+          Peter Thiel's argument about "competition is for losers" might seem
+          a bit Montaignesque, but it is not. It is a very different argument.
+        </p>
+
+        <p>
+          His claim that "competition is for losers" is usually read as a statement about monopoly.
+          And at the business level, that is exactly what it is. A company operating in perfect
+          competition has little ability to capture the value it creates. A company that does
+          something genuinely unique can occupy a market in which direct comparison becomes much
+          less meaningful.
+        </p>
+
+        <p>
+          But the more interesting part of the lecture comes near the end, when Thiel stops talking
+          about firms and begins talking about people.
+        </p>
+
+        <p>
+          Competition, he argues, is psychologically attractive because it validates us. In practice, 
+          for a scientist: if many
+          intelligent people are trying to enter the same profession, win the same fellowship,
+          publish in the same journal, enter the same university, or solve the same fashionable
+          problem, then pursuing it feels important.
+        </p>
+
+        <p>
+          In this sense, the crowd supplies the proof. In particular, what struck me was his discussion
+          about scientists. He said explicitly that scientists are often motivated by the desire to be 
+          recognized by their peers. They are not the richest people in the world.
+          We, the scientists, seem to lack that ability and the story of the scientist as a lonely genius is a myth.
+        </p>
+
+        <p>
+          Thiel's objection is that human beings are intensely mimetic. He uses
+          that word exactly in the way I use it: he was a student of Girard at Stanford. 
+          We look around, discover
+          what other ambitious people desire, and begin desiring it ourselves. Eventually we become
+          extremely good at climbing ladders without remembering why that particular wall deserved
+          a ladder.
+        </p>
+
+        <p>
+          He tells the story of leaving a prestigious New York law firm after seven months and
+          three days. A colleague told him that seeing Thiel leave was reassuring because he had not
+          realized it was possible to escape. Thiel's joke is that escaping required nothing more
+          complicated than walking through the front door and not returning.
+        </p>
+
+        <p>
+          (I understand that story differently now than I would have before leaving Los Alamos.
+          Institutions can become psychologically closed long before they become physically closed.
+          This is for instance what happened to Bell Labs in the 1980s to the late 1990.) 
+        </p>
+
+        <p>
+          de Montaigne and Thiel a saying the same thing for two very distinct purposes.
+          de Montaigne says: stop needing to win.<br><br>
+          Thiel says: stop playing games in which winning means doing slightly better than everyone
+          standing next to you. He uses the example of a chess tournament in which the winner is 
+          the person who wins the most games.
+          de Montaigne withdraws from competition because life is finite.
+          Thiel withdraws from competition because competition produces sameness. Capitalism
+          is the essense of competition, yet this form of regulated competition
+          cannot be accepted as a model for a successful business. One wants to leave
+          competition to enjoy life. The other wants to avoid competition to take it all.
+          In a way, Thiel is a more ruthless de Montaigne. He wants to win, but he wants to win in a way that
+            does not require him to compete with others. He wants to be the only one in the room.
+          If you want, this is the essential part of the Silicon Valley recipe.
+        </p>
+
+        <p>
+          One searches for an inner room full of peace.
+          The other searches for an empty market, in a way another form of peace.
+          One leaves the crowd in order to live something ordinary completely.
+          The other leaves the crowd in order to create something extraordinary that the crowd has
+          not noticed.
+        </p>
+
+        <p>
+          And then AI arrived.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="ai">
+        <h4>3. AI moves the scientific distribution</h4>
+
+        <p>
+          Whatever one thinks about the current AI boom, this is an unusually interesting time to
+          be alive.
+        </p>
+
+        <p>
+          In Science, AI has changed the effective level at which an individual researcher can
+          operate. Innovations needed to be developed by hand. 
+          Someone can move much more quickly through an unfamiliar literature. Symbolic
+          calculations that once consumed an afternoon can be checked in minutes. Code can be
+          written, translated, debugged, and explained at a speed we have not seen before. 
+          One can interrogate methods belonging to a
+          neighboring field without first spending six months becoming locally fluent in its
+          dialect.
+        </p>
+
+        <p>
+          The natural picture is that the distribution of scientific capability has moved to the
+          right.
+          That sounds unambiguously good.
+          And locally, it is. Science does not care about who or what developed that piece of knowledge.
+        </p>
+
+        <p>
+          But there is an equilibrium problem hiding inside the obvious productivity gain.
+        </p>
+
+        <p>
+          Science is not carried out by one isolated researcher receiving a better tool while
+          everyone else remains fixed. Everyone receives the tool. Authors adapt. Referees adapt.
+          Students adapt. Journals adapt. Standards adapt.
+        </p>
+
+        <p>
+          So the relevant question is not merely:
+        </p>
+
+        <p class="math">
+          $$\text{How much more can I do with AI?}$$
+        </p>
+
+        <p>
+          It is also:
+        </p>
+
+        <p class="math">
+          $$\text{What happens when everybody can do more?}$$
+        </p>
+
+        <p>
+          This is where the problem starts to look like a small statistical-mechanical model.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="gaussian">
+        <h4>4. A Gaussian model of scientific accessibility</h4>
+
+        <p>
+          Let me use a simple model to illustrate the problem. In a way, it also applies to the state
+          of scientific publication industry pre-AI, but it is more relevant now.
+          I will make a few assumptions that are not strictly true, but they make the mechanism transparent.
+          Let us assign every scientist an effective field-specific sophistication level $X$.
+          This is not IQ. It is simply a compressed variable containing mathematical preparation,
+          familiarity with a literature, technical experience, conceptual background, judgment, and
+          all the other ingredients required to absorb a particular piece of work.
+        </p>
+
+        <p>
+          Suppose, for simplicity, that the sophistication level is distributed according to a Gaussian distribution:
+        </p>
+
+        <div class="equation-block">
+          $$X\sim\mathcal N(\mu,\sigma^2).$$
+        </div>
+
+        <p>
+          This assumption might be modified to include a long tail, but the Gaussian is a good starting point that allows me 
+          to make calculations transparents.
+          Now, the output of a scientist is a piece of work, a manuscript, etc. 
+          A paper has technical depth $d$. Imagine first a sharp absorption threshold: a researcher
+          can productively use the paper only when
+        </p>
+
+        <div class="equation-block">
+          $$X\geq d.$$
+        </div>
+
+        <p>
+          The meaning of this statement is that literally, only a handful of people to the right of the sophistication can 
+          understand what the paper is about.T his is obviously another idealization, 
+          but it makes the mechanism transparent.
+        </p>
+
+        <p>
+          Let me use a normalized quantity $z$ to denote the number of standard deviations above the 
+          mean that the paper sits:
+        </p>
+
+        <div class="equation-block">
+          $$z=\frac{d-\mu}{\sigma},$$
+        </div>
+
+        <p>
+          In turn, this means that the fraction of the scientific population capable of absorbing the paper is
+        </p>
+
+        <div class="equation-block">
+          $$A(d)=1-\Phi(z)
+          =1-\Phi\!\left(\frac{d-\mu}{\sigma}\right).$$
+        </div>
+
+        <p>
+          Now let introduce another quantity $q(d)$, which denotes the intrinsic scientific value of a 
+          contribution of depth $d$,
+          conditional on somebody actually being able to understand and use it. If there are $N$
+          potential scientific readers, a very simple model of realized recognition is
+        </p>
+
+        <div class="equation-block">
+          $$C(d)=Nq(d)
+          \left[
+          1-\Phi\!\left(\frac{d-\mu}{\sigma}\right)
+          \right].$$
+        </div>
+
+        <p>
+          What the formula in practice says is that there are two competing effects.
+        </p>
+
+        <p>
+          Increasing $d$ can produce better science. But it simultaneously moves the paper farther
+          into the upper tail of the population capable of reading it. Now, in discussions with 
+          colleagues I mentioned often the following: "the best paper is the one that is read by the most people".
+          For that reason, a paper should be centered close to the peak of the sophistication distribution. 
+          Doing things that are too deep, while not a waste of time, it is not 
+          the most efficient way to get recognition. Some people do understand this.
+          This is a very different statement than the one made by Montaigne, 
+          who was not concerned with recognition at all. If you want to have 
+          a career, one has to move in Science as Peter Thiel describes: move into a small field and
+          dominate it. Be it. 
+        </p>
+
+        <p>
+          In the mathematical formula, one has to see this tradeoff exactly, take logarithms left and right:
+        </p>
+
+        <div class="equation-block">
+          $$\log C(d)
+          =
+          \log N+\log q(d)
+          +\log\left[1-\Phi(z)\right].$$
+        </div>
+
+        <p>
+          Differentiating with respect to $d$ gives
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{d}{dd}\log C(d)
+          =
+          \frac{q'(d)}{q(d)}
+          -
+          \frac{1}{\sigma}
+          \frac{\phi(z)}{1-\Phi(z)}.
+          $$
+        </div>
+
+        <p>
+          We now introduce the inverse Mills ratio (I discovered this in a paper by economist David Card, 
+          but it is a classical object in statistics):
+        </p>
+
+        <div class="equation-block">
+          $$
+          m(z)=\frac{\phi(z)}{1-\Phi(z)}.
+          $$
+        </div>
+
+        <p>
+          Then
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{d}{dd}\log C(d)
+          =
+          \frac{q'(d)}{q(d)}
+          -
+          \frac{1}{\sigma}m(z).
+          $$
+        </div>
+
+        <p>
+          This equation contains almost the entire story. The first term is the proportional gain
+          from moving deeper into the scientific frontier. The second is the "accessibility penalty":
+          how quickly the potential population of readers disappears as the paper becomes more
+          demanding.
+        </p>
+
+        <p>
+          Now take the particularly simple formula for the depth
+        </p>
+
+        <div class="equation-block">
+          $$q(d)=e^{\gamma d},\qquad \gamma>0.$$
+        </div>
+
+        <p>
+          Then
+        </p>
+
+        <div class="equation-block">
+          $$\frac{q'(d)}{q(d)}=\gamma,$$
+        </div>
+
+        <p>
+          and the citation-optimal sophistication $d^*$ satisfies
+        </p>
+
+        <div class="equation-block">
+          $$
+          m(z^*)=\gamma\sigma.
+          $$
+        </div>
+
+        <p>
+          Therefore we finally get to a function
+        </p>
+
+        <div class="equation-block">
+          $$
+          {
+          d^*
+          =
+          \mu+\sigma m^{-1}(\gamma\sigma)
+          }.
+          $$
+        </div>
+
+        <p>
+          There is no universal rule saying that the optimal paper sits one standard deviation
+          above the mean scientist. Its location depends on the scientific return to depth,
+          $\gamma$, and on the width of the sophistication distribution, $\sigma$. However, 
+          it says in formulae what I have been saying in words to younger (and older) colleagues.
+          Tails are for the brave, not the careerist. The question is again what we do Science for.
+        </p>
+
+        <p>
+          Yet, the formula gives a useful distinction that gets lost when we talk casually about
+          "better science." Scientific quality and scientific recognition are not the same object.
+          Recognition is quality filtered through a population capable of absorbing it.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="redqueen">
+        <h4>5. A Red Queen effect</h4>
+
+        <p>
+          We now try to introduce AI into the model. The simplest way to do this is to assume that AI increases
+            the effective sophistication of every scientist by a fixed amount. This is not strictly true,
+            but it is a good starting point. The model can be made more complicated, but the essential
+            mechanism is already visible in this simple version.
+        </p>
+
+        <p> I want to use here a term from biology: the Red Queen effect. 
+            The name comes from Lewis Carroll's Red Queen: one has to keep running just to stay in the same place. 
+            In<em>Through the Looking Glass</em>, the Red Queen tells Alice that in her 
+            country, 
+            "it takes all the running you can do, to keep in the same place." 
+            The Red Queen effect I use here is a phenomenon in evolutionary biology.
+            The analogy here is direct. 
+            While AI makes scientists more capable, but if the scientific frontier moves 
+            with them, the relative distance to that frontier does not shrink.            
+        </p>
+
+<p>
+  Note: You can find a good Wiki page about the <em>Red Queen effect</em> , here
+   <a href="https://en.wikipedia.org/wiki/Red_Queen_hypothesis" target="_blank" rel="noopener noreferrer">evolutionary biology</a>.
+</p>
+
+
+        <p>
+          Let us model AI simply as follows. 
+          Let $a$ represent the additional effective scientific capability supplied by AI. A
+          researcher whose unaided sophistication is $X$ now operates at
+        </p>
+
+        <div class="equation-block">
+          $$X^{AI}=X+a.$$
+        </div>
+
+        <p>
+          A paper of depth $d$ can therefore be absorbed when
+        </p>
+
+        <div class="equation-block">
+          $$X+a\geq d,$$
+        </div>
+
+        <p>
+          or
+        </p>
+
+        <div class="equation-block">
+          $$X\geq d-a.$$
+        </div>
+
+        <p>
+          For our Gaussian population, the accessible fraction becomes
+        </p>
+
+        <div class="equation-block">
+          $$
+          A(d;a)
+          =
+          1-\Phi\!\left(
+          \frac{d-a-\mu}{\sigma}
+          \right).
+          $$
+        </div>
+
+        <p>
+          Thus
+        </p>
+
+        <div class="equation-block">
+          $$
+          C(d;a)
+          =
+          N e^{\gamma d}
+          \left[
+          1-\Phi\!\left(
+          \frac{d-a-\mu}{\sigma}
+          \right)
+          \right].
+          $$
+        </div>
+
+        <p>
+          Define
+        </p>
+
+        <div class="equation-block">
+          $$
+          z=\frac{d-a-\mu}{\sigma}.
+          $$
+        </div>
+
+        <p>
+          Repeating the previous derivative,
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{\partial}{\partial d}\log C
+          =
+          \gamma-\frac{1}{\sigma}m(z).
+          $$
+        </div>
+
+        <p>
+          The optimum therefore obeys exactly the same condition,
+        </p>
+
+        <div class="equation-block">
+          $$m(z^*)=\gamma\sigma.$$
+        </div>
+
+        <p>
+          Hence $z^*$ is constant, and
+        </p>
+
+        <div class="equation-block">
+          $$
+          \boxed{
+          d^*(a)
+          =
+          a+\mu+\sigma m^{-1}(\gamma\sigma)
+          }.
+          $$
+        </div>
+
+        <p>
+          Consequently,
+        </p>
+
+        <div class="equation-block">
+          $$
+          \boxed{
+          \frac{\partial d^*}{\partial a}=1
+          }.
+          $$
+        </div>
+
+        <p>
+          This is the result that I find both beautiful and slightly disturbing.
+        </p>
+
+        <p>
+          If AI gives everyone one additional unit of effective scientific capability, the
+          citation-maximizing paper becomes one unit more sophisticated.
+        </p>
+
+        <p>
+          The relevant gap is
+        </p>
+
+        <div class="equation-block">
+          $$d^*(a)-a.$$
+        </div>
+
+        <p>
+          But from the equation above,
+        </p>
+
+        <div class="equation-block">
+          $$
+          d^*(a)-a
+          =
+          \mu+\sigma m^{-1}(\gamma\sigma),
+          $$
+        </div>
+
+        <p>
+          which does not depend on $a$.
+        </p>
+
+        <p>
+          Therefore the accessible fraction is also unchanged:
+        </p>
+
+        <div class="equation-block">
+          $$
+          A(d^*(a);a)
+          =
+          1-\Phi\!\left[m^{-1}(\gamma\sigma)\right].
+          $$
+        </div>
+
+        <p>
+          In words, everybody becomes more capable.<br><br>
+          The frontier moves by exactly the same amount.<br><br>
+          Nobody becomes relatively closer to it.
+        </p>
+
+        <p>
+          This is a scientific Red Queen effect: we run faster in order to remain in the same
+          place!
+          Notice what happened (in the model). AI genuinely improved human capability. 
+          Nothing in the calculation
+          denies that. The disappearance of the accessibility gain comes from the endogenous
+          response of scientific production.
+        </p>
+
+        <p>
+          The mistake would be to hold $d$ fixed while changing $a$.
+          But we, the scientists, do not hold $d$ fixed.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+      <section id="commons">
+        <h4>6. A tragedy of the scientific commons</h4>
+
+        <p>
+          The previous result is not yet a tragedy. It is merely an arms race in which the gain from
+          AI is dissipated.
+        </p>
+
+        <p>
+          The stronger possibility appears when we remember that scientific attention is scarce.
+        </p>
+
+        <p>
+          Knowledge itself is not a rival resource. My understanding of an equation does not prevent
+          you from understanding it. Attention is different. There are only so many papers a person
+          can read, talks one can attend, manuscripts one can referee, and ideas one can seriously
+          think about.
+        </p>
+
+        <p>
+          Suppose there are $M$ papers, and paper $i$ has depth $d_i$. Let its share of scientific
+          attention be
+        </p>
+
+        <div class="equation-block">
+          $$
+          v_i
+          =
+          \frac{e^{\rho(a)d_i}}
+          {\sum_{j=1}^{M}e^{\rho(a)d_j}}.
+          $$
+        </div>
+
+        <p>
+          The parameter $\rho(a)$ measures how strongly apparent frontier sophistication attracts
+          attention. This is a modeling assumption, not a claim that every scientific community
+          rewards complexity in exactly this way. But it captures a recognizable incentive:
+          technical sophistication can itself become a signal of frontier status.
+        </p>
+
+        <p>
+          Realized impact is now
+        </p>
+
+        <div class="equation-block">
+          $$
+          Y_i
+          =
+          N e^{\gamma d_i}
+          \left[
+          1-\Phi\!\left(
+          \frac{d_i-a-\mu}{\sigma}
+          \right)
+          \right]v_i.
+          $$
+        </div>
+
+        <p>
+          The author chooses $d_i$. Differentiating the log-attention term gives
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{\partial\log v_i}{\partial d_i}
+          =
+          \rho(a)(1-v_i).
+          $$
+        </div>
+
+        <p>
+          The private first-order condition is therefore
+        </p>
+
+        <div class="equation-block">
+          $$
+          \gamma
+          -
+          \frac{1}{\sigma}
+          m\!\left(
+          \frac{d_i-a-\mu}{\sigma}
+          \right)
+          +
+          \rho(a)(1-v_i)
+          =
+          0.
+          $$
+        </div>
+
+        <p>
+          In a symmetric equilibrium,
+        </p>
+
+        <div class="equation-block">
+          $$v_i=\frac{1}{M}.$$
+        </div>
+
+        <p>
+          Define
+        </p>
+
+        <div class="equation-block">
+          $$
+          R(a)=\rho(a)\left(1-\frac{1}{M}\right).
+          $$
+        </div>
+
+        <p>
+          The Nash condition becomes
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{1}{\sigma}
+          m\!\left(
+          \frac{d_N-a-\mu}{\sigma}
+          \right)
+          =
+          \gamma+R(a).
+          $$
+        </div>
+
+        <p>
+          Equivalently,
+        </p>
+
+        <div class="equation-block">
+          $$
+          m(z_N)
+          =
+          \sigma[\gamma+R(a)],
+          $$
+        </div>
+
+        <p>
+          so
+        </p>
+
+        <div class="equation-block">
+          $$
+          \boxed{
+          d_N(a)
+          =
+          a+\mu+
+          \sigma
+          m^{-1}\!\left(
+          \sigma[\gamma+R(a)]
+          \right)
+          }.
+          $$
+        </div>
+
+        <p>
+          Compare this with the previous expression. Without competition for attention, the final
+          term was constant. Now it can move too.
+        </p>
+
+        <p>
+          Differentiate. Since
+        </p>
+
+        <div class="equation-block">
+          $$
+          m(z_N)=\sigma[\gamma+R(a)],
+          $$
+        </div>
+
+        <p>
+          implicit differentiation gives
+        </p>
+
+        <div class="equation-block">
+          $$
+          m'(z_N)\frac{dz_N}{da}
+          =
+          \sigma R'(a).
+          $$
+        </div>
+
+        <p>
+          Therefore
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{dz_N}{da}
+          =
+          \frac{\sigma R'(a)}{m'(z_N)}.
+          $$
+        </div>
+
+        <p>
+          Since
+        </p>
+
+        <div class="equation-block">
+          $$d_N=a+\mu+\sigma z_N,$$
+        </div>
+
+        <p>
+          we obtain
+        </p>
+
+        <div class="equation-block">
+          $$
+          \boxed{
+          \frac{dd_N}{da}
+          =
+          1+
+          \frac{\sigma^2R'(a)}{m'(z_N)}
+          }.
+          $$
+        </div>
+
+        <p>
+          For the Gaussian inverse Mills ratio,
+        </p>
+
+        <div class="equation-block">
+          $$
+          m'(z)=m(z)[m(z)-z]>0.
+          $$
+        </div>
+
+        <p>
+          Thus, if AI also increases the intensity of competition for attention,
+        </p>
+
+        <div class="equation-block">
+          $$R'(a)>0,$$
+        </div>
+
+        <p>
+          then
+        </p>
+
+        <div class="equation-block">
+          $$
+          \boxed{
+          \frac{dd_N}{da}>1.
+          }
+          $$
+        </div>
+
+        <p>
+          This is much stronger than the Red Queen result.
+        </p>
+
+        <p>
+          The frontier no longer moves to the right at the same speed as our capabilities.
+          It moves faster.
+        </p>
+
+        <p>
+          To see what this does to accessibility, note that the relevant standardized gap is
+        </p>
+
+        <div class="equation-block">
+          $$
+          z_N=
+          \frac{d_N-a-\mu}{\sigma}.
+          $$
+        </div>
+
+        <p>
+          Since $dz_N/da>0$ whenever $R'(a)>0$,
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{d}{da}[1-\Phi(z_N)]
+          =
+          -\phi(z_N)\frac{dz_N}{da}
+          <0.
+          $$
+        </div>
+
+        <p>
+          We have arrived at the paradox:
+        </p>
+
+        <div class="callout">
+          AI makes every scientist individually more capable, while the equilibrium scientific
+          literature can become relatively less accessible.
+        </div>
+
+        <p>
+          This is a tragedy of the commons because the scarce common resource is attention.
+          An individual scientist can gain an advantage by producing something that looks more
+          technically advanced, contains another derivation, another simulation, another model,
+          another layer of formal machinery.
+          If only one person does this, perhaps that person obtains more attention.
+          If everybody does it, the relative advantage disappears.
+          What remains is the additional complexity.
+          This is precisely where Thiel re-enters the story.
+          Competition makes us better at the dimension on which we are competing. The uncomfortable
+          question is whether that dimension was worth optimizing in the first place. In practice, 
+          AI makes competion more likely, flattens the distribution of capability, 
+          and makes the dimension of competition more extreme.
+        </p>
+
+        <p>
+          AI may make this problem unusually severe because it lowers the cost of participating in
+          the competition. If everyone can generate more derivations, more code, more simulations,
+          more literature review, more polished prose and more papers, the equilibrium response need
+          not be leisure. 
+        </p>
+
+        <p>
+          It may simply be that the expected amount of all of those things increases. One might happen
+          is that those groups who already had the attention gains more attention, and those who had 
+          less attention lose more attention. In practice, contrarily to what I said in a few posts ago,
+          the AI boom is not making the scientific distribution more Gaussian. It is making it more
+          heavy-tailed. The Red Queen effect is more severe than I expected. La corsa sul posto.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+
+ 
+
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
+```
