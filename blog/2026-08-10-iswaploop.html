@@ -103,10 +103,17 @@
 
             <h3>New globally controlled architectures based on iSWAPs with quantum error correction</h3>
 
-        <p><em>August 12th, 2026</em></p>
+        <p><em>August 11th, 2026</em></p>
 
 
         <img class="hero" src="images/Pkloo.png" alt="A schematic of the globally controlled architecture based on iSWAPs." height="400px">
+
+    <p> A few weeks ago I mentioned that we had some exciting news coming from Planckian that
+    I would have shared soon. 
+    Well, the news is out! Our paper <a href="https://arxiv.org/abs/2608.05821" target="_blank">
+        Quantum error correction with global control</a> is now on the arXiv. This is a joint work 
+        with Roberto Menta, Lindsay Bassman Oftelie, Ashkan Abedi, Francesco Cioni, Marco Polini, Seth Lloyd, and Vittorio Giovannetti.        
+    </p>
 
         <p>
           There is a slightly paradoxical problem hiding inside the effort to build
@@ -115,8 +122,9 @@
           another qubit, we also tend to add more wires, more control electronics,
           more calibration parameters, more heat reaching the cryogenic stages, and
           more opportunities for the machine to become difficult to operate.
-          For quantum computers to scale, we need to scale the control hardware as well as the quantum state.
-          I have talked in the past about the idea of global control <a href="2026-01-21-planckianryd.html" target="_blank" rel="noopener noreferrer">here</a>, 
+          For quantum computers to scale, we need to scale the control hardware as well as obtaining
+          a sizeable quantum state.
+          I have discussed on this blog in the past the idea of global control <a href="2026-01-21-planckianryd.html" target="_blank" rel="noopener noreferrer">here</a>, 
           in which a small number of control fields act on many qubits at once</a>. That approach was based on always-on interactions
           inducing a transport of quantum information around the device. That however had a cost, e.g. an overhead in terms 
           of auxiliary qubits necessary to perform these operations. The advantage was the theoretically massive
@@ -752,7 +760,9 @@
         <p>
           I find the most interesting aspect of this work to be the way several
           constraints that initially look like disadvantages start helping once
-          they are considered together.
+          they are considered together. This is the essence of the work 
+          we try to do at Planckian: we try to find architectures that achieve universality with global control, and then we try to find codes that fit those architectures.
+          and then we try to find codes that fit those architectures. 
         </p>
 
         <p>

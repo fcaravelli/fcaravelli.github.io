@@ -1,5 +1,11 @@
 [
-        {
+    {
+   "title": "New Publication: New globally controlled architectures based on iSWAPs with quantum error correction",
+    "date": "2026-08-10",
+   "file": "2026-08-10-iswaploop.html",
+    "tags": ["iSWAP", "quantum error correction", "global control","Planckian"]
+    },    
+    {
     "title": "From Franco Baresi to the Fokker-Planck equation, and back",
     "date": "2026-08-08",
     "file": "2026-08-08-baresi1.html",
