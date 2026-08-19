@@ -838,62 +838,73 @@
         <h4>6. A tragedy of the scientific commons</h4>
 
         <p>
-          The previous section described a Red Queen effect, but there was actually no strategic
-          interaction between scientists in the model. AI increased everybody's effective
-          capability by the same amount $a$, and the optimal scientific depth moved by exactly the
-          same amount. We all became more capable, but the frontier moved with us. The relative
-          distance from the frontier remained unchanged.
+          The previous section described a Red Queen effect, but there was actually no competition
+          between scientists in the mathematical model. AI gave everybody the same additional
+          capability $a$, and the optimal depth of scientific work moved by exactly the same amount.
+          Everybody became more capable, but the frontier moved with them. Relative to the frontier,
+          nobody had gained any ground.
         </p>
 
         <p>
-          I now want to ask a different question. What happens when the depth of my paper is not
-          chosen in isolation, but partly in response to what everybody else is doing?
+          I now want to change the problem in one important way.
         </p>
 
         <p>
-          This matters because science contains a resource that is genuinely scarce:
+          Until now, the depth $d$ of a paper was chosen as if that paper existed alone.
+          But papers do not exist alone. They compete with other papers for readers, citations,
+          invitations, journal space, grants, jobs, and, more generally, for the attention of the
+          scientific community.
+        </p>
+
+        <p>
+          This introduces a genuinely strategic element into the problem. The best choice for me
+          can now depend on what everybody else is doing.
+        </p>
+
+        <p>
+          The reason is that science contains a resource that is genuinely scarce:
           <em>attention</em>. Knowledge itself is not rival. My understanding of an equation does
-          not prevent you from understanding it. But my time is rival. An hour spent reading one
-          paper cannot simultaneously be spent reading another one. The same is true of refereeing,
-          listening to talks, evaluating grant proposals, following new literature, or simply
-          thinking carefully about somebody else's idea.
+          not prevent you from understanding it. Attention is different. An hour spent reading one
+          paper cannot simultaneously be spent reading another one. There are only so many papers
+          one can read, talks one can attend, manuscripts one can referee, grant proposals one can
+          evaluate, and ideas one can seriously think about.
         </p>
 
         <p>
-          This is the sense in which I will use the expression
+          This is the sense in which I want to use the expression
           <em>tragedy of the commons</em>. The classical reference is Garrett Hardin's
           <a href="https://doi.org/10.1126/science.162.3859.1243"
              target="_blank" rel="noopener noreferrer">
-            1968 essay, <em>The Tragedy of the Commons</em>
+            1968 essay <em>The Tragedy of the Commons</em>
           </a>.
-          Hardin's example concerned individuals drawing private benefits from a shared finite
-          resource while imposing part of the cost on everybody else. Here the analogy is not
-          literal: scientists are not grazing cattle on a common field. The shared resource is the
-          finite cognitive bandwidth of the scientific community, and the externality comes from
-          competing for a larger fraction of it.
+          Hardin considered situations in which individuals obtain a private benefit by making use
+          of a shared finite resource, while part of the cost of that decision is imposed on
+          everybody else.
         </p>
 
         <p>
-          It is also worth remembering that a commons does not necessarily end in tragedy.
-          Elinor Ostrom's
-          <a href="https://www.cambridge.org/core/books/governing-the-commons/7AB7AE11BADA84409C34815CC288CD79"
-             target="_blank" rel="noopener noreferrer">
-            <em>Governing the Commons</em>
-          </a>
-          showed that institutions and communities can develop ways of coordinating the use of
-          common resources. So the point here is not that scientific competition must inevitably
-          produce this outcome. The point is to identify the incentive that can produce it.
+          The analogy here is not literal. Scientists are not grazing cattle on a common field.
+          The common resource is the finite cognitive bandwidth of the scientific community.
+          What one paper captures in attention is attention that is not available, at that moment,
+          to another paper.
         </p>
 
         <p>
-          Let us therefore modify the previous model by introducing competition among papers.
-          Suppose there are $M$ papers, and paper $i$ has depth $d_i$. Instead of assuming that
-          scientific recognition depends only on its intrinsic value and accessibility, assume
-          that every paper also competes for a share of a fixed pool of attention.
+          And, importantly, a commons does not automatically imply tragedy. Elinor Ostrom's work on
+          the governance of common resources showed precisely that communities can develop
+          institutions that prevent individually sensible decisions from producing collectively bad
+          outcomes. So what follows is not an argument that science <em>must</em> end up in this
+          equilibrium. I only want to show that the incentive exists.
         </p>
 
         <p>
-          Let that share be
+          Let us now put this idea into the model.
+        </p>
+
+        <p>
+          Suppose there are $M$ papers. Paper $i$ has scientific depth $d_i$. I will assume that
+          every paper receives some fraction $v_i$ of the total available scientific attention,
+          with
         </p>
 
         <div class="equation-block">
@@ -906,7 +917,8 @@
         </div>
 
         <p>
-          By construction,
+          This is just a convenient way of describing a competition for attention. The important
+          property is
         </p>
 
         <div class="equation-block">
@@ -916,16 +928,21 @@
         </div>
 
         <p>
-          This equation is simply a convenient model of a positional competition. Increasing my
-          depth $d_i$ can increase my share of attention, but because the total attention share is
-          fixed, what I gain must come partly at the expense of somebody else.
+          There is one unit of attention to distribute. A paper can increase its share, but the
+          total amount being divided does not change.
         </p>
 
         <p>
-          The parameter $\rho(a)$ measures how strongly the allocation of attention responds to
-          apparent scientific depth. If $\rho$ is small, differences in sophistication matter
-          relatively little for attention. If $\rho$ is large, attention becomes concentrated more
-          strongly on work perceived to be at the frontier.
+          The parameter $\rho(a)$ tells us how strongly attention responds to scientific depth.
+          If $\rho$ is small, being slightly more technically sophisticated than everybody else
+          does not buy much additional attention. If $\rho$ is large, small differences in
+          apparent frontier sophistication can strongly affect which work gets noticed.
+        </p>
+
+        <p>
+          I have written $\rho(a)$ rather than simply $\rho$ because later I want to ask whether AI
+          itself can intensify this competition. But that will be an additional assumption.
+          For the moment we can simply regard $a$ as fixed.
         </p>
 
         <p>
@@ -946,30 +963,198 @@
         </div>
 
         <p>
-          There are now three ingredients. The first term rewards scientific depth. The second
-          penalizes work that becomes inaccessible to most readers. The third is new: it rewards
-          depth insofar as depth helps a paper capture attention from competing papers.
+          There are now three distinct pieces in this expression.
         </p>
 
         <p>
-          This third term is what changes the problem completely.
+          The factor $e^{\gamma d_i}$ is the same benefit from scientific depth that we introduced
+          before: deeper work can potentially contain more scientific value.
         </p>
 
         <p>
-          An individual author chooses $d_i$ while treating the depths of the other papers as
-          given. Differentiating the attention term gives
+          The factor
+        </p>
+
+        <div class="equation-block">
+          $$
+          1-\Phi\!\left(
+          \frac{d_i-a-\mu}{\sigma}
+          \right)
+          $$
+        </div>
+
+        <p>
+          is the accessibility penalty. If the paper becomes too demanding relative to the
+          effective sophistication of the population, fewer people can absorb it.
+        </p>
+
+        <p>
+          Finally, $v_i$ is the new ingredient. It represents the fraction of collective attention
+          captured by this particular paper.
+        </p>
+
+        <p>
+          We can now ask what an individual scientist will do.
+        </p>
+
+        <p>
+          Imagine that I am the author of paper $i$. Everybody else has already chosen the depth of
+          their papers,
+        </p>
+
+        <div class="equation-block">
+          $$
+          d_1,\ldots,d_{i-1},d_{i+1},\ldots,d_M.
+          $$
+        </div>
+
+        <p>
+          I take those choices as given and choose my own $d_i$ in order to maximize my own
+          realized impact $Y_i$. This is the elementary strategic problem underlying what is called
+          a <em>Nash equilibrium</em>.
+        </p>
+
+        <div class="callout">
+          A Nash equilibrium is simply a configuration in which, once everybody else's choices are
+          fixed, no individual can improve their own outcome by changing their choice alone.
+        </div>
+
+        <p>
+          In our case, an equilibrium depth is therefore one for which no author wants to make
+          their own paper slightly deeper or slightly shallower while the other papers remain
+          unchanged.
+        </p>
+
+        <p>
+          Let us derive this condition rather than simply state it.
+        </p>
+
+        <p>
+          It is easier to differentiate the logarithm of $Y_i$. Since
+        </p>
+
+        <div class="equation-block">
+          $$
+          \log Y_i
+          =
+          \log N
+          +
+          \gamma d_i
+          +
+          \log\left[
+          1-\Phi\!\left(
+          \frac{d_i-a-\mu}{\sigma}
+          \right)
+          \right]
+          +
+          \log v_i,
+          $$
+        </div>
+
+        <p>
+          we can examine the three contributions separately.
+        </p>
+
+        <p>
+          First,
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{\partial}{\partial d_i}(\gamma d_i)=\gamma.
+          $$
+        </div>
+
+        <p>
+          This is the direct reward for going deeper.
+        </p>
+
+        <p>
+          Second, defining
+        </p>
+
+        <div class="equation-block">
+          $$
+          z_i=\frac{d_i-a-\mu}{\sigma},
+          $$
+        </div>
+
+        <p>
+          the derivative of the accessibility term is
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{\partial}{\partial d_i}
+          \log[1-\Phi(z_i)]
+          =
+          -\frac{1}{\sigma}
+          \frac{\phi(z_i)}{1-\Phi(z_i)}
+          =
+          -\frac{1}{\sigma}m(z_i).
+          $$
+        </div>
+
+        <p>
+          This is the cost of going deeper: as $d_i$ rises, the paper moves farther into the upper
+          tail of what the scientific population can comfortably absorb.
+        </p>
+
+        <p>
+          Finally, we have the new attention term. Taking the logarithm of $v_i$ gives
+        </p>
+
+        <div class="equation-block">
+          $$
+          \log v_i
+          =
+          \rho(a)d_i
+          -
+          \log\left(
+          \sum_{j=1}^{M}e^{\rho(a)d_j}
+          \right).
+          $$
+        </div>
+
+        <p>
+          Differentiating with respect to my own $d_i$, while keeping everybody else's depth fixed,
+          gives
         </p>
 
         <div class="equation-block">
           $$
           \frac{\partial\log v_i}{\partial d_i}
           =
+          \rho(a)-\rho(a)v_i
+          =
           \rho(a)(1-v_i).
           $$
         </div>
 
         <p>
-          The author's private first-order condition is therefore
+          This term has an intuitive meaning. Making my paper deeper can increase my share of
+          attention. The gain is positive as long as I do not already possess all the attention,
+          that is, as long as $v_i<1$.
+        </p>
+
+        <p>
+          Putting the three pieces together,
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{\partial\log Y_i}{\partial d_i}
+          =
+          \underbrace{\gamma}_{\text{scientific value}}
+          -
+          \underbrace{\frac{1}{\sigma}m(z_i)}_{\text{loss of accessibility}}
+          +
+          \underbrace{\rho(a)(1-v_i)}_{\text{gain in attention}}.
+          $$
+        </div>
+
+        <p>
+          The individual optimum occurs when these effects balance:
         </p>
 
         <div class="equation-block">
@@ -988,24 +1173,25 @@
         </div>
 
         <p>
-          Compare this with the condition in the previous section. There is now an additional
-          positive term,
+          This equation is worth reading in words. I make the paper deeper until the marginal loss
+          of readers is exactly compensated by two benefits: the additional scientific value of
+          depth and the additional share of attention I can capture from other papers.
+        </p>
+
+        <p>
+          We now look for the simplest possible Nash equilibrium: a symmetric one. This means that
+          all authors face the same incentives and eventually choose the same depth,
         </p>
 
         <div class="equation-block">
           $$
-          \rho(a)(1-v_i),
+          d_1=d_2=\cdots=d_M=d_N.
           $$
         </div>
 
         <p>
-          because an individual author can obtain a private advantage by making the paper more
-          competitive for attention.
-        </p>
-
-        <p>
-          Let us consider a symmetric Nash equilibrium in which all papers choose the same depth.
-          Then
+          If all papers have the same depth, symmetry immediately implies that they divide
+          attention equally:
         </p>
 
         <div class="equation-block">
@@ -1015,7 +1201,7 @@
         </div>
 
         <p>
-          Define
+          It is useful to collect the competitive term into a single quantity,
         </p>
 
         <div class="equation-block">
@@ -1027,7 +1213,7 @@
         </div>
 
         <p>
-          The Nash condition becomes
+          The equilibrium condition then becomes
         </p>
 
         <div class="equation-block">
@@ -1042,17 +1228,19 @@
         </div>
 
         <p>
-          Or, defining
+          Defining the standardized equilibrium depth
         </p>
 
         <div class="equation-block">
           $$
-          z_N=\frac{d_N-a-\mu}{\sigma},
+          z_N
+          =
+          \frac{d_N-a-\mu}{\sigma},
           $$
         </div>
 
         <p>
-          we obtain
+          we have
         </p>
 
         <div class="equation-block">
@@ -1077,9 +1265,16 @@
         </div>
 
         <p>
-          But now comes the important comparison. Imagine that the scientific community could
-          coordinate and choose the depth of all papers together. If every $d_i$ is increased by
-          the same amount, nobody gains a larger share of attention. In the symmetric case,
+          So far we have found what individually optimizing scientists will do. But this is not yet
+          enough to speak of a tragedy. We need something to compare the Nash equilibrium with.
+          We need to ask what would happen if the scientific community could somehow choose
+          collectively rather than competitively.
+        </p>
+
+        <p>
+          Imagine, as a thought experiment, that all authors agreed to change the depth of their
+          papers together. If everybody increases $d_i$ by the same amount, nobody gains attention
+          relative to anybody else. In the symmetric case,
         </p>
 
         <div class="equation-block">
@@ -1089,11 +1284,12 @@
         </div>
 
         <p>
-          remains unchanged.
+          remains exactly unchanged.
         </p>
 
         <p>
-          In fact, the total realized impact of all papers in a symmetric configuration is
+          We can see this directly by adding the realized impacts of all papers. In a symmetric
+          configuration, where every paper has depth $d$,
         </p>
 
         <div class="equation-block">
@@ -1111,7 +1307,7 @@
         </div>
 
         <p>
-          Since the attention shares sum to one,
+          But the attention shares sum to one. Therefore
         </p>
 
         <div class="equation-block">
@@ -1128,13 +1324,13 @@
         </div>
 
         <p>
-          The attention competition has completely disappeared from the collective objective.
-          From the point of view of the scientific community as a whole, making every paper more
-          complicated merely to compete for attention produces no attention gain whatsoever.
+          The attention competition disappears completely from the collective objective.
+          Redistributing attention between papers cannot create more total attention.
         </p>
 
         <p>
-          The coordinated optimum is consequently exactly the optimum we obtained before:
+          The collectively chosen depth therefore satisfies exactly the same condition we found
+          before introducing competition:
         </p>
 
         <div class="equation-block">
@@ -1156,19 +1352,19 @@
         </div>
 
         <p>
-          We can now see precisely where the tragedy enters. An individual scientist has an
-          incentive to increase $d_i$, because doing so can increase that scientist's share of
-          attention. But if everybody responds in exactly the same way, the attention advantage
-          disappears. All papers become more sophisticated, while everybody returns to the same
-          relative position.
+          Now we can finally compare the two outcomes.
         </p>
 
         <p>
-          The private benefit is positional; the resulting complexity is real.
+          In the collective solution, scientific depth is increased only when its scientific
+          benefit compensates for the loss of accessibility. In the Nash equilibrium, every
+          scientist has one additional reason to increase depth: doing so may steal some attention
+          from everybody else.
         </p>
 
         <p>
-          Since the Gaussian inverse Mills ratio is increasing,
+          Since $m(z)$ is increasing, $m^{-1}$ is increasing as well. Therefore, whenever there is
+          positive competition for attention,
         </p>
 
         <div class="equation-block">
@@ -1180,39 +1376,65 @@
         </div>
 
         <p>
-          This is the central result of this section. The competitive Nash equilibrium produces
-          papers that are systematically deeper, or more complicated, than the depth that would
-          maximize collective scientific impact.
+          This is the central result.
         </p>
 
         <div class="callout">
-          What is individually rational can therefore become collectively wasteful:
-          each scientist has an incentive to add sophistication in order to capture attention,
-          even though once everybody does it no scientist retains the relative advantage.
+          Individually rational competition pushes scientific work beyond the depth that would be
+          chosen collectively.
         </div>
 
         <p>
-          This is what I mean here by a tragedy of the scientific commons. The tragedy is not that
-          knowledge is consumed. It is that a scarce collective resource &mdash; scientific
-          attention and cognitive bandwidth &mdash; generates a positional arms race whose residue
-          is additional complexity.
+          Each scientist has an incentive to make their work more sophisticated because, taken
+          alone, this can increase their share of attention. But once everybody responds in the
+          same way, the relative advantage disappears. Everyone again has roughly the same share,
+          while the additional complexity remains.
         </p>
 
         <p>
-          Notice that this already occurs for any $R(a)>0$. We have therefore gone beyond the
-          previous Red Queen model even without assuming that AI changes the intensity of
-          competition. There is now a wedge between the privately chosen depth $d_N$ and the
-          collectively desirable depth $d_C$.
+          That is the sense in which this resembles a tragedy of the commons. The private gain is
+          positional, while part of the cost is imposed on the community through a literature that
+          becomes more expensive to read, evaluate, reproduce, and absorb.
         </p>
 
         <p>
-          We can then ask a second question: can AI make this wedge itself larger?
+          Notice that this is already different from the Red Queen effect of the previous section.
+          There, the frontier simply moved together with our capabilities. Here there is a wedge
+          between two quantities:
+        </p>
+
+        <div class="equation-block">
+          $$
+          d_N(a)-d_C(a)>0.
+          $$
+        </div>
+
+        <p>
+          The decentralized scientific system produces more equilibrium complexity than the
+          coordinated system would choose.
         </p>
 
         <p>
-          To study that possibility, suppose that AI does not merely increase effective capability
-          through $a$, but also intensifies the positional competition for attention. In the model
-          this is the additional assumption
+          We can now ask one final question. So far, we have compared the Nash and collective
+          equilibria for a fixed level of AI capability $a$. But what happens to the Nash
+          equilibrium itself as AI becomes more powerful?
+        </p>
+
+        <p>
+          There are actually two possible effects.
+        </p>
+
+        <p>
+          The first is the one we already know. Increasing $a$ directly increases everyone's
+          effective capability. Even with no change in competition, this shifts equilibrium depth
+          to the right. That was the Red Queen effect.
+        </p>
+
+        <p>
+          The second possibility is new. AI might also make the competition for attention stronger.
+          If producing calculations, simulations, code, figures, literature reviews, and polished
+          papers becomes cheaper, more material can compete for the same finite human attention.
+          In our model, that possibility is represented by
         </p>
 
         <div class="equation-block">
@@ -1222,38 +1444,50 @@
         </div>
 
         <p>
-          This assumption does not follow mathematically from the existence of AI. It is a
-          hypothesis about how scientific institutions respond to it. For example, if AI makes it
-          much cheaper to produce code, calculations, simulations, polished manuscripts, and entire
-          papers, then the quantity of material competing for a fixed amount of human attention may
-          increase. The scientific system may then reward increasingly strong signals of frontier
-          sophistication.
+          This is an additional assumption, not a mathematical consequence of AI. What I want to
+          understand is what follows <em>if</em> it happens.
         </p>
 
         <p>
-          Starting from
+          Recall that the Nash equilibrium is determined by
         </p>
 
         <div class="equation-block">
           $$
-          m(z_N)=\sigma[\gamma+R(a)],
+          m(z_N)=\sigma[\gamma+R(a)].
           $$
         </div>
 
         <p>
-          implicit differentiation gives
+          We now want to know how $z_N$ changes when $a$ changes. In other words, we differentiate
+          the equilibrium condition itself with respect to $a$.
+        </p>
+
+        <p>
+          The left-hand side depends on $a$ through $z_N$, so the chain rule gives
+        </p>
+
+        <div class="equation-block">
+          $$
+          m'(z_N)\frac{\mathrm d z_N}{\mathrm d a}.
+          $$
+        </div>
+
+        <p>
+          On the right-hand side, $\gamma$ and $\sigma$ are constant, while $R$ may depend on $a$.
+          Therefore
         </p>
 
         <div class="equation-block">
           $$
           m'(z_N)\frac{\mathrm d z_N}{\mathrm d a}
           =
-          \sigma R'(a),
+          \sigma R'(a).
           $$
         </div>
 
         <p>
-          and therefore
+          Solving for the change in the standardized gap gives
         </p>
 
         <div class="equation-block">
@@ -1265,17 +1499,43 @@
         </div>
 
         <p>
-          Since
+          Now remember what $z_N$ means:
         </p>
 
         <div class="equation-block">
           $$
-          d_N=a+\mu+\sigma z_N,
+          z_N
+          =
+          \frac{d_N-a-\mu}{\sigma}.
           $$
         </div>
 
         <p>
-          we obtain
+          Equivalently,
+        </p>
+
+        <div class="equation-block">
+          $$
+          d_N=a+\mu+\sigma z_N.
+          $$
+        </div>
+
+        <p>
+          Differentiating this expression is particularly illuminating:
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{\mathrm d d_N}{\mathrm d a}
+          =
+          1
+          +
+          \sigma\frac{\mathrm d z_N}{\mathrm d a}.
+          $$
+        </div>
+
+        <p>
+          Substituting the expression above,
         </p>
 
         <div class="equation-block">
@@ -1290,6 +1550,39 @@
         </div>
 
         <p>
+          This formula is much easier to interpret than it might initially appear.
+        </p>
+
+        <p>
+          The first term,
+        </p>
+
+        <div class="equation-block">
+          $$1,$$
+        </div>
+
+        <p>
+          is precisely the Red Queen effect from the previous section. If AI gives scientists one
+          additional unit of capability and nothing else changes, equilibrium scientific depth
+          increases by one unit.
+        </p>
+
+        <p>
+          The second term,
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{\sigma^2R'(a)}{m'(z_N)},
+          $$
+        </div>
+
+        <p>
+          is the new strategic effect. It measures how much additional depth is produced because
+          AI has also changed the intensity of competition for attention.
+        </p>
+
+        <p>
           For the Gaussian inverse Mills ratio,
         </p>
 
@@ -1300,7 +1593,17 @@
         </div>
 
         <p>
-          Hence, if AI intensifies the competition for attention so that $R'(a)>0$, then
+          Therefore, if stronger AI also means stronger competition,
+        </p>
+
+        <div class="equation-block">
+          $$
+          R'(a)>0,
+          $$
+        </div>
+
+        <p>
+          then the second term is positive and
         </p>
 
         <div class="equation-block">
@@ -1312,18 +1615,24 @@
         </div>
 
         <p>
-          This is stronger than the Red Queen effect of the previous section. There, one unit of
-          additional capability produced one unit of additional optimal depth. Here, under the
-          additional assumption that competition becomes stronger, one unit of capability produces
-          <em>more than one unit</em> of equilibrium depth.
+          This is stronger than the Red Queen effect.
         </p>
 
         <p>
-          The frontier is no longer merely running alongside us. It is running faster than us.
+          In the previous section, one additional unit of scientific capability generated one
+          additional unit of optimal depth. Here, one additional unit of capability can generate
+          <em>more than one unit</em> of equilibrium depth, because the technological improvement
+          is accompanied by a stronger positional competition.
         </p>
 
         <p>
-          The relevant standardized distance from the literature is
+          The frontier is no longer simply moving with us. It is moving faster than us.
+        </p>
+
+        <p>
+          We can make that statement precise by looking again at $z_N$. This quantity measures the
+          depth of the equilibrium literature relative to the AI-augmented capability of the
+          scientific population:
         </p>
 
         <div class="equation-block">
@@ -1334,32 +1643,57 @@
         </div>
 
         <p>
-          When $R'(a)>0$,
+          If $R'(a)>0$, then
         </p>
 
         <div class="equation-block">
           $$
-          \frac{\mathrm d z_N}{\mathrm d a}>0,
+          \frac{\mathrm d z_N}{\mathrm d a}>0.
           $$
         </div>
 
         <p>
-          and therefore
+          In other words, even after subtracting the direct capability gain $a$, the equilibrium
+          literature moves farther into the upper tail of the population.
+        </p>
+
+        <p>
+          The fraction of scientists capable of absorbing a paper at the equilibrium depth is
         </p>
 
         <div class="equation-block">
           $$
-          \frac{\mathrm d}{\mathrm d a}
-          [1-\Phi(z_N)]
+          A_N(a)=1-\Phi(z_N).
+          $$
+        </div>
+
+        <p>
+          Differentiating,
+        </p>
+
+        <div class="equation-block">
+          $$
+          \frac{\mathrm d A_N}{\mathrm d a}
           =
           -\phi(z_N)
-          \frac{\mathrm d z_N}{\mathrm d a}
-          <0.
+          \frac{\mathrm d z_N}{\mathrm d a}.
           $$
         </div>
 
         <p>
-          We have arrived at the stronger paradox:
+          Since $\phi(z_N)>0$, whenever $R'(a)>0$ we obtain
+        </p>
+
+        <div class="equation-block">
+          $$
+          \boxed{
+          \frac{\mathrm d A_N}{\mathrm d a}<0
+          }.
+          $$
+        </div>
+
+        <p>
+          And this is the stronger paradox I was looking for:
         </p>
 
         <div class="callout">
@@ -1368,41 +1702,46 @@
         </div>
 
         <p>
-          This distinction is important. AI itself is not making science worse in the model.
-          AI supplies the capability increase $a$. The loss comes from the institutional response
-          to that capability: the positional competition over a scarce pool of attention.
+          It is important to be precise about what the model is saying. AI itself is not making
+          science less accessible. The direct effect of AI is to increase capability. The
+          deterioration appears only if the scientific system responds to that capability by
+          intensifying a positional competition over scarce attention.
         </p>
 
         <p>
           An individual scientist may therefore have every reason to add another derivation,
-          another simulation, another model, another appendix, another benchmark, another layer of
-          formal machinery. If one scientist does it, that scientist may move ahead. When everybody
-          does it, nobody moves ahead. What remains is a literature that is larger, denser, and more
-          expensive to absorb.
+          another simulation, another model, another benchmark, another appendix, another layer of
+          formal machinery. If one scientist does it, that scientist may gain an advantage. If
+          everybody does it, the relative advantage largely disappears. But the extra machinery
+          remains.
         </p>
 
         <p>
           This is precisely where Thiel re-enters the story. Competition can make us extraordinarily
-          good at whatever dimension has become the basis of competition. But it does not tell us
-          whether that was the right dimension to optimize.
+          good at whatever dimension has become the basis of competition. It cannot tell us whether
+          that dimension was worth optimizing in the first place.
         </p>
 
         <p>
-          AI may make this particularly important because it dramatically lowers the cost of
-          participating in such a race. If everybody can produce more derivations, more code, more
-          simulations, more literature review, more polished prose, and more papers, the equilibrium
-          response does not have to be more leisure or more time for thought. It can instead be a
-          higher expected quantity of all of these things.
+          And AI may make this particularly important because it lowers the cost of participating
+          in the race. If everybody can produce more derivations, more code, more simulations, more
+          literature review, more polished prose, and more papers, the equilibrium response need
+          not be more leisure, more reflection, or more time spent thinking about difficult
+          questions.
         </p>
 
         <p>
-          And this also clarifies something I speculated about a few posts ago. This particular toy
-          model says nothing about AI flattening or widening the distribution of scientific
-          capability. By construction, adding the same $a$ to everybody shifts the mean and leaves
-          $\sigma$ unchanged. Unequal access to models, compute, data, institutional support,
-          reputation, or simply unequal ability to use AI could change the shape of that
-          distribution in the real world. But that is a different mechanism, and an empirical
-          question. It is not a result of the equations above.
+          It may simply be that the expected quantity of all those things increases.
+        </p>
+
+        <p>
+          A few posts ago I speculated that AI might flatten some differences in scientific
+          capability. This toy model cannot establish that. By construction, adding the same $a$
+          to everybody shifts the mean of the capability distribution and leaves $\sigma$
+          unchanged. Unequal access to models, compute, data, institutional support, reputation,
+          or simply unequal ability to use AI could instead change the shape of the distribution in
+          the real world. But that is another mechanism, and ultimately an empirical question. It
+          does not follow from the equations above.
         </p>
 
         <div class="hr"></div>
