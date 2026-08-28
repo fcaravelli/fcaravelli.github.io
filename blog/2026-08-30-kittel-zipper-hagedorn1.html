@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Why water stops getting hotter at the boiling point – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">statistical mechanics • boiling • Hagedorn temperature</p>
+        <h3>Why water stops getting hotter at the boiling point</h3>
+        <p><em>The Kittel zipper and the smallest useful model of latent heat</em></p>
+        <p><em>August 30th, 2026</em></p>
+
+        <p>
+          Finally, our book, Volume 3, is available for pre-order:
+          <a href="https://www.amazon.it/-/en/Francesco-Caravelli/dp/1032993316"
+          target="_blank" rel="noopener"><em>Practical Statistical Mechanics: Volume 3</em></a>.
+          Let me tell you about one of my favourite models discussed in the book. This blog
+          post has to do with boiling. There are many models that I like, but this is truly
+          one of the simplest ways of seeing what boiling looks like from the point of view
+          of statistical mechanics, without invoking any complicated mathematics.
+        </p>
+
+        <p>
+          Boiling is an interesting dynamical state of a liquid. As you might know, I am now
+          back in Italy, where millions of people make pasta every day. It is cheap, fast and
+          a good source of carbs. The order of operations is important (!): take a pot,
+          put water in it, turn on the heat, wait for the water to boil and only then (!) add the
+          pasta. Let it cook until it is soft enough, and no longer. Jokes aside, boiling has
+          several genuinely interesting features.
+        </p>
+
+        <p>
+          First, a short excursus. There is a nice video on YouTube explaining the basic
+          features of boiling points <a href="https://www.youtube.com/watch?v=Z74slB1gR1w"
+          target="_blank" rel="noopener">here</a>.
+        </p>
+
+        <figure class="post-figure">
+          <img src="img/boiling1.png" alt="Boiling water and the formation of vapour bubbles">
+          <figcaption>
+            Once boiling begins, adding heat changes the amount of vapour much more than it
+            changes the temperature.
+          </figcaption>
+        </figure>
+
+        <p>
+          The interesting question is what happens after boiling starts. Keep supplying heat
+          to water at atmospheric pressure and, as long as liquid water remains, its
+          temperature stays close to the boiling point. The energy has not disappeared. It is
+          being used to turn liquid into vapour. Vapour bubbles are created near the heat
+          source and, because vapour is less dense than liquid water, buoyancy carries them
+          upwards.
+        </p>
+
+        <p>
+          If we measured the temperature, we would see it increase after the heat source is
+          turned on, until it reaches the boiling point. For water at atmospheric pressure
+          this is approximately $100\,^{\circ}\mathrm{C}$. After that, the added energy mostly
+          pays the energetic cost of the phase change. It is not simply ejected from the
+          fluid: it becomes latent heat and leaves with the vapour.
+        </p>
+
+        <p>
+          Something visually similar happens on the Sun, and one can watch it
+          <a href="https://www.youtube.com/watch?v=oHTNqGH1DXQ" target="_blank"
+          rel="noopener">here</a>. The solar surface is not literally boiling water: what we
+          see is granulation caused by convection. The scale is also slightly different. A
+          solar granule can be roughly the size of Texas. This is what having nuclear fusion
+          as the ultimate heat source does to you.
+        </p>
+
+        <p>
+          Now the question is: how do we understand the temperature plateau from a
+          statistical-mechanics perspective? Surprisingly, we can reproduce its basic logic
+          with a model containing no liquid molecules, bubbles or hydrodynamics. We need only
+          something closer to a DNA strand: Kittel's molecular zipper. It will also give us a
+          particularly clean explanation of what people mean by a <em>Hagedorn temperature</em>.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#boiling">1. What must a model of boiling explain?</a></li>
+            <li><a href="#zipper">2. Kittel's zipper</a></li>
+            <li><a href="#competition">3. Energy against multiplicity</a></li>
+            <li><a href="#hagedorn">4. The Hagedorn temperature</a></li>
+            <li><a href="#latent-heat">5. Where the latent heat goes</a></li>
+            <li><a href="#limits">6. What the zipper leaves out</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="boiling">
+        <h4>1. What must a model of boiling explain?</h4>
+
+        <p>
+          Let us first decide what we are trying to explain. We are not trying to reproduce
+          the shape of the bubbles, the motion of the water in the pot or the details of the
+          liquid-vapour interface. Those are difficult and interesting problems, but they are
+          not the point here. We want to explain only the following observation: why can we
+          keep adding energy at the boiling point without appreciably increasing the
+          temperature?
+        </p>
+
+        <p>
+          Let me recall what is the important quantity to look at, which is free energy. This
+          is given by
+          <div class="equation-block">
+          $$F=E-T S $$
+          </div>
+        which we want to minimize. Critical points are those in which, at a course level,
+        there are either changes in the energy potential (E) or the entropy, and which term dominates.
+        </p>
+
+
+
+        <p>
+          Before boiling, adding energy makes molecular motion more agitated, and the
+          temperature rises. Let me first provide a picture of the phenomenon.
+          At the boiling point a second option becomes available: a
+          molecule can leave the liquid and join the vapour. This costs energy, because the
+          molecule must escape the interactions that kept it in the liquid. But the vapour
+          also offers many more ways of arranging the same molecules. In statistical
+          mechanics language, the vapour wins in entropic terms, which is what the whole point is about.
+        </p>
+
+        <p>
+          So what are the minimum ingredients? We need a bound phase with low energy, an
+          unbound phase with many more microscopic configurations, and a way to progressively
+          convert one into the other. That is already enough. We can forget the whole pot and
+          replace it with a zipper.
+        </p>
+
+        <p>
+          The essential competition is not simply between hot and cold. It is between
+          <strong>energy</strong>, which favours the bound phase, and <strong>entropy</strong>,
+          which favours the phase with more ways of being arranged.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="zipper">
+        <h4>2. Kittel's zipper</h4>
+
+        <p>
+          Here comes Kittel's model. Imagine a zipper with $N$ links. It can open from one end
+          only, just like an ordinary zipper: link number two cannot open before link number
+          one, link number three cannot open before the first two, and so on. The model was
+          originally introduced as a caricature of molecular unzipping, such as the separation
+          of two strands of a molecule.
+        </p>
+
+        <p>
+          Opening one link costs an energy $\varepsilon$. Therefore, if $n$ links are open,
+          the total energy is simply
+        </p>
+
+        <div class="equation-block">
+          $$E_n=n\varepsilon.$$
+        </div>
+
+        <p>
+          So far this is almost embarrassingly simple. But now comes the assumption that does
+          all the work. Once a link is open, it can move around in $q$ different ways. You can
+          think of these as $q$ possible orientations of the open link. If one link is open
+          there are $q$ possibilities; if two are open there are $q^2$ possibilities; and if
+          $n$ are open there are
+        </p>
+
+        <div class="equation-block">
+          $$\Omega_n=q^n.$$
+        </div>
+
+        <p>
+          microscopic configurations. This is the key. Opening the zipper is expensive in
+          energy, but profitable in entropy. Energy would like to keep it closed; entropy
+          would like to open it.
+        </p>
+
+        <p>
+          Notice also that $q$ must be larger than one. If $q=1$, opening a link produces no
+          new multiplicity and therefore no entropic reward. In that case there is no finite
+          transition temperature. The entire phenomenon comes from the competition between
+          an energy that grows like $n$ and a number of states that grows like $q^n$.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="competition">
+        <h4>3. Energy against multiplicity</h4>
+
+        <p>
+          Let us now do the small amount of statistical mechanics that we need. A
+          configuration of energy $E_n$ receives the Boltzmann weight
+          $\exp[-E_n/(k_{\mathrm B}T)]$. Since the energy is $n\varepsilon$, this gives a
+          factor $\exp[-n\varepsilon/(k_{\mathrm B}T)]$.
+        </p>
+
+        <p>
+          But there is not only one configuration with $n$ links open. There are $q^n$ of
+          them. We must therefore multiply the Boltzmann factor by this multiplicity. The
+          total weight of the sector with $n$ open links is
+        </p>
+
+        <div class="equation-block">
+          $$q^n e^{-n\varepsilon/(k_{\mathrm B}T)}
+          =\left(qe^{-\varepsilon/(k_{\mathrm B}T)}\right)^n.$$
+        </div>
+
+        <p>
+          It is useful to give the quantity in parentheses a short name,
+        </p>
+
+        <div class="equation-block">
+          $$x(T)=qe^{-\varepsilon/(k_{\mathrm B}T)},$$
+        </div>
+
+        <p>
+          because then the partition function is nothing more exotic than a geometric
+          series:
+        </p>
+
+        <div class="equation-block">
+          $$Z_N(T)=\sum_{n=0}^{N}x^n
+          =\frac{1-x^{N+1}}{1-x}.$$
+        </div>
+
+        <p>
+          And that is essentially the entire calculation. If $x&lt;1$, every additional open
+          link reduces the statistical weight: terms get smaller as $n$ grows and the zipper
+          prefers to remain near the closed end. If $x&gt;1$, the terms grow with $n$ and the
+          zipper runs towards the open end. The borderline case is $x=1$, where every value
+          of $n$ has the same statistical weight.
+        </p>
+
+        <p>
+          For a finite zipper this change is smooth; a finite sum cannot produce a true
+          thermodynamic singularity. The sharp phase transition appears when we let
+          $N\rightarrow\infty$. This is the usual thermodynamic limit, only here we can see
+          the whole mechanism inside a first-year geometric series.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="hagedorn">
+        <h4>4. The Hagedorn temperature</h4>
+
+        <p>
+          We can now find the special temperature. At the borderline, $x=1$, so
+          $q\exp[-\varepsilon/(k_{\mathrm B}T)]=1$. Solving for $T$ gives
+        </p>
+
+        <div class="equation-block">
+          $$T_{\mathrm H}=\frac{\varepsilon}{k_{\mathrm B}\ln q}.$$
+        </div>
+
+        <p>
+          Below this temperature the energy cost wins and the zipper is closed. Above it the
+          multiplicity wins and the zipper opens. At the transition neither side wins.
+        </p>
+
+        <p>
+          But why call this a Hagedorn temperature? To see it, we eliminate $n$ from the
+          problem. Since $E=n\varepsilon$, the number of states at energy $E$ is
+        </p>
+
+        <div class="equation-block">
+          $$\Omega(E)=q^{E/\varepsilon}
+          =\exp\!\left(\frac{E}{k_{\mathrm B}T_{\mathrm H}}\right).$$
+        </div>
+
+        <p>
+          In other words, the number of possible configurations grows exponentially with
+          energy. This is unusual enough to be dangerous. The Boltzmann factor tries to
+          suppress high energies as $\exp[-E/(k_{\mathrm B}T)]$, while the density of states
+          grows as $\exp[E/(k_{\mathrm B}T_{\mathrm H})]$. Below $T_{\mathrm H}$ the Boltzmann
+          suppression is stronger. At $T_{\mathrm H}$ the two exponentials cancel exactly.
+          Above it, the partition function of the infinite zipper does not converge.
+        </p>
+
+        <p>
+          This is the Hagedorn mechanism in its most naked form. Rolf Hagedorn encountered a
+          similar exponential proliferation in the statistical description of hadrons. If
+          increasing the energy keeps producing new states fast enough, the system spends its
+          energy populating those states instead of becoming hotter. What looks like a maximum
+          temperature is normally a warning that the present description has reached a new
+          phase and that different physics must take over.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="latent-heat">
+        <h4>5. Where the latent heat goes</h4>
+
+        <p>
+          We can finally return to the pot of water. There is another way of looking at the
+          zipper which makes the connection to latent heat almost immediate. If $n$ links are
+          open, there are $q^n$ configurations, and therefore the entropy is
+        </p>
+
+        <div class="equation-block">
+          $$S(E)=k_{\mathrm B}\ln\Omega(E)
+          =\frac{k_{\mathrm B}\ln q}{\varepsilon}E.$$
+        </div>
+
+        <p>
+          The microcanonical definition of temperature is
+          $1/T=\partial S/\partial E$. Here the entropy is a straight line as a function of
+          energy, so its slope is constant:
+        </p>
+
+        <div class="equation-block">
+          $$\frac{1}{T}=\frac{k_{\mathrm B}\ln q}{\varepsilon}
+          \qquad\Longrightarrow\qquad T=T_{\mathrm H}.$$
+        </div>
+
+        <p>
+          This is the result we were looking for. We can add energy, open more links and move
+          from the closed phase to the open one, but the temperature remains
+          $T_{\mathrm H}$. The extra energy changes <em>how much</em> of the zipper is open;
+          it does not make the zipper hotter. Opening all $N$ links requires the energy
+          $N\varepsilon$. This is our analogue of latent heat.
+        </p>
+
+        <p>
+          If you prefer the canonical language, the same point can be made using the free
+          energy. Opening one link costs the energy $\varepsilon$, but it gains the entropy
+          $k_{\mathrm B}\ln q$. The free-energy difference per link is therefore
+        </p>
+
+        <div class="equation-block">
+          $$\Delta f=\varepsilon-k_{\mathrm B}T\ln q.$$
+        </div>
+
+        <p>
+          Below $T_{\mathrm H}$ this is positive, and opening is too expensive. Above
+          $T_{\mathrm H}$ it is negative, and entropy pays the bill. Exactly at
+          $T_{\mathrm H}$, energy and entropy cancel.
+        </p>
+
+        <p>
+          For real boiling at fixed pressure, the appropriate quantity is the Gibbs free
+          energy rather than the simple energy used by the zipper:
+          $\Delta g=\Delta h-T\Delta s$. At the boiling point the liquid and vapour have the
+          same Gibbs free energy. The latent heat supplies the enthalpy needed to convert more
+          liquid into vapour while the temperature remains approximately fixed. The zipper is
+          not a microscopic model of water, but it gets this balance exactly right.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="limits">
+        <h4>6. What the zipper leaves out</h4>
+
+        <p>
+          Let me stress the obvious before somebody complains: the zipper is not water. It has
+          no pressure, no volume, no interface, no bubbles, no surface tension and no
+          nucleation barrier. In fact, in water you can reduce the pressure so much that 
+          as the system is boiling, you literally have ice in the water (the vide above will show it).
+          I recall the pleasing fact, when I was back in New Mexico, that my Italian moka  boiled sooner
+          just because we were at high altitudes.
+          Also, the model does not tell us where bubbles form or how quickly they rise.
+          Its links must also open in a prescribed order, an artificial rule that makes the
+          model solvable and allows it to display a sharp transition despite being
+          one-dimensional.
+        </p>
+
+        <p>
+          But this is also the reason the model is useful. It throws away almost everything
+          about boiling and keeps precisely the piece we wanted to understand: a bound phase
+          with few configurations, an unbound phase with many configurations, an energy cost
+          for moving from one to the other, and a temperature at which that cost is exactly
+          compensated by entropy.
+        </p>
+
+        <p>
+          At that temperature, adding heat no longer means “make the same phase hotter.” It
+          means “make more of the new phase.” Kittel's zipper reduces this idea to a geometric
+          series, and reduces the Hagedorn temperature to a race between two exponentials.
+          Not bad for a zipper.
+        </p>
+
+        <div class="callout note">
+
+          <strong>Further reading.. I suggest in particular</strong>
+          C. Kittel, <a href="https://doi.org/10.1119/1.1975930">“Phase Transition of a
+          Molecular Zipper”</a>, <em>American Journal of Physics</em> 37, 917 (1969);
+          R. Hagedorn, <a href="https://cds.cern.ch/record/346206/">“Statistical Thermodynamics
+          of Strong Interactions at High Energies”</a>, <em>Supplemento al Nuovo Cimento</em>
+          3, 147–186 (1965).
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
