@@ -1,9 +1,15 @@
 [
+       {
+   "title": "Blog Post: Why water stops getting hotter at the boiling point?",
+    "date": "2026-08-30",
+   "file": "2026-08-30-kittel-zipper-hagedorn1.html",
+    "tags": ["boiling", "Kittel model","Hagedorn temperature"]
+    },  
      {
-   "title": "Blog Post: Montaigne, Peter Thiel and the Red Queen effect",
+   "title": "Blog Post: de Montaigne, Peter Thiel and the Red Queen effect",
     "date": "2026-08-20",
    "file": "2026-08-20-montaigne1.html",
-    "tags": ["AI", "Montaign", "Red Queen","science policy"]
+    "tags": ["AI", "de Montaigne", "Red Queen","science policy"]
     },  
     {
    "title": "New Publication: New globally controlled architectures based on iSWAPs with quantum error correction",
