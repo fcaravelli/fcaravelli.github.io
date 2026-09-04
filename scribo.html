@@ -621,7 +621,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       </button>
       <button class="provbtn" data-p="deepseek">
         DeepSeek
-        <span class="mtag">Cheap · V4 vision</span>
+        <span class="mtag">Cheap · 1M ctx · V4 vision</span>
       </button>
       <button class="provbtn" data-p="local">
         Local (Ollama)
@@ -653,7 +653,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       <p style="font-family:'Patrick Hand',cursive;font-size:12px;color:#9a7060;margin-top:0;margin-bottom:12px;line-height:1.5">
         Runs models on your machine — no key, fully private. Install from
         <a href="https://ollama.com" target="_blank" style="color:#1a3e7a">ollama.com</a>,
-        then in a terminal: <code style="font-family:monospace;font-size:11px">ollama pull qwen2.5vl:7b</code><br>
+        then in a terminal: <code style="font-family:monospace;font-size:11px">ollama pull qwen3-vl:8b</code><br>
         If “Test” fails from the app, start Ollama with
         <code style="font-family:monospace;font-size:11px">OLLAMA_ORIGINS=* ollama serve</code> (allows the app to connect).
       </p>
@@ -663,63 +663,91 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
 
     <label class="flabel" style="margin-bottom:9px">Model</label>
     <div class="mgrid" id="claudemodels">
-      <button class="mbtn on" data-m="claude-sonnet-4-6">
-        Sonnet 4.6 ✦
-        <span class="mtag">Recommended · vision + LaTeX</span>
+      <button class="mbtn on" data-m="claude-sonnet-5">
+        Sonnet 5 ✦
+        <span class="mtag">Recommended · vision + LaTeX · 1M ctx</span>
       </button>
       <button class="mbtn" data-m="claude-haiku-4-5-20251001">
         Haiku 4.5
         <span class="mtag">Fast · cheapest</span>
       </button>
-      <button class="mbtn" data-m="claude-opus-4-7">
-        Opus 4.7
-        <span class="mtag">Deeper reasoning</span>
+      <button class="mbtn" data-m="claude-opus-5">
+        Opus 5
+        <span class="mtag">Deepest reasoning</span>
+      </button>
+      <button class="mbtn" data-m="claude-fable-5-1">
+        Fable 5.1
+        <span class="mtag">Frontier · some asks route to Opus 5</span>
+      </button>
+      <button class="mbtn" data-m="claude-sonnet-4-6">
+        Sonnet 4.6
+        <span class="mtag">Previous gen · still active</span>
       </button>
       <button class="mbtn" data-m="claude-opus-4-8">
         Opus 4.8
-        <span class="mtag">Most capable</span>
+        <span class="mtag">Previous-gen Opus</span>
       </button>
     </div>
     <div class="mgrid" id="geminimodels" style="display:none">
-      <button class="gmbtn on" data-m="gemini-2.5-flash">
-        Gemini 2.5 Flash ✦
-        <span class="mtag">Fast · free tier · vision</span>
+      <button class="gmbtn on" data-m="gemini-3-flash-preview">
+        Gemini 3 Flash ✦
+        <span class="mtag">Free tier · vision · recommended</span>
       </button>
-      <button class="gmbtn" data-m="gemini-2.5-pro">
-        Gemini 2.5 Pro
-        <span class="mtag">Stronger reasoning</span>
+      <button class="gmbtn" data-m="gemini-3.8-flash">
+        Gemini 3.8 Flash
+        <span class="mtag">Newest · smartest Flash</span>
       </button>
-      <button class="gmbtn" data-m="gemini-3.5-flash">
-        Gemini 3.5 Flash
-        <span class="mtag">Newest fast · frontier</span>
+      <button class="gmbtn" data-m="gemini-3.6-flash">
+        Gemini 3.6 Flash
+        <span class="mtag">Balanced speed + multimodal</span>
       </button>
-      <button class="gmbtn" data-m="gemini-3-pro">
-        Gemini 3 Pro
-        <span class="mtag">Most capable</span>
+      <button class="gmbtn" data-m="gemini-3.1-pro-preview">
+        Gemini 3.1 Pro
+        <span class="mtag">Most capable · preview</span>
+      </button>
+      <button class="gmbtn" data-m="gemini-3.5-flash-lite">
+        Gemini 3.5 Flash-Lite
+        <span class="mtag">Cheapest · high volume</span>
+      </button>
+      <button class="gmbtn" data-m="gemini-2.5-flash">
+        Gemini 2.5 Flash
+        <span class="mtag">Legacy · still active</span>
       </button>
     </div>
     <div class="mgrid" id="deepseekmodels" style="display:none">
-      <button class="dsbtn on" data-m="deepseek-v4-flash">
-        DeepSeek V4 Flash ✦
-        <span class="mtag">Cheap · fast · vision</span>
+      <button class="dsbtn on" data-m="deepseek-v4-flash-vision-exp">
+        V4 Flash Vision ✦
+        <span class="mtag">Reads the board · experimental</span>
+      </button>
+      <button class="dsbtn" data-m="deepseek-v4-flash">
+        DeepSeek V4 Flash
+        <span class="mtag">Cheap · fast · 1M ctx · text</span>
       </button>
       <button class="dsbtn" data-m="deepseek-v4-pro">
         DeepSeek V4 Pro
-        <span class="mtag">Stronger reasoning</span>
+        <span class="mtag">Stronger reasoning · text</span>
       </button>
     </div>
     <div class="mgrid" id="localmodels" style="display:none">
-      <button class="lmbtn on" data-m="qwen2.5vl:7b">
-        Qwen2.5-VL 7B ✦
-        <span class="mtag">Sees + reasons · answers math</span>
+      <button class="lmbtn on" data-m="qwen3-vl:8b">
+        Qwen3-VL 8B ✦
+        <span class="mtag">Sees + reasons · fits 8 GB</span>
       </button>
-      <button class="lmbtn" data-m="qwen2.5vl:32b">
-        Qwen2.5-VL 32B
+      <button class="lmbtn" data-m="qwen3-vl:32b">
+        Qwen3-VL 32B
         <span class="mtag">Stronger · needs big GPU</span>
+      </button>
+      <button class="lmbtn" data-m="gemma4:12b">
+        Gemma 4 12B
+        <span class="mtag">Good on documents + OCR</span>
       </button>
       <button class="lmbtn" data-m="deepseek-ocr">
         DeepSeek-OCR
         <span class="mtag">Transcribes only · no reasoning</span>
+      </button>
+      <button class="lmbtn" data-m="qwen2.5vl:7b">
+        Qwen2.5-VL 7B
+        <span class="mtag">Older · already pulled?</span>
       </button>
     </div>
 
@@ -853,7 +881,7 @@ body{display:flex;flex-direction:column;font-family:'Caveat',cursive;}
       <p>The toolbar dropdown switches model on the fly. In <b>⚙ Settings</b> you choose a provider — Claude, Gemini, DeepSeek, or Local (Ollama) — and add one or more API keys per provider. If a key hits a limit, Scribo auto-switches to your next key for that provider. The <b>Max reply length</b> slider controls how long answers can be. Turn on <b>🔍 Verify answers</b> to have a second model (your choice) independently check each answer — its verdict appears in a green 🔍 block below the reply.</p>
 
       <p class="hsec">🖥 Local models (free, private)</p>
-      <p>Install <a href="https://ollama.com" target="_blank">Ollama</a>, run <code>ollama pull qwen2.5vl:7b</code>, then choose <b>Local (Ollama)</b> in Settings. Nothing leaves your computer. If connection fails, start it with <code>OLLAMA_ORIGINS=* ollama serve</code>.</p>
+      <p>Install <a href="https://ollama.com" target="_blank">Ollama</a>, run <code>ollama pull qwen3-vl:8b</code>, then choose <b>Local (Ollama)</b> in Settings. Nothing leaves your computer. If connection fails, start it with <code>OLLAMA_ORIGINS=* ollama serve</code>.</p>
 
       <p class="hsec">💾 Saving</p>
       <p><b>Save project (.scribo)</b> stores everything — all pages, drawings, text, images and AI chats — so you can reopen it later with <b>Open project</b> and keep working. Scribo also <b>auto-saves</b> to your browser as you go, and offers to restore your last session when you return. For sharing or printing: <b>PNG</b> = flat image; <b>PDF</b> = print-ready with rendered equations (wait for “Ready ✓”, then print); <b>HTML</b> = re-openable view-only snapshot with live maths.</p>
@@ -972,12 +1000,44 @@ function saveKeyPool(prov){
   localStorage.setItem('wb_keyidx_'+prov, String(keyIdx[prov]||0));
 }
 
-let models = {
-  claude: localStorage.getItem('wb_model_claude') || 'claude-sonnet-4-6',
-  gemini: localStorage.getItem('wb_model_gemini') || 'gemini-2.5-flash',
-  deepseek: localStorage.getItem('wb_model_deepseek') || 'deepseek-v4-flash',
-  local:  localStorage.getItem('wb_model_local')  || 'qwen2.5vl:7b'
+// Model IDs that have been retired by the providers, mapped to their
+// replacements — a saved choice from an older Scribo session gets rewritten
+// on load instead of failing with "model not found".
+const RETIRED_MODELS = {
+  // Anthropic
+  'claude-opus-4-7'          : 'claude-opus-5',
+  'claude-opus-4-1'          : 'claude-opus-5',
+  'claude-opus-4-1-20250805' : 'claude-opus-5',
+  'claude-sonnet-4-5'        : 'claude-sonnet-5',
+  'claude-sonnet-4-5-20250929':'claude-sonnet-5',
+  // Google — 3 Pro preview and the 2.0 Flash line are shut down
+  'gemini-3-pro'             : 'gemini-3.1-pro-preview',
+  'gemini-3-pro-preview'     : 'gemini-3.1-pro-preview',
+  'gemini-3.5-flash'         : 'gemini-3.6-flash',
+  'gemini-3.1-flash-lite-preview':'gemini-3.5-flash-lite',
+  'gemini-2.0-flash'         : 'gemini-3.5-flash-lite',
+  'gemini-2.0-flash-lite'    : 'gemini-3.5-flash-lite',
+  'gemini-2.5-pro'           : 'gemini-3.1-pro-preview',
+  // DeepSeek — legacy aliases retired 2026-07-24
+  'deepseek-chat'            : 'deepseek-v4-flash',
+  'deepseek-reasoner'        : 'deepseek-v4-pro'
 };
+function liveModel(id, fallback){
+  if(!id) return fallback;
+  return RETIRED_MODELS[id] || id;
+}
+
+let models = {
+  claude:   liveModel(localStorage.getItem('wb_model_claude'),   'claude-sonnet-5'),
+  gemini:   liveModel(localStorage.getItem('wb_model_gemini'),   'gemini-3-flash-preview'),
+  deepseek: liveModel(localStorage.getItem('wb_model_deepseek'), 'deepseek-v4-flash-vision-exp'),
+  local:    localStorage.getItem('wb_model_local') || 'qwen3-vl:8b'
+};
+// persist any rewrite so the migration only happens once
+Object.keys(models).forEach(p=>{
+  if(localStorage.getItem('wb_model_'+p) && localStorage.getItem('wb_model_'+p)!==models[p])
+    localStorage.setItem('wb_model_'+p, models[p]);
+});
 let ollamaURL = localStorage.getItem('wb_ollama_url') || 'http://localhost:11434';
 // live aliases for current provider
 let apiKey = activeKey(provider);
@@ -987,10 +1047,16 @@ let verifyMode = localStorage.getItem('wb_verify')==='1';
 let citeMode = localStorage.getItem('wb_cite')==='1';
 let textMode = localStorage.getItem('wb_textmode')==='1';
 let checker = localStorage.getItem('wb_checker') || '';   // "provider|model" of the checking model
+// A checker saved before a provider retired that model gets rewritten too.
+if(checker.includes('|')){
+  const [cp,cm] = checker.split('|');
+  const live = liveModel(cm, cm);
+  if(live!==cm){ checker = cp+'|'+live; localStorage.setItem('wb_checker', checker); }
+}
 // Ensure the checker always has a sensible default (a model different from the solver).
 function ensureChecker(){
   if(checker) return;
-  checker = provider==='claude' ? 'gemini|gemini-2.5-flash' : 'claude|claude-sonnet-4-6';
+  checker = provider==='claude' ? 'gemini|gemini-3-flash-preview' : 'claude|claude-sonnet-5';
 }
 ensureChecker();
 // Show/hide the toolbar "🔍 verify" badge to reflect verify mode.
@@ -1050,11 +1116,16 @@ function citeSuffix(){
 function aiName(){
   if(provider==='gemini') return 'Gemini';
   if(provider==='deepseek') return 'DeepSeek';
-  if(provider==='local')  return (models.local||'').startsWith('deepseek') ? 'DeepSeek' : 'Qwen';
+  if(provider==='local'){
+    const m=(models.local||'');
+    if(m.startsWith('deepseek')) return 'DeepSeek';
+    if(m.startsWith('gemma'))    return 'Gemma';
+    return 'Qwen';
+  }
   return 'Claude';
 }
 
-// Provider + specific model, e.g. "Claude · Sonnet 4.6", for board reply labels.
+// Provider + specific model, e.g. "Claude · Sonnet 5", for board reply labels.
 function aiLabel(prov, mdl){
   prov = prov || provider;
   mdl  = mdl  || models[prov] || model;
@@ -1188,25 +1259,32 @@ function applyProviderUI(){
 // Short labels for the compact picker, grouped by provider.
 const MODEL_CATALOG = {
   claude: { name:'Claude', items:[
-    ['claude-sonnet-4-6','Sonnet 4.6'],
+    ['claude-sonnet-5','Sonnet 5'],
     ['claude-haiku-4-5-20251001','Haiku 4.5'],
-    ['claude-opus-4-7','Opus 4.7'],
+    ['claude-opus-5','Opus 5'],
+    ['claude-fable-5-1','Fable 5.1'],
+    ['claude-sonnet-4-6','Sonnet 4.6'],
     ['claude-opus-4-8','Opus 4.8'],
   ]},
   gemini: { name:'Gemini', items:[
+    ['gemini-3-flash-preview','Gemini 3 Flash'],
+    ['gemini-3.8-flash','Gemini 3.8 Flash'],
+    ['gemini-3.6-flash','Gemini 3.6 Flash'],
+    ['gemini-3.1-pro-preview','Gemini 3.1 Pro'],
+    ['gemini-3.5-flash-lite','Gemini 3.5 Flash-Lite'],
     ['gemini-2.5-flash','Gemini 2.5 Flash'],
-    ['gemini-2.5-pro','Gemini 2.5 Pro'],
-    ['gemini-3.5-flash','Gemini 3.5 Flash'],
-    ['gemini-3-pro','Gemini 3 Pro'],
   ]},
   deepseek: { name:'DeepSeek', items:[
+    ['deepseek-v4-flash-vision-exp','DeepSeek V4 Flash Vision'],
     ['deepseek-v4-flash','DeepSeek V4 Flash'],
     ['deepseek-v4-pro','DeepSeek V4 Pro'],
   ]},
   local: { name:'Local (Ollama)', items:[
-    ['qwen2.5vl:7b','Qwen2.5-VL 7B'],
-    ['qwen2.5vl:32b','Qwen2.5-VL 32B'],
+    ['qwen3-vl:8b','Qwen3-VL 8B'],
+    ['qwen3-vl:32b','Qwen3-VL 32B'],
+    ['gemma4:12b','Gemma 4 12B'],
     ['deepseek-ocr','DeepSeek-OCR (transcribe)'],
+    ['qwen2.5vl:7b','Qwen2.5-VL 7B'],
   ]},
 };
 
@@ -1256,7 +1334,7 @@ function buildCheckerPick(){
   });
   // default the checker to a different provider than the solver if unset
   if(!checker){
-    const other = provider==='claude' ? 'gemini|gemini-2.5-flash' : 'claude|claude-sonnet-4-6';
+    const other = provider==='claude' ? 'gemini|gemini-3-flash-preview' : 'claude|claude-sonnet-5';
     checker = other;
   }
   sel.value = checker;
@@ -3164,7 +3242,8 @@ async function askGemini(messages, systemPrompt, key){
   return text;
 }
 
-// DeepSeek — OpenAI-compatible endpoint, V4 models support vision via image_url.
+// DeepSeek — OpenAI-compatible endpoint. deepseek-v4-flash-vision-exp reads images
+// via image_url; the plain V4 text models fall back to text-only (see below).
 async function askDeepSeek(messages, systemPrompt, key){
   key = key || apiKey;
   // Build OpenAI-format messages. `dropImages` strips image blocks for the
