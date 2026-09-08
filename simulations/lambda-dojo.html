@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Reduction Bench — an executable introduction to the λ-calculus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B2426; --bg2:#0F2F31; --panel:#12393B; --line:#1E4F51;
+  --fg:#E4EFEA; --dim:#8FB0AB; --gold:#F5C243; --violet:#B08BE8;
+  --coral:#FF8A6B; --mint:#64D6A8;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --serif:"Spectral",Iowan Old Style,Palatino,Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--serif)}
+body{font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:var(--mint)}
+.wrap{display:grid;grid-template-columns:230px minmax(0,1fr);gap:0;min-height:100vh}
+
+/* ---- rail ---- */
+.rail{border-right:1px solid var(--line);padding:26px 0 60px;position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--bg2)}
+.brand{padding:0 20px 18px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.brand .lam{font-family:var(--mono);font-size:34px;color:var(--gold);line-height:1}
+.brand h1{font-size:16px;font-weight:600;margin:6px 0 2px;letter-spacing:.01em}
+.brand p{margin:0;font-size:12.5px;color:var(--dim);line-height:1.45}
+nav ol{list-style:none;margin:0;padding:0}
+nav button{width:100%;text-align:left;background:none;border:0;color:var(--dim);font-family:var(--serif);
+  font-size:14.5px;padding:7px 20px 7px 44px;cursor:pointer;position:relative;line-height:1.35}
+nav button:hover{color:var(--fg);background:rgba(255,255,255,.03)}
+nav button .num{position:absolute;left:20px;font-family:var(--mono);font-size:11px;color:var(--line);top:10px}
+nav button.on{color:var(--gold);background:rgba(245,194,67,.06)}
+nav button.on .num{color:var(--gold)}
+nav button.done .num::after{content:"✓";position:absolute;left:12px;color:var(--mint)}
+nav button:focus-visible,.btn:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* ---- main ---- */
+main{padding:34px 40px 90px;max-width:1180px}
+.lesson{max-width:68ch}
+.lesson h2{font-size:29px;font-weight:600;margin:0 0 4px;letter-spacing:-.01em}
+.lesson .kicker{font-family:var(--mono);font-size:12px;color:var(--dim);margin:0 0 20px}
+.lesson p{margin:0 0 14px}
+.lesson ul{margin:0 0 14px;padding-left:20px}
+.lesson li{margin-bottom:6px}
+.lesson em{color:var(--fg)}
+.lesson b{font-weight:600}
+code{font-family:var(--mono);font-size:.88em;color:var(--gold);background:rgba(245,194,67,.08);padding:.08em .3em;border-radius:2px}
+.ty{color:var(--violet);font-family:var(--mono);font-size:.88em}
+.aside{border-left:2px solid var(--violet);padding:2px 0 2px 16px;margin:18px 0;color:var(--dim);font-size:15.5px}
+.aside b{color:var(--violet);font-weight:600}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+.chip{font-family:var(--mono);font-size:13px;background:var(--panel);border:1px solid var(--line);
+  color:var(--fg);padding:5px 10px;border-radius:3px;cursor:pointer}
+.chip:hover{border-color:var(--gold);color:var(--gold)}
+.chiphead{font-size:13px;color:var(--dim);margin:22px 0 0}
+
+/* ---- bench ---- */
+.bench{margin-top:34px;border:1px solid var(--line);border-radius:4px;background:var(--bg2)}
+.bench header{display:flex;align-items:baseline;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line)}
+.bench header h3{margin:0;font-size:14px;font-weight:600}
+.bench header span{font-size:12.5px;color:var(--dim)}
+.benchbody{padding:16px}
+textarea,input[type=text]{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--fg);
+  font-family:var(--mono);font-size:15px;padding:10px 12px;border-radius:3px;resize:vertical;line-height:1.5}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.btn{font-family:var(--serif);font-size:14px;background:var(--panel);color:var(--fg);border:1px solid var(--line);
+  padding:6px 14px;border-radius:3px;cursor:pointer}
+.btn:hover{border-color:var(--gold)}
+.btn.pri{background:var(--gold);color:#0B2426;border-color:var(--gold);font-weight:600}
+.btn.pri:hover{filter:brightness(1.1)}
+.toggle{font-size:13px;color:var(--dim);display:flex;align-items:center;gap:5px;cursor:pointer}
+.spacer{flex:1}
+.readout{font-family:var(--mono);font-size:13px;color:var(--dim)}
+.readout b{color:var(--fg);font-weight:400}
+
+.typeline{font-family:var(--mono);font-size:14px;padding:9px 12px;border:1px dashed var(--line);
+  border-radius:3px;margin-bottom:14px;color:var(--violet);overflow-x:auto;white-space:nowrap}
+.typeline.bad{color:var(--coral);border-color:rgba(255,138,107,.4)}
+.typeline small{color:var(--dim);font-family:var(--serif);margin-right:8px}
+
+.ribbon{display:flex;align-items:flex-end;gap:1px;height:34px;margin-bottom:12px}
+.ribbon i{background:var(--line);flex:1;min-width:1px;display:block}
+.ribbon i.hot{background:var(--gold)}
+
+.tape{border:1px solid var(--line);border-radius:3px;background:var(--bg);max-height:420px;overflow:auto}
+.row{display:grid;grid-template-columns:74px 1fr;gap:10px;padding:6px 12px;border-bottom:1px solid rgba(30,79,81,.5);
+  font-family:var(--mono);font-size:14px;cursor:pointer;align-items:baseline}
+.row:last-child{border-bottom:0}
+.row:hover{background:rgba(255,255,255,.025)}
+.row .rule{color:var(--dim);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .term{white-space:pre-wrap;word-break:break-word;line-height:1.55}
+.row.final{background:rgba(100,214,168,.06)}
+.row.final .rule{color:var(--mint)}
+.redex{background:rgba(245,194,67,.18);box-shadow:inset 0 -1px 0 var(--gold);border-radius:2px}
+.v{color:var(--fg)}
+.lit{color:var(--mint)}
+.err{color:var(--coral);font-family:var(--mono);font-size:13.5px;padding:10px 12px}
+
+/* ---- challenge ---- */
+.task{margin-top:30px;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:4px;background:var(--bg2)}
+.task .head{padding:12px 16px 0}
+.task h4{margin:0 0 6px;font-size:15px;font-weight:600;color:var(--gold)}
+.task p{margin:0 0 10px;font-size:15.5px;max-width:64ch}
+.task .body{padding:0 16px 16px}
+.tests{font-family:var(--mono);font-size:12.5px;color:var(--dim);margin:0 0 12px}
+.tests span{display:inline-block;margin-right:14px;white-space:nowrap}
+.verdict{font-family:var(--mono);font-size:13.5px;margin-top:10px;min-height:20px}
+.verdict.ok{color:var(--mint)}
+.verdict.no{color:var(--coral)}
+.reveal{margin-top:10px;font-family:var(--mono);font-size:13.5px;color:var(--dim);display:none}
+.reveal.show{display:block}
+
+/* ---- guided beats ---- */
+.beat{border-left:2px solid var(--line);padding:2px 0 2px 18px;margin:0 0 18px;max-width:68ch}
+.beat.on{border-left-color:var(--gold)}
+.beat p{margin:0 0 10px}
+.drill{background:var(--bg2);border:1px solid var(--line);border-radius:3px;padding:12px 14px;margin:8px 0 4px}
+.drill .q{font-size:15px;margin:0 0 10px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font-family:var(--serif);font-size:14px;background:var(--panel);border:1px solid var(--line);color:var(--fg);
+  padding:6px 12px;border-radius:3px;cursor:pointer;text-align:left}
+.opt.mono{font-family:var(--mono);font-size:13px}
+.opt:hover{border-color:var(--gold)}
+.opt.right{border-color:var(--mint);color:var(--mint)}
+.opt.wrong{border-color:var(--coral);color:var(--coral);opacity:.7}
+.drill .why{font-size:14px;color:var(--dim);margin:10px 0 0;min-height:1px}
+.drill .why.ok{color:var(--mint)}
+.drill .why.no{color:var(--coral)}
+.drill input[type=text]{max-width:340px;display:inline-block;margin-right:8px}
+.modes{display:flex;gap:6px;padding:0 20px 14px}
+.modes button{flex:1;font-family:var(--serif);font-size:13px;background:none;border:1px solid var(--line);
+  color:var(--dim);padding:5px 0;border-radius:3px;cursor:pointer}
+.modes button.on{border-color:var(--gold);color:var(--gold);background:rgba(245,194,67,.07)}
+
+/* ---- prelude table ---- */
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin-top:8px}
+th,td{text-align:left;padding:5px 10px;border-bottom:1px solid rgba(30,79,81,.6);vertical-align:top}
+th{color:var(--dim);font-weight:400;font-size:12px}
+td.n{font-family:var(--mono);color:var(--gold);white-space:nowrap}
+td.d{font-family:var(--mono);font-size:12.5px;color:var(--fg)}
+td.t{font-family:var(--mono);font-size:12.5px;color:var(--violet)}
+td.t.bad{color:var(--coral)}
+
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr}
+  .rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding-bottom:16px}
+  nav ol{display:flex;flex-wrap:wrap;gap:2px;padding:0 12px}
+  nav button{width:auto;padding:6px 10px 6px 26px}
+  nav button .num{left:8px}
+  main{padding:22px 18px 70px}
+  body{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="rail">
+    <div class="brand">
+      <div class="lam">λ</div>
+      <h1>The Reduction Bench</h1>
+      <p>An executable development of the untyped calculus, combinatory logic, and the Curry–Howard correspondence.</p>
+    </div>
+    <div class="modes">
+      <button id="mGuided" class="on">Sequential</button>
+      <button id="mRef">Continuous</button>
+    </div>
+    <nav><ol id="nav"></ol></nav>
+  </div>
+  <main>
+    <div class="lesson" id="lesson"></div>
+    <div id="chips"></div>
+
+    <div class="bench">
+      <header>
+        <h3>Reduction bench</h3>
+        <span>leftmost–outermost reduction · <code>\</code> is read as λ · defined constants are δ-expanded on demand</span>
+      </header>
+      <div class="benchbody">
+        <textarea id="src" rows="2" spellcheck="false"></textarea>
+        <div class="controls">
+          <button class="btn pri" id="run">Reduce</button>
+          <button class="btn" id="stepb">One step</button>
+          <button class="btn" id="play">Run</button>
+          <button class="btn" id="ski">To SKI</button>
+          <label class="toggle"><input type="checkbox" id="sugar" checked> display encoded data in decoded form</label>
+          <label class="toggle"><input type="checkbox" id="logic"> read types as propositions</label>
+          <span class="spacer"></span>
+          <span class="readout" id="readout"></span>
+        </div>
+        <div class="typeline" id="typeline"></div>
+        <div class="ribbon" id="ribbon"></div>
+        <div class="tape" id="tape"></div>
+      </div>
+    </div>
+
+    <div id="task"></div>
+  </main>
+</div>
+
+<script>
+/* ============================================================ *
+ *  1. Terms, parsing, printing
+ * ============================================================ */
+const V=n=>({t:'var',n}), L=(p,b)=>({t:'lam',p,b}), A=(f,a)=>({t:'app',f,a});
+const LET=(x,e,b)=>({t:'let',x,e,b});
+
+function lex(s){
+  const out=[]; let i=0;
+  while(i<s.length){
+    const c=s[i];
+    if(/\s/.test(c)){i++;continue;}
+    if(c==='('||c===')'){out.push({k:c});i++;continue;}
+    if(c==='\\'||c==='λ'){out.push({k:'lam'});i++;continue;}
+    if(c==='.'){out.push({k:'.'});i++;continue;}
+    if(c==='='){out.push({k:'='});i++;continue;}
+    if(/[0-9]/.test(c)){let j=i;while(j<s.length&&/[0-9]/.test(s[j]))j++;out.push({k:'num',v:+s.slice(i,j)});i=j;continue;}
+    if(/[A-Za-z_]/.test(c)){
+      let j=i;while(j<s.length&&/[A-Za-z0-9_'?]/.test(s[j]))j++;
+      const w=s.slice(i,j);
+      out.push((w==='let'||w==='in')?{k:w}:{k:'id',v:w}); i=j;continue;}
+    throw new Error('unexpected character "'+c+'"');
+  }
+  out.push({k:'eof'}); return out;
+}
+function church(n){let b=V('x');for(let i=0;i<n;i++)b=A(V('f'),b);return L('f',L('x',b));}
+function parse(s){
+  const ts=lex(s); let p=0;
+  const peek=()=>ts[p], eat=k=>{if(ts[p].k!==k)throw new Error('expected '+k+', found '+(ts[p].v??ts[p].k));return ts[p++];};
+  function term(){
+    if(peek().k==='let'){eat('let');const x=eat('id').v;eat('=');const e=term();eat('in');const b=term();return LET(x,e,b);}
+    if(peek().k==='lam'){
+      eat('lam'); const ps=[]; while(peek().k==='id')ps.push(eat('id').v);
+      if(!ps.length)throw new Error('λ needs at least one parameter');
+      eat('.'); let b=term(); for(let i=ps.length-1;i>=0;i--)b=L(ps[i],b); return b;
+    }
+    return app();
+  }
+  function app(){
+    let t=atom(); if(t===null)throw new Error('expected a term');
+    for(;;){const a=atom(); if(a===null)return t; t=A(t,a);}
+  }
+  function atom(){
+    const k=peek().k;
+    if(k==='id')return V(ts[p++].v);
+    if(k==='num')return church(ts[p++].v);
+    if(k==='('){eat('(');const t=term();eat(')');return t;}
+    if(k==='lam'||k==='let')return term();
+    return null;
+  }
+  const t=term(); if(peek().k!=='eof')throw new Error('unexpected "'+(peek().v??peek().k)+'"'); return t;
+}
+
+function fv(t,acc){
+  acc=acc||new Set();
+  (function go(t,bnd){
+    if(t.t==='var'){if(!bnd.has(t.n))acc.add(t.n);}
+    else if(t.t==='app'){go(t.f,bnd);go(t.a,bnd);}
+    else if(t.t==='lam'){const b=new Set(bnd);b.add(t.p);go(t.b,b);}
+    else if(t.t==='let'){go(t.e,bnd);const b=new Set(bnd);b.add(t.x);go(t.b,b);}
+  })(t,new Set());
+  return acc;
+}
+let gs=0; const fresh=x=>x.replace(/[0-9]+$/,'')+(++gs);
+function subst(t,x,s){
+  switch(t.t){
+    case 'var': return t.n===x?s:t;
+    case 'app': return A(subst(t.f,x,s),subst(t.a,x,s));
+    case 'lam':{
+      if(t.p===x)return t;
+      if(fv(s).has(t.p)){const y=fresh(t.p);return L(y,subst(subst(t.b,t.p,V(y)),x,s));}
+      return L(t.p,subst(t.b,x,s));}
+    case 'let':{
+      const e=subst(t.e,x,s);
+      if(t.x===x)return LET(t.x,e,t.b);
+      if(fv(s).has(t.x)){const y=fresh(t.x);return LET(y,e,subst(subst(t.b,t.x,V(y)),x,s));}
+      return LET(t.x,e,subst(t.b,x,s));}
+  }
+}
+function db(t,ctx){ // de Bruijn string, for α-equality
+  ctx=ctx||[];
+  switch(t.t){
+    case 'var':{const i=ctx.indexOf(t.n);return i>=0?'#'+i:'!'+t.n;}
+    case 'app':return 'A('+db(t.f,ctx)+','+db(t.a,ctx)+')';
+    case 'lam':return 'L('+db(t.b,[t.p].concat(ctx))+')';
+    case 'let':return db(A(L(t.x,t.b),t.e),ctx);
+  }
+}
+const aeq=(a,b)=>db(a)===db(b);
+const size=t=>t.t==='var'?1:t.t==='lam'?1+size(t.b):t.t==='app'?1+size(t.f)+size(t.a):1+size(t.e)+size(t.b);
+
+/* --- sugar recognisers --- */
+function asNum(t){
+  if(t.t!=='lam'||t.b.t!=='lam')return null;
+  const f=t.p,x=t.b.p; let u=t.b.b,n=0;
+  while(u.t==='app'&&u.f.t==='var'&&u.f.n===f){n++;u=u.a;}
+  return (u.t==='var'&&u.n===x)?n:null;
+}
+const TRUE=parse('\\a b. a');
+function asPair(t){
+  if(t.t!=='lam')return null; const f=t.p,u=t.b;
+  if(u.t==='app'&&u.f.t==='app'&&u.f.f.t==='var'&&u.f.f.n===f){
+    const a=u.f.a,b=u.a;
+    if(!fv(a).has(f)&&!fv(b).has(f))return [a,b];
+  } return null;
+}
+/* --- printing: html=true adds spans + redex highlight --- */
+function show(t,o){
+  o=o||{}; const html=!!o.html, sugar=o.sugar!==false, redex=o.redex;
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  function go(t,prec){
+    let s=null,lit=false;
+    if(sugar){
+      const n=asNum(t);
+      if(n!==null){s=String(n);lit=true;}
+      else if(aeq(t,TRUE)){s='true';lit=true;}
+      else{const p=asPair(t); if(p)  {s='⟨'+go(p[0],0)+', '+go(p[1],0)+'⟩';lit=true;}}
+    }
+    if(s===null){
+      switch(t.t){
+        case 'var': s=html?'<span class="v">'+esc(t.n)+'</span>':t.n; break;
+        case 'lam':{
+          const ps=[]; let u=t; while(u.t==='lam'){ps.push(u.p);u=u.b;}
+          s='λ'+ps.join(' ')+'. '+go(u,0); if(prec>0)s='('+s+')'; break;}
+        case 'app': s=go(t.f,1)+' '+go(t.a,2); if(prec>1)s='('+s+')'; break;
+        case 'let': s='let '+t.x+' = '+go(t.e,0)+' in '+go(t.b,0); if(prec>0)s='('+s+')'; break;
+      }
+    } else if(html&&lit) s='<span class="lit">'+s+'</span>';
+    if(html&&redex&&t===redex)s='<span class="redex">'+s+'</span>';
+    return s;
+  }
+  return go(t,0);
+}
+
+/* ============================================================ *
+ *  2. Reduction — normal order, with δ-expansion of definitions
+ * ============================================================ */
+function step(t,env,bound,full,head){
+  switch(t.t){
+    case 'let': return {t:subst(t.b,t.x,t.e),redex:t,rule:'let'};
+    case 'var':
+      if(!bound.has(t.n)&&env[t.n]&&(head||full))return {t:env[t.n],redex:t,rule:'δ '+t.n};
+      return null;
+    case 'lam':{
+      const b2=new Set(bound); b2.add(t.p);
+      const r=step(t.b,env,b2,full,false);
+      return r?{t:L(t.p,r.t),redex:r.redex,rule:r.rule}:null;}
+    case 'app':{
+      if(t.f.t==='lam')return {t:subst(t.f.b,t.f.p,t.a),redex:t,rule:'β'};
+      const f=step(t.f,env,bound,full,true);
+      if(f)return {t:A(f.t,t.a),redex:f.redex,rule:f.rule};
+      const a=step(t.a,env,bound,full,false);
+      if(a)return {t:A(t.f,a.t),redex:a.redex,rule:a.rule};
+      return null;}
+  }
+}
+function normalize(t,env,opt){
+  opt=opt||{}; const max=opt.max||2000, trace=opt.trace, t0=Date.now();
+  const out=[]; let cur=t,n=0,stalled=false;
+  for(;;){
+    if(n>=max||Date.now()-t0>4000){stalled=true;break;}
+    const r=step(cur,env,new Set(),!!opt.full,true);
+    if(!r)break;
+    if(trace&&out.length<400)out.push({term:cur,redex:r.redex,rule:r.rule,size:size(cur)});
+    cur=r.t; n++;
+  }
+  return {t:cur,steps:n,stalled,trace:out};
+}
+/* bracket abstraction: λ-term → S,K,I */
+function toSKI(t){
+  const S=V('S'),K=V('K'),I=V('I');
+  function T(t){
+    if(t.t==='var')return t;
+    if(t.t==='app')return A(T(t.f),T(t.a));
+    if(t.t==='lam')return Ab(t.p,T(t.b));
+    if(t.t==='let')return T(subst(t.b,t.x,t.e));
+  }
+  function Ab(x,m){
+    if(m.t==='var')return m.n===x?I:A(K,m);
+    if(m.t==='app'){
+      if(!fv(m).has(x))return A(K,m);
+      return A(A(S,Ab(x,m.f)),Ab(x,m.a));
+    }
+    return A(K,m);
+  }
+  return T(t);
+}
+
+/* ============================================================ *
+ *  3. Types — Hindley–Milner with products and sums
+ * ============================================================ */
+let tvc=0; const TV=()=>({k:'v',id:++tvc}), TC=(n,...a)=>({k:'c',n,a});
+const ARR=(a,b)=>TC('->',a,b);
+function prune(t,s){while(t.k==='v'&&s.has(t.id))t=s.get(t.id);return t;}
+function occurs(id,t,s){t=prune(t,s);return t.k==='v'?t.id===id:t.a.some(x=>occurs(id,x,s));}
+function unify(a,b,s){
+  a=prune(a,s); b=prune(b,s);
+  if(a.k==='v'){
+    if(b.k==='v'&&b.id===a.id)return;
+    if(occurs(a.id,b,s))throw new Error('occurs check: '+showT(a,s)+' would have to equal '+showT(b,s)+' — an infinite type');
+    s.set(a.id,b);return;}
+  if(b.k==='v')return unify(b,a,s);
+  if(a.n!==b.n||a.a.length!==b.a.length)throw new Error('cannot unify '+showT(a,s)+' with '+showT(b,s));
+  for(let i=0;i<a.a.length;i++)unify(a.a[i],b.a[i],s);
+}
+function ftv(t,s,acc){acc=acc||new Set();t=prune(t,s);if(t.k==='v')acc.add(t.id);else t.a.forEach(x=>ftv(x,s,acc));return acc;}
+function zonk(t,s){t=prune(t,s);return t.k==='v'?t:TC(t.n,...t.a.map(x=>zonk(x,s)));}
+function inst(sc,s){
+  const m=new Map(); sc.vars.forEach(v=>m.set(v,TV()));
+  return (function go(t){t=prune(t,s);return t.k==='v'?(m.get(t.id)||t):TC(t.n,...t.a.map(go));})(sc.type);
+}
+function gen(env,t,s){
+  t=zonk(t,s);
+  const e=new Set(); Object.values(env).forEach(sc=>ftv(sc.type,s,e).forEach(x=>{if(!sc.vars.includes(x))e.add(x);}));
+  return {vars:[...ftv(t,s)].filter(v=>!e.has(v)),type:t};
+}
+function infer(t,env,s,free){
+  switch(t.t){
+    case 'var':{
+      if(env[t.n])return inst(env[t.n],s);
+      if(typeof ENV!=='undefined'&&ENV[t.n])
+        throw new Error('no type for '+t.n+' — '+((TYPEOF[t.n]&&TYPEOF[t.n].str)||'untypable'));
+      if(!free[t.n])free[t.n]=TV();
+      return free[t.n];}
+    case 'lam':{
+      const a=TV(); const e2=Object.assign({},env); e2[t.p]={vars:[],type:a};
+      return ARR(a,infer(t.b,e2,s,free));}
+    case 'app':{
+      const tf=infer(t.f,env,s,free), ta=infer(t.a,env,s,free), b=TV();
+      unify(tf,ARR(ta,b),s); return b;}
+    case 'let':{
+      const te=infer(t.e,env,s,free);
+      const e2=Object.assign({},env); e2[t.x]=gen(env,te,s);
+      return infer(t.b,e2,s,free);}
+  }
+}
+const GREEK=['α','β','γ','δ','ε','ζ','η','θ','ι','κ','μ','ν'];
+function showT(t,s,logic){
+  const names=new Map();
+  const nm=id=>{if(!names.has(id)){const i=names.size;names.set(id,logic?String.fromCharCode(65+i%26):(GREEK[i]||'τ'+i));}return names.get(id);};
+  const sym={'->':logic?' ⊃ ':' → ','*':logic?' ∧ ':' × ','+':logic?' ∨ ':' + '};
+  function go(t,prec){
+    t=prune(t,s||new Map());
+    if(t.k==='v')return nm(t.id);
+    if(t.n==='Void')return logic?'⊥':'Void';
+    if(!t.a.length)return t.n;
+    const p=t.n==='->'?1:2, l=go(t.a[0],t.n==='->'?p+1:p), r=go(t.a[1],p);
+    const str=l+sym[t.n]+r;
+    return prec>p?'('+str+')':str;
+  }
+  return go(t,0);
+}
+function parseType(str){ // rigid: lowercase idents become distinct constants
+  const ts=str.replace(/->/g,'@').split(/([@()*+])/).map(x=>x.trim()).filter(x=>x.length);
+  let p=0; const peek=()=>ts[p];
+  function arr(){const l=sum(); if(peek()==='@'){p++;return ARR(l,arr());} return l;}
+  function sum(){let l=atom(); while(peek()==='*'||peek()==='+'){const o=ts[p++];l=TC(o,l,atom());} return l;}
+  function atom(){
+    if(peek()==='('){p++;const t=arr();p++;return t;}
+    const w=ts[p++];
+    if(/^[A-Z]/.test(w))return TC(w);
+    return TC('#'+w); // rigid variable
+  }
+  return arr();
+}
+
+/* ============================================================ *
+ *  4. The prelude
+ * ============================================================ */
+const PRE=[
+ ['id','\\x. x'],['const','\\x y. x'],['flip','\\f x y. f y x'],['comp','\\f g x. f (g x)'],
+ ['S','\\f g x. f x (g x)'],['K','\\x y. x'],['I','\\x. x'],['B','\\f g x. f (g x)'],['C','\\f x y. f y x'],
+ ['true','\\a b. a'],['false','\\a b. b'],['not','\\p. p false true'],
+ ['and','\\p q. p q false'],['or','\\p q. p true q'],['if','\\c a b. c a b'],
+ ['succ','\\n f x. f (n f x)'],['add','\\m n f x. m f (n f x)'],['mult','\\m n f. m (n f)'],
+ ['exp','\\m n. n m'],['isZero','\\n. n (\\_. false) true'],
+ ['pair','\\a b f. f a b'],['fst','\\p. p (\\a b. a)'],['snd','\\p. p (\\a b. b)'],
+ ['shift','\\p. pair (snd p) (succ (snd p))'],
+ ['pred','\\n. fst (n shift (pair 0 0))'],['sub','\\m n. n pred m'],
+ ['leq','\\m n. isZero (sub m n)'],['eq','\\m n. and (leq m n) (leq n m)'],
+ ['nil','\\c n. n'],['cons','\\h t c n. c h (t c n)'],['isNil','\\l. l (\\h t. false) true'],
+ ['foldr','\\f z l. l f z'],['sum','foldr add 0'],['len','\\l. l (\\h t. succ t) 0'],
+ ['Y','\\f. (\\x. f (x x)) (\\x. f (x x))'],
+ ['Z','\\f. (\\x. f (\\v. x x v)) (\\x. f (\\v. x x v))'],
+ ['fact','Y (\\f n. if (isZero n) 1 (mult n (f (pred n))))'],
+ ['fib','Y (\\f n. if (leq n 1) n (add (f (pred n)) (f (sub n 2))))'],
+ ['inl','\\a f g. f a'],['inr','\\b f g. g b'],['case','\\s f g. s f g'],['absurd','\\v. v'],
+ ['omega','(\\x. x x) (\\x. x x)']
+];
+const ENV={}; PRE.forEach(([n,src])=>{ENV[n]=parse(src);});
+/* explicit type axioms: the intro/elim rules of ∧, ∨, ⊥ */
+const AX={
+  pair:'a -> b -> a * b', fst:'a * b -> a', snd:'a * b -> b',
+  inl:'a -> a + b', inr:'b -> a + b', case:'a + b -> (a -> c) -> (b -> c) -> c',
+  absurd:'Void -> a'
+};
+function rigidToScheme(str){
+  const t=parseType(str), m=new Map();
+  const go=t=>{
+    if(t.k==='c'&&t.n[0]==='#'){if(!m.has(t.n))m.set(t.n,TV());return m.get(t.n);}
+    return t.k==='c'?TC(t.n,...t.a.map(go)):t;};
+  const ty=go(t); return {vars:[...m.values()].map(v=>v.id),type:ty};
+}
+const TENV={}, TYPEOF={};
+(function typePrelude(){
+  for(const [n,src] of PRE){
+    if(AX[n]){TENV[n]=rigidToScheme(AX[n]);TYPEOF[n]={ok:true,str:showT(TENV[n].type,new Map()),ax:true};continue;}
+    const s=new Map();
+    try{
+      const ty=infer(ENV[n],TENV,s,{});
+      TENV[n]=gen({},ty,s);
+      TYPEOF[n]={ok:true,str:showT(ty,s)};
+    }catch(e){ TYPEOF[n]={ok:false,str:e.message}; }
+  }
+})();
+function typeOfTerm(t,logic){
+  const s=new Map(),free={};
+  const ty=infer(t,TENV,s,free);
+  const fs=Object.keys(free).map(k=>k+' : '+showT(free[k],s,logic));
+  return {str:showT(ty,s,logic),free:fs,s,ty};
+}
+
+/* ============================================================ *
+ *  5. Curriculum
+ * ============================================================ */
+const CH=[
+{t:'Notation and the reduction relation',k:'definitions · substitution · α-equivalence',
+ body:`<p><b>Definition (terms).</b> Fix a countably infinite set V of variables. The set Λ of λ-terms is the least set such that x ∈ Λ for every x ∈ V; (λx. M) ∈ Λ whenever x ∈ V and M ∈ Λ; and (M N) ∈ Λ whenever M, N ∈ Λ. There is no fourth clause: no constants, no numerals, no type expressions.</p>
+<p><b>Conventions.</b> Application associates to the left, so <code>M N P</code> abbreviates <code>(M N) P</code>. The scope of an abstraction extends maximally to the right, so <code>λx. M N</code> abbreviates <code>λx. (M N)</code>. Iterated abstraction is contracted: <code>λx₁ … xₙ. M</code> abbreviates <code>λx₁. (… (λxₙ. M))</code>. On this page <code>\\</code> is accepted for λ.</p>
+<p><b>Definition (free variables).</b> FV(x) = {x}, FV(M N) = FV(M) ∪ FV(N), FV(λx. M) = FV(M) \\ {x}. An occurrence of x in the scope of an enclosing λx is <em>bound</em>; the remaining occurrences are <em>free</em>. A term M with FV(M) = ∅ is <em>closed</em>.</p>
+<p><b>Definition (substitution).</b> M[x := N] is defined by recursion on M: x[x := N] = N; y[x := N] = y for y ≠ x; (P Q)[x := N] = P[x := N] Q[x := N]; (λx. P)[x := N] = λx. P; and (λy. P)[x := N] = λy. (P[x := N]) for y ≠ x, provided y ∉ FV(N). Where that proviso fails, the abstraction is first renamed. Renaming of bound variables generates α-equivalence, written ≡; terms are identified up to ≡ throughout (Barendregt's variable convention), and the implementation here decides ≡ on de Bruijn representations, in which bound names have been eliminated.</p>
+<p><b>Definition (β-reduction).</b> A <em>β-redex</em> is a term of the form (λx. M) N, and its <em>contractum</em> is M[x := N]. One-step β-reduction →<sub>β</sub> is the least relation containing redex contraction and closed under the term constructors; ↠<sub>β</sub> is its reflexive–transitive closure. A term containing no redex is in <em>normal form</em>. This single rule is the entire operational content of the calculus.</p>`,
+ tries:['(\\x. x) q','(\\x y. x) p q','(\\x. f x x) a','\\x. x y','(\\x y. x y) y'],
+ task:{kind:'behav',name:'second',prompt:'Construct a closed term of two arguments whose value is its second argument.',
+  starter:'\\a b. ',tests:[['second p q','q'],['second x y','y'],['second (\\x. x) w','w']],
+  hint:'Exactly one of the two bound variables occurs in the body.',sol:'\\a b. b'}},
+
+{t:'Abstraction and currying',k:'iterated abstraction · the exponential adjunction',
+ body:`<p>Every abstraction binds one variable, so a function of several arguments is represented as an iterated abstraction returning abstractions. Partial application is therefore not an added convenience but the only mode of application available: <code>(λx y. M) N</code> reduces to <code>λy. M[x := N]</code>, a term of one remaining argument.</p>
+<p><b>Remark (semantic content).</b> The identification of a function of a pair with a function returning a function is the exponential adjunction of a cartesian closed category: Hom(A × B, C) ≅ Hom(A, C<sup>B</sup>), natural in A and C. The λ-calculus is the internal language of such a category, a statement made precise in the final chapter.</p>
+<p>Substitution is not textual replacement. In <code>(λx y. x y) y</code> the argument y is free, while the abstraction binds a variable of the same name; contracting the outer redex without renaming would capture the argument and change the meaning of the term. The reduction below therefore renames the inner binder first, exhibiting the side condition of the substitution clause for abstractions.</p>
+<p>Since terms are identified up to ≡, the choice of bound names carries no information: <code>λx. x</code> and <code>λz. z</code> denote the same element of Λ/≡. Only the binding structure is significant, which is what the de Bruijn representation makes manifest.</p>`,
+ tries:['(\\x y. x) p','(\\x y. y x) a b','(\\x y. x y) y','\\f. f (f a)'],
+ task:{kind:'behav',name:'swap',prompt:'Construct the term that permutes the two arguments of a binary function: <code>swap f a b</code> should reduce to <code>f b a</code>.',
+  starter:'\\f a b. ',tests:[['swap (\\a b. a) p q','q'],['swap (\\a b. b) p q','p'],['swap const x y','y']],
+  hint:'Three abstractions, one application node.',sol:'\\f a b. f b a'}},
+
+{t:'Reduction strategies and confluence',k:'Church–Rosser · standardization · η',
+ body:`<p>A term may contain several redexes, and a reduction <em>strategy</em> is a rule for selecting one. The evaluator on this page implements the leftmost–outermost (normal-order) strategy, which contracts the redex whose λ occurs furthest to the left in the term, without first reducing arguments. The alternative innermost-first strategy corresponds to call-by-value.</p>
+<p><b>Theorem (Church–Rosser, 1936).</b> β-reduction is confluent: if M ↠<sub>β</sub> N₁ and M ↠<sub>β</sub> N₂, there exists P with N₁ ↠<sub>β</sub> P and N₂ ↠<sub>β</sub> P. Consequently normal forms are unique up to ≡, and β-equality is consistent.</p>
+<p><b>Theorem (standardization; Curry–Feys).</b> If M has a normal form, the leftmost–outermost strategy reaches it. Normal order is thus normalizing, whereas call-by-value is not: with M = <code>(λx y. y) Ω z</code>, where Ω = <code>(λx. x x) (λx. x x)</code> has no normal form, normal order yields z while innermost reduction diverges. The choice of strategy affects termination and cost, never the value.</p>
+<p><b>Definition (η).</b> λx. M x →<sub>η</sub> M provided x ∉ FV(M). Adding η yields βη-equality, the extensional theory: two terms are identified when they agree on all arguments. The categorical reading of βη is the pair of adjunction laws for the exponential.</p>`,
+ tries:['(\\x. x) ((\\y. y) z)','(\\x y. y) omega z','(\\x. x x) (\\x. x x)','(\\f. f (f 2)) succ'],
+ task:{kind:'behav',name:'twice',prompt:'Construct <code>twice</code> with <code>twice f x ↠ f (f x)</code>. Then reduce <code>twice twice f x</code> on the bench and account for the number of applications of f.',
+  starter:'\\f x. ',tests:[['twice f x','f (f x)'],['twice (\\n. succ n) 1','3'],['twice twice f x','f (f (f (f x)))']],
+  hint:'The term is the Church numeral 2.',sol:'\\f x. f (f x)'}},
+
+{t:'Booleans and the continuation-passing encoding',k:'Church booleans · lazy branching',
+ body:`<p>Data are encoded by their elimination behaviour. A boolean is used only to select between two alternatives, so it is represented by the selector itself: <code>true</code> ≔ λa b. a and <code>false</code> ≔ λa b. b. Conditional branching then requires no additional construct, since <code>if C M N</code> is the application <code>C M N</code>.</p>
+<p>The connectives follow: <code>not</code> ≔ λp. p false true, <code>and</code> ≔ λp q. p q false, <code>or</code> ≔ λp q. p true q. Under normal-order reduction the discarded alternative is never contracted, so these operators are short-circuiting as a consequence of the strategy rather than by stipulation. This is the reason a lazy language can define its control structures as ordinary functions.</p>
+<p><b>Remark.</b> The encoding is continuation-passing: a datum is represented by the action a consumer would take upon it. The same construction applies uniformly to products, sums and inductive types, and is characterised in the chapter on encoded data.</p>`,
+ tries:['(\\a b. a) yes no','and true false','or (not true) true','if (and true true) yes no'],
+ task:{kind:'behav',name:'xor',prompt:'Define exclusive disjunction on Church booleans.',
+  starter:'\\p q. ',tests:[['xor true true','false'],['xor true false','true'],['xor false true','true'],['xor false false','false']],
+  forbid:['xor'],hint:'Let p select between the negation of q and q itself.',sol:'\\p q. p (not q) q'}},
+
+{t:'Church numerals',k:'iteration · λ-definability',
+ body:`<p><b>Definition.</b> The Church numeral of n ∈ ℕ is <code>n̄</code> ≔ λf x. f<sup>n</sup>(x), the term that iterates its first argument n times on its second. A numeral is thus an iterator, and arithmetic becomes an algebra of iteration: <code>add</code> ≔ λm n f x. m f (n f x), <code>mult</code> ≔ λm n f. m (n f), which is composition of the iterated maps, and <code>exp</code> ≔ λm n. n m, in which exponentiation is application of one numeral to another.</p>
+<p><b>Theorem (Kleene, 1936).</b> A partial function on ℕ is λ-definable with respect to this encoding if and only if it is partial recursive. The untyped calculus is therefore a model of computation of full strength, and by the recursion-theoretic consequences of that fact, β-equality is undecidable.</p>
+<p><b>Remark (a collapse).</b> λf x. x is simultaneously the numeral 0 and the term <code>false</code>: the encodings are not disjoint, and since terms are identified up to ≡ no term separates them. The bench prints this term as <code>0</code>. Separating the two is one concrete service performed by a type discipline.</p>
+<p>The predecessor function has no direct iterative definition, iteration proceeding only upward. Its construction, due to Kleene, is the exercise of the next chapter.</p>`,
+ tries:['2','3 g y','add 2 3','mult 3 4','exp 2 3','isZero (sub 3 3)'],
+ task:{kind:'behav',name:'isEven',prompt:'Decide parity of a Church numeral without recursion, using only the iteration already present in the numeral.',
+  starter:'\\n. n ',tests:[['isEven 4','true'],['isEven 3','false'],['isEven 0','true'],['isEven 7','false']],
+  hint:'Iterate negation n times from the initial value true.',sol:'\\n. n not true'}},
+
+{t:'Encoded data and their eliminators',k:'products · lists · Böhm–Berarducci',
+ body:`<p>A product is encoded by the operation of feeding both components to a continuation: <code>pair</code> ≔ λa b f. f a b, with <code>fst</code> ≔ λp. p (λa b. a) and <code>snd</code> ≔ λp. p (λa b. b). The projections are obtained by supplying the appropriate consumer, so the pair carries its own elimination rule.</p>
+<p>Lists are encoded as their own fold: <code>nil</code> ≔ λc n. n and <code>cons</code> h t ≔ λc n. c h (t c n). Then <code>foldr</code> f z l is the application l f z. Every consumer of a list is exactly a choice of the two arguments f and z, which is the precise sense in which foldr is universal for lists.</p>
+<p><b>Theorem (Böhm–Berarducci, 1985).</b> Every finitely branching inductive type is representable in the polymorphic calculus by the type of its own iterator, and the encoding is adequate: the representable terms of that type are precisely the constructors applied to representable arguments. A datum is its own elimination principle; the Church numerals are the instance for ℕ, where the type of the iterator is the type of the induction principle.</p>
+<p><b>Exercise context (Kleene, 1935).</b> The predecessor is obtained by iterating the map ⟨a, b⟩ ↦ ⟨b, b + 1⟩ from ⟨0, 0⟩ and projecting the first component; n iterations produce ⟨n − 1, n⟩ for n ≥ 1.</p>`,
+ tries:['fst (pair a b)','snd (shift (pair 3 4))','sum (cons 1 (cons 2 (cons 3 nil)))','len (cons a (cons b nil))','foldr mult 1 (cons 2 (cons 3 nil))'],
+ task:{kind:'behav',name:'myPred',prompt:'Construct the predecessor, with 0 as its own predecessor. The definitions <code>pred</code>, <code>sub</code> and <code>shift</code> are excluded; <code>pair</code>, <code>fst</code>, <code>snd</code> and <code>succ</code> are available.',
+  starter:'\\n. fst (n (\\p. ',tests:[['myPred 3','2'],['myPred 1','0'],['myPred 0','0'],['myPred 5','4']],
+  forbid:['pred','sub','shift'],hint:'Iterate ⟨a, b⟩ ↦ ⟨b, succ b⟩ from ⟨0, 0⟩ and take the first projection.',
+  sol:'\\n. fst (n (\\p. pair (snd p) (succ (snd p))) (pair 0 0))'}},
+
+{t:'Fixed-point combinators',k:'the first fixed-point theorem · Y · Ω',
+ body:`<p>The syntax provides no facility for a term to refer to itself, and none is required.</p>
+<p><b>Theorem (first fixed-point theorem, Curry).</b> For every M ∈ Λ there exists X ∈ Λ with M X =<sub>β</sub> X. A witness is given uniformly by the paradoxical combinator <code>Y</code> ≔ λf. (λx. f (x x)) (λx. f (x x)), for which Y M ↠<sub>β</sub> M (Y M) after two contractions.</p>
+<p>Recursive definitions are then fixed points of functionals. The unfolding terminates only because the recursive occurrence is placed in a discarded alternative of a conditional and normal order does not contract it: reduction of <code>fact 4</code> exhibits this. Under call-by-value the argument is contracted before the guard is evaluated and Y diverges; the strict variant <code>Z</code> ≔ λf. (λx. f (λv. x x v)) (λx. f (λv. x x v)) interposes an abstraction to delay the unfolding.</p>
+<p><b>Remark.</b> The mechanism is self-application, x x, and its degenerate case Ω = (λx. x x) (λx. x x) is the smallest term without normal form. Read propositionally, the same self-application is Curry's paradox; the typing rules of the next chapters exclude it, and with it both the paradox and unrestricted recursion.</p>`,
+ tries:['Y g','fact 4','fib 6','(\\x. x x) (\\x. x x)','Y (\\f n. if (isZero n) 0 (add n (f (pred n)))) 4'],
+ task:{kind:'behav',name:'summ',prompt:'Define n ↦ Σ<sub>k≤n</sub> k by means of <code>Y</code> or <code>Z</code>. Guard the recursion with <code>if (isZero n)</code>; termination depends on the recursive occurrence lying in the discarded branch.',
+  starter:'Y (\\f n. ',tests:[['summ 4','10'],['summ 1','1'],['summ 0','0'],['summ 5','15']],
+  forbid:['summ'],hint:'if (isZero n) 0 (add n (f (pred n)))',sol:'Y (\\f n. if (isZero n) 0 (add n (f (pred n))))'}},
+
+{t:'Combinatory logic',k:'combinatory completeness · bracket abstraction',
+ body:`<p>Variable binding is eliminable. Take the applicative structure generated by the constants <code>S</code> ≔ λf g x. f x (g x) and <code>K</code> ≔ λx y. x, with reduction rules S M N P → M P (N P) and K M N → M.</p>
+<p><b>Theorem (combinatory completeness; Schönfinkel 1924, Curry 1930).</b> For every term M of the λ-calculus and every variable x there is a term λ*x.M of combinatory logic, containing no abstraction, with (λ*x.M) N =<sub>β</sub> M[x := N]. The translation is <em>bracket abstraction</em>: λ*x.x = I, λ*x.M = K M when x ∉ FV(M), and λ*x.(M N) = S (λ*x.M) (λ*x.N). Since I = S K K, two constants suffice; every closed λ-term is thus denoted by a term over {S, K}.</p>
+<p>The <b>To SKI</b> control applies this translation to the loaded term. The image is behaviourally equivalent but not compact: the standard translation is quadratic in the size of the input, and the image of a term as small as λx y z. x z (y z) — which is S itself — is a term of some forty symbols, β-equal to S but not identical to it. Practical compilers therefore use optimised abstraction algorithms with additional constants B and C, together with supercombinator lifting (Hughes, 1982).</p>`,
+ tries:['S K K a','\\x y. y x','S (K (S I)) (S (K K) I) p q','\\x y z. x z (y z)'],
+ task:{kind:'behav',name:'T',prompt:'Give a term over {S, K, I} denoting λx y. y x, that is, with <code>T p q ↠ q p</code>. Abstractions are not permitted in the answer.',
+  starter:'S (K ',tests:[['T p q','q p'],['T a (\\x. x)','a']],
+  noLam:true,hint:'Apply bracket abstraction to λx y. y x, innermost binder first.',sol:'S (K (S I)) (S (K K) I)'}},
+
+{t:'The simply typed λ-calculus',k:'typing rules · subject reduction · strong normalization',
+ body:`<p><b>Definition.</b> Types are generated from type variables by the binary constructor →. A context Γ is a finite partial map from variables to types. The Curry-style typing relation is generated by three rules: Γ ⊢ x : A if Γ(x) = A; Γ, x : A ⊢ M : B implies Γ ⊢ λx. M : A → B; and Γ ⊢ M : A → B together with Γ ⊢ N : A implies Γ ⊢ M N : B. The line above the reduction tape displays the <em>principal type</em> of the loaded term, defined in the next chapter.</p>
+<p><b>Proposition (subject reduction).</b> If Γ ⊢ M : A and M →<sub>β</sub> N then Γ ⊢ N : A.</p>
+<p><b>Theorem (strong normalization; Turing, Tait 1967).</b> Every typable term is strongly normalizing: all reduction sequences from it are finite. The proof is not by induction on the term — the size of a term is not decreased by contraction — but by Tait's reducibility argument, the finite-order case of Girard's candidates.</p>
+<p>The immediate consequence is a loss of expressive power. Self-application is untypable: <code>λx. x x</code> requires x : α and x : α → β simultaneously, and unification of α with α → β fails the occurs check, no finite type being a proper subterm of itself. Hence Ω and Y are excluded, Turing completeness is surrendered, and the functions definable on Church numerals are reduced to the extended polynomials (Schwichtenberg, 1975). Every total language since resolves the same trade-off by reintroducing recursion in a controlled form, as structural induction. Decidability is nonetheless not cheap: deciding βη-equality of simply typed terms is not elementary recursive (Statman, 1979).</p>`,
+ tries:['\\f x. f (f x)','\\x. x x','Y','\\x y. x','pred'],
+ task:{kind:'type',name:'compose',prompt:'Exhibit an inhabitant of <span class="ty">(a → b) → (b → c) → a → c</span>. The checker infers the principal type of the submitted term and verifies that the stated type is an instance of it.',
+  starter:'\\f g x. ',target:'(a -> b) -> (b -> c) -> a -> c',allow:[],
+  hint:'Composition in diagrammatic order.',sol:'\\f g x. g (f x)'}},
+
+{t:'Principal types and let-polymorphism',k:'Hindley–Milner · algorithm W',
+ body:`<p><b>Theorem (principal types; Hindley 1969, Milner 1978).</b> If a term is typable then it has a principal type, from which every type of the term is obtained by substitution. Algorithm W computes it and the associated substitution by a single traversal: a fresh type variable is introduced at each abstraction and first-order unification is performed at each application. No annotations are required and the result is canonical up to renaming.</p>
+<p><b>Definition (let-generalization).</b> In the Damas–Milner system a let-bound term is assigned a type <em>scheme</em> ∀ᾱ. A, quantified over the variables not free in the context, and each occurrence is instantiated independently. Hence <code>let i = λx. x in pair (i 1) (i true)</code> is typable, while the β-equal term <code>(λi. pair (i 1) (i true)) (λx. x)</code> is not: a λ-bound variable receives a monotype and the two occurrences must agree. Type assignment is therefore not invariant under β-expansion.</p>
+<p><b>Remark (boundaries).</b> Rank-1 quantification is essentially the largest fragment with decidable inference. Typability in System F is undecidable (Wells, 1999), and remains so from rank 3 (Kfoury–Wells, 1994), rank 2 being decidable. Even in the Hindley–Milner system inference is DEXPTIME-complete (Kfoury–Tiuryn–Urzyczyn 1990; Mairson 1990), the blow-up arising from nested let.</p>`,
+ tries:['comp','let i = \\x. x in pair (i 1) (i true)','(\\i. pair (i 1) (i true)) (\\x. x)','foldr','flip'],
+ task:{kind:'type',name:'uncurry',prompt:'Exhibit an inhabitant of <span class="ty">(a → b → c) → a × b → c</span>. The constants <code>fst</code> and <code>snd</code> are available with their product elimination types.',
+  starter:'\\f p. ',target:'(a -> b -> c) -> a * b -> c',allow:['fst','snd','pair'],
+  hint:'Eliminate the product, then apply.',sol:'\\f p. f (fst p) (snd p)'}},
+
+{t:'The Curry–Howard correspondence',k:'propositions as types · normalization as cut elimination',
+ body:`<p>Read types as propositions of intuitionistic logic and typing derivations as natural deduction derivations. The correspondence is an isomorphism of the two systems, not an analogy: abstraction is ⊃-introduction, application is ⊃-elimination (modus ponens), and a context is a set of hypotheses. Enable <b>read types as logic</b> to display the type line as a proposition.</p>
+<p>The remaining connectives are obtained by extending the type structure. Conjunction A ∧ B is the product, introduced by <code>pair</code> and eliminated by <code>fst</code>, <code>snd</code>; disjunction A ∨ B is the sum, introduced by <code>inl</code>, <code>inr</code> and eliminated by <code>case</code>; falsity ⊥ is the empty type with <code>absurd</code> as its elimination (ex falso quodlibet), and ¬A is A → ⊥. These constants are given here as typing axioms, their computational content being the encodings of the earlier chapters. Loading <code>const</code> yields A ⊃ (B ⊃ A) and loading <code>S</code> yields (A ⊃ (B ⊃ C)) ⊃ ((A ⊃ B) ⊃ (A ⊃ C)): the two axiom schemes of the implicational Hilbert calculus, whose combinatory counterparts K and S have exactly those types.</p>
+<p><b>Theorem (normalization as cut elimination; Curry 1934, Howard 1969, Prawitz).</b> β-contraction on terms corresponds to the removal of a detour in a derivation — an introduction immediately followed by the matching elimination — so strong normalization of the typed calculus is the normalization theorem for NJ, and under the translation to sequent calculus, cut elimination.</p>
+<p><b>Remark (what is absent).</b> The logic obtained is intuitionistic. Peirce's law ((A ⊃ B) ⊃ A) ⊃ A and excluded middle A ∨ ¬A are uninhabited: no term can analyse an arbitrary proposition and produce a proof of one disjunct. Adding control operators repairs this — typing call/cc requires exactly double-negation elimination (Griffin, 1990) — at the cost of the disjunction and existence properties.</p>`,
+ tries:['const','S','case','\\x k. k x','\\p. case (snd p) (\\b. inl (pair (fst p) b)) (\\c. inr (pair (fst p) c))'],
+ task:{kind:'type',name:'demorgan',prompt:'Derive (A ∨ B ⊃ C) ⊃ (A ⊃ C) ∧ (B ⊃ C): exhibit an inhabitant of <span class="ty">(a + b → c) → (a → c) × (b → c)</span>.',
+  starter:'\\f. pair ',target:'(a + b -> c) -> (a -> c) * (b -> c)',allow:['inl','inr','case','pair','fst','snd','comp'],
+  hint:'Precompose the hypothesis with each injection.',sol:'\\f. pair (\\x. f (inl x)) (\\y. f (inr y))'}},
+
+{t:'Extensions',k:'System F · Martin-Löf · Lambek · substructural',
+ body:`<p><b>Polymorphism (System F; Girard 1972, Reynolds 1974).</b> Quantification over types is internalised, with Λα. M and type application. The Church numerals become the inhabitants of ∀α. (α → α) → α → α, and Reynolds's abstraction theorem — parametricity — yields the free theorems of Wadler (1989): every closed term of type ∀α. α → α is βη-equal to the identity. Typability is undecidable; type <em>checking</em> of annotated terms is decidable, which is why explicit polymorphism is the practical choice.</p>
+<p><b>Dependency (Martin-Löf type theory).</b> Types may depend on terms; Π and Σ generalise → and ×, and correspond to ∀ and ∃ under the Curry–Howard reading. Identity types Id<sub>A</sub>(x, y) admit a homotopical interpretation in which a type is an ∞-groupoid, terms of Id are paths, and iterated identity types are higher homotopies; the univalence axiom of Voevodsky identifies equality of types with equivalence. This is the point at which type theory and algebraic topology cease to be separate subjects.</p>
+<p><b>Semantics (Curry–Howard–Lambek; Lambek 1980).</b> The simply typed λ-calculus with products is the internal language of a cartesian closed category: types are objects, terms in context are morphisms, product types are products, function types are exponentials, and βη are the unit and counit laws of the adjunction. The correspondence is an equivalence between the category of theories and the category of CCCs.</p>
+<p><b>Substructural discipline (Girard 1987).</b> Deleting the structural rules of weakening and contraction forces each variable to be used exactly once, giving linear logic and a calculus of resources rather than of values. Contraction is duplication and weakening is discard, so their absence is the proof-theoretic form of no-cloning and no-deleting; quantum λ-calculi and the graphical calculi for quantum processes are formulated in this setting.</p>
+<p><b>References.</b> Barendregt, <em>The Lambda Calculus: Its Syntax and Semantics</em> (1984) for the untyped theory; Hindley, <em>Basic Simple Type Theory</em> and Sørensen–Urzyczyn, <em>Lectures on the Curry–Howard Isomorphism</em> for the typed theory; Pierce, <em>Types and Programming Languages</em> for implementation; Wadler, <em>Propositions as Types</em> (2015) for a short survey; <em>Programming Language Foundations in Agda</em> (plfa.github.io) for a machine-checked development of this entire path; the HoTT book for the homotopical extension; Smullyan, <em>To Mock a Mockingbird</em> for combinatory logic in recreational form.</p>`,
+ tries:['\\x. x','let i = \\x. x in i i','case (inl a) f g','absurd','\\f. f (\\x. f x)'],
+ task:{kind:'type',name:'dni',prompt:'Derive double-negation introduction, A ⊃ ¬¬A: exhibit an inhabitant of <span class="ty">a → ((a → Void) → Void)</span>. The converse, and Peirce\u2019s law, are not derivable here; attempting them locates the intuitionistic boundary precisely.',
+  starter:'\\x k. ',target:'a -> ((a -> Void) -> Void)',allow:['absurd'],
+  hint:'The hypotheses are a proof of A and a refutation of A.',sol:'\\x k. k x'}}
+];
+
+/* ---- guided track: each chapter as a sequence of beats ---- */
+const BEATS=[
+[ {say:'A λ-term is a variable <code>x</code>, an abstraction <code>λx. M</code>, or an application <code>M N</code>. The set Λ is the least set closed under these three formation rules; there is no fourth clause, and in particular no constants, numerals or type expressions. On this page <code>\\</code> is accepted for λ.',load:'\\x. x'},
+  {say:'An abstraction denotes a function by its rule of formation, and nothing is contracted until it is applied. <code>λx. x</code> is the identity.',
+   drill:{k:'mc',q:'To what does <code>(λx. x) q</code> reduce?',mono:true,opts:['q','x','λq. q','It is in normal form'],a:0,why:'Contraction of the redex replaces every free occurrence of x in the body by the argument. The body is x, so the contractum is q.'}},
+  {say:'Application associates to the left: <code>M N P</code> abbreviates <code>(M N) P</code>. Every abstraction binds one variable, so a binary function is an iterated abstraction returning an abstraction.',
+   load:'(\\x y. x) p q',
+   drill:{k:'mc',q:'What is the normal form of <code>(λx y. x) p q</code>?',mono:true,opts:['p','q','p q','λy. p'],a:0,why:'Two successive contractions bind x to p and y to q; the body names only x.'}},
+  {say:'The sole computation rule: the redex <code>(λx. M) N</code> contracts to <code>M[x := N]</code>, the result of substituting N for every free occurrence of x in M.',
+   drill:{k:'nf',q:'Contract by hand: <code>(λx. f x x) a</code>',a:'f a a',why:'Both occurrences are free in the body and both are replaced. Substitution admits duplication and erasure without restriction — the structural rules of contraction and weakening are unconstrained, a point that returns in the discussion of linearity.'}},
+  {say:'An occurrence of x in the scope of an enclosing λx is bound, and the remaining occurrences are free: FV(λx. M) = FV(M) \\ {x}. Renaming of bound variables generates α-equivalence, and terms are identified up to it.',
+   drill:{k:'mc',q:'Which variables occur free in <code>λx. x y</code>?',opts:['y only','x only','Both x and y','Neither'],a:0,why:'x is captured by the abstraction; y is not bound and refers to the environment. The implementation decides α-equivalence on de Bruijn representations, in which bound names are absent.'}} ],
+
+[ {say:'Since each abstraction binds one variable, <code>(λx y. M) N</code> contracts to <code>λy. M[x := N]</code>: partial application is not an additional facility but the only available mode of application.',load:'(\\x y. x) p'},
+  {say:'The identification of a function of a pair with a function returning a function is the exponential adjunction, Hom(A × B, C) ≅ Hom(A, C<sup>B</sup>).',
+   drill:{k:'nf',q:'Contract: <code>(λx y. y x) a b</code>',a:'b a',why:'x ↦ a and y ↦ b, so the body y x becomes b a. The term is the permutation combinator C.'}},
+  {say:'The substitution clause for abstractions carries a side condition: in (λy. P)[x := N] one requires y ∉ FV(N), failing which the abstraction is renamed. Load the term below and observe the renaming that precedes the contraction.',load:'(\\x y. x y) y'},
+  {say:'Renaming is α-conversion. Terms are identified up to it throughout, so the choice of bound names carries no information and only the binding structure is significant.',
+   drill:{k:'mc',q:'Are <code>λx. x</code> and <code>λz. z</code> the same term?',opts:['Yes, they are α-equivalent','No, the bound names differ','Only under a type assignment'],a:0,why:'Λ is used throughout modulo α-equivalence (Barendregt\u2019s variable convention).'}} ],
+
+[ {say:'A β-redex is a subterm of the form <code>(λx. M) N</code>. A term with no redex is in normal form; a term with several requires a strategy for selecting one.',load:'(\\x. x) ((\\y. y) z)'},
+  {say:'This evaluator implements the leftmost–outermost strategy: the redex whose λ stands furthest left, without prior reduction of arguments. This is call-by-name.',
+   drill:{k:'mc',q:'Which redex does leftmost–outermost reduction contract first in <code>(λx. x) ((λy. y) z)</code>?',mono:true,opts:['(λx. x) ((λy. y) z)','(λy. y) z'],a:0,why:'The outer application is itself a redex and stands leftmost, notwithstanding the redex in its argument. Arguments are contracted only when demanded.'}},
+  {say:'The strategy is not a matter of taste. With Ω = (λx. x x)(λx. x x), which has no normal form, the term below reduces to z under normal order and diverges under innermost reduction.',load:'(\\x y. y) omega z',
+   drill:{k:'mc',q:'What is the behaviour of call-by-value on <code>(λx y. y) Ω z</code>?',opts:['Divergence','Reduction to z','Reduction to Ω'],a:0,why:'Strict evaluation contracts arguments before the application. By the standardization theorem the leftmost–outermost strategy reaches a normal form whenever one exists; call-by-value is not normalizing.'}},
+  {say:'The strategy therefore governs termination and cost but not the value.',
+   drill:{k:'mc',q:'Can two reduction sequences from one term reach distinct normal forms?',opts:['No: normal forms are unique up to α-equivalence','Yes, which is why the strategy matters','Only for untypable terms'],a:0,why:'By the Church–Rosser theorem (1936), β-reduction is confluent: M ↠ N₁ and M ↠ N₂ imply a common reduct P. Uniqueness of normal forms and consistency of β-equality follow.'}} ],
+
+[ {say:'Data are encoded by their elimination behaviour. A boolean selects between two alternatives, so it is represented by the selector: <code>true</code> ≔ λa b. a and <code>false</code> ≔ λa b. b.',load:'(\\a b. a) yes no'},
+  {say:'Conditional branching then requires no additional construct: <code>if C M N</code> is the application <code>C M N</code>.',
+   drill:{k:'nf',q:'Contract: <code>false yes no</code>',a:'no',why:'The boolean is itself the branch selector; the calculus contains no conditional form.'}},
+  {say:'Under normal order the discarded alternative is never contracted, so the connectives are short-circuiting as a consequence of the strategy rather than by stipulation.',
+   drill:{k:'nf',q:'Contract: <code>and true (not false)</code>',a:'true',why:'With and ≔ λp q. p q false, the first argument determines whether the second is ever demanded. This is why a lazy language can define its control structures as ordinary functions.'}},
+  {say:'The encoding is continuation-passing: a datum is represented by the action a consumer would take upon it. Products, sums and inductive types are treated uniformly in the same way.'} ],
+
+[ {say:'The Church numeral of n is <code>λf x. f<sup>n</sup>(x)</code>, the term iterating its first argument n times on its second. A numeral is an iterator rather than a quantity.',load:'2',
+   drill:{k:'nf',q:'Contract: <code>3 g y</code>',a:'g (g (g y))',why:'Supplying both arguments unrolls the iteration.'}},
+  {say:'Arithmetic is consequently an algebra of iteration: <code>mult</code> ≔ λm n f. m (n f) is composition of the iterated maps, and <code>exp</code> ≔ λm n. n m is application of one numeral to another.',load:'mult 2 3',
+   drill:{k:'nf',q:'Contract: <code>exp 2 3</code>',a:'8',why:'The numeral 3 iterates the map denoted by the numeral 2 three times. By Kleene (1936) the λ-definable functions on these numerals are exactly the partial recursive ones.'}},
+  {say:'The encodings are not disjoint: λf x. x is both the numeral 0 and the term <code>false</code>. The bench prints it as <code>0</code>.',
+   drill:{k:'mc',q:'Why does no term separate 0 from false?',opts:['They are α-equivalent, hence identified','The encoding is defective','They differ but are printed alike'],a:0,why:'Terms are identified up to α-equivalence, and these two are the same element of Λ/≡. Separating them is one concrete service performed by a type discipline.'}},
+  {say:'The predecessor admits no direct iterative definition, iteration proceeding only upward. Its construction is due to Kleene and is the exercise of the next chapter.'} ],
+
+[ {say:'A product is encoded by the operation of feeding both components to a continuation: <code>pair</code> ≔ λa b f. f a b. The projections are obtained by supplying the appropriate consumer, so the pair carries its own elimination rule.',load:'fst (pair a b)',
+   drill:{k:'nf',q:'Contract: <code>snd (pair a b)</code>',a:'b',why:'snd ≔ λp. p (λa b. b): the pair is applied to the consumer retaining the second component.'}},
+  {say:'Lists are encoded as their own fold: <code>nil</code> ≔ λc n. n and <code>cons h t</code> ≔ λc n. c h (t c n). Hence <code>foldr f z l</code> is the application l f z.',load:'sum (cons 1 (cons 2 (cons 3 nil)))',
+   drill:{k:'mc',q:'What is the normal form of <code>foldr f z (cons a nil)</code>?',mono:true,opts:['f a z','a','f z a','z'],a:0,why:'Each cons contributes one application of f and nil contributes z. Every consumer of a list is exactly a choice of these two arguments, which is the sense in which foldr is universal.'}},
+  {say:'This is the Böhm–Berarducci encoding (1985): a finitely branching inductive type is representable by the type of its own iterator, adequately. A datum is its own elimination principle, and the Church numerals are the instance for ℕ, where that type is the type of the induction principle.'},
+  {say:'The predecessor, following Kleene (1935): iterate ⟨a, b⟩ ↦ ⟨b, b + 1⟩ from ⟨0, 0⟩, obtaining ⟨n − 1, n⟩ after n iterations, and project the first component.',load:'snd (shift (pair 3 4))'} ],
+
+[ {say:'No term may refer to itself, and none needs to. By the first fixed-point theorem, every M admits X with M X =<sub>β</sub> X, uniformly via the paradoxical combinator <code>Y</code> ≔ λf. (λx. f (x x)) (λx. f (x x)).',load:'Y g',
+   drill:{k:'mc',q:'To what does <code>Y M</code> reduce?',mono:true,opts:['M (Y M)','M M','Y (M M)','A normal form'],a:0,why:'Two contractions give M ((λx. M (x x)) (λx. M (x x))), whose argument is again a fixed point of M. The unfolding is unbounded and proceeds only on demand.'}},
+  {say:'A recursive definition is then a fixed point of a functional. Termination depends on the recursive occurrence lying in the discarded alternative of a conditional, which normal order does not contract; step through the guard below.',load:'fact 4'},
+  {say:'The mechanism is self-application, and its degenerate case Ω = (λx. x x)(λx. x x) is the smallest term without normal form.',
+   drill:{k:'mc',q:'Why does Y fail under call-by-value?',opts:['The recursive argument is contracted before the guard is evaluated','K discards prematurely','It has no normal form under any strategy'],a:0,why:'Strict evaluation unfolds the fixed point before the conditional can discard it. The remedy is Z ≔ λf. (λx. f (λv. x x v)) (λx. f (λv. x x v)), which interposes an abstraction to delay the unfolding.'}},
+  {say:'Read propositionally, self-application is Curry\u2019s paradox. The typing rules of the following chapters exclude it, and with it both the paradox and unrestricted recursion.'} ],
+
+[ {say:'Variable binding is eliminable. Take the applicative structure generated by <code>S</code> ≔ λf g x. f x (g x) and <code>K</code> ≔ λx y. x.',load:'S K K a',
+   drill:{k:'mc',q:'What does <code>S K K</code> denote?',opts:['The identity','K','A term without normal form'],a:0,why:'S K K M ↠ K M (K M) ↠ M. Hence I is definable and two constants suffice for combinatory completeness (Schönfinkel 1924, Curry 1930).'}},
+  {say:'Bracket abstraction performs the translation: λ*x.x = I, λ*x.M = K M for x ∉ FV(M), and λ*x.(M N) = S (λ*x.M) (λ*x.N). Load the term below and apply <b>To SKI</b>.',load:'\\x y. y x',
+   drill:{k:'nf',q:'Contract the image applied to two arguments: <code>S (K (S I)) (S (K K) I) p q</code>',a:'q p',why:'Binder-free and behaviourally equal to λx y. y x, as combinatory completeness guarantees.'}},
+  {say:'The image is equivalent but not compact. Apply the translation to λx y z. x z (y z), which is S itself: the result is some forty symbols, β-equal to S but not identical to it. The standard translation is quadratic in the size of the input, whence the optimised algorithms with additional constants B and C, and supercombinator lifting, used in compilers.'} ],
+
+[ {say:'Impose the three Curry-style typing rules: Γ ⊢ x : A when Γ(x) = A; Γ, x : A ⊢ M : B implies Γ ⊢ λx. M : A → B; and Γ ⊢ M : A → B with Γ ⊢ N : A implies Γ ⊢ M N : B. The line above the tape shows the principal type of the loaded term.',load:'\\f x. f (f x)',
+   drill:{k:'mc',q:'What is the principal type of <code>λx y. x</code>?',mono:true,opts:['α → β → α','α → α → α','α → β → β'],a:0,why:'The second argument is not used, so its type remains unconstrained. Observe that K and true receive the same type: the type system does not separate them either.'}},
+  {say:'Load self-application and read the failure of unification.',load:'\\x. x x',
+   drill:{k:'mc',q:'Why is <code>λx. x x</code> untypable?',opts:['x would require the types α and α → β simultaneously','The inference algorithm is incomplete','Only because α is unquantified'],a:0,why:'Unification of α with α → β fails the occurs check, no finite type being a proper subterm of itself. Ω and Y are therefore excluded.'}},
+  {say:'The exclusion is a theorem, not a policy.',
+   drill:{k:'mc',q:'What follows from strong normalization together with subject reduction?',opts:['Every typable term reduces to a normal form of the same type','Type inference is decidable','Every type is inhabited'],a:0,why:'Typing is preserved by contraction (subject reduction) and every reduction sequence is finite (Turing; Tait 1967, by reducibility). The cost is expressive power: the definable numeric functions reduce to the extended polynomials (Schwichtenberg 1975), and Turing completeness is surrendered.'}} ],
+
+[ {say:'Every typable term has a principal type, from which all its types arise by substitution (Hindley 1969, Milner 1978). Algorithm W computes it in one traversal: a fresh type variable at each abstraction, first-order unification at each application, no annotations.',load:'comp'},
+  {say:'Damas–Milner adds generalization at let: a let-bound term receives a scheme ∀ᾱ. A quantified over the variables not free in the context, and each occurrence is instantiated separately. Load the two β-equal terms below in turn.',load:'let i = \\x. x in pair (i 1) (i true)',
+   drill:{k:'mc',q:'Why is <code>(λi. pair (i 1) (i true)) (λx. x)</code> untypable while the let-term is typable?',opts:['A λ-bound variable receives a monotype; let generalizes to a scheme','The redex is contracted in the wrong order','pair is not polymorphic'],a:0,why:'The two occurrences of a λ-bound variable must agree, whereas the scheme ∀α. α → α may be instantiated independently at each use. Type assignment is thus not invariant under β-expansion.'}},
+  {say:'Rank-1 quantification is essentially the largest fragment with decidable inference: typability in System F is undecidable (Wells 1999) and remains so from rank 3 (Kfoury–Wells 1994). Even here inference is DEXPTIME-complete (Kfoury–Tiuryn–Urzyczyn 1990; Mairson 1990), the blow-up arising from nested let.'} ],
+
+[ {say:'Read types as propositions of intuitionistic logic and typing derivations as derivations in natural deduction: abstraction is ⊃-introduction, application is modus ponens, a context is a set of hypotheses. Enable <b>read types as logic</b> and load a combinator.',load:'const',
+   drill:{k:'mc',q:'Read as logic, what does <code>const : α → β → α</code> assert?',opts:['A ⊃ (B ⊃ A)','A ∧ B ⊃ A','A ∨ B ⊃ A'],a:0,why:'The first axiom scheme of the implicational Hilbert calculus. Loading S yields the second, (A ⊃ (B ⊃ C)) ⊃ ((A ⊃ B) ⊃ (A ⊃ C)): combinatory logic and the implicational fragment of NJ are the same system.'}},
+  {say:'The remaining connectives extend the type structure: <code>×</code> is conjunction with pair, fst, snd as its rules; <code>+</code> is disjunction with inl, inr, case; <code>Void</code> is ⊥ with absurd as ex falso, and ¬A is A → ⊥. These are supplied here as typing axioms.',load:'case'},
+  {say:'The logic so obtained is intuitionistic, and the omission is exact.',
+   drill:{k:'mc',q:'Why is Peirce\u2019s law <code>((a → b) → a) → a</code> uninhabited?',opts:['No term can analyse an arbitrary proposition and produce a proof of one disjunct','It is inhabited; the checker is incomplete','Because a and b may coincide'],a:0,why:'Peirce\u2019s law and excluded middle are not derivable in NJ. Typing call/cc requires precisely double-negation elimination (Griffin 1990), at the cost of the disjunction and existence properties.'}},
+  {say:'Contraction of a redex corresponds to the removal of a detour in a derivation — an introduction immediately followed by the matching elimination. Strong normalization of the typed calculus is therefore the normalization theorem for NJ, and cut elimination under the translation to sequent calculus.'} ],
+
+[ {say:'<b>System F</b> internalises quantification over types. The Church numerals become the inhabitants of ∀α. (α → α) → α → α, and Reynolds\u2019s abstraction theorem yields the free theorems of Wadler (1989): every closed term of type ∀α. α → α is βη-equal to the identity. Typability is undecidable; checking of annotated terms is not.'},
+  {say:'<b>Martin-Löf type theory</b> lets types depend on terms, with Π and Σ generalising → and × and corresponding to ∀ and ∃. Identity types admit a homotopical interpretation: a type is an ∞-groupoid, terms of Id<sub>A</sub>(x, y) are paths, iterated identity types are higher homotopies, and univalence identifies equality of types with equivalence.'},
+  {say:'<b>Curry–Howard–Lambek</b> (Lambek 1980) supplies the semantics: the simply typed calculus with products is the internal language of a cartesian closed category, types being objects, terms in context morphisms, and βη the unit and counit laws of the adjunction — an equivalence between theories and CCCs.'},
+  {say:'<b>Substructural calculi</b> (Girard 1987) delete weakening and contraction, forcing each variable to be used exactly once. Contraction is duplication and weakening is discard, so their absence is the proof-theoretic form of no-cloning and no-deleting; quantum λ-calculi are formulated in this setting.'} ]
+];
+
+/* ============================================================ *
+ *  6. UI
+ * ============================================================ */
+const $=id=>document.getElementById(id);
+let cur=0, state={term:null,trace:[],pos:0,playing:0}, done={};
+const saveDone=()=>{};
+
+let mode='guided', beatPos=CH.map(()=>0), beatOK={};
+function buildNav(){
+  $('nav').innerHTML=CH.map((c,i)=>
+    `<li><button class="${i===cur?'on':''} ${done[i]?'done':''}" data-i="${i}"><span class="num">${i}</span>${c.t}</button></li>`).join('');
+  $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{cur=+b.dataset.i;render();window.scrollTo({top:0,behavior:'smooth'});});
+}
+$('mGuided').onclick=()=>{mode='guided';render();};
+$('mRef').onclick=()=>{mode='ref';render();};
+
+function chipsHtml(c){
+  return `<p class="chiphead">Terms for the bench:</p><div class="chips">`+
+    c.tries.map(s=>`<button class="chip" data-s="${s.replace(/"/g,'&quot;')}">${show(parse(s),{sugar:false})}</button>`).join('')+`</div>`;
+}
+function drillHtml(d,i,passed){
+  const key=cur+':'+i, done=passed||beatOK[key];
+  let inner;
+  if(d.k==='mc'){
+    inner=`<div class="opts">`+d.opts.map((o,j)=>
+      `<button class="opt ${d.mono?'mono':''} ${done&&j===d.a?'right':''}" data-b="${i}" data-o="${j}" ${done?'disabled':''}>${o.replace(/\\/g,'λ')}</button>`).join('')+`</div>`;
+  }else{
+    inner=`<input type="text" spellcheck="false" data-nf="${i}" placeholder="normal form" ${done?'disabled':''} value="${done?d.a.replace(/"/g,'&quot;'):''}">`+
+          `<button class="btn" data-nfb="${i}" ${done?'disabled':''}>Check</button>`;
+  }
+  return `<div class="drill"><p class="q">${d.q}</p>${inner}<p class="why ${done?'ok':''}" data-w="${i}">${done?d.why:''}</p></div>`;
+}
+function renderGuided(c){
+  const bs=BEATS[cur]||[];
+  const at=Math.min(beatPos[cur],Math.max(bs.length-1,0));
+  let h=`<h2>${c.t}</h2><p class="kicker">${c.k}</p>`;
+  for(let i=0;i<=at;i++){
+    const b=bs[i];
+    h+=`<div class="beat${i===at?' on':''}"><p>${b.say}</p>`;
+    if(b.drill)h+=drillHtml(b.drill,i,i<at);
+    h+=`</div>`;
+  }
+  const last=at>=bs.length-1;
+  const gated=bs[at]&&bs[at].drill&&!beatOK[cur+':'+at];
+  h+=`<div class="controls">`;
+  if(!last)h+=`<button class="btn ${gated?'':'pri'}" id="nextbeat">${gated?'Continue without answering':'Continue'}</button>`;
+  else h+=`<span class="readout">Section complete. Exercise below.</span>`;
+  h+=`<button class="btn" id="allref">Continuous text</button>`;
+  if(cur<CH.length-1&&last)h+=`<button class="btn" id="nextch">Next chapter</button>`;
+  h+=`</div>`;
+  return {h,at,last,bs};
+}
+function render(){
+  const c=CH[cur];
+  buildNav();
+  $('mGuided').className=mode==='guided'?'on':'';
+  $('mRef').className=mode==='ref'?'on':'';
+  if(mode==='ref'){
+    $('lesson').innerHTML=`<h2>${c.t}</h2><p class="kicker">${c.k}</p>${c.body}`;
+    $('chips').innerHTML=chipsHtml(c);
+    $('src').value=c.tries[0];
+    renderTask(c.task);
+  }else{
+    const g=renderGuided(c);
+    $('lesson').innerHTML=g.h;
+    $('chips').innerHTML=g.last?chipsHtml(c):'';
+    const b=g.bs[g.at];
+    if(b&&b.load)$('src').value=b.load;
+    else if(g.at===0&&g.bs[0]&&!g.bs[0].load)$('src').value=c.tries[0];
+    renderTask(g.last?c.task:null);
+    wireBeats(g);
+  }
+  $('chips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{$('src').value=b.dataset.s;runAll();});
+  runAll();
+}
+function wireBeats(g){
+  const nb=$('nextbeat');
+  if(nb)nb.onclick=()=>{beatPos[cur]=Math.min(beatPos[cur]+1,g.bs.length-1);render();};
+  $('allref').onclick=()=>{mode='ref';render();};
+  const nc=$('nextch'); if(nc)nc.onclick=()=>{cur++;render();window.scrollTo({top:0,behavior:'smooth'});};
+  const d=g.bs[g.at]&&g.bs[g.at].drill;
+  if(!d)return;
+  const key=cur+':'+g.at, why=document.querySelector(`[data-w="${g.at}"]`);
+  if(d.k==='mc'){
+    document.querySelectorAll(`[data-o]`).forEach(btn=>btn.onclick=()=>{
+      const j=+btn.dataset.o;
+      if(j===d.a){beatOK[key]=1;why.className='why ok';why.innerHTML=d.why;
+        document.querySelectorAll('[data-o]').forEach(b2=>{b2.disabled=true;if(+b2.dataset.o===d.a)b2.classList.add('right');});
+        const n=$('nextbeat'); if(n){n.className='btn pri';n.textContent='Next';}
+      }else{btn.classList.add('wrong');why.className='why no';why.innerHTML='Incorrect.';}
+    });
+  }else{
+    const inp=document.querySelector(`[data-nf="${g.at}"]`), bt=document.querySelector(`[data-nfb="${g.at}"]`);
+    const go=()=>{
+      let u; try{u=parse(inp.value);}catch(e){why.className='why no';why.innerHTML='Parse error — '+e.message;return;}
+      const got=normalize(u,ENV,{full:true,max:60000}), want=normalize(parse(d.a),ENV,{full:true,max:60000});
+      if(!got.stalled&&aeq(got.t,want.t)){
+        beatOK[key]=1;why.className='why ok';why.innerHTML=d.why;inp.disabled=true;bt.disabled=true;
+        const n=$('nextbeat'); if(n){n.className='btn pri';n.textContent='Next';}
+      }else{why.className='why no';why.innerHTML='Not the normal form. Load the term on the bench to inspect the reduction.';}
+    };
+    bt.onclick=go;
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go();}});
+  }
+}
+
+/* ---- bench ---- */
+function readTerm(){
+  const s=$('src').value.trim();
+  if(!s)throw new Error('nothing to reduce');
+  return parse(s);
+}
+function runAll(){
+  let t;
+  try{t=readTerm();}
+  catch(e){$('tape').innerHTML=`<div class="err">parse error — ${e.message}</div>`;$('typeline').textContent='';$('ribbon').innerHTML='';$('readout').textContent='';return;}
+  const logic=$('logic').checked;
+  try{
+    const r=typeOfTerm(t,logic);
+    $('typeline').className='typeline';
+    $('typeline').innerHTML=`<small>${logic?'derives':'principal type'}</small>${r.str}`+
+      (r.free.length?` <small style="margin-left:14px">in context</small>${r.free.join(', ')}`:'');
+  }catch(e){
+    $('typeline').className='typeline bad';
+    $('typeline').innerHTML=`<small>no type</small>${e.message}`;
+  }
+  const res=normalize(t,ENV,{trace:true,max:2000});
+  state.term=t; state.trace=res.trace; state.res=res; state.pos=res.trace.length;
+  drawTape(res); drawRibbon(res);
+  $('readout').textContent=`${res.steps} contraction${res.steps===1?'':'s'}${res.stalled?', halted at the step budget':''} · size ${size(res.t)}`;
+}
+function drawTape(res){
+  const sugar=$('sugar').checked;
+  const rows=res.trace.map((e,i)=>
+    `<div class="row" data-i="${i}"><span class="rule">${e.rule}</span><span class="term">${show(e.term,{html:true,sugar,redex:e.redex})}</span></div>`);
+  rows.push(`<div class="row final"><span class="rule">${res.stalled?'⋯':'normal form'}</span><span class="term">${show(res.t,{html:true,sugar})}</span></div>`);
+  $('tape').innerHTML=rows.join('');
+  $('tape').querySelectorAll('.row[data-i]').forEach(r=>r.onclick=()=>{
+    const e=res.trace[+r.dataset.i]; $('src').value=show(e.term,{sugar:false}); runAll();
+  });
+}
+function drawRibbon(res){
+  const sizes=res.trace.map(e=>e.size).concat([size(res.t)]);
+  const max=Math.max.apply(null,sizes), n=Math.min(sizes.length,160);
+  const st=Math.max(1,Math.floor(sizes.length/n));
+  let h='';
+  for(let i=0;i<sizes.length;i+=st)h+=`<i style="height:${Math.max(2,100*sizes[i]/max)}%" class="${sizes[i]===max?'hot':''}" title="step ${i}: size ${sizes[i]}"></i>`;
+  $('ribbon').innerHTML=h;
+}
+$('run').onclick=runAll;
+$('stepb').onclick=()=>{
+  let t; try{t=readTerm();}catch(e){return runAll();}
+  const r=step(t,ENV,new Set(),false,true);
+  if(!r){$('readout').textContent='in normal form';return;}
+  $('src').value=show(r.t,{sugar:false}); runAll();
+};
+$('play').onclick=function(){
+  if(state.playing){clearInterval(state.playing);state.playing=0;this.textContent='Run';return;}
+  this.textContent='Halt';
+  state.playing=setInterval(()=>{
+    let t; try{t=readTerm();}catch(e){clearInterval(state.playing);state.playing=0;$('play').textContent='Run';return;}
+    const r=step(t,ENV,new Set(),false,true);
+    if(!r){clearInterval(state.playing);state.playing=0;$('play').textContent='Run';return;}
+    $('src').value=show(r.t,{sugar:false}); runAll();
+  },360);
+};
+$('ski').onclick=()=>{
+  try{const t=readTerm(); $('src').value=show(toSKI(t),{sugar:false}); runAll();}
+  catch(e){}
+};
+$('sugar').onchange=runAll; $('logic').onchange=runAll;
+$('src').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();runAll();}});
+
+/* ---- challenges ---- */
+function renderTask(k){
+  if(!k){$('task').innerHTML='';return;}
+  const tests=k.kind==='behav'
+    ? `<p class="tests">${k.tests.map(([a,b])=>`<span>${a} ⟶ ${b}</span>`).join('')}</p>`
+    : `<p class="tests"><span>goal: ${k.target.replace(/->/g,'→').replace(/\*/g,'×')}</span>${k.allow.length?`<span>allowed constants: ${k.allow.join(' ')}</span>`:''}</p>`;
+  $('task').innerHTML=`<div class="task">
+    <div class="head"><h4>Exercise (${k.kind==='type'?'inhabitation':'construction'}) — ${k.name}</h4><p>${k.prompt}</p></div>
+    <div class="body">${tests}
+      <textarea id="ans" rows="2" spellcheck="false">${k.starter}</textarea>
+      <div class="controls">
+        <button class="btn pri" id="check">Check</button>
+        <button class="btn" id="tobench">Load on bench</button>
+        <button class="btn" id="hintb">Hint</button>
+        <button class="btn" id="solb">Reveal a solution</button>
+      </div>
+      <div class="verdict" id="verdict"></div>
+      <div class="reveal" id="reveal"></div>
+    </div></div>`;
+  $('check').onclick=()=>checkTask(k);
+  $('tobench').onclick=()=>{$('src').value=$('ans').value;runAll();window.scrollTo({top:$('src').offsetTop-120,behavior:'smooth'});};
+  $('hintb').onclick=()=>{$('reveal').className='reveal show';$('reveal').textContent='Hint. '+k.hint.replace(/<[^>]+>/g,'');};
+  $('solb').onclick=()=>{$('reveal').className='reveal show';$('reveal').textContent='One solution: '+k.sol;};
+  $('ans').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();checkTask(k);}});
+}
+function verdict(ok,msg){
+  const v=$('verdict'); v.className='verdict '+(ok?'ok':'no'); v.textContent=msg;
+  if(ok){done[cur]=1;saveDone();buildNav();}
+}
+function hasLam(t){return t.t==='lam'||(t.t==='app'&&(hasLam(t.f)||hasLam(t.a)))||(t.t==='let');}
+function checkTask(k){
+  let u;
+  try{u=parse($('ans').value);}catch(e){return verdict(false,'parse error — '+e.message);}
+  if(k.forbid){
+    const f=fv(u), bad=k.forbid.filter(n=>f.has(n));
+    if(bad.length)return verdict(false,'The answer uses '+bad.join(', ')+', which is excluded for this exercise.');
+  }
+  if(k.noLam&&hasLam(u))return verdict(false,'The answer must contain no abstraction.');
+  if(k.kind==='behav'){
+    const env=Object.assign({},ENV); env[k.name]=u;
+    for(const [lhs,rhs] of k.tests){
+      let got,want;
+      try{
+        got=normalize(parse(lhs),env,{full:true,max:60000});
+        want=normalize(parse(rhs),env,{full:true,max:60000});
+      }catch(e){return verdict(false,'error on '+lhs+' — '+e.message);}
+      if(got.stalled)return verdict(false,lhs+' reached no normal form within the step budget');
+      if(!aeq(got.t,want.t))
+        return verdict(false,lhs+' ↠ '+show(got.t,{sugar:true})+', expected '+rhs);
+    }
+    return verdict(true,'All '+k.tests.length+' test cases agree up to α-equivalence. ✓');
+  }
+  // type challenge
+  const allowed=new Set(k.allow||[]);
+  const stray=[...fv(u)].filter(n=>!allowed.has(n));
+  if(stray.length)return verdict(false,'free variable'+(stray.length>1?'s':'')+' '+stray.join(', ')+': a free variable receives an unconstrained type and would inhabit any proposition. Submit a closed term (permitted constants: '+((k.allow||[]).join(' ')||'none')+').');
+  let sc;
+  try{const s=new Map(); const ty=infer(u,TENV,s,{}); sc=gen({},ty,s);}
+  catch(e){return verdict(false,'Untypable: '+e.message);}
+  const s2=new Map();
+  try{ unify(inst(sc,s2),parseType(k.target),s2); }
+  catch(e){ return verdict(false,'Principal type '+showT(sc.type,new Map())+'; the stated type is not an instance of it.'); }
+  return verdict(true,'Accepted. Principal type '+showT(sc.type,new Map())+' ✓');
+}
+
+/* ---- prelude reference, appended to the last chapter ---- */
+function preludeTable(){
+  return `<h3 style="font-size:16px;margin:34px 0 4px">The definitions, with their principal types where they exist</h3>
+  <table><tr><th>constant</th><th>definition</th><th>principal type (Hindley–Milner)</th></tr>`+
+  PRE.map(([n,src])=>{
+    const ty=TYPEOF[n];
+    return `<tr><td class="n">${n}</td><td class="d">${src.replace(/\\/g,'λ').replace(/</g,'&lt;')}</td>
+      <td class="t ${ty.ok?'':'bad'}">${ty.ok?ty.str+(ty.ax?' (axiom)':''):'— '+ty.str}</td></tr>`;
+  }).join('')+`</table>`;
+}
+CH[CH.length-1].body+=preludeTable();
+
+render();
+/* one orchestrated moment on load: run a reduction once */
+const calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!calm){
+  $('src').value='add 2 3'; runAll();
+  let i=0; const iv=setInterval(()=>{
+    let t; try{t=readTerm();}catch(e){clearInterval(iv);return;}
+    const r=step(t,ENV,new Set(),false,true);
+    if(!r||i++>14){clearInterval(iv);$('src').value=CH[0].tries[0];runAll();return;}
+    $('src').value=show(r.t,{sugar:false}); runAll();
+  },170);
+}
+</script>
+</body>
+</html>

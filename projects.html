@@ -16,87 +16,275 @@
     <!-- Main Content -->
     <main class="content">
       <h2>Research Projects</h2>
-      <p><em>Selected projects and research directions, organized by theme.</em></p>
+      <p><em>Research directions, organized by theme. Each section states the problem being addressed and lists the
+         corresponding work; the <a href="publications.html">publications page</a> gives the complete chronological
+         record with full author lists.</em></p>
 
-      <!-- Quantum & Analog Computing -->
-      <section class="project">
-        <h3>Quantum and Analog Computing</h3>
+      <p>
+        <strong>Contents:</strong>
+        <a href="#quantum-architectures">Quantum architectures and control</a> ·
+        <a href="#quantum-thermo">Quantum thermodynamics and batteries</a> ·
+        <a href="#neuromorphic">Neuromorphic and memristive computing</a> ·
+        <a href="#spin-ice">Artificial spin ice and physical learning</a> ·
+        <a href="#stat-mech">Statistical mechanics and thermodynamics of computation</a> ·
+        <a href="#methods">Spectral, combinatorial and operator methods</a> ·
+        <a href="#networks">Complex systems, networks and economic structure</a> ·
+        <a href="#gravity">Quantum gravity and fundamental physics</a> ·
+        <a href="#books">Books, reviews and commissioned reports</a> ·
+        <a href="#outreach">Teaching, outreach and simulations</a>
+      </p>
+
+      <!-- 1. Quantum architectures and control -->
+      <section class="project" id="quantum-architectures">
+        <h3>Quantum Computing Architectures and Control</h3>
         <p>
-          My work in quantum computation focuses on the design and modeling of hybrid
-          analog–digital systems, quantum annealers, and superconducting architectures.
-          Recent efforts include developing protocols for energy-efficient computation,
-          and modeling how disorder, noise, and collective dynamics affect quantum hardware.
+          A central question in this line of work is how much control a quantum processor actually requires. Local
+          addressing of every qubit is expensive in wiring, calibration and heat load, and it is not obvious that it is
+          necessary. With collaborators at Planckian and Scuola Normale Superiore I study <em>globally driven</em>
+          architectures, in which a single field acts on the whole register and computation is arranged through
+          always-on ZZ couplings, and ask what disorder, decoherence and fabrication spread do to their fidelity.
         </p>
         <ul>
-          <li><a href="https://arxiv.org/abs/2510.25996" target="_blank">Overcoming Disorder in Superconducting Globally-Driven Quantum Computing (arXiv:2510.25996)</a></li>
-          <li><a href="https://arxiv.org/abs/2509.09271" target="_blank">Globally-Controlled Quantum Processors with ZZ Interactions (arXiv:2509.09271)</a></li>
-          <li><a href="https://arxiv.org/abs/2505.13625" target="_blank">Classical Criticality via Quantum Annealing (to appear in press, 2025)</a></li>
+          <li><a href="https://arxiv.org/abs/2608.05821" target="_blank">Quantum error correction with global control</a> (arXiv:2608.05821)</li>
+          <li><a href="https://arxiv.org/abs/2607.28479" target="_blank">Mitigating quantum decoherence via global optimal control</a> (arXiv:2607.28479)</li>
+          <li><a href="https://arxiv.org/abs/2510.25996" target="_blank">Overcoming disorder in superconducting globally-driven quantum computing</a> (Phys. Rev. A <strong>113</strong>, 012616, 2026)</li>
+          <li><a href="https://arxiv.org/abs/2509.09271" target="_blank">Building globally-controlled quantum processors with ZZ interactions</a> (Phys. Rev. A <strong>113</strong>, 012614, 2026)</li>
+          <li><a href="https://arxiv.org/abs/2601.11714" target="_blank">Experimental observation of dynamical blockade between transmon qubits via ZZ interaction engineering</a> (arXiv:2601.11714)</li>
+          <li><a href="https://arxiv.org/abs/2607.13887" target="_blank">A reservoir computing approach to quantum gate synthesis</a> (arXiv:2607.13887)</li>
+        </ul>
+        <p>
+          A second thread uses quantum annealers as physical systems rather than as optimizers: as controllable
+          many-body platforms in which criticality, hysteresis and memory effects can be measured directly.
+        </p>
+        <ul>
+          <li><a href="https://arxiv.org/abs/2505.13625" target="_blank">Classical criticality via quantum annealing</a> (<a href="https://www.nature.com/articles/s41467-025-67568-w" target="_blank">Nature Communications</a>, 2026)</li>
+          <li><a href="https://arxiv.org/abs/2507.18079" target="_blank">Magnetic memory and hysteresis from quantum transitions: theory and experiments on quantum annealers</a> (to appear in Communications Physics)</li>
+          <li><a href="https://arxiv.org/abs/2601.20287" target="_blank">Fingerprints of classical memory in quantum hysteresis</a> (arXiv:2601.20287)</li>
+          <li><a href="https://arxiv.org/abs/2406.06625" target="_blank">Application of quantum computing to Los Alamos scientific problems</a> (DARPA report, arXiv:2406.06625)</li>
         </ul>
       </section>
 
-      <!-- Quantum Thermodynamics and Quantum Batteries -->
-      <section class="project">
-        <h3>Quantum Thermodynamics and Quantum Batteries</h3>
+      <!-- 2. Quantum thermodynamics -->
+      <section class="project" id="quantum-thermo">
+        <h3>Quantum Thermodynamics, Batteries and Uncertainty Relations</h3>
         <p>
-          I explore the thermodynamics of quantum systems — in particular, the
-          statistical and energetic limits of computation, storage, and thermalization
-          at the quantum scale. This includes foundational work on the theory of
-          quantum batteries, quantum thermodynamic uncertainty relations, and the
-          role of coherence in energy transport.
+          Energy is a resource for computation, and quantum mechanics constrains how it can be stored, extracted and
+          measured. This work concerns the thermodynamic limits of quantum energy storage — how much work a
+          many-body system can hold and release, what role coherence plays, and which charging protocols are
+          impossible in principle — together with operator formulations of thermodynamic uncertainty relations and
+          random-matrix descriptions of thermalization.
         </p>
         <ul>
-          <li><a href="https://arxiv.org/abs/2409.02198" target="_blank">Universally-Charging Protocols for Quantum Batteries: A No-Go Theorem (Eur. Phys. Lett., 2025)</a></li>
-          <li><a href="https://arxiv.org/abs/2012.15026" target="_blank">Energy Storage and Coherence in Closed and Open Quantum Batteries (Quantum, 2021)</a></li>
-          <li><a href="https://arxiv.org/abs/2406.11974" target="_blank">Operator-Based Quantum Thermodynamic Uncertainty Relations (arXiv:2406.11974)</a></li>
-          <li><a href="https://arxiv.org/abs/1908.08064" target="_blank">Random Quantum Batteries (Phys. Rev. Research, 2020)</a></li>
+          <li><a href="https://arxiv.org/abs/2409.02198" target="_blank">Universally-charging protocols for quantum batteries: a no-go theorem</a> (Europhys. Lett. <strong>150</strong>, 48001, 2025)</li>
+          <li><a href="https://arxiv.org/abs/2406.11974" target="_blank">Operator-based quantum thermodynamic uncertainty relations</a> (SciPost Physics Core)</li>
+          <li><a href="https://arxiv.org/abs/2012.15026" target="_blank">Energy storage and coherence in closed and open quantum batteries</a> (Quantum <strong>5</strong>, 505, 2021)</li>
+          <li><a href="https://arxiv.org/abs/1908.08064" target="_blank">Random quantum batteries</a> (Phys. Rev. Research <strong>2</strong>, 023095, 2020)</li>
+          <li><a href="https://arxiv.org/abs/2012.07681" target="_blank">Random matrix theory of the isospectral twirling</a> (SciPost Physics <strong>10</strong>, 076, 2021)</li>
         </ul>
       </section>
 
-      <!-- Neuromorphic Computing -->
-      <section class="project">
+      <!-- 3. Neuromorphic and memristive computing -->
+      <section class="project" id="neuromorphic">
         <h3>Neuromorphic and Memristive Computing</h3>
         <p>
-          I study physical computation through networks of memristive devices and
-          nanomagnets, developing theories of learning and optimization in physical substrates.
-          My group investigates how these systems can be used for analog computing,
-          optimization, and machine learning in hardware.
+          Networks of memristive devices compute by relaxing, not by executing instructions. The programme here is to
+          give that statement analytical content: to derive the dynamics of a resistive network with memory from
+          circuit constraints, to identify the conserved and slowly relaxing quantities that govern it, and to
+          determine what such a substrate can and cannot learn. The results are exact equations of motion for
+          memristive circuits, mean-field and cycle-space descriptions of their collective behaviour, and learning
+          rules formulated directly in terms of the physics rather than transplanted from software.
         </p>
+        <p><em>Theory of memristive network dynamics.</em></p>
         <ul>
-          <li><a href="https://arxiv.org/abs/2408.05183" target="_blank">Uncontrolled Learning: Co-design of Neuromorphic Hardware Topology (Adv. Intelligent Systems, 2025)</a></li>
-          <li><a href="https://arxiv.org/abs/2506.09392" target="_blank">Voltage-Controlled Oscillator and Memristor-Based Analog Computing (arXiv:2506.09392)</a></li>
-          <li><a href="https://arxiv.org/abs/2509.00747" target="_blank">Self-Organizing Memristive Networks as Physical Learning Systems (to appear in press, 2025)</a></li>
+          <li><a href="https://arxiv.org/abs/1608.08651" target="_blank">The complex dynamics of memristive circuits: analytical results and universal slow relaxation</a> (Phys. Rev. E <strong>95</strong>, 022140, 2017)</li>
+          <li><a href="https://arxiv.org/abs/1705.00244" target="_blank">Locality of interactions in memristive circuits</a> (Phys. Rev. E <strong>96</strong>, 052206, 2017)</li>
+          <li><a href="https://www.mdpi.com/1099-4300/21/8/789" target="_blank">Asymptotic behavior of memristive circuits</a> (Entropy <strong>21</strong>, 789, 2019)</li>
+          <li><a href="https://arxiv.org/abs/2402.16015" target="_blank">Network analysis of memristive device circuits: dynamics, stability and correlations</a> (J. Phys. Complexity <strong>6</strong>, 025003, 2025)</li>
+          <li><a href="https://doi.org/10.1088/2634-4386/ad4052" target="_blank">Cycle equivalence classes, orthogonal Weingarten calculus, and the mean-field theory of memristive systems</a> (Neuromorph. Comput. Eng. <strong>4</strong>, 024005, 2024)</li>
+          <li><a href="https://arxiv.org/abs/1706.03001" target="_blank">A mean-field model of memristive circuit interaction</a> (Europhys. Lett. <strong>122</strong>, 40008, 2018)</li>
+          <li><a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/andp.202300090" target="_blank">Mean field theory of self-organizing nanowire connectomes</a> (Ann. Phys. <strong>535</strong>, 2300090, 2023)</li>
+          <li><a href="https://arxiv.org/abs/2404.06628" target="_blank">Quantum graph models for transport in filamentary switching</a> (Phys. Rev. B <strong>111</strong>, 045145, 2025)</li>
+        </ul>
+        <p><em>Learning and computation in physical substrates.</em></p>
+        <ul>
+          <li><a href="https://arxiv.org/abs/2602.03546" target="_blank">How to train your resistive network: generalized equilibrium propagation and analytical learning</a> (APL Mach. Learn. <strong>4</strong>, 036112, 2026; <a href="https://pubs.aip.org/aip/sci/article/2026/36/361101/3403303/Algorithm-optimizes-machine-learning-techniques" target="_blank">Scilight</a>)</li>
+          <li><a href="https://arxiv.org/abs/2408.05183" target="_blank">Uncontrolled learning: co-design of neuromorphic hardware topology for neuromorphic algorithms</a> (Adv. Intell. Syst., 2025)</li>
+          <li><a href="https://arxiv.org/abs/2009.00112" target="_blank">The computational capacity of memristor reservoirs</a> (Phys. Rev. E <strong>106</strong>, 045310, 2022)</li>
+          <li><a href="https://iopscience.iop.org/article/10.1088/2632-959X/ad10a3" target="_blank">Ergodicity, lack thereof, and the performance of reservoir computing with memristive networks</a> (Nano Express <strong>5</strong>, 015001, 2024)</li>
+          <li><a href="https://arxiv.org/abs/2407.20547" target="_blank">Neuromorphic on-chip reservoir computing with spiking neural network architectures</a> (Neuromorph. Comput. Eng.)</li>
+          <li><a href="https://doi.org/10.1080/17445760.2017.1320796" target="_blank">The mise en scène of memristive networks: effective memory, dynamics and learning</a> (Int. J. Parallel Emergent Distrib. Syst. <strong>33</strong>, 350, 2018)</li>
+        </ul>
+        <p><em>Analog solvers, optimization and devices.</em></p>
+        <ul>
+          <li><a href="https://www.science.org/doi/10.1126/sciadv.abh1542" target="_blank">Global minimization via classical tunneling assisted by collective force field formation</a> (Science Advances <strong>7</strong>, eabh1542, 2021)</li>
+          <li><a href="https://arxiv.org/abs/2506.09392" target="_blank">Voltage-controlled oscillator and memristor-based analog computing for systems of linear equations</a> (IEEE JETCAS, 2026)</li>
+          <li>Memristive linear algebra (Phys. Rev. Research <strong>7</strong>, 023241, 2025)</li>
+          <li><a href="https://arxiv.org/abs/2009.00758" target="_blank">Fully analog memristive circuits for optimization tasks: a comparison</a> (Handbook of Unconventional Computing, World Scientific, 2021)</li>
+          <li><a href="https://onlinelibrary.wiley.com/doi/full/10.1002/aisy.202300035" target="_blank">An interface-type memristive device for artificial synapses and neuromorphic computing</a> (Adv. Intell. Syst. <strong>5</strong>, 2300035, 2023 — journal cover)</li>
         </ul>
       </section>
 
-      <!-- Complex Systems -->
-      <section class="project">
-        <h3>Complex Systems and Network Theory</h3>
+      <!-- 4. Spin ice -->
+      <section class="project" id="spin-ice">
+        <h3>Artificial Spin Ice, Nanomagnetism and Physical Learning</h3>
         <p>
-          I apply tools from statistical physics and graph theory to the study of
-          self-organizing systems, ecological and economic networks, and the dynamics of
-          computation. This includes work on centrality measures, conservation laws, and
-          network thermodynamics.
+          Lithographically defined arrays of nanomagnets realize frustrated lattices whose microstates can be imaged
+          one by one. They are therefore a laboratory for questions that are otherwise only theoretical: how
+          frustration organizes a ground-state manifold, how ergodicity is lost as an array is diluted or cooled, and
+          whether the resulting slow dynamics can be used as memory and as computation. My contributions are on the
+          theory side — degeneracy counting, effective resistance and magnetoresistive response, reversal dynamics —
+          usually in direct comparison with imaging and transport experiments.
         </p>
+        <p><em>Frustration, ergodicity and glassy dynamics.</em></p>
         <ul>
-          <li><a href="https://arxiv.org/abs/2402.10566" target="_blank">Distribution of Centrality Measures on Undirected Random Networks (PNAS, 2024)</a></li>
-          <li><a href="https://arxiv.org/abs/2507.02575" target="_blank">A Unifying Approach to Self-Organizing Systems Interacting via Conservation Laws (2025)</a></li>
-          <li><a href="https://arxiv.org/abs/2303.06603" target="_blank">Correlation between Upstreamness and Downstreamness in Global Value Chains (JEBO, 2025)</a></li>
+          <li><a href="https://arxiv.org/abs/2604.05132" target="_blank">Controlled topological dilution drives cooperative glassy dynamics in artificial spin ice</a> (arXiv:2604.05132)</li>
+          <li><a href="https://doi.org/10.1103/PhysRevB.111.144407" target="_blank">The dipolar Aleppo lattice: ground-state ordering and ergodic dynamics without vertex frustration</a> (Phys. Rev. B <strong>111</strong>, 144407, 2025)</li>
+          <li><a href="https://doi.org/10.1038/s41567-022-01538-7" target="_blank">Direct observation of a dynamical glass transition in a nanomagnetic artificial Hopfield network</a> (Nature Physics <strong>18</strong>, 1376, 2022)</li>
+          <li><a href="https://doi.org/10.1038/s41467-023-41278-0" target="_blank">Real-space observation of ergodicity transitions in artificial spin ice</a> (Nature Communications <strong>14</strong>, 5674, 2023)</li>
+          <li><a href="https://www.nature.com/articles/s41567-018-0077-0" target="_blank">Classical topological order in the kinetics of artificial spin ice</a> (Nature Physics <strong>14</strong>, 723, 2018)</li>
+          <li><a href="https://royalsocietypublishing.org/doi/10.1098/rspa.2021.0108" target="_blank">On the degeneracy of spin ice graphs and its estimate via the Bethe permanent</a> (Proc. R. Soc. A <strong>477</strong>, 20210108, 2021)</li>
+          <li><a href="https://royalsocietypublishing.org/doi/10.1098/rspa.2023.0097" target="_blank">Complex field reversal dynamics in nanomagnetic systems</a> (Proc. R. Soc. A <strong>479</strong>, 20230121, 2023)</li>
+          <li><a href="https://arxiv.org/abs/1911.07028" target="_blank">A model for the mediated artificial square ice phenomenology</a> (Europhys. Lett. <strong>130</strong>, 48001, 2020)</li>
+          <li><a href="https://arxiv.org/abs/2208.06391" target="_blank">From vertices to vortices in magnetic nanoislands</a> (Phys. Fluids <strong>35</strong>, 017101, 2023 — Editor's Pick)</li>
+        </ul>
+        <p><em>Magnetotransport, memory and computation in nanomagnetic arrays.</em></p>
+        <ul>
+          <li><a href="https://arxiv.org/abs/2410.21999" target="_blank">R-Ising: effective resistance in random magnetic nanowire networks</a> (Phys. Rev. E <strong>112</strong>, 014302, 2025)</li>
+          <li><a href="https://www.nature.com/articles/s42005-022-00942-y" target="_blank">Anisotropic magnetomemristance</a> (Communications Physics <strong>5</strong>, 166, 2022; <a href="https://www.youtube.com/watch?v=WbUTtJq8FfM" target="_blank">video</a>)</li>
+          <li><a href="https://iopscience.iop.org/article/10.1088/1367-2630/ac4c0a" target="_blank">Artificial spin ice phase-change memory resistor</a> (New J. Phys. <strong>24</strong>, 023020, 2022)</li>
+          <li><a href="https://iopscience.iop.org/article/10.1088/1367-2630/abbf21" target="_blank">Logical gates embedding in artificial spin ice</a> (New J. Phys., 2020)</li>
+          <li><a href="https://www.nature.com/articles/s41565-022-01091-7" target="_blank">Reconfigurable training and reservoir computing via spin-wave fingerprinting in an artificial spin-vortex ice</a> (Nature Nanotechnology <strong>17</strong>, 460, 2022)</li>
+          <li><a href="https://doi.org/10.1038/s41467-024-47313-0" target="_blank">Neuromorphic few-shot learning: generalization in multilayer physical neural networks</a> (Nature Communications <strong>15</strong>, 7377, 2024)</li>
+          <li><a href="https://journals.aps.org/prapplied/abstract/10.1103/PhysRevApplied.18.014070" target="_blank">Memristive effects in nanopatterned permalloy Kagomé arrays</a> (Phys. Rev. Applied <strong>18</strong>, 014070, 2022)</li>
+          <li><a href="https://doi.org/10.1016/j.jmmm.2023.171929" target="_blank">Macroscopic magnetic monopoles in a 3D-printed mechano-magnet</a> (J. Magn. Magn. Mater. <strong>596</strong>, 171929, 2024)</li>
         </ul>
       </section>
 
-      <!-- Theoretical Physics -->
-      <section class="project">
-        <h3>Fundamental and Theoretical Physics</h3>
+      <!-- 5. Statistical mechanics -->
+      <section class="project" id="stat-mech">
+        <h3>Statistical Mechanics and the Thermodynamics of Computation</h3>
         <p>
-          My background in theoretical and mathematical physics spans from quantum gravity
-          and statistical mechanics to the study of emergent space and computation in
-          physical systems. I continue to explore connections between physics, complexity,
-          and information theory.
+          What does it cost, thermodynamically, to run a program? Landauer's bound applies to a single erasure; a
+          computation is a structured sequence of them, and the structure matters. This line of work derives entropy
+          production bounds for systems executing programs, studies non-equilibrium steady states and generalized
+          Gibbs ensembles in driven and constrained systems, and develops exactly solvable frustrated models and
+          expansions for partition functions on sparse graphs.
         </p>
         <ul>
-          <li><a href="https://arxiv.org/abs/1201.3206" target="_blank">Disordered Locality and Lorentz Dispersion Relations: An Explicit Model of Quantum Foam (Phys. Rev. D, 2012)</a></li>
-          <li><a href="https://arxiv.org/abs/0911.5075" target="_blank">Quantum Bose-Hubbard Model with Evolving Graph as Toy Model for Emergent Spacetime (Phys. Rev. D, 2010)</a></li>
-          <li><a href="https://uwspace.uwaterloo.ca/handle/10012/6868" target="_blank">PhD Thesis: Quantum Pre-Geometric Models for Quantum Gravity (University of Waterloo, 2012)</a></li>
+          <li><a href="https://arxiv.org/abs/2411.16088" target="_blank">Entropy production bounds for systems running computer programs</a> (<a href="https://academic.oup.com/pnasnexus/advance-article/doi/10.1093/pnasnexus/pgag116/8654698" target="_blank">PNAS Nexus</a>, pgag116, 2026)</li>
+          <li><a href="https://arxiv.org/abs/2507.02575" target="_blank">A unifying approach to self-organizing systems interacting via conservation laws</a> (Advanced Intelligent Discovery, e202500190, 2026)</li>
+          <li><a href="https://arxiv.org/abs/2407.08833" target="_blank">Boundary-induced classical generalized Gibbs ensemble with angular momentum</a> (under review)</li>
+          <li><a href="https://doi.org/10.1016/j.physd.2023.133747" target="_blank">Projective embedding of dynamical systems: uniform mean-field equations</a> (Physica D <strong>450</strong>, 133747, 2023)</li>
+          <li><a href="https://arxiv.org/abs/2009.00113" target="_blank">Forest expansion of two-body partition functions for sparse interaction graphs</a> (Physica A <strong>609</strong>, 128345, 2023)</li>
+          <li><a href="https://www.sciencedirect.com/science/article/pii/S0378437122000863" target="_blank">Some exactly solvable and tunable frustrated spin models</a> (Physica A <strong>594</strong>, 127007, 2022)</li>
+          <li>The Bellman equation and optimal reversible flipping strategies for kinetic Ising models (Physica A <strong>649</strong>, 129956, 2024)</li>
+          <li><a href="https://link.springer.com/chapter/10.1007/978-3-031-34946-1_20" target="_blank">Structural health monitoring in the context of non-equilibrium phase transitions</a> (Data Science in Engineering vol. 10, SEM 2023)</li>
+          <li><a href="https://arxiv.org/abs/1307.4018" target="_blank">Quantum quenches and thermalization on scale-free graphs</a> (J. Theor. Appl. Phys. <strong>8</strong>, 82, 2014)</li>
+        </ul>
+      </section>
+
+      <!-- 6. Methods -->
+      <section class="project" id="methods">
+        <h3>Spectral, Combinatorial and Operator Methods</h3>
+        <p>
+          Several of the results above rest on shared mathematical machinery, and part of my work is devoted to that
+          machinery for its own sake: Koopman operator representations that linearize nonlinear dynamics at the cost
+          of infinite dimension, graph and matroid polynomials that count configurations on networks, random-matrix
+          and Weingarten integration over orthogonal groups, and spectral estimates for random graphs.
+        </p>
+        <ul>
+          <li><a href="https://arxiv.org/abs/2510.05863" target="_blank">Analog and symbolic computation through the Koopman framework</a> (J. Phys. Complexity, 2026)</li>
+          <li><a href="https://arxiv.org/abs/2308.13653" target="_blank">The combinatorial structure of Lotka–Volterra equations and the Koopman operator</a> (Physica A <strong>670</strong>, 130484, 2025)</li>
+          <li><a href="https://arxiv.org/abs/1512.02278" target="_blank">On an ordering-dependent generalization of the Tutte polynomial</a> (J. Stat. Phys. <strong>168</strong>, 1105, 2017)</li>
+          <li><a href="https://arxiv.org/abs/1509.05980" target="_blank">On moments of the integrated exponential Brownian motion</a> (Eur. Phys. J. Plus <strong>131</strong>, 235, 2016)</li>
+          <li><a href="https://arxiv.org/abs/1511.06512" target="_blank">Emergence of giant strongly connected components in continuum disk-spin percolation</a> (J. Stat. Mech., P053211, 2016)</li>
+          <li><a href="https://arxiv.org/abs/2509.05793" target="_blank">Spectral Methods in Complex Systems</a> (book, 2025 — see below)</li>
+        </ul>
+      </section>
+
+      <!-- 7. Networks -->
+      <section class="project" id="networks">
+        <h3>Complex Systems, Networks and Economic Structure</h3>
+        <p>
+          Large economic and ecological systems are networks with heterogeneous, partially observed structure, and the
+          quantities of interest — influence, systemic risk, position in a production chain — are functionals of that
+          structure. Using the cavity method and random-matrix techniques I derive the full distributions of such
+          quantities over graph ensembles, rather than single-network point estimates, and identify when local
+          information suffices to reconstruct aggregate behaviour.
+        </p>
+        <ul>
+          <li><a href="https://arxiv.org/abs/2402.10566" target="_blank">Distribution of centrality measures on undirected random networks via the cavity method</a> (PNAS <strong>121</strong>(40), e2403682121, 2024) — <strong>Cozzarelli Prize 2024</strong>, National Academy of Sciences (<a href="https://www.youtube.com/watch?v=nvgj9CmCBcQ" target="_blank">video</a>)</li>
+          <li><a href="https://arxiv.org/abs/2505.01326" target="_blank">DebtStreamness: an ecological approach to credit flows in inter-firm networks</a> (PNAS Nexus)</li>
+          <li><a href="https://arxiv.org/abs/2303.06603" target="_blank">Correlation between upstreamness and downstreamness in random global value chains</a> (J. Econ. Behav. Organ. <strong>221</strong>, 726, 2025)</li>
+          <li><a href="https://doi.org/10.1038/s41598-025-86380-6" target="_blank">Upstreamness and downstreamness in input–output analysis from local and aggregate information</a> (Scientific Reports <strong>15</strong>, 2727, 2025)</li>
+          <li><a href="https://arxiv.org/abs/2009.06307" target="_blank">Emerging locality of network influence</a> (Phys. Rev. Research <strong>5</strong>, 033123, 2023; <a href="https://www.youtube.com/watch?v=62xlf-I1YZk" target="_blank">talk</a>)</li>
+          <li><a href="https://arxiv.org/abs/2106.02730" target="_blank">"Spectrally gapped" random walks on networks: a mean first-passage time formula</a> (SciPost Physics <strong>11</strong>, 088, 2021)</li>
+          <li><a href="https://www.pnas.org/doi/10.1073/pnas.2106031119" target="_blank">How production networks amplify economic growth</a> (PNAS <strong>118</strong>(50), e2106031119, 2021)</li>
+          <li><a href="https://arxiv.org/abs/1312.2289" target="_blank">Scale-free graphs as an epiphenomenon of memory</a> (Europhys. Lett. <strong>109</strong>, 28006, 2015)</li>
+          <li><a href="https://arxiv.org/abs/1410.2638" target="_blank">Ranking nodes according to their path-complexity</a> (Chaos Solitons Fractals <strong>73</strong>, 90, 2015)</li>
+          <li><a href="https://arxiv.org/abs/1511.07135" target="_blank">Trajectories entropy in dynamical graphs with memory</a> (Front. Robot. AI <strong>3</strong>, 20, 2016)</li>
+          <li><a href="https://arxiv.org/abs/1506.06971" target="_blank">Bounds on transient instability for complex ecosystems</a> (PLoS ONE <strong>11</strong>(6), e0157876, 2016)</li>
+          <li><a href="https://arxiv.org/abs/1510.05123" target="_blank">Optimal growth trajectories with finite carrying capacity</a> (Phys. Rev. E <strong>94</strong>, 022315, 2016)</li>
+          <li><a href="https://arxiv.org/abs/1602.01808" target="_blank">Conformity-driven agents support ordered phases in the spatial public goods game</a> (Europhys. Lett. <strong>114</strong>, 38001, 2016)</li>
+          <li><a href="https://arxiv.org/abs/1710.1184" target="_blank">Correlations and clustering in wholesale electricity markets</a> (Physica A <strong>492</strong>, 1507, 2018)</li>
+        </ul>
+      </section>
+
+      <!-- 8. Gravity -->
+      <section class="project" id="gravity">
+        <h3>Quantum Gravity, Cosmology and Fundamental Physics</h3>
+        <p>
+          My earlier work, including my doctoral thesis, concerned pre-geometric models of quantum gravity: theories in
+          which space is not assumed but emerges from the dynamics of a graph or a spin system, with the metric,
+          locality and dispersion relations appearing as low-temperature or coarse-grained properties. Related work
+          covers group field theory, black-hole effective actions and geometric phases in cosmology. The recurring
+          theme — that geometry and computation may both be emergent descriptions of an underlying combinatorial
+          dynamics — continues to inform the projects above.
+        </p>
+        <ul>
+          <li><a href="https://arxiv.org/abs/1201.3206" target="_blank">Disordered locality and Lorentz dispersion relations: an explicit model of quantum foam</a> (Phys. Rev. D <strong>86</strong>, 024019, 2012)</li>
+          <li><a href="https://arxiv.org/abs/0911.5075" target="_blank">A quantum Bose–Hubbard model with evolving graph as a toy model for emergent spacetime</a> (Phys. Rev. D <strong>81</strong>, 104032, 2010)</li>
+          <li><a href="https://arxiv.org/abs/1108.2013" target="_blank">Trapped surfaces and emergent curved space in the Bose–Hubbard model</a> (Phys. Rev. D <strong>84</strong>, 024002, 2011)</li>
+          <li><a href="https://arxiv.org/abs/1008.1340" target="_blank">Properties of quantum graphity at low temperature</a> (Phys. Rev. D <strong>85</strong>, 044046, 2012)</li>
+          <li><a href="https://arxiv.org/abs/1204.3541" target="_blank">The local potential approximation in quantum gravity</a> (JHEP <strong>06</strong>, 017, 2012)</li>
+          <li><a href="https://arxiv.org/abs/1304.7730" target="_blank">GEMs and amplitude bounds in the colored Boulatov model</a> (J. Theor. Appl. Phys. <strong>7</strong>, 62, 2013)</li>
+          <li><a href="https://arxiv.org/abs/1012.4087" target="_blank">A simple proof of orientability in colored group field theory</a> (SpringerPlus <strong>1</strong>, 6, 2012)</li>
+          <li><a href="https://arxiv.org/abs/1110.2768" target="_blank">Direct imaging of rapidly rotating non-Kerr black holes</a> (Phys. Lett. B <strong>711</strong>, 10, 2012)</li>
+          <li><a href="https://arxiv.org/abs/1001.4364" target="_blank">Holographic effective actions from black holes</a> (Phys. Lett. B <strong>702</strong>, 307, 2011)</li>
+          <li><a href="https://arxiv.org/abs/1006.0232" target="_blank">Spinning loop black holes</a> (Class. Quantum Grav. <strong>27</strong>, 245022, 2010)</li>
+          <li><a href="https://arxiv.org/abs/1411.7553" target="_blank">Geometric phases in cyclical isotropic cosmologies</a> (Class. Quantum Grav. <strong>33</strong>, 105003, 2016)</li>
+          <li><a href="https://uwspace.uwaterloo.ca/handle/10012/6868" target="_blank">PhD thesis: Quantum pre-geometric models for quantum gravity</a> (University of Waterloo, 2012)</li>
+        </ul>
+      </section>
+
+      <!-- 9. Books, reviews, reports -->
+      <section class="project" id="books">
+        <h3>Books, Reviews and Commissioned Reports</h3>
+        <p>
+          Longer-form work, written either to consolidate a field or at the request of funding agencies.
+        </p>
+        <ul>
+          <li><strong>Book</strong> — <a href="https://www.amazon.com/dp/B0FPKR3FPP" target="_blank">Spectral Methods in Complex Systems</a>, ISBN 979-8263450946 (<a href="https://arxiv.org/abs/2509.05793" target="_blank">arXiv:2509.05793</a>)</li>
+          <li><strong>Book</strong> — <a href="https://link.springer.com/book/10.1007/978-3-319-47040-5" target="_blank">Collaborative Approach to Trade</a>, Springer, ISBN 978-3-319-47039-9</li>
+          <li><strong>Review</strong> — <a href="https://arxiv.org/abs/2509.00747" target="_blank">Self-organizing memristive networks as physical learning systems</a> (to appear in Nature Reviews Physics)</li>
+          <li><strong>Review</strong> — <a href="https://www.mdpi.com/2227-7080/6/4/118" target="_blank">Memristors for the curious outsiders</a> (Technologies <strong>6</strong>(4), 118, 2018)</li>
+          <li><strong>Perspective</strong> — <a href="https://iopscience.iop.org/article/10.1209/0295-5075/125/10001" target="_blank">Memristive networks: from graph theory to statistical physics</a> (Europhys. Lett. <strong>125</strong>, 10001, 2019)</li>
+          <li><strong>DOE report</strong> — <a href="https://www.osti.gov/servlets/purl/2476965" target="_blank">Basic Research Needs for Analog Computing for Science</a> (OSTI 2476965, 2026)</li>
+          <li><strong>DARPA report</strong> — <a href="https://arxiv.org/abs/2406.06625" target="_blank">Application of quantum computing to Los Alamos scientific problems</a> (arXiv:2406.06625)</li>
+          <li><strong>World Bank report</strong> — <a href="https://sites.google.com/site/francescocaravelli/interessi/WBReportMerged.pdf?attredirects=0&amp;d=1" target="_blank">From production to export via transport: an agent-based model for the agricultural logistics chain in Uganda</a></li>
+          <li><strong>European Investment Bank report</strong> — <a href="http://www.eib.org/attachments/documents/jessica_strategic_udf_appendix%204_en.pdf" target="_blank">Strategic UDF investing and project structuring</a> (Assignment 29)</li>
+        </ul>
+      </section>
+
+      <!-- 10. Outreach -->
+      <section class="project" id="outreach">
+        <h3>Teaching, Outreach and Interactive Simulations</h3>
+        <p>
+          Some subjects are best learned by running them. I write browser-based simulations and executable
+          expositions, which need no installation and can be read on any machine.
+        </p>
+        <ul>
+          <li><a href="simulations/lambda-dojo.html" target="_blank">The Reduction Bench</a> — an executable introduction to the λ-calculus: normal-order reduction with the contracted redex highlighted, Hindley–Milner type inference, bracket abstraction to SKI, and graded exercises leading from the syntax of Λ to the Curry–Howard correspondence.</li>
         </ul>
       </section>
 
