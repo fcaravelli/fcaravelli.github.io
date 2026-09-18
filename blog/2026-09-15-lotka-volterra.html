@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Koopman, Lotka-Volterra, and counting walks &ndash; Francesco Caravelli</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+  </style>
+
+  <!-- AdSense: load ONCE per page -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    function renderKatexIn(el) {
+      if (!el || typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false,
+        macros: { "\\mathbbm": "\\mathbb" },
+        ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderKatexIn(document.querySelector("main.content"));
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <!-- In-article AdSense Ad -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+<section id="koopman-lotka-volterra-walks">
+
+  <p class="kicker">Koopman operator &bull; Lotka-Volterra &bull; context-free grammars</p>
+  <h3>Koopman, Lotka-Volterra, and counting walks</h3>
+  <p><em>September 18, 2026</em></p>
+
+  <p>
+    After a few weeks of rapid fires on this blog, I had to take a break 
+    to work on something urgent at Planckian (stay tuned! also there combinatorics is involved).
+    I want to discuss about something else. I recently gave a talk at one of the recurring Koopman meetings, which you can find
+    <a href="https://youtu.be/K-IC85T8i38" target="_blank">here</a>. The title was
+    <em>Two (non-standard) applications of the Koopman framework</em>, and this already says a bit
+    about what I wanted to do. The Koopman community is very active and quite large. Koopmanism was 
+    born in the 1930s, but it has had a renaissance in the last decade thanks to the work by Igor Mezic, and it is now a very
+    active field of research. 
+  </p>
+
+  <p> Personally, I've been quite fashinated by Koopman operators for some time. A few
+    years ago, when I arrived in Los Alamos, I had already asked about DMD (dynmic mode decomposition)
+    to a colleague, and he gave me a code snippet written in Matlab to analyze some data.
+    It made it to my Spectral Methods in Complex Systems notes, that I posted to the arXiv last year.
+    As a matter of fact, Koopman operators nowadays are far from a theoretical device, but they are used in 
+    robotics and fluid flow analysis.
+  </p>
+
+  <p>
+    In fact, usually, when people say Koopman today, they often mean data-driven Koopmanism:
+    dynamic mode decomposition, extended DMD, reduced models, control, fluids, and all the
+    very useful technology that has grown from the idea that nonlinear dynamics can be studied
+    through a linear operator acting on observables.
+  </p>
+
+  <p>
+    This is not what I wanted to discuss in the talk. I accidentally started to 
+    work on Koopman operators much later. My colleague and friend Yen Ting Lin and I had
+    started already discussing about Mori-Zwanzig and he already had some works
+    on the topic. Of course, because Quantum is eating everything, half of LANL
+    had to work on quantum, or rather, money were flowing through the quantum side of things, and
+    he wrote a paper on quantum computing and Mori-Zwanzig. I was personally more interested in the
+    standard statistical mechanics applications of Mori-Zwanzig, and we started to discuss about various things
+    I now don't remember.
+  </p>
+
+  <p>
+    As a matter of fact, I don't even remember why I was looking into the Lotka-Volterra system. 
+    I remember him explaining to me how the Mori-Zwanzig formalism worked for the case
+    of $\dot x=x^2$, which is a very simple example that also Brunton has in his book and lectures
+    to explain Koopman. However, I remember vividly when I discovered the algebraic and
+    combinatorial structure of the Lotka-Volterra system. I was visiting Stefano Martiniani at NYU, 
+    one of two times I did to discuss the projection method formalism in dynamical systems. 
+    When I'm traveling and I'm alone, I often walk into a bar, sit like an idiot alone with a drink and 
+    a notepad, and I start to write. I remember having one of these aha moments then.
+    I remember the example of the simple equation above, and tell myself, ah let me try with
+    a more general quadratic equation. I wrote down the general form of LV, and started to look into the algebra.
+    The day after I explain this to Flavio Morone, who is a stat mech person working at NYU,
+    he was quite fascinated by the fact that the Lotka-Volterra system was counting walks on a lattice.
+  </p>
+
+  <p>
+    The first part of the talk is pretty much about this, I will explain it here to some extent, and also
+    I will mention the second part, which is about computation and reachability.
+    The point of the first part was much stranger, and for this reason also fun if you like combinatorics:
+    can one take a very classical nonlinear ODE, the Lotka-Volterra predator-prey system,
+    and see inside it a problem about counting walks?
+  </p>
+
+  <p>
+    The point of the second part, which I will mention only briefly at the end, was instead:
+    can one talk about computation, halting, reachability, and decidability using the same
+    Koopman language?
+  </p>
+
+  <p>
+    The common thread is that nonlinear dynamics becomes a linear operator on observables.
+    Once you do that, structures that look combinatorial, algorithmic, or even grammatical
+    start to become spectral structures. I tell often this thing, that some time ago I stopped thinking about
+    linear and nonlinear ODEs, and I started to think of them as finite or infinite linear systems.
+    There is a huge difference between them!
+  </p>
+
+  <div class="hr"></div>
+
+  <h4>Koopman in one paragraph</h4>
+
+  <p>
+    Suppose that we have a discrete dynamical system
+  </p>
+
+  <p class="math">
+    $$
+    x_{t+1}=F(x_t).
+    $$
+  </p>
+
+  <p>
+    The Koopman operator does not evolve the point \(x\). It evolves an observable
+    \(g:X\to \mathbb{C}\):
+  </p>
+
+  <p class="math">
+    $$
+    (Kg)(x)=g(F(x)).
+    $$
+  </p>
+
+  <p>
+    The miracle, which is also the price you pay, is that \(K\) is linear even when \(F\) is nonlinear.
+    The price is that \(K\) is usually infinite dimensional.
+  </p>
+
+  <p>
+    In continuous time, for
+  </p>
+
+  <p class="math">
+    $$
+    \dot{x}=f(x),
+    $$
+  </p>
+
+  <p>
+    the generator is
+  </p>
+
+  <p class="math">
+    $$
+    L=f(x)\cdot \nabla.
+    $$
+  </p>
+
+  <p>
+    So the Koopman equation for an observable \(\psi\) is
+  </p>
+
+  <p class="math">
+    $$
+    \partial_t \psi = L\psi.
+    $$
+  </p>
+
+  <p>
+    That is the entire magic trick. We replace nonlinear motion in phase space with linear
+    motion in the space of functions. But of course, as usual in statistical mechanics, a simple
+    formal trick becomes interesting only when you choose the right observables.
+  </p>
+
+  <h4>The Lotka-Volterra problem</h4>
+
+  <p>
+    The model I discussed in the first part of the talk was the two-species Lotka-Volterra system
+  </p>
+
+  <p class="math">
+    $$
+    \dot{x}=\alpha x+\beta xy,\qquad
+    \dot{y}=\gamma y+\delta xy,
+    $$
+  </p>
+
+  <p>
+    with the ecological signs
+  </p>
+
+  <p class="math">
+    $$
+    \alpha>0,\qquad \beta<0,\qquad \gamma<0,\qquad \delta>0.
+    $$
+  </p>
+
+  <p>
+    Here \(x\) is the prey and \(y\) is the predator. The prey grows when left alone, the predator
+    dies when left alone, and the nonlinear term \(xy\) is the encounter term. This is one of those
+    equations that everybody has seen at some point. It is old, classical, and in some sense
+    completely understood. But it is also not explicitly solvable in the elementary sense. You have
+    a conserved quantity, yes, but not a nice \(x(t)\), \(y(t)\) formula that you can just write down
+    and forget about.
+  </p>
+
+  <p>
+    The question we asked in the work with Yen Ting Lin was slightly perverse:
+    if the equation is quadratic, does the quadratic structure hide a combinatorial object?
+  </p>
+
+  <p>
+    The answer is yes. In fact the answer is almost embarrassingly direct once you look at the
+    right basis.
+  </p>
+
+  <h4>Carleman first: monomials become a lattice</h4>
+
+  <p>
+    Take the monomials
+  </p>
+
+  <p class="math">
+    $$
+    r_{a,b}=x^a y^b.
+    $$
+  </p>
+
+  <p>
+    Differentiate them along the flow:
+  </p>
+
+  <p class="math">
+    $$
+    \begin{aligned}
+    {d\over dt}x^a y^b
+      &= a x^{a-1}\dot{x}y^b + b y^{b-1}\dot{y}x^a \\
+      &= (a\alpha+b\gamma)x^a y^b
+       + a\beta x^a y^{b+1}
+       + b\delta x^{a+1}y^b .
+    \end{aligned}
+    $$
+  </p>
+
+  <p>
+    In other words,
+  </p>
+
+  <p class="math">
+    $$
+    \dot{r}_{a,b}
+    =
+    (a\alpha+b\gamma)r_{a,b}
+    +a\beta r_{a,b+1}
+    +b\delta r_{a+1,b}.
+    $$
+  </p>
+
+  <p>
+    This is Carleman linearisation. The nonlinear ODE has become an infinite linear system.
+    But the infinite matrix is not random. It is a directed weighted lattice.
+  </p>
+
+  <p>
+    From a site \((a,b)\), you can:
+  </p>
+
+  <ul>
+    <li>stay at \((a,b)\), with weight \(a\alpha+b\gamma\);</li>
+    <li>move right to \((a,b+1)\), with weight \(a\beta\);</li>
+    <li>move down to \((a+1,b)\), with weight \(b\delta\).</li>
+  </ul>
+
+  <p>
+    This is the point where the problem starts to look like statistical mechanics. The solution of
+    the ODE is now hidden in the exponential of a weighted adjacency matrix. Expanding that
+    exponential means summing over walks on this lattice.
+  </p>
+
+  <p>
+    One can almost hear the partition function trying to come out.
+  </p>
+
+  <h4>Then Mori-Zwanzig: all the nonlinearity sits in one observable</h4>
+
+  <p>
+    Now split the monomials into resolved and unresolved variables. The resolved variables are
+    just \(x\) and \(y\). The unresolved variables are the nonlinear monomials, starting from
+    \(xy\), \(x^2y\), \(xy^2\), and so on.
+  </p>
+
+  <p>
+    Applying the Mori-Zwanzig projection to this Carleman system gives an exact generalized
+    Langevin equation. In this particular case, because the Carleman lattice only moves to higher
+    degree, the memory kernel vanishes. There is no unresolved-to-resolved feedback in the linear
+    system. Instead, all the nonlinear information appears as a deterministic forcing term.
+  </p>
+
+  <p>
+    That forcing term is controlled by a single scalar function, which I called \(\eta\) in the talk:
+  </p>
+
+  <p class="math">
+    $$
+    \eta(s,x_0,y_0)
+    =
+    \sum_{c,d\geq 1}
+    \left(e^{A_{uu}s}\right)_{(1,1),(c,d)}
+    x_0^c y_0^d.
+    $$
+  </p>
+
+  <p>
+    Then the solution can be written as
+  </p>
+
+  <p class="math">
+    $$
+    x(t)=e^{\alpha t}x_0+
+    \beta e^{\alpha t}\int_0^t e^{-\alpha s}\eta(s,x_0,y_0)\,ds,
+    $$
+  </p>
+
+  <p class="math">
+    $$
+    y(t)=e^{\gamma t}y_0+
+    \delta e^{\gamma t}\int_0^t e^{-\gamma s}\eta(s,x_0,y_0)\,ds.
+    $$
+  </p>
+
+  <p>
+    This is not yet a closed-form solution. But it is a very clean structural statement.
+    The function \(\eta\) is the exponential generating function of all weighted directed walks
+    starting from the corner \((1,1)\) of the lattice.
+  </p>
+
+  <p>
+    For instance, the first few coefficients are
+  </p>
+
+  <p class="math">
+    $$
+    \Gamma_0=x_0y_0,
+    $$
+  </p>
+
+  <p class="math">
+    $$
+    \Gamma_1=\beta x_0y_0^2+\delta x_0^2y_0,
+    $$
+  </p>
+
+  <p class="math">
+    $$
+    \Gamma_2=
+    \beta(2\alpha+3\gamma)x_0y_0^2
+    +\delta(3\alpha+2\gamma)x_0^2y_0
+    +4\beta\delta x_0^2y_0^2.
+    $$
+  </p>
+
+  <p>
+    These coefficients are literally sums over allowed paths. The terms with \(\alpha\) and
+    \(\gamma\) come from waiting on a site. The terms with \(\beta\) and \(\delta\) come from moving.
+    The combinatorial complexity grows quickly, because at order \(k\) one has to sum over
+    many possible orderings of stays, right moves, and down moves.
+  </p>
+
+  <p>
+    This also explains why the naive series is not a miracle numerical solver. It is a short-time
+    expansion in disguise, and in the ecological sign convention some coefficients have alternating
+    signs. So if the question is "did we solve Lotka-Volterra?", the honest answer is: no, not in
+    the elementary formula sense.
+  </p>
+
+  <p>
+    But if the question is "what is the exact combinatorial skeleton of the nonlinear equation?",
+    then the answer is very satisfying. I had derived most of this on my own, but I was
+    still unhappy of what this was saying at all. I actually had not realized that 
+    the walk generator I had found could be written in terms of Koopman, and that is indeed
+    the major contribution that Yen Ting noticed, and showed it also in the simpler case of
+    the quadratic ode later on.
+  </p>
+
+  <h4>The punchline: the walk generator is the Koopman evolution of \(xy\)</h4>
+
+  <p>
+    The generating function \(\eta\) satisfies the PDE
+  </p>
+
+  <p class="math">
+    $$
+    \partial_t \eta
+    =
+    (\alpha x+\beta xy)\partial_x\eta
+    +
+    (\gamma y+\delta xy)\partial_y\eta,
+    \qquad
+    \eta(0,x,y)=xy.
+    $$
+  </p>
+
+  <p>
+    But the operator on the right-hand side is exactly the Koopman generator
+  </p>
+
+  <p class="math">
+    $$
+    L=(\alpha x+\beta xy)\partial_x
+    +(\gamma y+\delta xy)\partial_y.
+    $$
+  </p>
+
+  <p>
+    Therefore
+  </p>
+
+  <p class="math">
+    $$
+    \eta(t,x_0,y_0)=K_t(xy)(x_0,y_0).
+    $$
+  </p>
+
+  <p>
+    And since Koopman evolution means "evaluate the observable along the trajectory", this is
+  </p>
+
+  <p class="math">
+    $$
+    \eta(t,x_0,y_0)=x(t)y(t).
+    $$
+  </p>
+
+  <p>
+    This is the part I like the most. The same object has three lives:
+  </p>
+
+  <ul>
+    <li>it is a generating function of weighted lattice walks;</li>
+    <li>it is the deterministic Mori-Zwanzig forcing term;</li>
+    <li>it is the Koopman-evolved observable \(xy\).</li>
+  </ul>
+
+  <p>
+    It is interesting because it connects otherwise disconnected languages, with one object. This is the sort of thing that makes me think that the
+    Koopman formalism is still underused in statistical mechanics. Not because it magically
+    solves nonlinear equations, but because it tells you what kind of object the nonlinearity is.
+  </p>
+
+  <h4>The context-free grammar connection</h4>
+
+  <p>
+    After working on this, I recently saw a beautiful paper by
+    <a href="https://arxiv.org/abs/1404.0731" target="_blank">Shi-Mei Ma, Toufik Mansour, and David Callan</a>
+    from 2014, titled <em>Some combinatorial arrays related to the Lotka-Volterra system</em>.
+    I somehow had missed it and is in fact not cited in our published paper. I'm quite surprised
+    because I had sent the paper to Toufik, with whom I have published a paper in 2015.
+  </p>
+
+  <p>
+    Their language is not Koopman, and it is not Mori-Zwanzig. Their language is context-free
+    grammars in the sense of Chen's grammatical method. This is an absolutely beautiful method developed in the early
+    90s, connecting context free grammars with the generator of polynomial families. 
+    But mathematically it is very close
+    to the same story. In fact, I would now say that the only original contribution of the paper with
+    YTL is the Koopman perspective.
+  </p>
+
+  <p>
+    In this method, one writes substitution rules such as
+  </p>
+
+  <p class="math">
+    $$
+    G=\{x\to x+xy,\qquad y\to y+xy\}.
+    $$
+  </p>
+
+  <p>
+    These rules define a formal derivative \(D\), by linearity and the Leibniz rule. Thus
+  </p>
+
+  <p class="math">
+    $$
+    D(x)=x+xy,\qquad D(y)=y+xy,
+    $$
+  </p>
+
+  <p>
+    and, for a monomial,
+  </p>
+
+  <p class="math">
+    $$
+    D(x^i y^j)
+    =
+    (i+j)x^i y^j
+    +i x^i y^{j+1}
+    +j x^{i+1}y^j.
+    $$
+  </p>
+
+  <p>
+    Compare this with the Carleman equation above. It is the same stay/right/down lattice,
+    with the simple choice of unit weights. In vector-field language, this grammar is the
+    differential operator
+  </p>
+
+  <p class="math">
+    $$
+    D=x(1+y)\partial_x+y(1+x)\partial_y.
+    $$
+  </p>
+
+  <p>
+    In other words, the grammar is the Koopman generator of the cooperative Lotka-Volterra-type
+    system
+  </p>
+
+  <p class="math">
+    $$
+    \dot{x}=x(1+y),\qquad \dot{y}=y(1+x).
+    $$
+  </p>
+
+  <p>
+    This is not the ecological predator-prey sign convention, of course. But algebraically it is
+    the same family. The grammar is a vector field, and repeated differentiation is the same as
+    applying powers of the Koopman generator.
+  </p>
+
+  <p>
+    Ma, Mansour and Callan then write
+  </p>
+
+  <p class="math">
+    $$
+    D^n(x)=\sum_{i\geq 1,j\geq 0}a_{n,i,j}x^i y^j.
+    $$
+  </p>
+
+  <p>
+    The coefficients obey
+  </p>
+
+  <p class="math">
+    $$
+    a_{n+1,i,j}
+    =
+    (i+j)a_{n,i,j}
+    +i\,a_{n,i,j-1}
+    +j\,a_{n,i-1,j}.
+    $$
+  </p>
+
+  <p>
+    Again: stay, right, down.
+  </p>
+
+  <p>
+    They introduce the exponential generating function
+  </p>
+
+  <p class="math">
+    $$
+    A(t,p,q)=\sum_{n,i,j\geq 0}a_{n,i,j}{t^n\over n!}p^i q^j,
+    $$
+  </p>
+
+  <p>
+    and find that it satisfies
+  </p>
+
+  <p class="math">
+    $$
+    A_t=p(1+q)A_p+q(1+p)A_q.
+    $$
+  </p>
+
+  <p>
+    This is again a Koopman equation, just written in the variables of the generating function.
+    They solve it and obtain
+  </p>
+
+  <p class="math">
+    $$
+    A(t,p,q)=
+    {p(p-q)e^t\over
+    p-q\exp\!\left((p-q)(e^t-1)\right)}.
+    $$
+  </p>
+
+  <p>
+    Even better, the coefficients have a clean combinatorial interpretation:
+  </p>
+
+  <p class="math">
+    $$
+    a_{n,i,j}
+    =
+    \left\{ {n+1\atop i+j} \right\}
+    \left\langle {i+j-1\atop i} \right\rangle,
+    $$
+  </p>
+
+  <p>
+    where the first factor is a Stirling number of the second kind and the second is an Eulerian
+    number. Equivalently, these numbers count cyclically ordered partitions of \([n+1]\) with
+    \(i+j\) blocks, with a specified number of descents in the list of openers.
+  </p>
+
+  <p>
+    This is wonderfully strange. A predator-prey-looking differential operator is also a grammar.
+    The grammar generates arrays of classical combinatorial numbers. Those arrays count ordered
+    partitions with descent statistics. And the same recurrence is the recurrence for weighted
+    walks on the Carleman lattice of the ODE.
+  </p>
+
+  <p>
+    They also study variants of the grammar, for example
+  </p>
+
+  <p class="math">
+    $$
+    G=\{x\to x+xy,\qquad y\to y+x^2\},
+    $$
+  </p>
+
+  <p>
+    which is related to repeated differentiation of tangent and secant functions, and gives arrays
+    involving peak and valley statistics. So this is not a one-off coincidence. The grammatical
+    method is a machine for turning formal substitution rules into differential operators, and
+    therefore into Koopman generators.
+  </p>
+
+  <p>
+    Said differently: in our paper, we started from the ODE and found walks. In their paper,
+    they start from a grammar and find Lotka-Volterra. These are opposite directions through
+    the same tunnel.
+  </p>
+
+  <h4>A statistical mechanics way to say it</h4>
+
+  <p>
+    If I had to summarize the first part of the talk in statistical-mechanics language, I would say
+    the following.
+  </p>
+
+  <p>
+    A nonlinear ODE defines a transfer problem on observables. For polynomial nonlinearities,
+    the monomial basis turns the Koopman generator into a weighted graph. The exponential
+    of that generator is a sum over paths. The coefficients of the Taylor expansion are partition
+    functions of walks with local weights.
+  </p>
+
+  <p>
+    In the Lotka-Volterra case the graph is a directed two-dimensional lattice. In an \(N\)-species
+    Lotka-Volterra system it becomes a directed hyperlattice. The difficulty of the nonlinear
+    problem is transferred into the enumeration, resummation, or simulation of walks on that
+    hyperlattice.
+  </p>
+
+  <p>
+    This is why the connection to context-free grammars is so natural in retrospect. A grammar
+    is also a local rule for producing descendants. A Carleman lattice is also a local rule for
+    producing higher monomials. In both cases, iterating the rule creates a tree, or a family of
+    walks, and the generating function obeys a first-order PDE.
+  </p>
+
+  <p>
+    There is a small philosophical point here which I like. We often think of ODEs as continuous
+    objects and of combinatorics as discrete. But once you lift the ODE to observables, the
+    distinction is much less clean. The ODE becomes an operator, the operator becomes a graph,
+    and the graph wants to be counted.
+  </p>
+
+  <h4>The second part of the talk: computation</h4>
+
+  <p>
+    The second part of the talk was based on joint work with Jean-Charles Delvenne, and it was
+    about computation through the Koopman framework. Actually, JC and I started to work on this
+    almost by mistake: he gave a very nice talk about the reachability problem in dynamical systems, 
+    and I asked whether he had thought about the Koopman operator to phrase the problem.
+    He had not. We met one year later at the Santa Fe Institute, and told me that "ah", by the
+    way I thought about, and it is connected to the resolvent of the Koopman operator. 
+    I will write more in detail about this in other posts, but let me just say here
+    what the connection to Koopman is.
+  </p>
+
+  <p>
+    The question there is: when does a dynamical system compute?
+  </p>
+
+  <p>
+    A Turing machine is a dynamical system. A cellular automaton is a dynamical system.
+    A counter machine is a dynamical system. Even an analog computer is a dynamical system,
+    although then one has to be much more careful about what is meant by precision and by
+    halting.
+  </p>
+
+  <p>
+    The Koopman way to phrase reachability is through the resolvent. For \(|\lambda|>1\),
+  </p>
+
+  <p class="math">
+    $$
+    (\lambda I-K)^{-1}
+    =
+    \lambda^{-1}\sum_{t\geq 0}\lambda^{-t}K^t.
+    $$
+  </p>
+
+  <p>
+    If \(g_B\) is the characteristic function of a target set \(B\), then
+    \(K^t g_B(x)\) asks whether the trajectory starting at \(x\) is in \(B\) at time \(t\).
+    Therefore the resolvent is a generating function of the orbit.
+  </p>
+
+  <p>
+    Pair it with the characteristic function \(g_A\) of an initial set \(A\), and you get a
+    Koopman version of the halting problem:
+  </p>
+
+  <p class="math">
+    $$
+    g_A(\lambda I-K)^{-1}g_B\neq 0
+    \quad\Longleftrightarrow\quad
+    \text{some orbit from }A\text{ reaches }B.
+    $$
+  </p>
+
+  <p>
+    Notice the echo with the Lotka-Volterra story. In the first part, the series counts walks on
+    the Carleman lattice. In the second part, the series counts orbit segments from \(A\) to \(B\).
+    The same operator-theoretic object is a generating function over paths.
+  </p>
+
+  <p>
+    One result we discussed is that if one step of the dynamics is computable, then the Koopman
+    halting problem is recursively enumerable. If the system reaches the target, you eventually
+    see it. If it never reaches the target, no finite simulation proves that it will never happen.
+    This is the usual asymmetry of halting, but written as a statement about the resolvent of
+    an operator.
+  </p>
+
+  <p>
+    Another point is that equicontinuous systems, meaning systems without sensitivity to initial
+    conditions, cannot support universal computation in this sense. At finite resolution, the
+    Krylov space generated by an observable is finite dimensional, so the reachability question
+    collapses to finite linear algebra. No sensitivity, no unbounded computation.
+  </p>
+
+  <p>
+    Finally, in the digital direction, one can reverse the logic. If a physical system is engineered
+    so that regions \(\Omega_q\) of its phase space represent machine states \(q\), then the
+    characteristic functions \(\chi_q\) span a finite-dimensional Koopman-invariant subspace.
+    On that subspace, the Koopman operator is just the transition matrix of the automaton.
+    A halting basin is an eigenfunction with eigenvalue one.
+  </p>
+
+  <p>
+    This is a very clean dictionary:
+  </p>
+
+  <ul>
+    <li>machine states become observables;</li>
+    <li>transitions become the action of \(K\);</li>
+    <li>halting basins become \(\lambda=1\) eigenfunctions;</li>
+    <li>reachability becomes a resolvent question.</li>
+  </ul>
+
+  <h4>What I think is the larger point</h4>
+
+  <p>
+    What I like about this whole picture is not that Koopman theory suddenly solves everything.
+    It does not. In the Lotka-Volterra case the PDE for \(\eta\) is basically as hard as the original
+    ODE. In the computation case, the resolvent does not magically decide an undecidable
+    problem.
+  </p>
+
+  <p>
+    The value is more structural.
+  </p>
+
+  <p>
+    Koopman gives a common language in which a nonlinear ODE, a context-free grammar, a
+    lattice-walk generating function, and a halting problem all become statements about the
+    evolution of observables. Sometimes the observable is \(xy\). Sometimes it is the characteristic
+    function of a set. Sometimes it is a monomial in a grammar. But in each case the same idea
+    is at work: lift the dynamics, linearize the action, and then ask what the operator is counting.
+  </p>
+
+  <p>
+    To me, this is the interesting part. There are places where statistical mechanics, combinatorics,
+    and computation are not three separate subjects. They are three dialects of the same operator.
+  </p>
+
+  <p>
+    And every now and then, if you stare at a nonlinear equation long enough, it starts counting
+    walks. In fact, I wonder whether one can use ODEs to model Monte Carlo problems. This is for another day.
+  </p>
+
+  <p class="note">
+    References mentioned above: the Lotka-Volterra/Koopman lattice-walk work is
+    <a href="https://arxiv.org/abs/2308.13653" target="_blank">Caravelli and Lin</a>;
+    the context-free grammar connection is
+    <a href="https://arxiv.org/abs/1404.0731" target="_blank">Ma, Mansour and Callan</a>;
+    and the computation-through-Koopman part is the work with Jean-Charles Delvenne discussed
+    in the second half of the talk.
+  </p>
+
+</section>
+
+
+      <!-- Second ad block (NO second AdSense script include) -->
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <p><a href="../blog.html">&larr; Back to Blog</a></p>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById('sidebar');
+      const response = await fetch('../partials/sidebar.html');
+      const html = await response.text();
+      sidebarContainer.innerHTML = html;
+
+      const currentPath = window.location.pathname.split('/').pop();
+      const links = sidebarContainer.querySelectorAll('a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+          link.classList.add('active');
+        }
+      });
+
+      // Re-render KaTeX in case the injected sidebar contains math
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.querySelector("main.content"), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false,
+          macros: { "\\mathbbm": "\\mathbb" },
+          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+        });
+      }
+    }
+    loadSidebar();
+  </script>
+</body>
+</html>
