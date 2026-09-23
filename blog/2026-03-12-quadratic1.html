@@ -111,25 +111,25 @@
 
         <p>
           <img src="images/ferraraabbey.jpg" alt="Pomposa Abbey (photo from Wikipedia)" style="width:100%; border-radius:12px; margin:1rem 0;">
-          The image above is the Pomposa Abbey, a beautiful historical site in Italy near Ferrara.  It is known for the invention of the modern musical notes by the friar Guido d'Arezzo, 
-          who developed the solfège system that we still use today (do-re-mi-fa-sol-la-ti). It is also the reason why the abbey is often used as a symbol of the origins of 
+          The image above is the Pomposa Abbey, a beautiful historical site in Italy near Ferrara. It is known for the invention of the modern musical notes by the friar Guido d'Arezzo,
+          who developed the solfège system that we still use today (do-re-mi-fa-sol-la-ti). It is also the reason why the abbey is often used as a symbol of the origins of
           music theory and notation (it is for instance seen at the beginning of Lucio Dalla's music video of
           <em><a href="https://www.youtube.com/watch?v=ThA3luuqefg">Com'è profondo il mare</a></em>).
-          I chose to start the post with this image because it captures the spirit of what I want to discuss: the interplay between old and new, 
+          I chose to start the post with this image because it captures the spirit of what I want to discuss: the interplay between old and new,
           between classical and modern, between algebra and combinatorics.
-          The abbey here represents the fact that quadratic fixed points, what I would like to talk about here, are quite archaic object. 
-          The study of their perturbation expansions 
-          are a very old and classical topic in mathematics, 
+          The abbey here represents the fact that quadratic fixed points, what I would like to talk about here, are quite archaic objects.
+          The study of their perturbation expansions
+          is a very old and classical topic in mathematics,
           with roots that go back to the very origins of algebra, yet they still hold many surprises and connections to modern physics and computation.
-          In fact, I don't want you to focus on the abbey in the picture, but on the tree next to it. 
-          It really seems close to rooted binary tree, which is exactly what we will see emerges from the perturbation expansion of a quadratic fixed point.
-          I wanted to write the blog post of the appropriate length so that it can be read while listening to the song, which is a personal favorite of mine 
+          In fact, I don't want you to focus on the abbey in the picture, but on the tree next to it.
+          It really seems close to a rooted binary tree, which is exactly what we will see emerge from the perturbation expansion of a quadratic fixed point.
+          I wanted to write the blog post of the appropriate length so that it can be read while listening to the song, which is a personal favorite of mine
           and a masterpiece of Italian music. However, it might take a bit more time than the song itself, so feel free to listen to it on repeat while reading the post :)
         </p>
 
-        <p> The origin of this post is that recently I've been looking at the behavior of quadratic fixed points 
+        <p> The origin of this post is that recently I've been looking at the behavior of quadratic fixed points
             in the context of perturbation theory and diagrammatic expansions in memristive networks, together with a student, and previously with a colleague.
-            Since I had to clarify this expansion for the student, I thought that it would be useful to write it down in a more general way, without the memristor jargon, 
+            Since I had to clarify this expansion for the student, I thought that it would be useful to write it down in a more general way, without the memristor jargon,
             so that it can be useful to a wider audience. In particular, this would clarify the structure to myself as well.
             I thought that some of the points we uncovered were interesting and not widely appreciated, so I decided to write them down in a more general and accessible way.
             The goal is to discuss and study vector quadratic equations of this form:
@@ -141,9 +141,9 @@
   Quick notation. The symbol $\odot$ means elementwise multiplication, so
   $$ \vec x^{\odot 2} = (x_1^2,\dots,x_N^2). $$
   In the memristor setting I care about, the source actually lives in the projected subspace ($\vec s\in \mathrm{Range}(\Omega)$)
-  and $\Omega$ is a projector enforcing Kirchhoff constraints, but you don’t need circuit details for what follows.
-  Even with this simplification, the problem is still rich enough to illustrate the key points about branch structure, perturbation theory, and diagrammatics.  
-  Also, the equation looks deceiptively simple, but it is genuinely nonlinear and nontrivial to solve. I know for instance of a full PhD thesis devoted to the study 
+  and $\Omega$ is an orthogonal projector ($\Omega=\Omega^{\mathsf T}=\Omega^2$) enforcing Kirchhoff constraints, but you don’t need circuit details for what follows.
+  Even with this simplification, the problem is still rich enough to illustrate the key points about branch structure, perturbation theory, and diagrammatics.
+  Also, the equation looks deceptively simple, but it is genuinely nonlinear and nontrivial to solve. I know for instance of a full PhD thesis devoted to the study
   of this equation, and it is still an active area of research.
 </p>
 
@@ -171,7 +171,7 @@ Here is the plan for this post:
 </ul>
 
 <p class="note">
-  Note: Next week and the one after I will not have time to write, as I am traveling to the APS March Meeting in Denver and then will have some catching up to do after that. 
+  Note: Next week and the one after I will not have time to write, as I am traveling to the APS March Meeting in Denver and then will have some catching up to do after that.
   Feel free to write if you are there <em>in person</em> and want to meet up!
 </p>
     <div class="toc">
@@ -182,8 +182,9 @@ Here is the plan for this post:
         <li><a href="#nd">3. The $N$-dimensional quadratic system (from a projector decomposition)</a></li>
         <li><a href="#trees-formula">4. Tree formula: one branch as a sum over rooted binary trees</a></li>
         <li><a href="#nd-trees">5. Diagrammatics around a background: solving for $C_0$ and expanding $\delta C_i$</a></li>
-        <li><a href="#sd">6. Schwinger–Dyson viewpoint: a self-consistent equation for the fluctuations</a></li>
+        <li><a href="#sd">6. Schwinger–Dyson viewpoint: dressing the propagator</a></li>
         <li><a href="#closing">Takeaway</a></li>
+        <li><a href="#errata">Note added: corrections to the original version</a></li>
     </ul>
     </div>
 
@@ -249,8 +250,11 @@ Here is the plan for this post:
         </p>
 
         <p>
-          The integers $1,1,2,5,14,\dots$ are the Catalan numbers: they count rooted binary trees. We already see that at the level of the single scalar quadratic equations,
-          trees are hidden in the perturbation expansion. Let's try to see why :)  
+          The integers $1,1,2,5,14,\dots$ are the Catalan numbers $\mathrm{Cat}_n=\frac{1}{n+1}\binom{2n}{n}$: they count rooted binary trees.
+          Indeed, writing $C^{(n)}=\mathrm{Cat}_n S^{n+1}$ turns the recursion above into the Catalan recursion
+          $\mathrm{Cat}_n=\sum_{m=0}^{n-1}\mathrm{Cat}_m\mathrm{Cat}_{n-1-m}$.
+          We already see that at the level of a single scalar quadratic equation,
+          trees are hidden in the perturbation expansion. Let's try to see why :)
           Diagrammatically, each factor of $\chi$ corresponds to adding one branching vertex, and each leaf contributes a factor of $S$. We will see this later in this post when we discuss
           the $N$-dimensional case.
         </p>
@@ -267,11 +271,11 @@ Here is the plan for this post:
         </p>
 
         <p class="math">
-          $$ C_{-}(\chi) = \frac{1 - \sqrt{1 - 4\chi S}}{2\chi}, $$
+          $$ C_{-}(\chi) = \frac{1 - \sqrt{1 - 4\chi S}}{2\chi} = S\,c(\chi S), \qquad c(z):=\sum_{n\ge0}\mathrm{Cat}_n z^n=\frac{1-\sqrt{1-4z}}{2z}, $$
         </p>
 
         <p>
-          because this is the branch with $C_-(\chi)\to S$ as $\chi\to 0$.
+          because this is the branch with $C_-(\chi)\to S$ as $\chi\to 0$. The series converges for $|\chi S|<1/4$, i.e. up to the branch point where the discriminant vanishes.
         </p>
 
         <div class="hr"></div>
@@ -287,10 +291,10 @@ Here is the plan for this post:
   </p>
 
   <p>
-    The other root, however, is genuinely different:
-    $$ C_+(\chi)=\frac{1+\sqrt{1-4\chi S}}{2\chi} \sim \frac{1}{\chi}-S-\chi S^2-\cdots \quad (\chi\to 0). $$
+    The other root, however, is genuinely different. Since the two roots sum to $1/\chi$,
+    $$ C_+(\chi)=\frac{1}{\chi}-C_-(\chi)=\frac{1}{\chi}-S-\chi S^2-2\chi^2S^3-\cdots \quad (\chi\to 0). $$
     So it <em>does</em> admit an expansion—just not a power series with nonnegative powers of $\chi$.
-    It is a <em>Laurent / asymptotic</em> expansion with a leading $1/\chi$ divergence.
+    It is a <em>Laurent</em> expansion with a leading $1/\chi$ pole.
     This is why the rooted-tree/Taylor machinery “misses” it: the analytic assumption $C(\chi)=\sum_{n\ge0}\chi^n C^{(n)}$
     has already excluded $C_+$.
   </p>
@@ -321,10 +325,17 @@ Here is the plan for this post:
 
   <p>
     To get a nontrivial perturbation theory you then deform the problem.
-    For instance, perturb the source $S\mapsto S+\varepsilon \Delta S$ and solve for the response $\delta(\varepsilon)$.
-    The linear factor $(1-2\chi C^0)^{-1}$ plays the role of the propagator around the chosen background.
+    For instance, perturb the source $S\mapsto S+\varepsilon \Delta S$ and solve for the response $\delta(\varepsilon)$:
+    $$ \delta = g\,\varepsilon\Delta S + \chi\, g\,\delta^2, \qquad g:=\frac{1}{1-2\chi C^0}. $$
+    The factor $g$ plays the role of the propagator around the chosen background. Using the explicit roots,
+    $$ 1-2\chi C^0_\pm=\mp\sqrt{1-4\chi S}, \qquad g_\pm=\mp\frac{1}{\sqrt{1-4\chi S}}, $$
+    so the two branches have propagators of opposite sign, both singular at the branch point.
+    The equation for $\delta$ has the same form as the original one with $S\to g\varepsilon\Delta S$ and $\chi\to\chi g$,
+    so its small root is again a Catalan series—now with one factor of $g$ on every edge of every tree:
+    $$ \delta=\sum_{n\ge0}\mathrm{Cat}_n\,(\chi g)^n\,(g\varepsilon\Delta S)^{n+1}
+      = g\varepsilon\Delta S\; c\!\left(\frac{\chi\varepsilon\Delta S}{1-4\chi S}\right). $$
     If you pick $C^0=C_-(\chi)$ you recover the familiar analytic expansion; if you pick $C^0=C_+(\chi)$ you obtain a
-    consistent expansion on the other branch (typically organized as an asymptotic/Laurent series in $\chi$).
+    consistent expansion on the other branch.
   </p>
 
   <div class="hr"></div>
@@ -344,14 +355,14 @@ Here is the plan for this post:
   </p>
 
   <p>
-    where $\mathcal{Q}(\cdot,\cdot)$ is bilinear (the quadratic part of your model) and $\Omega$ is a projector:
-    $\Omega^2=\Omega$. Assume the source lives in the range of the projector, i.e. $S=\Omega S$.
+    where $\mathcal{Q}(\cdot,\cdot)$ is bilinear and symmetric (the quadratic part of your model; in our case $\mathcal{Q}(u,v)=u\odot v$) and $\Omega$ is an orthogonal projector:
+    $\Omega^2=\Omega=\Omega^{\mathsf T}$. Assume the source lives in the range of the projector, i.e. $S=\Omega S$.
     Then the fixed point necessarily satisfies $x=\Omega x$ as well, so the whole problem closes on the projected subspace.
   </p>
 
   <p>
     Choose an orthonormal basis $\{\xi_i\}_{i=1}^N$ for $\mathrm{Range}(\Omega)$.
-    Since $\Omega$ is a projector, it admits the spectral/basis representation
+    Since $\Omega$ is an orthogonal projector, it admits the spectral/basis representation
   </p>
 
   <p class="math">
@@ -363,16 +374,16 @@ Here is the plan for this post:
   </p>
 
   <p class="math">
-    $$ x = \sum_{i=1}^N C_i\,\xi_i, 
+    $$ x = \sum_{i=1}^N C_i\,\xi_i,
        \qquad
-       S = \sum_{i=1}^N S_i\,\xi_i, 
+       S = \sum_{i=1}^N S_i\,\xi_i,
        \qquad
        S_i := \xi_i^{\mathsf T} S. $$
   </p>
 
   <p>
     Plug this into the fixed point equation and project onto the $i$th mode by multiplying on the left by $\xi_i^{\mathsf T}$.
-    Using $\xi_i^{\mathsf T}\Omega=\xi_i^{\mathsf T}$ (because $\xi_i$ lies in the range of $\Omega$), we get
+    Using $\xi_i^{\mathsf T}\Omega=\xi_i^{\mathsf T}$ (because $\xi_i$ lies in the range of $\Omega$ and $\Omega$ is symmetric), we get
   </p>
 
   <p class="math">
@@ -391,22 +402,23 @@ Here is the plan for this post:
 
   <p>
     This is where the “interaction tensor” comes from: it is just the quadratic operation expressed in the chosen mode basis.
-    Defining
+    For the elementwise product $\mathcal{Q}(u,v)=u\odot v$ it is explicit,
   </p>
 
   <p class="math">
-    $$ T_{ijk} \;:=\; \xi_i^{\mathsf T}\,\mathcal{Q}(\xi_j,\xi_k)=\sum_{l} \xi_{i}^{(l)} \xi_{j}^{(l)} \xi_{k}^{(l)} $$
+    $$ T_{ijk} \;:=\; \xi_i^{\mathsf T}\,\mathcal{Q}(\xi_j,\xi_k)=\sum_{l} \xi_{i}^{(l)} \xi_{j}^{(l)} \xi_{k}^{(l)}, $$
   </p>
 
   <p>
-    we arrive at the $N$ coupled quadratic fixed-point equations
+    where $\xi_i^{(l)}$ is the $l$-th component of $\xi_i$; note that this $T$ is totally symmetric in its three indices.
+    We arrive at the $N$ coupled quadratic fixed-point equations
   </p>
 
   <p class="math">
     $$ C_i \;=\; S_i \;+\; \chi\sum_{j,k=1}^N T_{ijk}\,C_j C_k. $$
   </p>
 
-  
+
 
   <p>
     Finally, it is convenient to repackage the tensor contraction as a bilinear map $B:\mathbb{R}^N\times\mathbb{R}^N\to\mathbb{R}^N$:
@@ -423,13 +435,13 @@ Here is the plan for this post:
   <p class="math">
     $$ C = S + \chi\,B(C,C). $$
   </p>
-  <p> Let's now discuss how to write the solution of this in a series form.</p>
+  <p> (For $N=1$ this is the scalar equation with $\chi\to\chi T_{111}$.) Let's now discuss how to write the solution of this in a series form.</p>
 
-  
+
   <div class="hr"></div>
 </section>
 <section id="trees-formula">
-  <h4>4. Tree formula: why one branch is literally a sum over rooted binary trees</h4>
+  <h4>4. Tree formula: one branch as a sum over rooted binary trees</h4>
 
   <p>
     There is a precise sense in which “the perturbative branch” of
@@ -447,6 +459,9 @@ Here is the plan for this post:
     $$ C(\chi) = \sum_{n\ge 0}\chi^n C^{(n)}, \qquad C^{(0)}=S. $$
     Substituting and matching powers of $\chi$ gives the universal recursion
     $$ C^{(n)} = \sum_{m=0}^{n-1} B\!\big(C^{(m)},\,C^{(n-1-m)}\big), \qquad n\ge 1. \tag{$\ast$} $$
+    The first orders are, using $B(u,v)=B(v,u)$ to collect terms,
+    $$ C^{(1)}=B(S,S),\qquad C^{(2)}=2\,B\big(S,B(S,S)\big),\qquad C^{(3)}=4\,B\big(S,B(S,B(S,S))\big)+B\big(B(S,S),B(S,S)\big), $$
+    and the coefficients $1$, $2$, $4+1=5$ are the Catalan numbers counting the underlying plane trees.
   </p>
 
   <p>
@@ -475,7 +490,7 @@ Here is the plan for this post:
   </p>
 
   <p>
-    To make the formula explicit, fix a rooted binary tree $\tau$ with $n$ internal vertices.
+    To make the formula explicit, fix a plane rooted binary tree $\tau$ with $n$ internal vertices (there are $\mathrm{Cat}_n$ of them; call the set $\mathcal{T}_n$).
     Give every edge of $\tau$ an index label in $\{1,\dots,N\}$. Let the root edge (the outgoing edge at the top)
     carry the fixed external index $i$. Each internal vertex $v$ has:
   </p>
@@ -515,29 +530,35 @@ Here is the plan for this post:
   </p>
 
   <p>
-    Here $\mathcal{T}_n$ denotes the set of rooted binary trees with $n$ internal vertices,
+    Here $\mathcal{T}_n$ denotes the set of plane rooted binary trees with $n$ internal vertices,
     $\mathrm{Int}(\tau)$ is the set of internal vertices of $\tau$, and the labelling sum runs over all assignments
-    of indices to edges with the root edge fixed to be $i$. (Equivalently: you can sum over indices on internal edges,
-    leaving the root index fixed and letting leaf indices be summed implicitly through the $S_{a_\ell}$ factors.)
+    of indices to the non-root edges.
   </p>
 
   <p class="note">
     If you strip away the indices and set $T_{ijk}\equiv 1$, the only remaining information is the number of tree shapes.
-    Then $C^{(n)}$ is proportional to the Catalan number $C_n$, recovering the familiar scalar story.
+    Then $C^{(n)}$ is proportional to the Catalan number $\mathrm{Cat}_n$, recovering the familiar scalar story.
     The tensor $T$ is what turns “counting trees” into “contracting a diagram”. This is the type of structure
-    that I typically love in physics: a universal combinatorial skeleton dressed with model-specific weights. 
-    Both statistical physics and quantum field theory are full of this kind of structure, and it is one of the things 
+    that I typically love in physics: a universal combinatorial skeleton dressed with model-specific weights.
+    Both statistical physics and quantum field theory are full of this kind of structure, and it is one of the things
     that makes them so powerful and beautiful.
+  </p>
+
+  <p class="note">
+    A bonus of the recursion ($\ast$) is a convergence estimate for free: with $\|B\|$ the operator norm of the bilinear map,
+    induction gives $\|C^{(n)}\|\le \mathrm{Cat}_n\|B\|^n\|S\|^{n+1}$, so the scalar Catalan series is a majorant and the tree sum
+    converges absolutely for $4|\chi|\,\|B\|\,\|S\|<1$. Inside that disc it is the unique solution branch through $C=S$ at $\chi=0$
+    (the Jacobian there is the identity, so the implicit function theorem applies).
   </p>
 
   <p>
     Also, the beauty of the formula is that it separates <em>universals</em> from <em>model-specific content</em>:
     the universals are the rooted binary trees (pure combinatorics), while the model-specific content sits entirely in the
     vertex weights $T_{ijk}$ and the leaf insertions $S_i$. This is exactly what a good diagrammatic expansion should do.
-    As Razvan Gurau told me once, sometime it is also worth writing something simple in a complicated way. This is 
-    one of those cases: the formula above looks complicated, but it is actually a very clean way to express the solution of 
+    As Razvan Gurau told me once, sometimes it is also worth writing something simple in a complicated way. This is
+    one of those cases: the formula above looks complicated, but it is actually a very clean way to express the solution of
     the fixed point equation in a way that makes the combinatorial structure manifest. Yet, it is worth stressing
-    that is a particular choice of analytical branch: the one that is analytic at $\chi=0$ and satisfies $C(\chi)\to S$ as $\chi\to 0$. 
+    that this is a particular choice of analytical branch: the one that is analytic at $\chi=0$ and satisfies $C(\chi)\to S$ as $\chi\to 0$.
     The other branches will have different expansions, and we will see how to get them in the next section.
   </p>
 
@@ -553,12 +574,21 @@ Here is the plan for this post:
 </p>
 
 <p class="math">
-  $$ C_i = C_0 + \delta C_i, $$
+  $$ C_i = C_0 + \delta C_i, \qquad\text{i.e.}\qquad C = C_0\,\mathbf 1 + \delta C, $$
 </p>
 
 <p>
-  where $C_0$ is independent of $i$. The idea is that $C_0$ captures the “background” part of the solution, while
-  $\delta C_i$ captures fluctuations around it.
+  where $C_0$ is independent of $i$ and $\mathbf 1=(1,\dots,1)^{\mathsf T}$. The idea is that $C_0$ captures the “background” part of the solution, while
+  $\delta C_i$ captures fluctuations around it. It will be useful to introduce
+</p>
+
+<p class="math">
+  $$ M_{ij} := \sum_{k} T_{ijk}, \qquad t_i := \sum_{j,k} T_{ijk}, \qquad
+     \bar S := \frac{1}{N}\sum_{i=1}^N S_i, \qquad \bar T := \frac{1}{N}\sum_{i} t_i = \frac{1}{N}\sum_{i,j,k}T_{ijk}. $$
+</p>
+
+<p>
+  Since $T$ is totally symmetric, $M$ is a symmetric matrix, $B(\mathbf 1,\mathbf 1)=t$ and $B(\mathbf 1,u)=B(u,\mathbf 1)=Mu$.
 </p>
 
 <p>
@@ -570,104 +600,55 @@ Here is the plan for this post:
 </p>
 
 <p>
-  Insert $C_i=C_0+\delta C_i$ into (1):
+  Insert $C=C_0\mathbf 1+\delta C$ into (1) and use bilinearity and symmetry of $B$:
 </p>
 
 <p class="math">
-  $$ C_0+\delta C_i
-     = S_i + \chi \sum_{j,k} T_{ijk}\,(C_0+\delta C_j)(C_0+\delta C_k). \tag{2} $$
+  $$ C_0\,\mathbf 1+\delta C
+     = S + \chi \Big[ C_0^2\, t + 2 C_0\, M\,\delta C + B(\delta C,\delta C)\Big]. \tag{2} $$
 </p>
 
 <p>
-  Expand the product:
+  Equation (2) is exact and holds for <em>any</em> constant $C_0$. To fix $C_0$, average (2) over $i$ and use the standard mean-field closure
+  (drop the fluctuation contributions in the average). This gives the <em>scalar</em> quadratic
 </p>
 
 <p class="math">
-  $$ (C_0+\delta C_j)(C_0+\delta C_k)
-     = C_0^2 + C_0(\delta C_j+\delta C_k) + \delta C_j\,\delta C_k. \tag{3} $$
+  $$ C_0 = \bar S + \chi\,\bar T\,C_0^2, \tag{3} $$
 </p>
 
 <p>
-  To get a scalar equation for the background, average (2) over $i$ and assume the standard mean-field closure
-  (drop fluctuation contributions in the average). Define
+  whose solutions are the two candidate backgrounds
 </p>
 
 <p class="math">
-  $$ \bar S := \frac{1}{N}\sum_{i=1}^N S_i,
+  $$ C_0^{\pm}(\chi)=\frac{1\pm\sqrt{\Delta}}{2\chi\,\bar T}, \qquad \Delta := 1-4\chi\,\bar T\,\bar S. \tag{4} $$
+</p>
+
+<p>
+  Now subtract (3), multiplied by $\mathbf 1$, from (2). This removes the constant part and leaves an <em>exact</em> equation for the fluctuations:
+</p>
+
+<p class="math">
+  $$ \delta C
+     = h + 2\chi C_0\, M\,\delta C + \chi\,B(\delta C,\delta C),
      \qquad
-     \bar T := \frac{1}{N}\sum_{i,j,k} T_{ijk}. $$
-</p>
-
-<p>
-  Then the background is chosen to satisfy the <em>scalar</em> quadratic
-</p>
-
-<p class="math">
-  $$ C_0 = \bar S + \chi\,\bar T\,C_0^2. \tag{4} $$
-</p>
-
-<p>
-  Solving (4) gives the two candidate backgrounds (when the discriminant is positive):
-</p>
-
-<p class="math">
-  $$ C_0^{\pm}(\chi)=\frac{1\pm\sqrt{1-4\chi\,\bar T\,\bar S}}{2\chi\,\bar T}. \tag{5} $$
-</p>
-
-<p>
-  Now go back to (2) and subtract the background equation (4) from it (componentwise, i.e. subtract $\bar S+\chi\bar T C_0^2$
-  from both sides). This removes the constant part and leaves an equation for the fluctuations:
-</p>
-
-<p class="math">
-  $$ \delta C_i
-     = (S_i-\bar S)
-     + \chi \sum_{j,k}T_{ijk}\Big[C_0(\delta C_j+\delta C_k)+\delta C_j\delta C_k\Big]
-     \;-\;\chi\,C_0^2\Big(\sum_{j,k}T_{ijk}-\bar T\Big). \tag{6} $$
+     h := (S-\bar S\,\mathbf 1) + \chi\,C_0^2\,(t-\bar T\,\mathbf 1). \tag{5} $$
 </p>
 
 <p class="note">
-  The last term is an $i$-dependent “mismatch” coming from the fact that $\sum_{j,k}T_{ijk}$ need not be constant in $i$.
-  If your model/basis has $\sum_{j,k}T_{ijk}$ independent of $i$ (common in symmetric reductions), that term vanishes.
-  Otherwise it can be absorbed into a redefinition of the inhomogeneity (it is still of order $C_0^2$ and fixed once $C_0$ is chosen).
+  The mean-field closure was only used to <em>choose</em> $C_0$; nothing has been dropped in (5).
+  The effective source $h$ has zero mean, $\sum_i h_i=0$. Its second term is an $i$-dependent “mismatch” coming from the fact that
+  the row sums $t_i=\sum_{j,k}T_{ijk}$ need not be constant in $i$. If your model/basis has $t_i$ independent of $i$ (common in symmetric reductions),
+  that term vanishes and $h=S-\bar S\mathbf 1$. Otherwise it stays as part of the leaf weight (it is fixed once $C_0$ is chosen).
 </p>
 
 <p>
-  From now on, assume the common simplifying case where the quadratic interaction is symmetric in the two incoming legs,
-  $T_{ijk}=T_{ikj}$. Then
+  Now the linear term can be brought to the left. Define the Jacobian (linearized operator around the background $C_0\mathbf 1$):
 </p>
 
 <p class="math">
-  $$ \sum_{j,k}T_{ijk}\,(\delta C_j+\delta C_k)=2\sum_{j,k}T_{ijk}\,\delta C_j, $$
-</p>
-
-<p>
-  and (6) becomes
-</p>
-
-<p class="math">
-  $$ \delta C_i
-     = (S_i-\bar S)
-     + 2\chi C_0\sum_{j,k}T_{ijk}\,\delta C_j
-     + \chi\sum_{j,k}T_{ijk}\,\delta C_j\delta C_k
-     \;+\;\text{(optional mismatch term)}. \tag{7} $$
-</p>
-
-<p>
-  Now the linear term can be brought to the left. Define the Jacobian (linearized operator around the background $C_0$):
-</p>
-
-<p class="math">
-  $$ (J_0\,\delta C)_i
-     := \delta C_i - 2\chi C_0\sum_{j,k}T_{ijk}\,\delta C_j. \tag{8} $$
-</p>
-
-<p>
-  In matrix form this is
-</p>
-
-<p class="math">
-  $$ (J_0)_{ij}=\delta_{ij}-2\chi C_0\sum_{k}T_{ijk}. \tag{9} $$
+  $$ J_0 := I - 2\chi C_0\, M, \qquad (J_0)_{ij}=\delta_{ij}-2\chi C_0\sum_{k}T_{ijk}. \tag{6} $$
 </p>
 
 <p>
@@ -675,8 +656,7 @@ Here is the plan for this post:
 </p>
 
 <p class="math">
-  $$ J_0\,\delta C
-     = (S-\bar S) + \chi\,B(\delta C,\delta C) \quad \text{(plus mismatch term if present)}. \tag{10} $$
+  $$ J_0\,\delta C = h + \chi\,B(\delta C,\delta C). \tag{7} $$
 </p>
 
 <p>
@@ -685,45 +665,56 @@ Here is the plan for this post:
 </p>
 
 <p class="math">
-  $$ G_0 := J_0^{-1}. \tag{11} $$
+  $$ G_0 := J_0^{-1}. \tag{8} $$
 </p>
 
 <p>
-  Then we can rewrite (10) as a fixed point for $\delta C$:
+  Then we can rewrite (7) as a fixed point for $\delta C$:
 </p>
 
 <p class="math">
-  $$ \delta C = G_0\,(S-\bar S) + \chi\,G_0\,B(\delta C,\delta C). \tag{12} $$
+  $$ \delta C = G_0\,h + \chi\,G_0\,B(\delta C,\delta C). \tag{9} $$
 </p>
 
 <p class="note">
-  This is the key: the propagator $G_0$ depends on $C_0$, and $C_0$ depends on which root you chose in (5).
-  Same diagrammatics, different weights.
+  This is the key: the propagator $G_0$ depends on $C_0$, and $C_0$ depends on which root you chose in (4).
+  Same diagrammatics, different weights. Explicitly, since $\chi C_0^\pm=(1\pm\sqrt\Delta)/(2\bar T)$,
+  $$ J_0^{\pm} = I - \frac{1\pm\sqrt{\Delta}}{\bar T}\,M, \qquad J_0^-\to I,\quad J_0^+\to I-\frac{2}{\bar T}M \quad(\chi\to0). $$
+  As a consistency check, if $t=\bar T\mathbf 1$ then $\mathbf 1$ is an eigenvector of $M$ with eigenvalue $\bar T$ and
+  $J_0^\pm\mathbf 1=\mp\sqrt{\Delta}\,\mathbf 1$: the uniform mode reproduces the scalar propagator of Section 2 and becomes massless at the branch point $\Delta=0$.
 </p>
 
 <p>
-  Iterating (12) generates a rooted-tree expansion again, but now internal lines carry $G_0$, vertices carry $T_{ijk}$,
-  and leaves carry $(S-\bar S)$ (or whatever inhomogeneity you keep after the subtraction).
+  Iterating (9) generates a rooted-tree expansion again, but now internal lines carry $G_0$, vertices carry $T_{ijk}$,
+  and leaves carry $h$.
   This is how you “access the other branch” in practice: pick $C_0^+$ instead of $C_0^-$, which changes $J_0$ and therefore changes the entire expansion.
+</p>
+
+<p class="note">
+  One bookkeeping remark: $G_0$ and $h$ depend on $\chi$ through $C_0$. The expansion below is therefore an expansion in the
+  <em>explicit</em> $\chi$ multiplying the vertex in (9)—equivalently, put a counting parameter $\lambda$ in front of $B$ and expand in $\lambda$—
+  i.e. it counts vertices at fixed background. It is not a Taylor series in $\chi$ (which is precisely the point, since we want to sit on a non-analytic branch).
 </p>
 
   <img class="hero" src="images/doubleline.png" alt="Rooted binary tree expansion with a background">
 
 
 <p>
-  With (12) in hand, the tree expansion comes back in the same way as before, except that now every internal line carries a propagator.
-  Iterating
-  $$ \delta C = G_0\,(S-\bar S) + \chi\,G_0\,B(\delta C,\delta C) $$
-  generates a sum over rooted binary trees: each time you apply the quadratic term you add one vertex, and each time you stop you attach a leaf.
-  The only new ingredient compared to the “bare” expansion is that every contraction is preceded by a factor of $G_0$. 
+  With (9) in hand, the tree expansion comes back in the same way as before, except that now every line carries a propagator.
+  Writing $\delta C=\sum_n \chi^n \delta C^{(n)}$ in the sense just described,
+  $$ \delta C^{(0)} = G_0 h, \qquad \delta C^{(n)} = G_0\sum_{m=0}^{n-1}B\big(\delta C^{(m)},\delta C^{(n-1-m)}\big), $$
+  so that to second order
+  $$ \delta C = G_0 h + \chi\,G_0 B(G_0 h, G_0 h) + 2\chi^2\, G_0 B\big(G_0 h,\; G_0 B(G_0 h,G_0 h)\big) + O(\chi^3). $$
+  Each time you apply the quadratic term you add one vertex, and each time you stop you attach a leaf.
+  The only new ingredient compared to the “bare” expansion is that every edge—leaf edges, internal edges and the root edge, $2n+1$ of them at order $n$—is preceded by a factor of $G_0$.
 </p>
 
 <p>
-  Concretely, fix a rooted binary tree $\tau$ with $n$ internal vertices. Label every oriented edge $e$ with an index
-  $a(e)\in\{1,\dots,N\}$, with the root edge fixed to carry the external index $i$. In terms of the rooted tree expansion,each line is now double to recall that
-  this is not a "bare" expansion, e.g. the propagator now carry some weight and depends on the choice of the background.
+  Concretely, fix a plane rooted binary tree $\tau$ with $n$ internal vertices. Label every oriented edge $e$ with an index
+  $a(e)\in\{1,\dots,N\}$, with the root edge fixed to carry the external index $i$. In the picture each line is now drawn double, to recall that
+  this is not a "bare" expansion: the propagator carries weight and depends on the choice of the background.
   Each internal vertex $v$ has two incoming edges $e_1(v),e_2(v)$ and one outgoing edge $e_{\mathrm{out}}(v)$.
-  Then the order-$n$ contribution to $\delta C_i$ can be written schematically as
+  Then $\delta C_i$ can be written as
 </p>
 
 <p class="math">
@@ -742,28 +733,33 @@ Here is the plan for this post:
   \Bigg)
   \Bigg(
     \prod_{\ell\in \mathrm{Leaves}(\tau)}
-    (S-\bar S)_{\,a(e_\ell)}
+    h_{\,a(e_\ell)}
   \Bigg),
   \]
 </p>
 
 <p>
   where $E(\tau)$ is the set of edges of the tree, and for each edge $e$ we think of $G_0$ as the weight that maps the index at the “downstream”
-  end of the edge to the index at the “upstream” end (toward the root). (Any consistent orientation convention works; the point is: each edge contributes one $G_0$.)
+  end of the edge to the index at the “upstream” end (toward the root). For the root edge the upstream index is the external $i$; for a leaf edge the downstream index is contracted with $h$.
+  (Any consistent orientation convention works; the point is: each edge contributes one $G_0$.) The same majorant argument as before gives convergence for
+  $4|\chi|\,\|G_0\|\,\|B\|\,\|G_0 h\|<1$.
 </p>
 
 <p>
   There is another equivalent (often cleaner) way to present the same expansion: <em>dress the vertices and sources</em> so that edges carry no weight.
-  If $G_0$ is symmetric positive (or if you choose some factorization), write
-  $$ G_0 = R\,R^{\mathsf T} \qquad \text{(think of }R=G_0^{1/2}\text{ when it exists).} $$
-  Then you can “push” half a propagator onto each adjacent vertex/leaf/root. In practice this means:
+  Since $M$ is symmetric, so are $J_0$ and $G_0$; write
+  $$ G_0 = R\,R^{\mathsf T} \qquad \text{(think of }R=G_0^{1/2}\text{, or a Cholesky factor when }G_0\succ 0\text{; on branches where }G_0\text{ is indefinite }R\text{ may be complex).} $$
+  Then you can “push” half a propagator onto each adjacent vertex/leaf/root. Setting $\delta C=R\,\Phi$ in (9) and using $R^{\mathsf T}B(Ru,Rv)=\tilde B(u,v)$, one finds
+  $$ \Phi = \tilde h + \chi\,\tilde B(\Phi,\Phi), $$
+  with the dressed rules:
 </p>
 
 <ul>
-  <li>dress each leaf/source by $\tilde S := R^{\mathsf T}(S-\bar S)$,</li>
+  <li>dress each leaf/source by $\tilde h := R^{\mathsf T}h$,</li>
   <li>dress the external/root leg by applying $R$ at the end,</li>
   <li>dress each vertex by contracting $T$ with $R$ on all three legs:
-    $$ \tilde T_{abc} := \sum_{i,j,k} R_{ai}\,T_{ijk}\,R_{bj}\,R_{ck}. $$
+    $$ \tilde T_{abc} := \sum_{i,j,k} T_{ijk}\,R_{ia}\,R_{jb}\,R_{kc}, \qquad (\tilde B(u,v))_a:=\sum_{b,c}\tilde T_{abc}u_bv_c. $$
+    (The index placement matters when $R$ is not symmetric: it is $R^{\mathsf T}$ acting on each leg of $T$.)
   </li>
 </ul>
 
@@ -783,14 +779,14 @@ Here is the plan for this post:
       \prod_{v\in \mathrm{Int}(\tau)} \tilde T_{\,a(e_{\mathrm{out}}(v))\;a(e_1(v))\;a(e_2(v))}
     \Bigg)
     \Bigg(
-      \prod_{\ell\in \mathrm{Leaves}(\tau)} \tilde S_{\,a(e_\ell)}
+      \prod_{\ell\in \mathrm{Leaves}(\tau)} \tilde h_{\,a(e_\ell)}
     \Bigg)
   \right].
   \]
 </p>
 
 <p class="note">
-  Same combinatorics, but different structure: either you attach $G_0$ to every internal line, or you absorb “square roots” of $G_0$
+  Same combinatorics, but different structure: either you attach $G_0$ to every line, or you absorb “square roots” of $G_0$
   into the vertices/leaves/root. In diagram language this is just dressing the rules of Feynman diagrams: propagators become trivial, while sources and vertices carry the $C_0$-dependent weights.
 </p>
 
@@ -800,95 +796,67 @@ Here is the plan for this post:
   <h4>6. Schwinger–Dyson viewpoint: dressing the propagator</h4>
 
   <p>
-    Once we have rewritten the fluctuation equation as
-    $$ \delta C = G_0(S-\bar S) + \chi\,G_0\,B(\delta C,\delta C), $$
-    we can also ask a slightly different question: how does the solution respond to changes in the source?
+    We can also ask a slightly different question: how does the solution respond to changes in the source?
     This leads to a Schwinger–Dyson/Dyson equation for the <em>dressed</em> propagator (the linear response around the chosen background).
-  </p>
-
-  <p>
     Define the response matrix
   </p>
 
   <p class="math">
-    $$ \mathcal{G}_{ia} := \frac{\partial\,\delta C_i}{\partial S_a}. $$
+    $$ \mathcal{G}_{ia} := \frac{\partial C_i}{\partial S_a}. $$
   </p>
 
   <p>
-    Differentiate the fixed-point equation for $\delta C$ with respect to $S_a$.
-    The derivative of the first term is just the background propagator: $\partial[(S-\bar S)]/\partial S_a$ is the projector that removes the mean.
-    For simplicity (and because we are always working in the zero-mean subspace), I will write it as $P$, so the “bare” response is $G_0P$.
-    The nontrivial part comes from differentiating the quadratic term.
+    The cleanest route is to differentiate the <em>full</em> fixed point $C=S+\chi B(C,C)$ with respect to $S_a$. Using bilinearity and symmetry of $B$,
   </p>
 
   <p class="math">
-    $$ \mathcal{G}_{\cdot a}
-       = G_0\,P_{\cdot a}
-       + \chi\,G_0\,\frac{\partial}{\partial S_a}B(\delta C,\delta C). \tag{SD0} $$
+    $$ \mathcal{G}_{\cdot a} = e_a + \chi\Big(B(\mathcal{G}_{\cdot a},C)+B(C,\mathcal{G}_{\cdot a})\Big) = e_a + 2\chi\,M(C)\,\mathcal{G}_{\cdot a},
+       \qquad M(C)_{ij}:=\sum_k T_{ijk}C_k, \tag{SD0} $$
   </p>
 
   <p>
-    Using bilinearity of $B$,
+    so that, exactly,
   </p>
 
   <p class="math">
-    $$ \frac{\partial}{\partial S_a}B(\delta C,\delta C)
-       = B\!\Big(\frac{\partial \delta C}{\partial S_a},\delta C\Big)
-        +B\!\Big(\delta C,\frac{\partial \delta C}{\partial S_a}\Big)
-       = B(\mathcal{G}_{\cdot a},\delta C)+B(\delta C,\mathcal{G}_{\cdot a}). \tag{SD1} $$
+    $$ \mathcal{G} = \big(I-2\chi\,M(C)\big)^{-1}, \tag{SD1} $$
   </p>
 
   <p>
-    Plugging (SD1) into (SD0) gives the Schwinger–Dyson equation for the response:
+    the inverse Jacobian evaluated at the exact solution. Now split $C=C_0\mathbf 1+\delta C$. Since $M(C)$ is linear in $C$,
+    $M(C)=C_0 M + M(\delta C)$, and therefore
   </p>
 
   <p class="math">
-    $$ \mathcal{G}_{\cdot a}
-       = G_0\,P_{\cdot a}
-       + \chi\,G_0\Big(B(\mathcal{G}_{\cdot a},\delta C)+B(\delta C,\mathcal{G}_{\cdot a})\Big). \tag{SD2} $$
+    $$ I-2\chi\,M(C) = J_0 - \Sigma_\delta, \qquad
+       (\Sigma_{\delta}u)_i := 2\chi\sum_{j,k}T_{ijk}\,\delta C_k\,u_j = \chi\Big(B(u,\delta C)+B(\delta C,u)\Big)_i. \tag{SD2} $$
+  </p>
+
+  <p>
+    The operator $\Sigma_\delta$ is a (state-dependent) “self-energy”, linear in the fluctuation field. Inverting,
+  </p>
+
+  <p class="math">
+    $$ \mathcal{G} = (J_0-\Sigma_\delta)^{-1} = (I-G_0\Sigma_{\delta})^{-1}G_0,
+       \qquad\text{equivalently}\qquad
+       \mathcal{G} = G_0 + G_0\,\Sigma_{\delta}\,\mathcal{G}. \tag{Dyson} $$
   </p>
 
   <p class="note">
     The structure is the point: $\mathcal{G}$ appears on both sides. The interaction feeds back into the linear response, so the
-    “propagator” gets dressed by the state $\delta C$ itself.
-  </p>
-
-  <p>
-    If $T_{ijk}$ is symmetric in $j\leftrightarrow k$ (so $B(u,v)=B(v,u)$), the two terms coincide and (SD2) simplifies to
-  </p>
-
-  <p class="math">
-    $$ \mathcal{G}_{\cdot a}
-       = G_0\,P_{\cdot a}
-       + 2\chi\,G_0\,B(\mathcal{G}_{\cdot a},\delta C). \tag{SD2'} $$
-  </p>
-
-  <p>
-    It is often convenient to rewrite this in Dyson form by defining the (state-dependent) “self-energy” operator
-  </p>
-
-  <p class="math">
-    $$ (\Sigma_{\delta}u) := \chi\Big(B(u,\delta C)+B(\delta C,u)\Big). $$
-  </p>
-
-  <p>
-    Then (SD2) becomes
-  </p>
-
-  <p class="math">
-    $$ \mathcal{G} = G_0P + G_0\,\Sigma_{\delta}\,\mathcal{G}. \tag{Dyson} $$
-  </p>
-
-  <p>
-    Formally, if $(I-G_0\Sigma_{\delta})$ is invertible,
-  </p>
-
-  <p class="math">
-    $$ \mathcal{G} = (I-G_0\Sigma_{\delta})^{-1}G_0P. $$
+    bare propagator $G_0$ gets dressed by the state $\delta C$ itself, $\mathcal G = G_0+G_0\Sigma_\delta G_0+G_0\Sigma_\delta G_0\Sigma_\delta G_0+\cdots$
+    (convergent for $\|G_0\Sigma_\delta\|<1$).
   </p>
 
   <p class="note">
-    This makes the dependence on the chosen branch completely explicit: $G_0=J_0^{-1}$ depends on $C_0$,
+    A variant you sometimes want: hold the background $C_0$ fixed and ask only how the fluctuations respond. Differentiating (5) at fixed $C_0$,
+    the derivative of $h$ is the projector $P:=I-\frac1N\mathbf 1\mathbf 1^{\mathsf T}$ that removes the mean, and one gets
+    $\partial\,\delta C/\partial S = (I-G_0\Sigma_\delta)^{-1}G_0P$. The full response (Dyson) additionally contains the variation of the background,
+    $\partial C_0/\partial S_a = \big[N(1-2\chi\bar T C_0)\big]^{-1} = \mp\big[N\sqrt{\Delta}\big]^{-1}$ on the $\pm$ branch, together with the induced changes of $G_0$ and $h$.
+  </p>
+
+  <p class="note">
+    Either way, the dependence on the chosen branch is completely explicit: $G_0=J_0^{-1}$ depends on $C_0$,
     and $C_0$ depends on which root you chose. Changing the background changes the bare propagator, and therefore changes the dressed response.
   </p>
 
@@ -924,7 +892,7 @@ Here is the plan for this post:
   </p>
 
   <p>
-    One last structural comment: the reduction to the $N$-dimensional system was simple because $\Omega$ was a projector.
+    One last structural comment: the reduction to the $N$-dimensional system was simple because $\Omega$ was an orthogonal projector.
     You can loosen that assumption—use a spectral decomposition with nontrivial eigenvalues, or even allow non-symmetric/non-normal operators—
     but then the bookkeeping gets more delicate (left/right eigenvectors, non-orthogonal modes, sometimes Jordan structure), and tracking branches can be harder.
   </p>
@@ -932,6 +900,68 @@ Here is the plan for this post:
   <p>
     If you want a next step: put structure into $T_{ijk}$ (symmetries, projectors, low rank, eigenmodes). That’s where these tree sums
     often simplify enough to compute something explicit.
+  </p>
+</section>
+
+<section id="errata">
+  <h4>Note added: corrections to the original version</h4>
+
+  <p class="note"><em>September 23rd, 2026.</em></p>
+
+  <p>
+    A note to the reader. While turning this post into a section of a student's thesis I went back through every equation with more care than
+    a blog post usually gets, and I also checked the whole construction numerically (random projector, Newton root-finding, finite differences).
+    The structure and the message of the post survive intact, but the original version contained a few genuine errors and several imprecisions.
+    I have corrected them in place rather than leaving the wrong formulas up; here is what changed, so that anyone who read (or cited) the first version knows.
+  </p>
+
+  <ul>
+    <li>
+      <strong>Sign of the mismatch term (old eq. 6).</strong> Subtracting the background equation from the full one produces
+      $+\chi C_0^2\,(t_i-\bar T)$, not a minus sign as originally written. I also called this term “optional”, which it is not: it is part of the
+      source that drives the fluctuations. It is now packaged, together with $S-\bar S$, into the effective source $h$ in eq. (5).
+    </li>
+    <li>
+      <strong>The fluctuation equation is exact.</strong> The original text left the impression that the mean-field closure was an approximation
+      carried through the whole expansion. It isn't: the closure is only used to <em>choose</em> the scalar $C_0$. Once $C_0$ is fixed,
+      eq. (5) for $\delta C$ holds with nothing dropped. This is now stated explicitly.
+    </li>
+    <li>
+      <strong>What “order $\chi^n$” means around a background.</strong> $G_0$ and $h$ depend on $\chi$ through $C_0$, so the expansion around $C_0^\pm$
+      is not a Taylor series in $\chi$; it counts the explicit vertex factors at fixed background (equivalently, an expansion in a counting parameter
+      in front of $B$). The first version glossed over this, which is ironic since the whole point of the post is that the analytic-in-$\chi$
+      assumption is what selects a branch. I added a remark.
+    </li>
+    <li>
+      <strong>Index placement in the dressed vertex.</strong> With $G_0=RR^{\mathsf T}$ the correct dressing is
+      $\tilde T_{abc}=\sum_{ijk}T_{ijk}R_{ia}R_{jb}R_{kc}$, i.e. $R^{\mathsf T}$ acting on each leg. The original formula had $R_{ai}$ on the first leg and
+      $R_{bj},R_{ck}$ on the others, which is only correct when $R$ is symmetric. The identity $R^{\mathsf T}B(Ru,Rv)=\tilde B(u,v)$ is now spelled out.
+    </li>
+    <li>
+      <strong>Schwinger–Dyson section.</strong> The original derivation differentiated the fluctuation equation with respect to $S$ while treating
+      $C_0$, $h$ and $G_0$ as independent of $S$, which they are not. The section is rewritten: differentiating the <em>full</em> fixed point gives the exact response
+      $\mathcal G=(I-2\chi M(C))^{-1}=(J_0-\Sigma_\delta)^{-1}$, from which the Dyson form follows with no approximation. The old formula with the
+      mean-removing projector $P$ is kept as what it actually is, the response of the fluctuations at <em>fixed</em> background.
+    </li>
+    <li>
+      <strong>Smaller points.</strong> $\Omega$ has to be an <em>orthogonal</em> projector for the spectral representation $\sum_i\xi_i\xi_i^{\mathsf T}$
+      and for $\xi_i^{\mathsf T}\Omega=\xi_i^{\mathsf T}$; the explicit formula $T_{ijk}=\sum_l\xi_i^{(l)}\xi_j^{(l)}\xi_k^{(l)}$ is specific to the elementwise
+      product and is now stated as such. Equations in Section 5 were renumbered after the rewrite, so references to the old numbering no longer apply.
+    </li>
+  </ul>
+
+  <p>
+    I also added a few things that were missing and that a reader may find useful: the exact relation $C_+=1/\chi-C_-$; the scalar propagators
+    $g_\pm=\mp(1-4\chi S)^{-1/2}$ and the corresponding Catalan series for the response on either branch; the third-order coefficient
+    $C^{(3)}$ with its $4+1=5$ trees; a convergence estimate for both tree sums via the Catalan majorant
+    (sufficient, not sharp: in my numerical tests the expansion on the $C_0^+$ branch converged well outside the bound); and the consistency check
+    $J_0^\pm\mathbf 1=\mp\sqrt\Delta\,\mathbf 1$ for uniform row sums, which ties the vector story back to the scalar one and shows the uniform mode going massless
+    at the branch point.
+  </p>
+
+  <p class="note">
+    Lesson learned, once more: the diagrams are the easy part. It is the bookkeeping around them—what is exact, what is a choice, what depends on what—that
+    deserves the care. If you spot anything else, write to me.
   </p>
 </section>
 
