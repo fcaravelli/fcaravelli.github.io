@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Whose entropy? Observers in statistical mechanics – Francesco Caravelli</title>
+  <meta name="description" content="Observers, coarse graining and entropy in statistical mechanics: from Zeh's relevance concept to Mori–Zwanzig–Grabert projections and fluctuation identities." />
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; padding: 0.15rem 0; }
+    .equation-block .katex-display { margin: 0.85rem 0; }
+    main.content { min-width: 0; }
+    section[id] { scroll-margin-top: 1.5rem; }
+    .observer-demo { padding: 1rem; border: 1px solid rgba(0,0,0,0.14); border-radius: 12px; }
+    .observer-demo svg { display: block; width: 100%; height: auto; }
+    .observer-demo input { display: block; width: 100%; margin: 0.8rem 0; accent-color: #356b78; }
+    .observer-demo output { font-variant-numeric: tabular-nums; }
+    .observer-demo .demo-label { font-family: Inter, sans-serif; font-size: 14px; fill: currentColor; }
+    .observer-demo .demo-small { font-family: Inter, sans-serif; font-size: 12px; fill: currentColor; }
+    @media (max-width: 600px) {
+      .toc { padding: 0.85rem 1rem; }
+      .observer-demo { padding: 0.6rem; }
+    }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el || typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">statistical mechanics • observers • entropy • the arrow of time</p>
+        <h3>Whose entropy?</h3>
+        <p><em>Observers, coarse graining, and where the information goes</em></p>
+        <p><em>October 15th, 2026</em></p>
+
+        <p>
+          I have had this question in my head, and recently wanted to get it out. I
+          took the opportunity for a festschrift in honor of a great scientist to write this down(shh it's a secret!).
+
+          Recently, I have also talked about this at the Smoluchowski and DICE symposiums. 
+          I have not written on this blog in some time,
+          the paper was still being worked on, and there were a few things I wanted
+          to settle before writing about it here. Now the cat is out of the bag,
+          the paper has been submitted, and I am happy to talk about it.
+        </p>
+        <p>
+          A small side story before getting into this. Yesterday (I start to work on this post on October 7th) the
+          <a href="https://www.nobelprize.org/prizes/physics/2026/press-release/" target="_blank" rel="noopener noreferrer">Nobel Prize in Physics was announced</a>,
+          and it went to Francis Halzen for his contributions to IceCube and the
+          discovery of high-energy astrophysical neutrinos. Speaking about
+          IceCube, he mentioned
+          <a href="https://www.youtube.com/watch?v=1RvvTtZGVLs" target="_blank" rel="noopener noreferrer">“perseverance, talent and luck”</a>.
+          To me, that is a pretty good description of what science is or should be about.
+        </p>
+        <p>
+          I particularly like that luck is included. A joke among students in Italy is that
+          Exam $= mc^2$, which stands Exam = memory multiplied by luck square (luck written as culo in italian).
+          You can work on a problem
+          for years, know what you are doing, and still depend on circumstances
+          you cannot control. When something finally works, it is easy to tell
+          its story as if it had been heading there all along. I appreciate
+          hearing somebody acknowledge how uncertain it was while they were
+          actually doing it.           There is, clearly, an attack on a certain type of science,
+          and we are currently ongoing a paradigmatic shift. But this story was a thing
+          in my head for a good chunk of the last few years.
+        </p>
+        <p>
+          Anyway, back to observers, which truly is what IceCube is about.
+           When we say that the entropy of a system
+          has increased, what did we actually observe? Is entropy a measure of disorder like people write about..
+          ? Did we measure its energy?
+          Its density? A few correlations? And would somebody who measured more
+          assign the same entropy change?
+        </p>
+        <p>
+          Statistical mechanics has lived with this question for a long time.
+          Usually we settle on a macroscopic description and then get on with the
+          calculation. In practical terms, we write a Langevin mesoscopic equation,
+          or a Fokker-Planck equation, and then compute the entropy production based on this assumption.
+          But we forget, somehow, that there is an underlying idea behind it, which
+          is what we actually observed. 
+          </p>>
+        <p>
+          Fair enough. But I wanted to keep the choice of description
+          inside the calculation, and ask whether two observers of the same
+          microscopic evolution could compare their answers in a precise way.
+        </p>
+        <p>
+          The submitted paper is called <em>Observers, Entropy and Integral
+          Fluctuation Theorems in the Mori–Zwanzig–Grabert formalism</em>.
+        What follows is my attempt to
+          explain the problem, the philosophical motivation, and some of the
+          mathematics without turning the post into another paper.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#observer">1. What does an observer keep?</a></li>
+            <li><a href="#zeh">2. Zeh and the choice of relevance</a></li>
+            <li><a href="#reconstruction">3. From measurements to a statistical state</a></li>
+            <li><a href="#memory">4. What we leave out comes back as memory</a></li>
+            <li><a href="#entropy">5. An entropy change along a trajectory</a></li>
+            <li><a href="#ift">6. A fluctuation theorem, with its assumptions</a></li>
+            <li><a href="#two-observers">7. Two observers, one system</a></li>
+            <li><a href="#free-particle">8. A free particle is enough</a></li>
+            <li><a href="#fluctuations">9. The fluctuations of disagreement</a></li>
+            <li><a href="#heat-work">10. Where do heat and work enter?</a></li>
+            <li><a href="#meaning">11. What this leaves us with</a></li>
+            <li><a href="#reading">Further reading</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="observer">
+        <h4>1. What does an observer keep?</h4>
+
+        <p>
+          Let us start from a familiar, historical, scenario. 
+          Consider an elongated Brownian particle in a liquid. If the particle is 
+          isotropic, then the diffusivity tensor is isotropic. If not, its mobility along
+          its long axis can differ from its mobility in the transverse direction.
+          IF both types of particles are present in the same system, then measuring one
+          versus the other can imply different type of fluctuations.
+          Somebody who measures both position and orientation can resolve that
+          anisotropy. The Einstein relation can then be tensorial,
+        </p>
+        <div class="equation-block">\[
+          \mathbf D = k_B T\,\boldsymbol\mu.
+        \]</div>
+        <p>
+          Somebody who records only position, over times long compared with
+          orientational relaxation, may infer an effectively scalar diffusion
+          coefficient. This requires the orientations to sample an isotropic
+          stationary distribution. Without that averaging and separation of
+          timescales, leaving out orientation need not produce isotropic diffusion.
+        </p>
+        <p>
+          Both people are looking at two particles in the same liquid. Their
+          descriptions differ because their records differ. Even the distinction
+          between an organized motion and a fluctuation depends on which variables
+          are retained. A contribution that is predictable when orientation is
+          known can become part of the effective noise when it is omitted.
+        </p>
+        <p>
+          This is the sense in which I use the word <em>observer</em>. It can be a
+          person, a measurement protocol, or a simulation that saves five columns
+          of data and discards the rest. For the construction in the paper, the
+          data are expectation values of selected phase-space observables, e.g. projections down
+          from the full microscopic ensemble. The retained data are the only information we keep.
+          We also need a rule that turns the retained data into a probability
+          density. That second ingredient matters quite a lot.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="zeh">
+        <h4>2. Zeh and the choice of relevance</h4>
+
+        <p>
+          I got some inspiration, or rather, a direction for this work reading a
+          very inspiring book by Zeh.
+          Dieter Zeh calls what we just described the <em>relevance concept</em>. In
+          <a href="https://www.thp.uni-koeln.de/gravitation/zeh/time-direction/Smpl3.pdf" target="_blank" rel="noopener noreferrer">his discussion of Zwanzig's formalism</a>,
+          coarse graining includes both smoothing a distribution and discarding
+          correlations. Local thermodynamic descriptions omit instead nonlocal
+          correlations; information can move into those correlations while the
+          fine-grained ensemble entropy stays constant. Which information is
+          relevant depends on the description and on what local observers can
+          access.
+        </p>
+        <p>
+          Zeh also insists on a dynamical question. Selecting relevant variables
+          does not establish an autonomous evolution for them. One needs suitable
+          boundary conditions and assumptions about the return of discarded
+          information. In his account, the initial absence of irrelevant
+          information and its subsequent transfer into increasingly complicated
+          correlations help explain the thermodynamic arrow. Choosing a coarse
+          graining by itself does not explain why that arrow points towards the
+          future.
+        </p>
+        <p>
+          My reading of this is that we should write the resolution into our
+          thermodynamic statements. A macroscopic record cannot distinguish every
+          microscopic distribution. Calling two such distributions the same state
+          is a useful operation, but it is an operation we have performed.
+          The entropy assigned after that operation should remember how it was done.
+        </p>
+        <p>
+          There is a familiar tension here. Hamiltonian evolution preserves the
+          fine-grained Gibbs entropy,
+        </p>
+        <div class="equation-block">\[
+          S_{\mathrm{fg}}[\rho_t]
+          =-k_B\int d\Gamma\,\rho_t(\Gamma)\ln\rho_t(\Gamma),
+          \qquad \frac{dS_{\mathrm{fg}}}{dt}=0.
+        \]</div>
+        <p>
+          This is due, in essence, to Liouville's theorem.
+          The phase-space volume of a set of points is preserved under Hamiltonian transport.
+          Yet the entropy used in a reduced description can grow. The evolving
+          density develops structure that the reduced description does not retain.
+          We need two densities to discuss this properly: the transported density
+          and the one reconstructed from the retained information.
+          In 2023 I co-organized a workshop with Michael Saccone, Luis Pedro Garcia Pintos and Cristiano Nisoli (we called.. Conclave!)
+          on thermodynamics and information. Chris Jarzynski was invited and I remember asking exactly
+          why this was the case and whether there were fluctuation theorems reconciling this discrepancy.
+          He said "I thought I had resolved this years ago, but now I don't remember how".
+          I asked then whether he thought this was a good direction to dig, he nodded,
+          and here we are years later (I got lost, tried a few things, got back to this with a different approach). 
+        </p>
+        <p>
+          That is where I start. Throughout the classical calculation, phase-space
+          volumes are measured in units of a fixed microscopic reference cell,
+          so the quantities inside logarithms are dimensionless. The same reference
+          measure is used when comparing observers.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="reconstruction">
+        <h4>3. From measurements to a statistical state</h4>
+
+        <p>
+          Let us try to fix first the notation.
+          Let \(\Gamma\) denote a point in phase space, and let \(\rho_t\)
+          be the microscopic ensemble density. We choose phase-space observables as
+          \(A_1(\Gamma),\ldots,A_n(\Gamma)\). The retained data is
+        </p>
+        <div class="equation-block">\[
+          a_i(t)=\int d\Gamma\,\rho_t(\Gamma)A_i(\Gamma).
+        \]</div>
+        <p>
+          A finite collection of means does not determine \(\rho_t\).
+          There are generally many densities with those same means. The observer
+          therefore needs a reconstruction map,
+        </p>
+        <div class="equation-block">\[
+          \mathcal O=\bigl(\{A_i\},\;a\mapsto\bar\rho(\cdot;a)\bigr),
+          \qquad
+          \int d\Gamma\,\bar\rho_t A_i=a_i(t).
+        \]</div>
+        <p>
+          I use maximum entropy for the thermodynamic part of the paper. We
+          maximize the Shannon–Gibbs entropy over the normalized densities
+          compatible with the data. For a regular interior solution, this gives
+        </p>
+        <div class="equation-block">\[
+          \bar\rho_t(\Gamma)
+          =\exp\!\left[-\Phi(t)-\sum_i\lambda_i(t)A_i(\Gamma)\right],
+          \qquad
+          \Phi(t)=\ln\int d\Gamma\,e^{-\sum_i\lambda_i(t)A_i(\Gamma)}.
+        \]</div>
+        <p>
+          The multipliers are chosen to reproduce the measured means. Retaining
+          mean energy produces a canonical family. Retaining means and second
+          moments of continuous variables produces a Gaussian family, when the
+          corresponding maximum exists. Different retained data lead to different
+          families of reconstructed states.
+        </p>
+        <p>
+          Jaynes gives us the inference rule; Grabert lets the reconstructed state
+          follow the changing macroscopic data. The entropy assigned to this
+          observer is
+        </p>
+        <div class="equation-block">\[
+          S(t)=-k_B\int d\Gamma\,\bar\rho_t\ln\bar\rho_t,
+          \qquad
+          \frac{S(t)}{k_B}=\Phi(t)+\sum_i\lambda_i(t)a_i(t).
+        \]</div>
+        <p>
+          The choice of maximum entropy deserves to be visible. Normalization
+          and moment matching already define a much more general reconstruction.
+          Some of the identities below hold at that level. Maximum entropy
+          supplies the extra geometry that makes the entropy comparison particularly
+          clean. It does not guarantee that our selected variables predict the
+          future well.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="memory">
+        <h4>4. What we leave out comes back as memory</h4>
+
+        <p>
+          There is a reason for doing this within Mori–Zwanzig–Grabert theory.
+          The reconstruction also defines a projection of the microscopic dynamics. First, it simplifies a lot of the calculations, as 
+          the relevant density comes out naturally as an exponential family. This is also a limitation, as it does not come out of the dynamics itself,
+          but it is, in this sense, imposed. However, it is a very natural choice, and it is the one that makes the entropy comparison particularly clean, and it also
+          directly provides a projector operator that can be used in molecular dynamics simulations.
+          For a differentiable, moment-matched family, the Grabert projector acting
+          on a phase-space function \(X\) is
+        </p>
+        <div class="equation-block">\[
+          P(t)X=\langle X\rangle_{\mathrm{rel},t}
+          +\sum_j[A_j-a_j(t)]
+          \int d\Gamma\,\frac{\partial\bar\rho_t}{\partial a_j}X,
+          \qquad Q(t)=1-P(t).
+        \]</div>
+        <p>
+          It leaves the retained observables unchanged: \(P(t)A_i=A_i\),
+          and \(P(t)^2=P(t)\). For the regular maximum-entropy family,
+          with invertible covariance matrix \(C\), the same expression becomes
+        </p>
+        <div class="equation-block">\[
+          P(t)X=\langle X\rangle_{\mathrm{rel},t}
+          +\sum_{j,k}\delta A_j(C^{-1})_{jk}
+          \langle\delta A_kX\rangle_{\mathrm{rel},t},
+          \qquad \delta A_i=A_i-a_i(t).
+        \]</div>
+        <p>
+          This projects onto the resolved span using the instantaneous relevant
+          density as its weight. A Mori projection uses a fixed reference weight.
+          A Zwanzig conditional expectation retains every function of the selected
+          variables. Keeping a few moments and keeping their entire joint
+          distribution are different resolutions.
+        </p>
+        <p>
+          For autonomous Hamiltonian dynamics and time-independent observables,
+          the exact projected equation has the form
+        </p>
+        <div class="equation-block">\[
+          \dot A_i(t)=v_i(t)+\sum_j\Omega_{ij}(t)\delta A_j(t)
+          +\int_0^t ds\,
+          \left[K_i(t,s)+\sum_j\varphi_{ij}(t,s)\delta A_j(s)\right]
+          +F_i(t,0).
+        \]</div>
+        <p>
+          The details of the kernels are in the paper, and it will be clear once it appears in press. What matters here is the
+          division into drift, memory, and fluctuating force. The omitted variables
+          still influence the retained ones. Eliminating them produces dependence
+          on the earlier history and on unresolved initial information.
+        </p>
+        <p>
+          Changing the observer changes this division. Keeping an additional slow
+          variable can move part of what looked like memory into the resolved
+          dynamics. The microscopic evolution has continued all along; our way of
+          organizing its consequences has changed.
+        </p>
+        <p>
+          The entropy identities I will discuss do not require us to replace the
+          memory kernel by a delta function, or to close this equation. This is
+          useful because memory is often precisely what makes a reduced
+          description interesting.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="entropy">
+        <h4>5. An entropy change along a trajectory</h4>
+
+        <p>
+          Let us now discuss the transported microscopic density and the reconstructed density along a trajectory
+          We follow one microscopic trajectory,
+          \(\Gamma_t=\Phi_t(\Gamma_0)\). At each endpoint the observer
+          assigns a relevant density. Define the dimensionless functional
+        </p>
+        <div class="equation-block">\[
+          \Sigma(\Gamma_0;t)
+          =\ln\frac{\bar\rho_0(\Gamma_0)}{\bar\rho_t(\Gamma_t)}.
+        \]</div>
+        <p>
+          Equivalently, if the stochastic relevant entropy is
+          \(s_{\mathrm{rel}}(\Gamma,t)=-k_B\ln\bar\rho_t(\Gamma)\),
+          then \(k_B\Sigma\) is its endpoint change along that trajectory.
+          An individual \(\Sigma\) fluctuates. It need not equal the change
+          of the ensemble entropy \(S\).
+        </p>
+        <p>
+          Its average has a particularly useful meaning. Let me introduce the
+          Kullback–Leibler divergence,
+        </p>
+        <div class="equation-block">\[
+          D(\rho\|\sigma)=\int d\Gamma\,\rho\ln\frac{\rho}{\sigma}.
+        \]</div>
+        <p>
+          Hamiltonian transport gives \(\rho_t(\Gamma_t)=\rho_0(\Gamma_0)\).
+          Insert that equality into the endpoint ratio and average over the
+          actual initial ensemble. Whenever the divergences are finite,
+        </p>
+        <div class="equation-block">\[
+          \langle\Sigma(t)\rangle_{\rho_0}
+          =D(\rho_t\|\bar\rho_t)-D(\rho_0\|\bar\rho_0).
+        \]</div>
+        <p>
+          This identity needs no maximum-entropy assumption. It measures the
+          change in the discrepancy between the transported ensemble and its
+          reconstruction. If our reconstruction was exact at the start,
+          \(\rho_0=\bar\rho_0\), it simplifies to
+        </p>
+        <div class="equation-block">\[
+          \langle\Sigma(t)\rangle_{\mathrm{rel},0}
+          =D(\rho_t\|\bar\rho_t)\geq0.
+        \]</div>
+        <p>
+          Maximum entropy lets us go one step further. Since
+          \(\ln\bar\rho_t\) is affine in the retained observables, moment
+          matching makes its average identical under \(\rho_t\) and
+          \(\bar\rho_t\). Consequently,
+        </p>
+        <div class="equation-block">\[
+          D(\rho_t\|\bar\rho_t)
+          =\frac{S(t)-S_{\mathrm{fg}}}{k_B},
+          \qquad
+          \langle\Sigma(t)\rangle_{\rho_0}
+          =\frac{S(t)-S(0)}{k_B}.
+        \]</div>
+        <p>
+          The second equality holds for any initial preparation with finite
+          quantities in this moment-matched exponential construction. Its sign
+          becomes nonnegative when the initial preparation is relevant.
+          The microscopic evolution preserves information; the reconstructed
+          state fails to retain some of its developing structure. The divergence
+          puts a number on that failure.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="ift">
+        <h4>6. The observer dependent integral fluctuation theorem (IFT)</h4>
+
+        <p>
+          Now we want to show that IFT is independent of the observer. As a matter of fact, what follows is a special case of Seifert 2005, but now
+          with a careful attention to observers and how to operationally measure the fluctuations.
+          Suppose we prepare the system in \(\bar\rho_0\), and first take
+          a regular family with full support. The endpoint functional satisfies
+          an integral fluctuation theorem in the following sense,
+        </p>
+        <div class="equation-block">\[
+          \left\langle e^{-\Sigma(t)}\right\rangle_{\mathrm{rel},0}=1.
+        \]</div>
+        <p>
+          The proof is short enough to be shown here. First, we substitute the definition,
+          cancel the initial density, and change variables along the Hamiltonian
+          flow:
+        </p>
+        <div class="equation-block">\[
+          \begin{aligned}
+          \left\langle e^{-\Sigma(t)}\right\rangle_{\mathrm{rel},0}
+          &=\int d\Gamma_0\,\bar\rho_0(\Gamma_0)
+             \frac{\bar\rho_t(\Phi_t\Gamma_0)}{\bar\rho_0(\Gamma_0)}\\
+          &=\int d\Gamma_0\,\bar\rho_t(\Phi_t\Gamma_0)\\
+          &=\int d\Gamma_t\,\bar\rho_t(\Gamma_t)=1.
+          \end{aligned}
+        \]</div>
+        <p>
+          The last step uses Liouville volume preservation and normalization.
+          There is no reversed experiment in this proof, and no assumption that
+          the reduced dynamics is Markovian. Maximum entropy is needed for the
+          preceding identification with reconstructed entropy, rather than for
+          this normalization argument.
+        </p>
+        <p>
+           If the initial relevant density vanishes on part of
+          phase space, let \(S_0=\{\Gamma:\bar\rho_0(\Gamma)>0\}\).
+          The unit right-hand side requires the final relevant density to give
+          no weight outside \(\Phi_t(S_0)\). Otherwise,
+        </p>
+        <div class="equation-block">\[
+          \left\langle e^{-\Sigma(t)}\right\rangle_{\mathrm{rel},0}
+          =1-\ell_t,
+          \qquad
+          \ell_t=\int_{\mathcal X\setminus\Phi_t(S_0)}
+                  d\Gamma\,\bar\rho_t(\Gamma).
+        \]</div>
+        <p>
+          A sharp macrostate can have exactly this problem: its final coarse
+          reconstruction spreads probability over points that the initial
+          preparation never reaches. Normalizing both endpoint densities does
+          not remove that missing support.
+        </p>
+        <p>
+          With compatible support, Jensen's inequality gives
+          \(\langle\Sigma\rangle_{\mathrm{rel},0}\geq0\).
+          This compares a later time with the chosen preparation. It does not
+          prove \(\dot S\geq0\) at every intermediate time. To restart the
+          same argument at a later instant we would need the microscopic density
+          to equal its reconstruction there, too. Generally it does not.
+        </p>
+        <p>
+          In fact, the general identity makes the role of the boundary condition
+          rather transparent. If the reconstruction is exact at the final time
+          instead, the mean becomes \(-D(\rho_0\|\bar\rho_0)\).
+          The sign follows from where we impose the simple state. Explaining
+          why physical preparations select one direction remains part of the
+          arrow-of-time problem.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="two-observers">
+        <h4>7. Two observers, one system</h4>
+
+        <p>
+          Now, let us try to go beyond a single observer.
+          Now let observer \(a\) retain everything observer \(b\) retains,
+          and some additional observables. Thus \(a\) is in this sense the finer observer.
+          Both compute their moments from the same microscopic ensemble, and
+          both use maximum entropy with the same reference measure.
+        </p>
+        <p>
+          It helps to think in the space of probability densities. Define
+        </p>
+        <div class="equation-block">\[
+          \mathcal F_o(t)=\left\{
+          \omega\geq0:\int d\Gamma\,\omega=1,\quad
+          \int d\Gamma\,\omega A_i^{(o)}=a_i^{(o)}(t)
+          \text{ for all }i\right\}.
+        \]</div>
+        <p>
+          Each point in this set is a whole density, rather than a phase-space
+          point. Additional constraints shrink the set. The actual density lies
+          in both feasible sets, while their entropy maximizers can differ:
+        </p>
+        <div class="equation-block">\[
+          \mathcal F_a(t)\subseteq\mathcal F_b(t)
+          \quad\Longrightarrow\quad
+          S^{(a)}(t)\leq S^{(b)}(t).
+        \]</div>
+        <p>
+          There is less freedom to spread probability when more information has
+          to be reproduced. The entropy gap is exactly
+        </p>
+        <div class="equation-block">\[
+          \mathcal I_{b:a}(t)
+          :=D\!\left(\bar\rho_t^{(a)}\|\bar\rho_t^{(b)}\right)
+          =\frac{S^{(b)}(t)-S^{(a)}(t)}{k_B}\geq0.
+        \]</div>
+        <p>
+          The reason is moment matching again. The logarithm of the coarser
+          density involves only its retained observables, and the finer density
+          reproduces their means. The same mechanism gives the information
+          geometry's Pythagorean identity,
+        </p>
+        <div class="equation-block">\[
+          D(\rho_t\|\bar\rho_t^{(b)})
+          =D(\rho_t\|\bar\rho_t^{(a)})
+          +D(\bar\rho_t^{(a)}\|\bar\rho_t^{(b)}).
+        \]</div>
+        <p>
+          To check it, subtract the right-hand side from the left. What remains is
+          \(\int d\Gamma\,(\rho_t-\bar\rho_t^{(a)})
+          \ln(\bar\rho_t^{(a)}/\bar\rho_t^{(b)})\).
+          The log-ratio is affine in the finer observable list, so the integral
+          vanishes. No Euclidean right triangle is required; the cancellation
+          comes from the matched constraints.
+        </p>
+        <p>
+          On one trajectory, define their disagreement by
+        </p>
+        <div class="equation-block">\[
+          \begin{aligned}
+          \delta(\Gamma_0;t)&=\Sigma^{(b)}(\Gamma_0;t)-\Sigma^{(a)}(\Gamma_0;t)\\
+          &=\ln\frac{\bar\rho_t^{(a)}(\Gamma_t)}{\bar\rho_t^{(b)}(\Gamma_t)}
+            -\ln\frac{\bar\rho_0^{(a)}(\Gamma_0)}{\bar\rho_0^{(b)}(\Gamma_0)}.
+          \end{aligned}
+        \]</div>
+        <p>
+          Average both assignments over the same physical preparation. The result
+          is the relation I wanted:
+        </p>
+        <div class="equation-block">\[
+          \boxed{\langle\delta(t)\rangle_{\rho_0}
+          =\mathcal I_{b:a}(t)-\mathcal I_{b:a}(0).}
+        \]</div>
+        <p>
+          Their mean disagreement is the change in the information gap between
+          their reconstructions. A coarser observer always assigns at least as
+          much instantaneous entropy, but its entropy <em>change</em> need not
+          be larger. The gap itself can shrink. When the initial reconstructions
+          coincide, the coarser mean change is larger by the final gap.
+        </p>
+        <p>
+          This is a statement about genuinely nested constraints. Knowing
+          \(\langle A\rangle\) does not generally determine
+          \(\langle f(A)\rangle\). An observable being a function of another
+          does not, by itself, order observers who retain only their means.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="free-particle">
+        <h4>8. A free particle is enough</h4>
+
+        <p>
+          Let us do a calculation. Take a free particle on the line,
+        </p>
+        <div class="equation-block">\[
+          H=\frac{p^2}{2m},\qquad p_t=p_0,\qquad q_t=q_0+\frac{t}{m}p_0.
+        \]</div>
+        <p>
+          Prepare an uncorrelated Gaussian ensemble with zero means and initial
+          variances \(\sigma_{q,0}^2\) and \(\sigma_{p,0}^2\).
+          The evolution shears the Gaussian in phase space. Directly expanding
+          \(q_t^2\) and \(q_tp_t\) gives
+        </p>
+        <div class="equation-block">\[
+          \begin{aligned}
+          \sigma_q^2(t)&=\sigma_{q,0}^2+\frac{t^2}{m^2}\sigma_{p,0}^2,\\
+          \sigma_p^2(t)&=\sigma_{p,0}^2,\\
+          \operatorname{Cov}(q_t,p_t)&=\frac{t}{m}\sigma_{p,0}^2.
+          \end{aligned}
+        \]</div>
+        <p>
+          Observer \(b\) keeps the two means and variances. Its
+          maximum-entropy reconstruction is a product of Gaussian marginals.
+          Observer \(a\) also keeps \(\langle qp\rangle\), so it
+          reconstructs the full joint Gaussian. Since the actual ensemble remains
+          Gaussian, \(a\)'s reconstruction is exact at all times.
+        </p>
+        <p>
+          The covariance determinant makes such distinction clear. Let \(C_a\) and \(C_b\) be the covariance matrices of the two reconstructions. Then:
+        </p>
+        <div class="equation-block">\[
+          \det C_a(t)=\sigma_{q,0}^2\sigma_{p,0}^2,
+          \qquad
+          \det C_b(t)=\left(\sigma_{q,0}^2+
+                     \frac{t^2}{m^2}\sigma_{p,0}^2\right)\sigma_{p,0}^2.
+        \]</div>
+        <p>
+          The Gaussian entropy now contains \(\tfrac12\ln\det C\).
+          Thus the finer entropy stays constant, while the coarser one grows.
+          If \(r(t)\) denotes the correlation coefficient, their gap is
+        </p>
+        <div class="equation-block">\[
+          \begin{aligned}
+          \mathcal I_{b:a}(t)
+          &=-\frac12\ln[1-r(t)^2]\\
+          &=\frac12\ln\left(1+
+          \frac{t^2\sigma_{p,0}^2}{m^2\sigma_{q,0}^2}\right).
+          \end{aligned}
+        \]</div>
+        <p>
+          Here this is also the actual mutual information between position and
+          momentum, because the finer Gaussian is the actual ensemble. For a
+          non-Gaussian ensemble, the same Gaussian reconstruction gap would not
+          generally equal its true mutual information.
+        </p>
+
+        <figure class="post-figure observer-demo">
+          <svg viewBox="0 0 640 290" role="img" aria-labelledby="demo-title demo-description">
+            <title id="demo-title">A sheared Gaussian and its uncorrelated reconstruction</title>
+            <desc id="demo-description">The left contours retain the position-momentum correlation. The right contours reproduce only the separate variances. Moving the time slider changes their entropy gap.</desc>
+            <text x="160" y="24" text-anchor="middle" class="demo-label">a: correlation retained</text>
+            <text x="480" y="24" text-anchor="middle" class="demo-label">b: correlation omitted</text>
+            <g stroke="currentColor" opacity="0.35" fill="none">
+              <path d="M28 151 H292 M160 45 V256 M348 151 H612 M480 45 V256" />
+            </g>
+            <text x="292" y="168" class="demo-small">q</text>
+            <text x="168" y="50" class="demo-small">p</text>
+            <text x="612" y="168" class="demo-small">q</text>
+            <text x="488" y="50" class="demo-small">p</text>
+            <g id="fine-contours" fill="none" stroke="#356b78" stroke-width="2"></g>
+            <g id="coarse-contours" fill="none" stroke="#ac693f" stroke-width="2"></g>
+            <text x="320" y="283" text-anchor="middle" class="demo-small">Same dynamics, same separate variances, different retained information</text>
+          </svg>
+          <label for="shear-time">Dimensionless time \(u=t\sigma_{p,0}/(m\sigma_{q,0})\)</label>
+          <input id="shear-time" type="range" min="0" max="3" step="0.01" value="1" aria-describedby="shear-result" />
+          <p id="shear-result" class="note">
+            <output id="shear-values" for="shear-time">u = 1.00; correlation r = 0.707; entropy gap / kB = 0.347.</output>
+          </p>
+          <figcaption>
+            Contours of equal density, drawn on fixed axes in units of the initial
+            standard deviations. The left distribution shears without changing
+            its enclosed area. The right reconstruction removes the tilt and
+            spreads over a larger area. Move the slider to compare them.
+            The gap is measured in nats.
+          </figcaption>
+          <noscript><p class="note">At u = 1, the entropy gap is (ln 2)/2. Enable JavaScript to move the contours.</p></noscript>
+        </figure>
+
+        <p>
+          In this example \(\Sigma^{(a)}=0\) on every trajectory, and
+        </p>
+        <div class="equation-block">\[
+          \langle\Sigma^{(b)}(t)\rangle_{\rho_0}
+          =\mathcal I_{b:a}(t).
+        \]</div>
+        <p>
+          No heat is exchanged. The mean kinetic energy is constant. The free
+          particle has simply developed a position–momentum correlation that
+          one reconstruction keeps and the other removes. This small example
+          tells us rather clearly what the observer's entropy production measures.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="fluctuations">
+        <h4>9. The fluctuations of disagreement</h4>
+
+        <p>
+          Comparing means leaves out the trajectory fluctuations. Could we take
+          the two individual fluctuation theorems and conclude that
+          \(\langle e^{-\delta}\rangle=1\)? No. Even when both theorems
+          hold under one common preparation, an average of a ratio does not
+          follow from the two separate averages:
+        </p>
+        <div class="equation-block">\[
+          e^{-\delta}=\frac{e^{-\Sigma^{(b)}}}{e^{-\Sigma^{(a)}}}.
+        \]</div>
+        <p>
+          More generally, each observer's unit IFT is guaranteed under its own
+          relevant preparation. Those preparations need not coincide. Our
+          comparison of the mean assignments used a common physical ensemble
+          without requiring either reconstruction to be exact initially.
+        </p>
+        <p>
+          We can nevertheless express the exponential disagreement using
+          observable endpoint statistics. Stack the two observable lists into
+          a vector \(\mathbf A\), and define
+        </p>
+        <div class="equation-block">\[
+          \ln\frac{\bar\rho_s^{(a)}}{\bar\rho_s^{(b)}}
+          =\Theta(s)-\boldsymbol\mu(s)\cdot\mathbf A(\Gamma,s),
+          \quad
+          \Theta=\Phi^{(b)}-\Phi^{(a)},
+          \quad \boldsymbol\mu=(\boldsymbol\lambda^{(a)},-\boldsymbol\lambda^{(b)}).
+        \]</div>
+        <p>
+          Center the observables with their actual means,
+          \(\Delta\mathbf A_s=\mathbf A(\Gamma_s,s)-\langle\mathbf A_s\rangle_{\rho_0}\),
+          and introduce the joint endpoint cumulant generator,
+        </p>
+        <div class="equation-block">\[
+          K_{0,t}(\boldsymbol\eta,\boldsymbol\xi)
+          =\ln\left\langle
+          e^{\boldsymbol\eta\cdot\Delta\mathbf A_t+
+             \boldsymbol\xi\cdot\Delta\mathbf A_0}
+          \right\rangle_{\rho_0}.
+        \]</div>
+        <p>
+          For nested maximum-entropy observers, the centered disagreement is
+          \(\delta-\langle\delta\rangle
+          =-\boldsymbol\mu(t)\cdot\Delta\mathbf A_t
+          +\boldsymbol\mu(0)\cdot\Delta\mathbf A_0\).
+          Exponentiating and averaging therefore gives
+        </p>
+        <div class="equation-block">\[
+          \left\langle e^{-\delta}\right\rangle_{\rho_0}
+          =\exp\!\left[-\Delta\mathcal I_{b:a}
+          +K_{0,t}\bigl(\boldsymbol\mu(t),-\boldsymbol\mu(0)\bigr)\right],
+          \qquad
+          \Delta\mathcal I_{b:a}=\mathcal I_{b:a}(t)-\mathcal I_{b:a}(0).
+        \]</div>
+        <p>
+          This is the relational identity in the paper, where the exponential
+          moment is finite and nonzero. It separates the change in the mean
+          information gap from a contribution involving joint endpoint
+          fluctuations. It does not impose an additional universal normalization
+          on the disagreement.
+        </p>
+        <p>
+          Writing \(\mathcal G_{0,t}=-\ln\langle e^{-\delta}\rangle\),
+          the cumulant expansion, when it converges, starts as
+        </p>
+        <div class="equation-block">\[
+          \mathcal G_{0,t}
+          =\langle\delta\rangle-\frac12\operatorname{Var}(\delta)
+          +\frac16\kappa_3(\delta)-\cdots.
+        \]</div>
+        <p>
+          If \(\delta\) is Gaussian, the expansion stops at the variance.
+          Gaussian phase-space variables alone do not guarantee this: our
+          observable list can contain quadratic quantities such as \(qp\).
+          Also, the variance involves correlations between the two endpoints.
+          Two instantaneous reconstructions are enough to fix the mean gap;
+          their separate endpoint statistics are generally insufficient to fix
+          the fluctuations of its trajectory change.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="heat-work">
+        <h4>10. Where do heat and work enter?</h4>
+
+        <p>
+          The free-particle calculation is a good reason to be careful with the
+          words <em>entropy production</em>. The endpoint functional measures
+          reconstruction loss. A physical dissipated-work or reservoir-entropy
+          interpretation needs the corresponding physical setup and reference
+          states.
+        </p>
+        <p>
+          For example, prepare a canonical state at inverse temperature
+          \(\beta_0\), then drive the Hamiltonian while the system is
+          thermally isolated. Use the fixed-temperature canonical reference family
+        </p>
+        <div class="equation-block">\[
+          \rho_t^{\mathrm{ref}}(\Gamma)
+          =\frac{e^{-\beta_0H(\Gamma;\Lambda_t)}}{Z_t},
+          \qquad F_t=-\beta_0^{-1}\ln Z_t.
+        \]</div>
+        <p>
+          The Hamiltonian endpoint energy difference is the work
+          \(W=H(\Gamma_t;\Lambda_t)-H(\Gamma_0;\Lambda_0)\).
+          The reference endpoint ratio is consequently
+        </p>
+        <div class="equation-block">\[
+          \ln\frac{\rho_0^{\mathrm{ref}}(\Gamma_0)}
+                   {\rho_t^{\mathrm{ref}}(\Gamma_t)}
+          =\beta_0(W-\Delta F),
+          \qquad
+          \langle e^{-\beta_0W}\rangle_{\mathrm{eq},0}
+          =e^{-\beta_0\Delta F}.
+        \]</div>
+        <p>
+          This recovers Jarzynski's equality. An observer who instead matches
+          the actual mean energy reconstructs a canonical family with a generally
+          changing multiplier \(\beta_G(t)\). Its endpoint functional obeys
+          the appropriate IFT, but need not equal \(\beta_0(W-\Delta F)\).
+          Nor does an energy-fitting multiplier establish that the driven system
+          is in thermal equilibrium.
+        </p>
+        <p>
+          The distinction appears in another Pythagorean split,
+        </p>
+        <div class="equation-block">\[
+          \beta_0\bigl(\langle W\rangle-\Delta F\bigr)
+          =D(\rho_t\|\bar\rho_{G,t})
+          +D(\bar\rho_{G,t}\|\rho_t^{\mathrm{ref}}).
+        \]</div>
+        <p>
+          Part of the mean dissipated work is information omitted by the
+          energy-only reconstruction. The rest is the distance of that
+          reconstruction from the fixed-temperature equilibrium reference.
+        </p>
+        <p>
+          A deterministic thermostat requires a different adjustment. For a
+          smooth invertible, compressible flow, let
+          \(J_t=|\det(\partial\Gamma_t/\partial\Gamma_0)|\).
+          Since \(d\Gamma_t=J_t\,d\Gamma_0\), the functional becomes
+        </p>
+        <div class="equation-block">\[
+          \Sigma_{\mathrm{th}}
+          =\ln\frac{\bar\rho_0(\Gamma_0)}{\bar\rho_t(\Gamma_t)}-\ln J_t.
+        \]</div>
+        <p>
+          The Jacobian restores the change-of-variables proof and the
+          information-gap identity. Interpreting it as reservoir entropy
+          requires specifying the thermostat. For Nosé–Hoover dynamics, with
+          a shared canonical Gaussian weight for the thermostat variable,
+          the thermostat-energy boundary terms cancel and one obtains
+        </p>
+        <div class="equation-block">\[
+          \Sigma_{\mathrm{NH}}
+          =\ln\frac{\bar p_0(x_0)}{\bar p_t(x_t)}+\beta Q_B,
+          \qquad \beta=(k_BT)^{-1}.
+        \]</div>
+        <p>
+          Here \(x\) denotes the physical system variables, and \(Q_B\)
+          is heat counted positive into the bath. The IFT retains its extended
+          initial-preparation and support conditions. If two observers use the
+          same thermostat weight and follow the same trajectory, the explicit
+          reservoir contribution cancels from their disagreement. The common
+          Jacobian likewise cancels for two descriptions of any one compressible
+          flow. The thermostat still affects the trajectories and their statistics.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="meaning">
+        <h4>11. What this leaves us with</h4>
+
+        <p>
+          Why should statistical mechanics depend on observers? The accepted answer is because the
+          macroscopic state is specified through retained information. A mean
+          energy, a density profile, or a covariance matrix each distinguishes
+          different classes of microscopic distributions. An entropy assigned
+          from such data belongs to the reconstruction built from them. What we tried to do here is to extend it beyond statistical
+          mechanics and make the observer explicit in the trajectory-level fluctuation theorems.
+        </p>
+        <p>
+          Once the observables, reference measure, reconstruction, and preparation
+          are specified, the comparisons above are definite calculations.
+          Two people using that same specification obtain the same answer.
+          Two people using different resolutions can quantify how their answers
+          differ. This is what I find appealing about keeping the observer
+          explicit: it gives us something to compare beyond the word
+          <em>subjective</em>.
+        </p>
+        <p>
+          There is also a useful limit. A description retaining the full ensemble
+          density has \(\bar\rho_t=\rho_t\), and its Hamiltonian endpoint
+          functional is zero on every trajectory. This means retaining the whole
+          probability density, rather than knowing one exact phase-space point.
+          It is the fully resolved ensemble limit of this construction.
+        </p>
+        <p>
+          A partition observer gives the familiar coarse-grained version. If it
+          retains the probabilities \(p_m\) of fixed cells with volumes
+          \(\Omega_m\), maximum entropy makes the density uniform inside
+          each cell, and
+        </p>
+        <div class="equation-block">\[
+          \frac{S_{\mathcal P}}{k_B}
+          =-\sum_m p_m\ln p_m+\sum_m p_m\ln\Omega_m.
+        \]</div>
+        <p>
+          This becomes Boltzmann's \(k_B\ln\Omega_m\) when all the
+          probability lies in one macrocell. For a general ensemble it also
+          contains uncertainty about which cell is occupied. Keeping these
+          distinctions visible helps avoid making different entropies carry
+          the same name without qualification.
+        </p>
+        <p>
+          The classical identities also leave open how to interpret the ensemble.
+          We can regard \(\rho\) as a physical statistical state, or as the
+          Hamiltonian transport of an agent's initial probabilities. The algebra
+          compares that evolving density with a simpler reconstruction in either
+          reading. It does not settle the interpretation of probability, or
+          extend itself automatically into a quantum trajectory theorem.
+        </p>
+        <p>
+          I would still like to understand better when retaining an additional
+          correlation improves prediction, and how the reconstruction gap relates
+          to the memory kernel. A small gap between two observers certifies that
+          those two resolutions agree closely; both may still miss substantial
+          microscopic information. Predictive adequacy requires a dynamical
+          calculation as well.
+        </p>
+        <p>
+          That is the question I want to keep working on. When information leaves
+          our macroscopic record, where does it go, and on what timescale can it
+          matter again? The entropy calculation tells us how much the chosen
+          description has left out. The memory terms ask whether we can afford
+          to leave it out. It is worth also thanking some people. In particular,
+          Abhishek Yadav with whom, towards the end of this paper, started to collaborate  on this project,
+          found some inconsistencies that to me were worth fixing and would have warranted him co-authorship.
+          He decided to decline for this one.
+          We will work on some extensions, much more serious than this, in the future. 
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="reading">
+        <h4>Further reading</h4>
+        <p class="note">
+          F. Caravelli, <em>Observers, Entropy and Integral Fluctuation Theorems
+          in the Mori–Zwanzig–Grabert formalism</em>, submitted manuscript (2026).
+          The derivations above follow this manuscript; its appendices give the
+          operator details, the support corrections, and the thermostat calculation.
+        </p>
+        <p class="note">
+          H. D. Zeh, <em>The Physical Basis of the Direction of Time</em>,
+          fifth edition (Springer, 2007), especially Section 3.2.
+          <a href="https://www.thp.uni-koeln.de/gravitation/zeh/time-direction/Smpl3.pdf" target="_blank" rel="noopener noreferrer">Author's chapter excerpt</a>.
+        </p>
+        <p class="note">
+          H. Grabert, <em>Projection Operator Techniques in Nonequilibrium
+          Statistical Mechanics</em>, Springer Tracts in Modern Physics 95 (1982).
+          R. Zwanzig, “Ensemble method in the theory of irreversibility,”
+          <em>Journal of Chemical Physics</em> 33, 1338 (1960).
+          H. Mori, “Transport, collective motion, and Brownian motion,”
+          <em>Progress of Theoretical Physics</em> 33, 423 (1965).
+        </p>
+        <p class="note">
+          E. T. Jaynes, “Information theory and statistical mechanics,”
+          <em>Physical Review</em> 106, 620 (1957).
+          M. te Vrugt, “Understanding probability and irreversibility in the
+          Mori–Zwanzig projection operator formalism,”
+          <em>European Journal for Philosophy of Science</em> 12, 41 (2022).
+          Both are discussed in the submitted paper.
+        </p>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    // Equal-density contours in initial-standard-deviation units.
+    // Exact covariance: [[1 + u*u, u], [u, 1]].
+    // Coarse covariance: [[1 + u*u, 0], [0, 1]].
+    (() => {
+      const slider = document.getElementById("shear-time");
+      const fine = document.getElementById("fine-contours");
+      const coarse = document.getElementById("coarse-contours");
+      const values = document.getElementById("shear-values");
+      if (!slider || !fine || !coarse || !values) return;
+      const ns = "http://www.w3.org/2000/svg";
+      function contour(center, u, level, correlated) {
+        const path = document.createElementNS(ns, "path");
+        const points = [];
+        for (let j = 0; j <= 180; j++) {
+          const angle = 2 * Math.PI * j / 180;
+          const v = level * Math.sin(angle);
+          const q = correlated
+            ? level * Math.cos(angle) + u * v
+            : Math.sqrt(1 + u * u) * level * Math.cos(angle);
+          points.push(`${j ? "L" : "M"}${(center + 17 * q).toFixed(2)},${(151 - 38 * v).toFixed(2)}`);
+        }
+        path.setAttribute("d", points.join(" ") + " Z");
+        path.setAttribute("opacity", String(1 - level * 0.2));
+        return path;
+      }
+      function update() {
+        const u = Number(slider.value);
+        fine.replaceChildren();
+        coarse.replaceChildren();
+        for (const level of [0.8, 1.5, 2.2]) {
+          fine.appendChild(contour(160, u, level, true));
+          coarse.appendChild(contour(480, u, level, false));
+        }
+        values.textContent = `u = ${u.toFixed(2)}; correlation r = ${(u / Math.sqrt(1 + u * u)).toFixed(3)}; entropy gap / kB = ${(0.5 * Math.log1p(u * u)).toFixed(3)}.`;
+      }
+      slider.addEventListener("input", update);
+      update();
+    })();
+
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Sidebar response: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") window.__renderAllMath();
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
