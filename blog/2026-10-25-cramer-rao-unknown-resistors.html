@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Cramér-Rao bounds for unknown resistors, and the case of memristors – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+    table.numbers { border-collapse: collapse; margin: 1rem 0; width: 100%; font-size: 0.95rem; }
+    table.numbers th, table.numbers td { border-bottom: 1px solid rgba(0,0,0,0.15); padding: 0.45rem 0.6rem; text-align: left; }
+    table.numbers th { font-weight: 700; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">estimation theory • Cramér-Rao • memristors • noise</p>
+        <h3>Cramér-Rao bounds for unknown resistors, and the case of memristors</h3>
+        <p><em>October 20th, 2026</em></p>
+
+        <p>
+          Some of you might not know that I have finally managed to set up a small 
+          laboratory setup. A few days ago I was measuring the hysteresis loop of a memristor connected in series with a
+          resistor $R$. I drive both with a function generator and look at the voltage across $R$ on the scope: that
+          gives me the current, and plotting the voltage across the memristor against that current gives the
+          pinched loop. The odd thing is that with $R=2\,{\rm k}\Omega$ the loop was noisy, and with
+          $R=10\,{\rm k}\Omega$ it was much cleaner, even though the memristor's resistance ranges over several
+          orders of magnitude, up to hundreds of kilo-ohms.
+        </p>
+        <p>
+          The folklore says <em>"the series resistor should be comparable to the device"</em>. In this post I want to turn the
+          folklore into a formula, also considering that the device has a range, rather than a fixed valueß. The plan is: (i) learn just enough estimation theory to define the
+          <em>smallest possible error</em> on an unknown resistance, (ii) apply it to a plain unknown resistor
+          in a voltage divider, (iii) let the resistor move, which is what a memristor does, and ask for the best $R$ over a whole
+          loop. I will put this into practice with some experiments, and finally discuss the assumptions and what is left out.
+        </p>
+        <p class="note">
+          No prior knowledge of statistics is assumed: only Gaussian noise, a derivative, and the Cauchy-Schwarz inequality.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#problem">1. The problem: a resistor you cannot read directly</a></li>
+            <li><a href="#crb">2. A ten-minute course on Fisher information and Cramér-Rao</a></li>
+            <li><a href="#static">3. The unknown resistor in a voltage divider</a></li>
+            <li><a href="#memristor">4. A memristor is a resistor that moves</a></li>
+            <li><a href="#numbers">5. Back to 2 kΩ versus 10 kΩ</a></li>
+            <li><a href="#experiments">6. Experiments</a></li>
+            <li><a href="#caveats">7. Assumptions and what is left out</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="problem">
+        <h4>1. The problem: a resistor you cannot read directly</h4>
+
+        <p>
+          The circuit is a series connection of a known resistor $R$ and an unknown resistor $x$, driven by a voltage $V$
+          (for a memristor, $x$ will depend on time; for now it is just a number). The two voltages are given by the
+          voltage divider:
+        </p>
+        <p class="math">
+          $$V_R = V\,\frac{R}{R+x},\qquad V_M = V\,\frac{x}{R+x},\qquad V_R+V_M=V,\qquad I=\frac{V_R}{R}.$$
+        </p>
+        <p>
+          The unknown is $x$. What I actually record are two noisy numbers, one per scope channel,
+        </p>
+        <p class="math">
+          $$y_1 = V_R + n_1,\qquad y_2 = V_M + n_2,\qquad n_i\sim\mathcal N(0,\sigma_i^2)\ \text{independent}.$$
+        </p>
+        <p>
+          The noise $n_i$ is whatever the scope adds: input noise, quantization, pickup. I take it to be additive, white and
+          <em>independent of $R$ and of the signal</em>. That last point is the whole game: the noise floor is a fixed
+          number of volts, so what matters is how many volts of signal I get <em>per ohm of change of $x$</em>.
+        </p>
+
+        <div class="callout">
+          <strong>The question.</strong> Given $(y_1,y_2)$, what is the smallest error $\delta x$ that any
+          unbiased procedure could possibly achieve, and how does it depend on the choice of $R$?
+        </div>
+
+        <p>
+          "Any procedure" is a strong statement, and it is exactly what the Cramér-Rao bound delivers. So let us build it.
+        </p>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="crb">
+        <h4>2. A ten-minute course on Fisher information and Cramér-Rao</h4>
+
+        <p>
+          <strong>Estimators.</strong> We want to learn a parameter $\theta$ from data $y$ whose probability density
+          $p(y|\theta)$ depends on $\theta$. An estimator $\hat\theta(y)$ is any function of the data. It is
+          <em>unbiased</em> if $\mathbb E[\hat\theta]=\theta$. Its quality is its variance $\mathrm{Var}(\hat\theta)$.
+        </p>
+
+        <p>
+          <strong>The score.</strong> Define the score $s(y;\theta)=\partial_\theta \ln p(y|\theta)$. It tells us how
+          sensitively the likelihood reacts to a change of $\theta$. Two facts are all we need.
+        </p>
+        <p class="math">
+          $$\mathbb E[s]=\int \partial_\theta p\,dy=\partial_\theta\!\int p\,dy=\partial_\theta 1=0,$$
+        </p>
+        <p>
+          and, if $\hat\theta$ is unbiased, differentiating $\mathbb E[\hat\theta]=\theta$ under the integral gives
+        </p>
+        <p class="math">
+          $$1=\partial_\theta\!\int \hat\theta\,p\,dy=\int\hat\theta\,\partial_\theta p\,dy=\mathbb E[\hat\theta\, s]=\mathbb E[(\hat\theta-\theta)\,s],$$
+        </p>
+        <p>
+          where the last step used $\mathbb E[s]=0$.
+        </p>
+
+        <p>
+          <strong>The bound.</strong> Apply the Cauchy-Schwarz inequality, $\big(\mathbb E[ab]\big)^2\le\mathbb E[a^2]\,\mathbb E[b^2]$,
+          to $a=\hat\theta-\theta$ and $b=s$:
+        </p>
+        <p class="math">
+          $$1\le \mathrm{Var}(\hat\theta)\;\mathbb E[s^2]\quad\Longrightarrow\quad \boxed{\mathrm{Var}(\hat\theta)\ \ge\ \frac{1}{J(\theta)}},\qquad J(\theta)\equiv\mathbb E[s^2].$$
+        </p>
+        <p>
+          $J$ is the <em>Fisher information</em>. That is the entire Cramér-Rao bound: the variance of an unbiased estimator
+          cannot beat the inverse of the Fisher information. For independent observations the scores add, hence so do the
+          informations.
+        </p>
+
+        <p>
+          <strong>The rule we will use.</strong> Suppose the data are $y=g(\theta)+n$ with $n\sim\mathcal N(0,\sigma^2)$. Then
+          $\ln p=-(y-g(\theta))^2/(2\sigma^2)+\text{const}$, so the score is $s=(y-g)\,g'(\theta)/\sigma^2$, and
+          since $\mathbb E[(y-g)^2]=\sigma^2$,
+        </p>
+        <p class="math">
+          $$J(\theta)=\frac{g'(\theta)^2}{\sigma^2}.$$
+        </p>
+
+        <div class="callout">
+          <strong>Information = (slope)<sup>2</sup> / noise.</strong>
+          What counts is not how big the signal $g$ is, but how fast it moves when $\theta$ moves,
+          measured in units of the noise. A huge signal that does not budge when $\theta$ changes carries no information.
+          For several independent channels, $J=\sum_i g_i'(\theta)^2/\sigma_i^2$.
+        </div>
+
+        <p>
+          Sanity check: measuring a voltage directly, $g(\theta)=\theta$, gives $J=1/\sigma^2$ and $\mathrm{Var}\ge\sigma^2$,
+          which the data point itself saturates. With $N$ independent readings, $J=N/\sigma^2$, the familiar $\sigma^2/N$.
+        </p>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="static">
+        <h4>3. The unknown resistor in a voltage divider</h4>
+
+        <h5>3.1 Information on $x$ from the two channels</h5>
+        <p>
+          Here $\theta=x$, and the two channels are $g_1=V_R$, $g_2=V_M$. We need their slopes with respect to $x$:
+        </p>
+        <p class="math">
+          $$\frac{\partial V_R}{\partial x}=-\frac{VR}{(R+x)^2},\qquad \frac{\partial V_M}{\partial x}=+\frac{VR}{(R+x)^2}.$$
+        </p>
+        <p>
+          They are equal and opposite, which is no surprise: $V_R+V_M=V$ is fixed, so whatever one channel gains the other loses.
+          (If the generator voltage $V$ is known, the two channels contain <em>the same</em> information about $x$, and using both
+          just averages down the noise.) Adding the informations,
+        </p>
+        <p class="math">
+          $$J(x;R)=\Big(\frac{1}{\sigma_1^2}+\frac{1}{\sigma_2^2}\Big)\frac{V^2R^2}{(R+x)^4}
+          =\frac{1}{\sigma_{\rm eff}^2}\,\frac{V^2R^2}{(R+x)^4},\qquad \sigma_{\rm eff}^{-2}\equiv\sigma_1^{-2}+\sigma_2^{-2}.$$
+        </p>
+        <p>
+          For two equal channels $\sigma_{\rm eff}^2=\sigma^2/2$.
+        </p>
+
+        <h5>3.2 The minimal relative error</h5>
+        <p>
+          Since resistances span decades, the natural quantity is the <em>relative</em> error. Cramér-Rao gives
+        </p>
+        <p class="math">
+          $$E(R;x)\equiv\Big(\frac{\delta x}{x}\Big)^2_{\min}=\frac{1}{x^2J}=\frac{\sigma_{\rm eff}^2}{V^2}\,\frac{(R+x)^4}{R^2x^2}.$$
+        </p>
+        <p>
+          This depends on $R$ and $x$ only through the ratio. Let $u=\ln(R/x)$. Then
+        </p>
+        <p class="math">
+          $$\frac{(R+x)^2}{Rx}=\frac{R}{x}+2+\frac{x}{R}=2+2\cosh u=4\cosh^2\!\frac u2,$$
+        </p>
+        <p>
+          and therefore
+        </p>
+        <p class="math">
+          $$\boxed{\ \frac{\delta x}{x}\Big|_{\min}=\frac{2\sigma_{\rm eff}}{V}\,\big(1+\cosh u\big)=\frac{4\sigma_{\rm eff}}{V}\cosh^2\!\frac u2\ }$$
+        </p>
+
+        <p>
+          It is even in $u$, so a factor-of-ten mismatch costs the same whether $R$ is ten times too big or ten times too small.
+          It is minimal at $u=0$, i.e. at $R=x$, where $\delta x/x=4\sigma_{\rm eff}/V$. And for $|u|\gg1$,
+        </p>
+        <p class="math">
+          $$\frac{\delta x}{x}\;\simeq\;\frac{\sigma_{\rm eff}}{V}\,\max\!\Big(\frac{R}{x},\frac{x}{R}\Big),$$
+        </p>
+        <p>
+          so the error grows linearly with the mismatch.
+        </p>
+
+        <h5>3.3 A measurability function</h5>
+        <p>
+          It is convenient to flip this around and define a figure of merit that is <em>large</em> when the measurement is good:
+          $\mathcal M=1/E$, the squared signal-to-noise ratio on $x$ itself,
+        </p>
+        <p class="math">
+          $$\mathcal M(R;x)=\Big(\frac{V}{\sigma_{\rm eff}}\Big)^2\frac{1}{16}\,\mathrm{sech}^4\!\Big(\frac12\ln\frac{R}{x}\Big).$$
+        </p>
+        <p>
+          It is a bell curve in $\ln(R/x)$, peaked at $R=x$, with the maximum value $(V/\sigma_{\rm eff})^2/16$.
+          Everything about "which $R$ is good for which $x$" is in this one function.
+        </p>
+
+        <figure class="post-figure">
+          <img src="../assets/img/cramer_rao_resistor_fig1.png" alt="Cramér-Rao relative error and measurability as a function of R over x" />
+          <figcaption>
+            Left: minimal relative error on an unknown resistor $x$ as a function of $R/x$, in units of $\sigma_{\rm eff}/V$.
+            Right: the corresponding measurability $\mathcal M$, normalized to its maximum. Both are symmetric in $\ln(R/x)$ and
+            extremal at $R=x$.
+          </figcaption>
+        </figure>
+
+        <h5>3.4 Why a divider wants $R\approx x$</h5>
+        <div class="callout">
+          <strong>Signal versus sensitivity.</strong>
+          The naive argument is "bigger $R$ means bigger $V_R$, so a better signal". But $V_R$ is not what we want to know;
+          $x$ is. The relevant quantity is the slope $\partial_xV_R=-VR/(R+x)^2$. If $R\ll x$ the divider output sits near
+          $V$ and $V_R$ is tiny, so the slope is $\approx VR/x^2$, small. If $R\gg x$ the divider output is pinned near $0$ and the
+          slope is $\approx V/R$, also small. The slope is largest when the two legs of the divider are comparable.
+          A divider is a good ohmmeter only around its own balance point.
+        </div>
+
+        <h5>3.5 What if $V$ is not trusted?</h5>
+        <p>
+          In practice the generator amplitude into a load is not exactly what the front panel says, so let us treat $V$ as a
+          second unknown. The parameters are $\theta=(x,V)$ and the data are $(y_1,y_2)$, so the Jacobian of the noiseless
+          map $(x,V)\mapsto(V_R,V_M)$ is square:
+        </p>
+        <p class="math">
+          $$\mathsf J=\begin{pmatrix}-a & b_1\\ a & b_2\end{pmatrix},\qquad a=\frac{VR}{(R+x)^2},\quad b_1=\frac{R}{R+x},\quad b_2=\frac{x}{R+x}.$$
+        </p>
+        <p>
+          For a square Jacobian, the Cramér-Rao covariance is $\mathsf J^{-1}\Sigma\,\mathsf J^{-T}$ with
+          $\Sigma=\mathrm{diag}(\sigma_1^2,\sigma_2^2)$. Since $\det\mathsf J=-a(b_1+b_2)=-a$, the first row of $\mathsf J^{-1}$ is
+          $(-b_2/a,\ b_1/a)$, and for equal channels $\sigma_1=\sigma_2=\sigma$
+        </p>
+        <p class="math">
+          $$\mathrm{Var}(x)\ge\sigma^2\,\frac{b_1^2+b_2^2}{a^2}\ \Longrightarrow\
+          \Big(\frac{\delta x}{x}\Big)^2=\frac{\sigma^2}{V^2}\,\frac{(R^2+x^2)(R+x)^2}{R^2x^2}=\frac{\sigma^2}{V^2}\,4\cosh u\,(1+\cosh u).$$
+        </p>
+        <p>
+          It is still even in $u$ and still minimized at $R=x$. Compared with the known-$V$ case
+          (which in terms of the per-channel $\sigma$ reads $\tfrac{2\sigma^2}{V^2}(1+\cosh u)^2$), the variance ratio is
+          $2\cosh u/(1+\cosh u)$: equal to $1$ at $u=0$ and tending to $2$ for large mismatch. So knowing $V$ helps only when the
+          divider is badly unbalanced, and the optimal $R$ does not change.
+        </p>
+        <p>
+          One more remark: if you use <em>only one</em> channel (say just $V_R$, with $V$ known), the same computation gives
+          the same formula with $\sigma_{\rm eff}\to\sigma$, i.e. a variance twice as large. The second channel buys exactly a factor $2$.
+        </p>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="memristor">
+        <h4>4. A memristor is a resistor that moves</h4>
+
+        <p>
+          A memristor is a resistor $x(t)$ whose value depends on its own history, for instance through a state equation like
+          $\dot x=f(x,V_M)$. During a loop it sweeps a whole range $[x_{\min},x_{\max}]$. Write
+          $\kappa=x_{\max}/x_{\min}$. For the device I have in mind $x_{\max}\sim500\,{\rm k}\Omega$ and $\kappa$ is in the thousands.
+        </p>
+
+        <h5>4.1 Quasi-static estimation</h5>
+        <p>
+          At each instant I want $x(t)$ from the two scope samples. If $x$ changes little over the time it takes to collect an
+          independent sample, the previous section applies <em>pointwise</em>, with the instantaneous $x(t)$ in place of $x$.
+          (If you average $N$ independent samples, or equivalently filter the traces, $\sigma^2\to\sigma^2/N$; averaging
+          is helpful only as long as it does not smear the dynamics you want to see.)
+          The hysteresis loop is the curve $(I(t),V_M(t))$, and its local slope is $V_M/I=x$, so the quality of the loop
+          <em>is</em> the quality of $x(t)$ along the trajectory.
+        </p>
+
+        <h5>4.2 One number for the whole loop</h5>
+        <p>
+          Now the error depends on $x$, and $x$ moves, while $R$ is fixed once for the whole experiment. We need a single score.
+          There are two natural choices.
+        </p>
+
+        <p>
+          <strong>(a) Worst case (minimax).</strong> Because $E$ is even and increasing in $|u|$, the worst point of the trajectory
+          is always an endpoint, $x_{\min}$ or $x_{\max}$. Minimizing the larger of the two errors means making
+          $|\ln R-\ln x_{\min}|=|\ln x_{\max}-\ln R|$, that is,
+        </p>
+        <p class="math">
+          $$\boxed{\,R^*=\sqrt{x_{\min}\,x_{\max}}\,}$$
+        </p>
+        <p>
+          the geometric mean of the two ends of the range. At this value $u=\pm\tfrac12\ln\kappa$ at the two ends, and the worst-case error is
+        </p>
+        <p class="math">
+          $$\Big(\frac{\delta x}{x}\Big)_{\max}=\frac{4\sigma_{\rm eff}}{V}\cosh^2\!\Big(\frac14\ln\kappa\Big)=\frac{\sigma_{\rm eff}}{V}\big(\kappa^{1/4}+\kappa^{-1/4}\big)^2\ \xrightarrow{\ \kappa\gg1\ }\ \frac{\sigma_{\rm eff}}{V}\sqrt{\kappa}.$$
+        </p>
+        <p>
+          The price of a wide dynamic range is explicit: the error grows like $\sqrt\kappa$, because even with the best compromise
+          $R$ the divider is mismatched by a factor $\sqrt\kappa$ at both ends.
+        </p>
+
+        <p>
+          <strong>(b) Time-averaged.</strong> Let $\langle f\rangle=\frac1T\int_0^T f(x(t))\,dt$ be the average over a cycle,
+          which is the right weighting if the scope samples uniformly in time. The mean relative variance follows from expanding
+          $(R+x)^4/(R^2x^2)$:
+        </p>
+        <p class="math">
+          $$\langle E\rangle=\frac{\sigma_{\rm eff}^2}{V^2}\Big[R^2\langle x^{-2}\rangle+4R\langle x^{-1}\rangle+6+\frac{4\langle x\rangle}{R}+\frac{\langle x^2\rangle}{R^2}\Big].$$
+        </p>
+        <p>
+          So the optimal $R$ depends only on <em>four moments</em> of the resistance distribution along the loop. Setting
+          $\partial_R\langle E\rangle=0$ and multiplying by $R^3/2$,
+        </p>
+        <p class="math">
+          $$\langle x^{-2}\rangle R^4+2\langle x^{-1}\rangle R^3-2\langle x\rangle R-\langle x^2\rangle=0.$$
+        </p>
+        <p>
+          The coefficients have the sign pattern $(+,+,-,-)$, so by Descartes' rule there is exactly one positive root, and
+          since $\langle E\rangle$ is convex in $\ln R$, it is the minimum. If the distribution of $\ln x$ is symmetric (as for a loop that
+          lingers equally at both ends), the root is exactly the geometric centre, $R^*=e^{\langle\ln x\rangle}$.
+          For a two-point check, take $x\in\{1,4\}$ with equal weights: the root is $R=2=\sqrt{1\cdot4}$, and the quartic indeed vanishes there.
+          The nice feature of this form is that it is directly computable from a measured trajectory.
+        </p>
+
+        <h5>4.3 The loading catch</h5>
+        <p>
+          Everything above treated the range $[x_{\min},x_{\max}]$ and the dwell statistics as given. They are not: the
+          memristor sees $V_M=Vx/(R+x)$, not $V$. If $R$ is large compared to the device, $V_M$ drops, and a voltage-controlled device may
+          no longer switch through its full range. The honest statement is that $R^*$ is a self-consistent fixed point: the
+          range and moments entering the formulas are those visited with that same $R$ in the circuit.
+          The minimax result only needs the endpoints to actually be reached at the chosen drive amplitude.
+        </p>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="numbers">
+        <h4>5. Back to 2 kΩ versus 10 kΩ</h4>
+
+        <p>
+          Take $x_{\max}=500\,{\rm k}\Omega$. For $x\gg R$ the error is $\simeq(\sigma_{\rm eff}/V)\,x/R$, so at the high-resistance end
+          going from $2$ to $10\,{\rm k}\Omega$ should reduce the error by up to a factor $5$. The exact formula gives
+          $4.84$. The table gives the worst-case relative error $\delta x/x$ in units of $\sigma_{\rm eff}/V$
+          (multiply by $\sqrt2$ to express it in units of the per-channel $\sigma/V$ for two equal channels).
+        </p>
+
+        <table class="numbers">
+          <thead>
+            <tr><th>$x_{\min}$</th><th>$R$</th><th>worst-case $\delta x/x$ [$\sigma_{\rm eff}/V$]</th><th>where</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>200 Ω</td><td>2 kΩ</td><td>252</td><td>at $x_{\max}$</td></tr>
+            <tr><td>200 Ω</td><td>10 kΩ $=R^*$</td><td>52.0</td><td>both ends</td></tr>
+            <tr><td>1 kΩ</td><td>2 kΩ</td><td>252</td><td>at $x_{\max}$</td></tr>
+            <tr><td>1 kΩ</td><td>10 kΩ</td><td>52.0</td><td>at $x_{\max}$</td></tr>
+            <tr><td>1 kΩ</td><td>22.4 kΩ $=R^*$</td><td>24.4</td><td>both ends</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          For illustration only: with a noise floor $\sigma_{\rm eff}=1\,{\rm mV}$ and $V=1\,{\rm V}$, the number $52$ means a
+          $5\%$ error on $x$ at the top of the range with $R=10\,{\rm k}\Omega$, versus $25\%$ with $R=2\,{\rm k}\Omega$:
+          the difference between a clean loop and a smeared one.
+          Note also the last two rows: if the device never goes below $\sim1\,{\rm k}\Omega$, the 10 kΩ choice is still good but
+          is no longer the optimum, and a larger $R$ would give another factor $\sim2$, provided the device still switches.
+        </p>
+
+        <figure class="post-figure">
+          <img src="../assets/img/cramer_rao_resistor_fig2.png" alt="Error along the trajectory for 2k, 10k and 22k, and worst-case error versus R" />
+          <figcaption>
+            Left: minimal relative error along the trajectory for three values of $R$. A larger $R$ moves the "good window" to
+            higher $x$. Right: worst-case error over $[x_{\min},500\,{\rm k}\Omega]$ as a function of $R$. The dots mark
+            $R^*=\sqrt{x_{\min}x_{\max}}$, the dotted lines are 2 kΩ and 10 kΩ.
+            The V shape is the two-sided trade-off.
+          </figcaption>
+        </figure>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="experiments">
+        <h4>6. Experiments</h4>
+
+        <!-- EXPERIMENTS SECTION: to be completed with data. Skeleton below. -->
+
+        <div class="callout">
+          <strong>Draft placeholder.</strong> This section will be completed with the measurements. The structure is already fixed,
+          so that the data can be dropped into it.
+        </div>
+
+        <h5>6.1 Setup</h5>
+        <p>
+          <!-- TODO: generator model, scope model and bandwidth, probe attenuation, cabling; drive waveform, amplitude V and frequency;
+               series resistors used; which memristor/device; what was recorded on each channel. -->
+          <em>[To be filled in.]</em>
+        </p>
+
+        <h5>6.2 Measuring the instrument noise: a static test of the formula</h5>
+        <p>
+          The cleanest test of Section 3 does not involve a memristor at all. Replace the device by a known fixed resistor $x_0$
+          (a decade box), apply a fixed drive, acquire many repeated records, and for each $R$ compute the estimator
+          $\hat x=R\,y_2/y_1$. Then
+        </p>
+        <p class="math">
+          $$\Big(\frac{\delta x}{x_0}\Big)_{\rm emp}=\frac{\mathrm{std}(\hat x)}{x_0}\quad\text{vs.}\quad \frac{2\sigma_{\rm eff}}{V}\big(1+\cosh\ln\tfrac{R}{x_0}\big),$$
+        </p>
+        <p>
+          where $\sigma_{\rm eff}$ is the only fit parameter (it can also be measured independently from the scope with the inputs shorted).
+          Predictions: a minimum at $R=x_0$, symmetry on the $\ln R$ axis, and slopes $\pm1$ on a log-log plot far from the minimum.
+        </p>
+        <figure class="post-figure">
+          <!-- TODO: <img src="../assets/img/EXP_static_calibration.png" alt="Empirical relative error vs R for a known resistor" /> -->
+          <figcaption><em>[Figure: empirical $\delta x/x_0$ versus $R/x_0$ for a known resistor, with the Cramér-Rao curve. To be added.]</em></figcaption>
+        </figure>
+
+        <h5>6.3 The memristor loop</h5>
+        <p>
+          For the memristor I repeat the same periodic drive for many cycles, and at each phase of the cycle compute the variance of
+          $\hat x$ <em>across cycles</em>. Two cautions. First, this ensemble variance contains the instrument noise,
+          which the bound controls, <em>plus</em> any genuine cycle-to-cycle variability of the device, which the bound knows nothing about.
+          The static calibration above, taken at the same $R$ and $V$, is what lets the two be separated: the Cramér-Rao curve is a floor,
+          and any excess is device variability or non-idealities. Second, the efficiency
+          $\eta=E_{\rm CR}/E_{\rm emp}\le1$ is a useful diagnostic of how close the estimator is to the limit.
+        </p>
+
+        <h5>6.4 What the data should show</h5>
+        <ul>
+          <li>The high-resistance branch of the loop at $R=2\,{\rm k}\Omega$ is noisier than at $R=10\,{\rm k}\Omega$ by a factor
+              of about $4.8$ in $\delta x/x$ (Section 5).</li>
+          <li>The empirical optimum $R$ sits near $\sqrt{x_{\min}x_{\max}}$, or at the root of the quartic of Section 4.2 computed from the measured $x(t)$.</li>
+          <li>For very large $R$ the loop degrades again, from both the loss of voltage across the device and the larger error at low $x$.</li>
+        </ul>
+
+        <figure class="post-figure">
+          <!-- TODO: <img src="../assets/img/EXP_loops_2k_vs_10k.png" alt="Measured hysteresis loops for 2k and 10k series resistors" /> -->
+          <figcaption><em>[Figure: measured loops for different $R$, with the error band predicted by the bound. To be added.]</em></figcaption>
+        </figure>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="caveats">
+        <h4>7. Assumptions and what is left out</h4>
+        <ul>
+          <li><strong>Small-noise regime.</strong> Cramér-Rao is a local statement. When $\delta x/x$ approaches order one
+              (the far end of the 2 kΩ curve for realistic noise) the bound stops being informative, and the ratio estimator
+              $R\,y_2/y_1$ becomes biased.</li>
+          <li><strong>Noise model.</strong> I assumed additive white noise, equal and independent on the two channels.
+              Two real effects change it. If each channel is auto-ranged, the noise scales with the range
+              ($\sigma_i\propto$ peak of channel $i$, quantization-limited) and the objective is no longer even in $u$.
+              If $V_M$ is obtained as $V_{\rm gen}-V_R$ instead of measured, the noises are anticorrelated and a cross term appears.</li>
+          <li><strong>Thermal noise of $R$ itself.</strong> It has variance $4k_BTRB$, which grows with $R$: about $13\,\mu$V rms for
+              $10\,{\rm k}\Omega$, $1$ MHz, $300$ K. Negligible next to typical scope noise, but it sets a floor when $R$ is pushed up.</li>
+          <li><strong>Dynamics.</strong> The pointwise bound ignores that $x(t)$ is a smooth trajectory; using the equation of motion as a
+              prior (a Bayesian version of the bound, the van Trees inequality) could in principle do better than treating each instant separately.</li>
+          <li><strong>Self-consistency</strong> of $R^*$ with the device dynamics, as discussed in Section 4.3.</li>
+        </ul>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
