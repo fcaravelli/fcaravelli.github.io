@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vonNeuro – Francesco Caravelli</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar (loaded dynamically) -->
+    <div id="sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h2>vonNeuro: an operating system for heterogeneous, physical computing</h2>
+      <p>
+        <a href="https://www.vonneuro.com" target="_blank" rel="noopener">vonNeuro</a> is an open,
+        experimental project to build an operating system for computers made of matter. It aims to run
+        programs on p-bits, annealers, memristive networks, neuromorphic chips, analog circuits, GPUs,
+        ordinary CPUs and, eventually, living neural cultures, all from a single language. Its first
+        working piece, <strong>vonNeuro Messenger</strong>, already puts real laboratory devices online:
+        anyone can send jobs from a browser or a Python script and get back the measured result, with
+        raw data included. It is developed in collaboration with the
+        <a href="https://np.institute" target="_blank" rel="noopener">Institute for Nonequilibrium Phenomena</a>
+        (INEP), a nonprofit research institute. For now it is free, and I cover the running costs myself.
+      </p>
+
+      <section class="project">
+        <h3>Why I am building this</h3>
+        <p>
+          I am a memristive-network theorist. When I was at Los Alamos, I found it surprisingly hard to
+          get hold of hardware and simply play with it myself. I have come to believe that direct,
+          hands-on access is key to progress. Real devices are noisy, they drift, and they have
+          hysteresis and quirks that simulations smooth over. You only learn to program them by running
+          code on them.
+        </p>
+        <p>
+          My working assumption is that the future of computing is <strong>heterogeneous</strong>. CPUs
+          already share work with GPUs and accelerators. Next to them, a growing family of physical
+          processors computes by letting matter relax, fluctuate or respond, rather than by stepping
+          through instructions. These include analog circuits, memristive networks, stochastic samplers,
+          quantum annealers and photonic devices. Some will sit next to us and some will live in the
+          cloud. Today we write code as if it will always run on a CPU. Instead, we should be able to
+          state what a task needs and call whichever processor suits it: a sampler for a statistical
+          problem, an analog resource for filtering or evolving a signal in time, a relaxing system for
+          an optimisation.
+        </p>
+        <p>
+          Bringing analog and stochastic computing back is not nostalgia. Physics can sample, relax to a
+          minimum or filter a signal using far less energy than a digital machine simulating the same
+          process. That saving is a promise to be measured, not a result to be claimed. Answers from such
+          hardware are also statistical, so they have to be certified against what a program asked for.
+          vonNeuro is built around both problems: deciding <em>which</em> device should run a task, and
+          keeping an honest record of <em>what it cost</em> and <em>how far its answer can be trusted</em>.
+        </p>
+      </section>
+
+      <section class="project">
+        <h3>The core ideas</h3>
+        <ul>
+          <li>
+            <strong>One program, any substrate.</strong> A program states what it means mathematically,
+            not which chip you own. Each backend lowers that meaning to a native physical process, such as
+            a coupling matrix, an anneal schedule or a driven circuit, instead of pretending the device is
+            a CPU.
+          </li>
+          <li>
+            <strong>Three regimes, not one.</strong> Computation can <em>minimise</em> (relax to a ground
+            state), <em>sample</em> (draw from a distribution) or <em>evolve</em> (run driven,
+            far from equilibrium, as reservoirs, memristive networks and living tissue do). Equilibrium is
+            one special case, and a sampler is not a failed optimiser.
+          </li>
+          <li>
+            <strong>Thermodynamic accounting.</strong> A figure in joules per task says little on its own.
+            The goal is for every run to report its measured dissipation together with the thermodynamic
+            lower bound it should be compared against, or to refuse the comparison when the two are not
+            the same claim.
+          </li>
+          <li>
+            <strong>Physical includes biological.</strong> A backend qualifies if it can report its state,
+            accept a drive and characterise its own noise. Neuronal cultures on electrode arrays, reaction
+            networks and gene circuits can do all three, so they are part of the long-term design.
+          </li>
+        </ul>
+      </section>
+
+      <section class="project">
+        <h3>What runs today</h3>
+        <p>
+          The current bench is a proof of concept, not a product. It is a first prototype meant to show
+          that the whole loop works on real, imperfect devices:
+        </p>
+        <ul>
+          <li>
+            <strong>16 memristors</strong> on two 16-pin devices, behind an analog multiplexer. Their far
+            ends are biased at 2.47 V so they can be driven both ways through a 0–5 V multiplexer. They
+            show measured pinched hysteresis loops, and users can sweep them online at up to ±1 V to keep
+            them healthy for the next person.
+          </li>
+          <li>
+            <strong>16 RC coprocessors</strong> on a second multiplexer that shares address lines with the
+            first. This makes all 32 devices addressable remotely, one guarded measurement at a time.
+          </li>
+          <li>
+            <strong>A 16-p-bit hardware sampler</strong> that runs Gibbs sampling over up to sixteen Ising
+            spins. You load couplings, set a temperature and stream samples.
+          </li>
+          <li>
+            <strong>VOLT 0.1</strong>, an early version of the vonNeuro language. You write a small system
+            program and run it on a chosen device, for example <code>memristor:15</code> or
+            <code>rc:2</code>. The device contract is checked first: a program that needs an adaptive
+            device is refused by an RC circuit, which names the failing clause. Each reply includes the
+            compiled graph, the source hash and the energy measured at the device terminals.
+          </li>
+          <li>
+            <strong>CPU emulators</strong> of the analog, memristor, p-bit and spiking devices, used as
+            digital references and as fallbacks when the bench is busy.
+          </li>
+        </ul>
+        <p>
+          The measurements are made with an Analog Discovery Studio, and every raw sample is archived. The
+          bench tools and client are currently tested on Windows with Python, and the Messenger server runs
+          anywhere Python and FastAPI do.
+        </p>
+      </section>
+
+      <section class="project">
+        <h3>vonNeuro Messenger and the open-source Python API</h3>
+        <p>
+          Messenger is the device server. It connects laboratory hardware, including one-off experimental
+          chips, to user accounts on the web, without the lab having to redesign the device around a new
+          architecture. You sign in, choose a job (a VOLT program, a memristor I–V sweep, an instrument
+          capture, or an emulated experiment), follow it live and download the results, including every
+          setting and device identity.
+        </p>
+        <p>
+          The Python client is open source under the MIT licence:
+          <a href="https://github.com/vonneuro/messenger-api" target="_blank" rel="noopener"><strong>github.com/vonneuro/messenger-api</strong></a>.
+          It depends only on <code>httpx</code>. Every call goes through Messenger, which checks your
+          account, the hardware switches and the voltage limits before anything is driven.
+        </p>
+<pre><code>pip install git+https://github.com/vonneuro/messenger-api.git</code></pre>
+<pre><code>from vonneuro_messenger import MessengerClient
+
+c = MessengerClient("https://series-marina-gigantic.ngrok-free.dev")
+c.login("you", "your-password")
+
+# run a VOLT 0.1 program on memristor 15 of the bench
+reply = c.volt_run(program, {"u": 0.5}, "memristor:15")
+print(reply["result"]["value"])      # measured terminal current
+print(reply["measured_energy_j"])    # energy at the device terminals</code></pre>
+        <p>
+          If you would rather not install anything, a browser-based Python lab runs the same code with
+          plots and downloads, and a script lab sends pulse scripts or Ising models straight to the bench.
+          Runnable examples and the full bench manual are in the client repository. Add your GitHub
+          username when you sign up to get access.
+        </p>
+      </section>
+
+      <section class="project">
+        <h3>A small game that exercises everything</h3>
+        <p>
+          For fun, and as a test, I built a small Godot game, <em>I Shall Survive</em>. The enemies chasing
+          the player run on RC coprocessors measured live on the bench. They fall back to calibrated
+          emulators when the board is busy, use a real memristor to decide when to guard, and can draw
+          their stochastic choices from the p-bit sampler. It is deliberately small, but it raises exactly
+          the questions vonNeuro is built to answer: which device should take a task, what happens when it
+          is unavailable, and whether the physical answer is still the right one.
+        </p>
+        <!-- Optional: embed the Godot demo video here -->
+        <!-- <video src="/img/vonneuro_godot.mp4" controls class="project-image" style="max-width:500px;"></video> -->
+      </section>
+
+      <section class="project">
+        <h3>Where it is going</h3>
+        <p>
+          The roadmap is the full operating system. It includes the VOLT compiler and a portable semantic
+          graph, an event-driven kernel with a device registry, versioned device contracts that trigger
+          recompilation when calibration drifts, and a thermodynamic ledger. Planned backends include GPUs
+          (as the large-scale baseline that every physical run is compared against), p-bit fabrics on
+          FPGA, quantum annealers, neuromorphic ASICs, memristive crossbars and nanowire meshes. Research
+          targets include photonic operators, neuronal cultures and molecular reaction networks. Two
+          further goals matter to me in particular. First, any lab should be able to connect its own chip
+          through a lightweight adapter, keeping its existing control stack, and use Messenger to discover
+          and characterise what the device can compute. Second, the design should be open enough that
+          others can host their own instance on their own hardware.
+        </p>
+      </section>
+
+      <section class="project">
+        <h3>How to get access</h3>
+        <p>
+          Create an account at <a href="https://www.vonneuro.com/signup.html" target="_blank" rel="noopener">vonneuro.com</a>
+          and open Messenger. Each account gets one hour of bench time, and more is available on request.
+          You may see a warning that you are leaving the site. This is expected, because Messenger is
+          currently served through a tunnel to the machine on my bench.
+        </p>
+        <p>
+          This is a side project, since during the day I work on quantum computing, and the bench is still
+          a first prototype, cables and all. I am moving to a tidier soldered setup and will write about its
+          evolution here and on
+          <a href="https://www.linkedin.com/in/francesco-c-0bab3b2b4/" target="_blank" rel="noopener">LinkedIn</a>.
+          Feedback is very welcome.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Sidebar Loader -->
+  <script>
+    async function loadSidebar() {
+      try {
+        const sidebarContainer = document.getElementById('sidebar');
+        const response = await fetch('partials/sidebar.html');
+        if (!response.ok) throw new Error(`Failed to load sidebar: ${response.status}`);
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split('/').pop();
+        const links = sidebarContainer.querySelectorAll('a');
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>

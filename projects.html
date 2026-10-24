@@ -25,6 +25,7 @@
         <a href="#quantum-architectures">Quantum architectures and control</a> ·
         <a href="#quantum-thermo">Quantum thermodynamics and batteries</a> ·
         <a href="#neuromorphic">Neuromorphic and memristive computing</a> ·
+        <a href="#vonneuro">vonNeuro: heterogeneous physical computing</a> ·
         <a href="#spin-ice">Artificial spin ice and physical learning</a> ·
         <a href="#stat-mech">Statistical mechanics and thermodynamics of computation</a> ·
         <a href="#methods">Spectral, combinatorial and operator methods</a> ·
@@ -57,6 +58,7 @@
           many-body platforms in which criticality, hysteresis and memory effects can be measured directly.
         </p>
         <ul>
+          <li><a href="https://arxiv.org/abs/2609.19308" target="_blank">Temporal information processing on a 4,500-qubit quantum annealer</a> (under review in <a href=" target="_blank">Nature Physics</a>, 2026)</li>
           <li><a href="https://arxiv.org/abs/2505.13625" target="_blank">Classical criticality via quantum annealing</a> (<a href="https://www.nature.com/articles/s41467-025-67568-w" target="_blank">Nature Communications</a>, 2026)</li>
           <li><a href="https://arxiv.org/abs/2507.18079" target="_blank">Magnetic memory and hysteresis from quantum transitions: theory and experiments on quantum annealers</a> (to appear in Communications Physics)</li>
           <li><a href="https://arxiv.org/abs/2601.20287" target="_blank">Fingerprints of classical memory in quantum hysteresis</a> (arXiv:2601.20287)</li>
@@ -121,6 +123,36 @@
           <li>Memristive linear algebra (Phys. Rev. Research <strong>7</strong>, 023241, 2025)</li>
           <li><a href="https://arxiv.org/abs/2009.00758" target="_blank">Fully analog memristive circuits for optimization tasks: a comparison</a> (Handbook of Unconventional Computing, World Scientific, 2021)</li>
           <li><a href="https://onlinelibrary.wiley.com/doi/full/10.1002/aisy.202300035" target="_blank">An interface-type memristive device for artificial synapses and neuromorphic computing</a> (Adv. Intell. Syst. <strong>5</strong>, 2300035, 2023 — journal cover)</li>
+        </ul>
+      </section>
+
+      <!-- 3b. vonNeuro -->
+      <section class="project" id="vonneuro">
+        <h3>vonNeuro: An Operating System for Heterogeneous Physical Computing</h3>
+        <p>
+          Computing is becoming heterogeneous. Next to CPUs and GPUs sits a growing family of physical processors,
+          including memristive networks, analog circuits, p-bit samplers, annealers and neuromorphic chips, that
+          compute by relaxing, fluctuating or responding to a drive rather than by executing instructions. Yet we
+          still write software as if everything ran on a CPU, and claims about the energy advantage of such hardware
+          are rarely stated against a meaningful bound. Theorists also seldom get to run code on these devices
+          directly, a gap I felt myself at Los Alamos. <a href="https://www.vonneuro.com" target="_blank">vonNeuro</a>,
+          developed with the <a href="https://np.institute" target="_blank">Institute for Nonequilibrium Phenomena</a>,
+          addresses these problems. It is an open project to let a program state its intent once, whether to
+          <em>minimise</em>, <em>sample</em> or <em>evolve</em> under a drive, and to have it lowered to whichever
+          substrate suits it. Each run reports its measured dissipation together with the thermodynamic lower bound
+          it should be read against, building on the entropy-production and physical-learning results on this page.
+        </p>
+        <p><em>Running now.</em></p>
+        <ul>
+          <li><strong>vonNeuro Messenger</strong>: a device server that puts a laboratory bench online. The bench has 16 memristors and 16 RC coprocessors behind multiplexers, plus a 16-p-bit hardware Gibbs sampler, all reachable from the browser or from Python, and every job returns its raw data and provenance.</li>
+          <li><a href="https://github.com/vonneuro/messenger-api" target="_blank">vonneuro/messenger-api</a>: the open-source Python client (MIT licence) for running experiments on the bench from your own computer.</li>
+          <li><strong>VOLT 0.1</strong>: an early version of the vonNeuro language. Programs are checked against a device contract before anything is driven, and replies report the energy measured at the device terminals.</li>
+          <li><em>I Shall Survive</em>: a small Godot game whose enemies are driven live by the bench's RC coprocessors, memristors and p-bits, with calibrated emulators as fallback. It is a compact test of device selection and failover.</li>
+        </ul>
+        <p><em>Roadmap.</em> A full compiler and kernel, versioned device contracts with drift-driven recompilation, a thermodynamic ledger, and backends ranging from GPUs, FPGA p-bit fabrics, annealers and memristive crossbars to photonic operators and neuronal cultures.</p>
+        <ul>
+          <li><a href="vonneuro.html">Project page: motivation, bench details and how to get access</a></li>
+          <li><a href="https://www.vonneuro.com/signup.html" target="_blank">Create a free account</a> (one hour of bench time, more on request)</li>
         </ul>
       </section>
 

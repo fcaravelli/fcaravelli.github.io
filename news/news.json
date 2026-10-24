@@ -1,5 +1,10 @@
 [
        {
+   "title": "New Project: I am starting a new side project called vonNeuro",
+    "date": "2026-10-24",
+   "link": "vonneuro.html"
+    },   
+       {
    "title": "Blog post: Whose entropy? Observers, coarse graining, and integral fluctuation theorems",
     "date": "2026-10-15",
    "link": "blog/2026-10-15-observers-statistical-mechanics.html"
