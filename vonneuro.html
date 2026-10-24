@@ -206,8 +206,63 @@ print(reply["measured_energy_j"])    # energy at the device terminals</code></pr
           Feedback is very welcome.
         </p>
       </section>
+
+      <section class="project" aria-labelledby="related-posts-heading">
+        <h3 id="related-posts-heading">Related blog posts</h3>
+        <ul id="vonneuro-posts">
+          <li>Loading posts…</li>
+        </ul>
+      </section>
     </main>
   </div>
+
+  <script>
+    async function loadVonNeuroPosts() {
+      const postList = document.getElementById('vonneuro-posts');
+
+      try {
+        const response = await fetch('blog/posts.json');
+        if (!response.ok) throw new Error(`Failed to load blog posts: ${response.status}`);
+        const posts = await response.json();
+        const matchingPosts = posts
+          .filter(post => (post.tags || []).includes('vonNeuro'))
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        postList.replaceChildren();
+        if (matchingPosts.length === 0) {
+          const emptyMessage = document.createElement('li');
+          emptyMessage.textContent = 'No blog posts are tagged vonNeuro yet.';
+          postList.appendChild(emptyMessage);
+          return;
+        }
+
+        matchingPosts.forEach(post => {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `blog/${post.file}`;
+          link.textContent = post.title;
+          item.appendChild(link);
+
+          if (post.date) {
+            const date = new Date(post.date).toLocaleDateString('en-US', {
+              year: 'numeric', month: 'short', day: 'numeric'
+            });
+            item.appendChild(document.createTextNode(` — ${date}`));
+          }
+
+          postList.appendChild(item);
+        });
+      } catch (err) {
+        console.error(err);
+        postList.replaceChildren();
+        const errorMessage = document.createElement('li');
+        errorMessage.textContent = 'Error loading related blog posts.';
+        postList.appendChild(errorMessage);
+      }
+    }
+
+    loadVonNeuroPosts();
+  </script>
 
   <!-- Sidebar Loader -->
   <script>
