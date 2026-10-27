@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>TITLE – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">science • policy • AI </p>
+        <h3>The great painters and photography</h3>
+        <p><em>October 25th, 2026</em></p>
+
+        <p>
+         </p>
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#DHH">1. David Heinemeier Hansson and the painters of the past</a></li>
+            <p> A few weeks ago, David Heinemeier Hansson gave the opening keynote at the <a href="https://www.youtube.com/watch?v=vDjW_dRyKXY" target="_blank">RailsConf</a>.
+            He is a very well known programmer, the inventor of Ruby on Rails, and in my opinion,
+            a very good speaker and motivator - and a race car driver! This was an awaited keynote,
+            as currently any programmer is going through a very difficult time, with the rise of AI and the fear of being replaced by it.
+            Now, I have using computers since I was 8 years old. I vividly remember my dad bringing home
+            a 386 computer, <a href="https://en.wikipedia.org/wiki/Compaq_Deskpro_386" target="_blank">I think a Deskpro</a>.
+            I don't know exactly why he used it, but it was a great machine for its time, and he was using 
+            the early softwares for electrical engineering.
+            </p>
+            <p>For me it was a quite mysterious object. Windows did not exist yet, it would have arrived in the 
+            mid 90s, and the computer was running MS-DOS. 
+            Fast forward a few years, and I was using computers for programming, initially in Visual Basic.
+            Let me say that I have never been a great programmer, my interest shifted to Physics when I was around
+            15. Around 2000, at the turn of the century, me and my friend Pietro, who lived roughly 200 meters from 
+            me, were told that we were not supposed to use the telephone to communicate, as this was costly.
+            There was no "data plan yet", and you paid per minute.
+            </p>
+            
+            <p>We were probably 13 or 14 years old. He was an electronics enthusiast, and he had a computer at home. 
+            I was more interested in programming at the time, and I told him: let's build a device to communicate
+            with each other. He custom built a device with an antenna, I build a software to communicate 
+            with it and decode the signal. To my surprise, the device worked. We never manage 
+            to reach the range we needed to talk to each other, but we were able to communicate with a few meters of distance.
+            This was my first experience with "making things happen". There is a particularly 
+            rewarding feeling when you build something that works.  I went on to study Physics, 
+            while he went on to study electronics. I have always been a 
+            computer enthusiast, although this was on pause between 2004 and 2016 essentially,
+            a hiatus due to my interest in (theoretical) Physics. Around 2016, 
+            I started to get interested in memristors (for reasons I will get into in a future post), and I started to get back into programming, and electronics.
+            to make theoretical studies and predictions about the behavior of many of these components.
+            Every year I say to myself: this is the last year I work on memristive devices, and every year I
+            discover something new and exciting. It is a nice intersection between physics, complex systems, computing and electronics,
+            and programming these systems has nothing to do with "programming" per se.
+            </p>
+            <p>           Going back to to the keynote, DHH made a very interesting parallel between the great painters
+            at the time of introduction of photography (go to his talk <a href="https://youtu.be/vDjW_dRyKXY?t=110" target="_blank">here</a> to see it), and the current situation of programmers with the rise of AI.
+            Till roughly 1890, painters were the only way to capture a moment in time. 
+            The upper bourgeoisie and the royal families would commission painters to paint their portraits, 
+            and the painters would be paid handsomely for their work, spending months. It must have been
+            horrific to be a painter at the time, as you would have to paint the same person over and over again.
+            Between the early 1900 and 1930, photography became cheaper and cheaper, a perfect example of 
+            the result of how technological change affect society.
+             While still expensive,
+            1$ in 1900 is worth roughly 40$ today (check <a href="https://www.in2013dollars.com/us/inflation/1900?amount=1"
+            target="_blank">here</a>), it was faster and cheaper than hiring a a painter.
+            </p>
+            <p>Then photography was invented, and it was a cheaper way to capture a moment in time. People
+            till paint today. Indeed, the great painters either switched to photography, or indeed 
+            cubism and the abstract art movement were, in a way,
+            a reaction to the advent of photography; painters were trying to find a new way to express 
+            themselves without relying on strict realism.
+            And the advent of computers into chess and then go did not stop people from playing these games.
+            However, these are, except for a few people, a hobby. It is very hard to make money with
+            either of them unless you are a few of the best players in the world.
+            The same was not true for programming and painters, however. These were
+            in fact professions.</p>
+        </ul>
+
+        </div>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#What does the soul need">2. Simone Weil and the needs of the soul</a></li>
+            <p>Ironically, I have been reading Simone Weil's work, collected in "An Anthology".
+              
+            </p>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="">
+        <h4>1. </h4>
+
+        <div class="hr"></div>
+      </section>
+
+
+    
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
