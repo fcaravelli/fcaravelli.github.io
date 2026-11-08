@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>The great painters and photography – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+    ul.needs li { margin-bottom: 0.55rem; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">science • policy • AI</p>
+        <h3>The great painters and photography</h3>
+        <p><em>October 25th, 2026</em></p>
+
+        <p>
+          A keynote about programmers and painters, a French philosopher's shopping list for the soul,
+          and a few thoughts on what AI is doing to the people who do calculations for a living.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#dhh">1. David Heinemeier Hansson and the painters of the past</a></li>
+            <li><a href="#weil">2. Simone Weil and the needs of the soul</a></li>
+            <li><a href="#needs-today">3. The needs of the soul, a century later</a></li>
+            <li><a href="#cycles">4. Cycles, epistemes and technofeudalism</a></li>
+            <li><a href="#technology">5. Technology shifts Nash equilibria</a></li>
+            <li><a href="#hours">6. 105,000 hours</a></li>
+            <li><a href="#academia">7. The scientific peasantry</a></li>
+            <li><a href="#coda">8. Which hill is worth dying on</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="dhh">
+        <h4>1. David Heinemeier Hansson and the painters of the past</h4>
+
+        <p>
+          A few weeks ago, David Heinemeier Hansson gave the opening keynote at
+          <a href="https://www.youtube.com/watch?v=vDjW_dRyKXY" target="_blank">RailsConf</a>.
+          He is a very well known programmer, the inventor of Ruby on Rails and, in my opinion,
+          a very good speaker and motivator &ndash; and a race car driver. This was an awaited keynote,
+          as currently any programmer is going through a very difficult time, with the rise of AI and the
+          fear of being replaced by it.
+        </p>
+
+        <p>
+          Now, I have been using computers since I was 8 years old. I vividly remember my dad bringing home
+          a 386 computer, <a href="https://en.wikipedia.org/wiki/Compaq_Deskpro_386" target="_blank">I think a Deskpro</a>.
+          I don't know exactly what he used it for, but it was a great machine for its time, and he was running on it
+          the early software for electrical engineering. For me it was a rather mysterious object. Windows did not
+          exist yet &ndash; it would arrive in the mid 90s &ndash; and the computer was running MS-DOS.
+          Fast forward a few years, and I was using computers for programming, initially in Visual Basic.
+          Let me say that I have never been a great programmer; my interest shifted to Physics when I was around 15.
+        </p>
+
+        <p>
+          Around 2000, at the turn of the century, my friend Pietro, who lived roughly 200 meters from me, and I
+          were told that we were not supposed to use the telephone to communicate, as this was costly.
+          There was no "data plan" yet, and you paid per minute. We were probably 13 or 14 years old.
+          He was an electronics enthusiast, and he had a computer at home. I was more interested in programming
+          at the time, and I told him: let's build a device to communicate with each other. He custom built a device
+          with an antenna, I wrote the software to talk to it and decode the signal. To my surprise, the device worked.
+          We never managed to reach the range we needed to actually talk to each other, but we were able to communicate
+          over a few meters. This was my first experience with "making things happen". There is a particularly
+          rewarding feeling when you build something that works. I went on to study Physics, while he went on to
+          study electronics.
+        </p>
+
+        <p>
+          I have always been a computer enthusiast, although this was essentially on pause between 2004 and 2016,
+          a hiatus due to my interest in (theoretical) Physics. Around 2016 I started to get interested in memristors
+          (for reasons I will get into in a future post), and I got back into programming and electronics, in order
+          to make theoretical studies and predictions about the behavior of many of these components.
+          Every year I say to myself: this is the last year I work on memristive devices, and every year I
+          discover something new and exciting. It is a nice intersection between physics, complex systems,
+          computing and electronics, and programming these systems has nothing to do with "programming" per se.
+        </p>
+
+        <p>
+          Going back to the keynote, DHH made a very interesting parallel between the great painters at the time
+          of the introduction of photography (go <a href="https://youtu.be/vDjW_dRyKXY?t=110" target="_blank">here</a>
+          in his talk to see it) and the current situation of programmers with the rise of AI.
+          Until roughly the middle of the nineteenth century, painters were the only way to capture a moment in time.
+          The upper bourgeoisie and the royal families would commission painters to paint their portraits,
+          and the painters would be paid handsomely for their work, spending months on it. It must also have been
+          horrific to be a painter at the time, as you would have to paint the same person over and over again.
+          Then photography was invented, and between the early 1900s and the 1930s it became cheaper and cheaper,
+          a perfect example of how technological change affects society. While still expensive &ndash;
+          $1 in 1900 is worth roughly $40 today (check
+          <a href="https://www.in2013dollars.com/us/inflation/1900?amount=1" target="_blank">here</a>) &ndash;
+          it was faster and cheaper than hiring a painter.
+        </p>
+
+        <p>
+          People still paint today. Indeed, the great painters either switched to photography or moved where
+          photography could not follow: cubism and the abstract art movement were, in a way, a reaction to the
+          advent of photography, painters trying to find a new way to express themselves without relying on strict
+          realism. Similarly, the advent of computers in chess and then in go did not stop people from playing
+          these games. However, these are, except for a few people, a hobby. It is very hard to make money with
+          either of them unless you are one of the very best players in the world. The same was not true for painters,
+          and is not true for programmers: these were, and are, professions. This is the uncomfortable part of the parallel.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="weil">
+        <h4>2. Simone Weil and the needs of the soul</h4>
+
+        <p>
+          Ironically, in the same weeks I have been reading Simone Weil's work, collected in <em>An Anthology</em>.
+          Weil was a French philosopher, and she wrote about the needs of the soul. The best way I can describe her
+          work is: profound, and a very fine thinker. She was born in 1909 and died in 1943, at the age of 34.
+          She was very interested in philosophy, mathematics and physics, which transpires from her writings,
+          and she was deeply concerned with social issues and the plight of the working class. Unlike the theorists
+          of her time, she went to work in a factory to share that condition first hand; later, under the German
+          occupation, she worried about the fate of the Jews and of the French people. She was a very interesting
+          person, and I highly recommend reading her work.
+        </p>
+
+        <p>
+          Anyhow, in <em>The Need for Roots</em> she wrote what is essentially a shopping list of the needs of the soul,
+          which I list here:
+        </p>
+
+        <ul class="needs">
+          <li><strong>Order:</strong> essentially the social texture that surrounds the individual, and that provides a sense of belonging.</li>
+          <li><strong>Liberty:</strong> intended as the ability to act and think freely, without being constrained by external forces.</li>
+          <li><strong>Obedience:</strong> the ability to follow rules and norms, and to distinguish between right and wrong.
+            I liked the sentence: "Thus anybody politically governed by a man who responds to nobody is in the hands of a sick man."</li>
+          <li><strong>Responsibility:</strong> the ability to take responsibility for one's actions and their consequences.</li>
+          <li><strong>Equality:</strong> it consists in a form of public recognition in which we are treated equally, and thus provides a sense of fairness.</li>
+          <li><strong>Hierarchy:</strong> a sense of devotion to higher figures, providing a sense of guidance.</li>
+          <li><strong>Honour:</strong> the soul needs to respect other human beings and to be respected.</li>
+          <li><strong>Punishment:</strong> the soul needs to be able to distinguish between right and wrong, and to accept punishment for wrongdoing.</li>
+          <li><strong>Freedom of opinion:</strong> the ability to express one's opinion freely, without fear of reprisal.
+            She also mentions freedom of association as a separate need.</li>
+          <li><strong>Security:</strong> not being under the weight of terror.</li>
+          <li><strong>Risk:</strong> the absence of risk produces boredom.</li>
+          <li><strong>Private property:</strong> we need to be surrounded by objects that we can call our own.</li>
+          <li><strong>Collective property:</strong> we also need to feel that the public things &ndash; the squares, the monuments,
+            the institutions &ndash; are, in part, ours.</li>
+          <li><strong>Truth:</strong> falsehood is a source of suffering, and knowledge anchors the soul.</li>
+        </ul>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="needs-today">
+        <h4>3. The needs of the soul, a century later</h4>
+
+        <p>
+          Now, let me go through these needs in view of what has been happening in society since the turn of the century.
+        </p>
+
+        <ul class="needs">
+          <li><strong>Order.</strong> Our societal foundations have been essentially destroyed. The social texture that used
+            to surround the individual &ndash; the extended family, the neighbourhood, the workplace that lasted a lifetime &ndash;
+            has been thinned out, and we have replaced it with feeds. A feed is not a texture.</li>
+
+          <li><strong>Liberty.</strong> Formally, we have never been freer. In practice, the space in which one can act and think
+            without being nudged, tracked and ranked has shrunk considerably. The external force is no longer a king or a priest;
+            it is an algorithm that knows what you are going to do before you do it.</li>
+
+          <li><strong>Obedience.</strong> Obedience, in Weil's sense, requires rules that are legitimate and people who answer
+            for them. We have an abundance of rules and a scarcity of people who answer for anything. The man who responds to
+            nobody is now, quite often, not even a man but a platform.</li>
+
+          <li><strong>Responsibility.</strong> This is an interesting one. Having a family as an adult implies responsibilities
+            under uncertainty, and we do not want those: the age at which people take them on keeps moving forward, or does not
+            arrive at all. We have built a society in which responsibility is postponed, delegated or insured against, and then
+            we complain that nobody feels responsible for anything.</li>
+
+          <li><strong>Equality.</strong> The public recognition of being treated equally is exactly what goes missing when the
+            rules seem to apply differently depending on who you are, who you know, or how loudly you can complain.
+            The perception of fairness has eroded faster than any statistic about it.</li>
+
+          <li><strong>Hierarchy.</strong> Devotion presupposes figures worth being devoted to. We have replaced hierarchy with
+            celebrity, and nobody is guided by a celebrity.</li>
+
+          <li><strong>Honour.</strong> Respect is hard to give and to receive through a screen. Much of our interaction today is
+            anonymous, and anonymity does to honour what darkness does to manners.</li>
+
+          <li><strong>Punishment.</strong> We do not accept punishment even when we know we were in the wrong, and parents do not
+            allow their children to be punished. Weil's point is that punishment, accepted, reintegrates. A society that cannot
+            punish cannot forgive either.</li>
+
+          <li><strong>Freedom of opinion.</strong> We have more channels than ever to express an opinion, and more consequences
+            than ever for expressing the wrong one. You are free to say what you think, provided you are prepared to be fired for it.</li>
+
+          <li><strong>Security.</strong> Most of us are not under the weight of terror, and this is a genuine achievement of the
+            last eighty years. In its place we have a low-grade, permanent anxiety &ndash; about work, about money, about the next
+            crisis &ndash; and it is not obvious that the soul is better off.</li>
+
+          <li><strong>Risk.</strong> The other side of the coin. The absence of risk produces boredom, and we have become,
+            collectively, dull. Everything is insured, moderated, age-restricted, and comes with a disclaimer.</li>
+
+          <li><strong>Private property.</strong> The slogan goes: "you will own nothing and you will be happy". We rent our music,
+            our software, our films, and increasingly our houses and our cars. Weil would have said that a man who owns nothing
+            has nothing to anchor himself to.</li>
+
+          <li><strong>Collective property.</strong> When protests end with monuments defaced and public buildings destroyed, it is
+            a sign that people no longer feel these things are theirs. There is no respect for institutions or for other people's
+            belongings, and this kind of rage does not come from nowhere: it comes from not belonging to the thing being destroyed.</li>
+
+          <li><strong>Truth.</strong> This is what certain people have been eroding since the beginning of social media. Truth has
+            become one option among many, something to be optimized for engagement rather than for correctness. Generative AI,
+            which produces plausible falsehood at zero marginal cost, arrives right on time to finish the job.</li>
+        </ul>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="cycles">
+        <h4>4. Cycles, epistemes and technofeudalism</h4>
+
+        <p>
+          These are interesting times. Two other books I have read recently are <em>The Prophets of Doom</em> by Neema Parvini
+          and <em>The Turning Point</em> by Steve Richards (not to be confused with Capra's <em>The Turning Point</em>, another
+          beautiful book that I suggest if you are into scientific literature, by the same author of <em>The Tao of Physics</em>).
+          The first is a very interesting survey of the thinkers who, against the dominant linear and progressive view of history,
+          saw it as cyclical, and who predicted many of the maladies we are living through. The second is a very interesting
+          analysis of the roughly 80-year patterns in historical events, from growth to crisis, in four parts of roughly 20 years
+          each. I think that, even if technological innovation is altering the way in which these cycles unfold, we are right on
+          track for a major economic, cultural and identity crisis.
+        </p>
+
+        <p>
+          Michel Foucault calls <em>epistemes</em> the particular configurations of knowledge of a culture at a given point in time
+          and space; with each comes a particular way of thinking, a vision of the world. Thatcher and Reagan, for instance, could be
+          associated with financialization and globalization, and the rise of the left in the 20th century with the rise of the
+          welfare state. Yet, as in many cases, cultural trends intertwine with economic and political ones, and it is hard to
+          separate them. Varoufakis calls our time the one of technofeudalism. Going back to the needs of the soul, technofeudalism
+          has destroyed many of them and replaced them with a kind of digital nihilism, and the rise of AI is only going to accelerate
+          the process. The next 20 years of this cultural change are going to require us to be even more desperate than we are
+          right now. As &Zcaron;i&zcaron;ek says, only when you are desperate do you act.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="technology">
+        <h4>5. Technology shifts Nash equilibria</h4>
+
+        <p>
+          Now, technology has always been part of the human condition, for better or for worse. Give me a lever and I will move
+          the world, said Archimedes. The parabolic motion of projectiles, believe it or not, discovered by Galileo, was a
+          technological innovation that allowed for the development of artillery, and thus the rise of the modern state, whether
+          for defense or for offense. It is true that it is the gun that shoots the bullet, but it is the person who pulls the
+          trigger who is responsible for the action. The same is true for AI, and it is up to us to use it for the best or for
+          the worst. Wider availability of technology has always been a double-edged sword. Technology shifts Nash equilibria;
+          this is why non-proliferation exists. Yet, with AI, we are giving the keys of hell to everybody.
+          <em>Lasciate ogni speranza, voi ch'entrate</em>, said Dante. That is why, maybe, we should not go in at all.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="hours">
+        <h4>6. 105,000 hours</h4>
+
+        <p>
+          A cultural shift is also happening in the procedures of science itself, procedures consolidated over centuries
+          (although already perturbed by the introduction of computers). We, theoretical physicists, are undergoing a process of
+          accelerated aging. It used to be the case that as a human ages, his ability to learn, to do calculations, to think
+          carefully, slows down a little, and the focus moves to more important questions, the ones that require a higher level
+          of understanding. AI is accelerating this, in the sense that we are starting to rely much less on our own calculations,
+          similarly to what happens when you start having students and postdocs who do part of the work for you. In national labs
+          this is less pronounced. There are fewer postdocs and students, groups are smaller, and the work is more focused on the
+          individual; you still see older scientists doing calculations on their own at a venerable age. This is not always the
+          case though, and AI "postdocs" are going to bring the process there as well.
+        </p>
+
+        <p>
+          I did a rough calculation the other day: how many hours have I spent in front of a computer since I was 13?
+          It came back as roughly 105,000, and it took me several years to understand I need to change. 
+          These things change how you think and how you act. The generation of kids who have
+          used a tablet since they were 5 years old now show a reduction in the number of words they know, in their cognitive
+          abilities and in their ability to focus. This is a cultural shift, and it is going to be very hard to reverse.
+          This is the same generation that will have to face a great deal of adversity, and they will have AI right in their face.
+          The great painters, in a way, had to face this as well, and they decided to move to abstract art, to photography, to
+          other forms of art. We are going to have to do the same, and we are going to have to do it fast.
+        </p>
+
+        <p>
+          We will need people who can see around corners. And in truth, adversity will select those who can.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="academia">
+        <h4>7. The scientific peasantry</h4>
+
+        <p>
+          Scientists, I don't think, are particularly capable of doing that either. Modern science has been stuck on two things.
+          Either scientists were supposed to be asking the great metaphysical questions, as is typical in the important institutes,
+          or they were supposed to play the role of the scientific peasantry. And sometimes the circles will put you in that box
+          and not let you move out of it, whether you have published 1, 3, 5 or 20 PRLs, or Natures, or Sciences. It has always
+          been that way: there have been the <em>Alti Ministeri</em>, and the lower ones. However, as Weil herself said, it is the
+          slave who makes the master. These high-circle institutions need citations, and we, the peasantry, are the ones providing
+          them. They live by the numbers: the citations, the h-index, the i10-index, or whatever economists will love this decade
+          to measure the productivity of science.
+        </p>
+
+        <p>
+          Whether the question of the existence of a direction of time, or of whether 7 is a perfect number or not &ndash; the kind
+          of metaphysical question the Rovellis of our time seem so attached to &ndash; is important or not, the real question is
+          whether it has any effect on the lives of people. And I do believe that, over a horizon of 300 years, the answer is no.
+          As a matter of fact, I attended a workshop (I will not tell you where, or with whom that conversation was) in which a
+          famous scientist, let us call him CR7, did the unthinkable. Another famous scientist at the same workshop, extremely
+          pleasant and nice, and a much better scientist than CR7 in my personal (but biased) opinion &ndash; let us call him CM
+          &ndash; told the audience, for reasons I now do not recall, the story of him telling two of his students that maybe
+          there are more important things. On that day, CM had heard the news of the Taliban killing a 12-year-old girl in
+          Afghanistan. Right after he mentioned it, the students went on to tell him about some message passing technique, as if
+          the news meant nothing to them. CM remarked that there are, sometimes, more important things than message passing.
+          CR7, who was sitting there, replied that the Taliban were rightfully protecting their land. This is what I mean when I
+          say that scientists, even the best, even those who are supposed to be philosophically inclined, can be absolute dumbfucks.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <section id="coda">
+        <h4>8. Which hill is worth dying on</h4>
+
+        <p>
+          I somewhat lost faith in Academia because Academia lost faith in itself. Blinded by prestige, Academia beshat whatever
+          equivalent of the Hippocratic oath we have in the sciences (this could be Descartes' <em>Discourse on the Method</em>).
+          Merit in arguments can be removed by vocal energy; similarly, merit in prestige can be removed by intellectual energy.
+          Scientists, maybe, need to remember which are the important battles, and which hill is worth dying on.
+          The great painters, when photography arrived, knew.
+        </p>
+
+        <div class="hr"></div>
+      </section>
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
