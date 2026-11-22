@@ -244,8 +244,9 @@
         <p>
           An important connection is that the number of dimer coverings of a bipartite graph is the <em>permanent</em> of its 
           biadjacency matrix. The permanent is like the determinant, but without the alternating signs. I have talked some time ago about it,
-          in a post in which I mentioned Caianelo.
-          It is a very well known factthat the number of dimer coverings of a bipartite graph is the <em>permanent</em> of $C$, which 
+          in a post in which I mentioned <a href="2025-11-9-caianello1.html" target="_blank">Caianello's work</a>. I have talked about 
+          dimer models already this year, <a href="2026-04-22-dimer1.html" target="_blank">here</a>.
+          It is a very well known fact that the number of dimer coverings of a bipartite graph is the <em>permanent</em> of $C$, which 
           is #P-hard to compute in general. But <em>finding</em> one is easy,
           with augmenting paths or Hopcroft–Karp. And for planar graphs even counting collapses: Kasteleyn's orientation turns the permanent into a Pfaffian,
           $N_{\rm dimers}=|\mathrm{Pf}\,K|$ with $(\mathrm{Pf}\,K)^2=\det K$, which is how the square-lattice dimer entropy $G_{\rm Cat}/\pi\approx0.2916$ per site is obtained.
@@ -283,7 +284,7 @@
           the same color:
         </p>
         <p class="math">
-          $$H(\sigma)=\sum_{v\in V}\ \sum_{\substack{e<e'\\ e,e'\ni v}}\delta_{\sigma_e,\sigma_{e'}}=\sum_{v\in V}\sum_{c=1}^{q}\frac{n_v^c\,(n_v^c-1)}{2},\qquad n_v^c=\#\{e\ni v:\sigma_e=c\}.$$
+          $$H(\sigma)=\sum_{v\in V}\ \sum_{\substack{e\lt e'\\ e,e'\ni v}}\delta_{\sigma_e,\sigma_{e'}}=\sum_{v\in V}\sum_{c=1}^{q}\frac{n_v^c\,(n_v^c-1)}{2},\qquad n_v^c=\#\{e\ni v:\sigma_e=c\}.$$
         </p>
         <p>
           $H\ge0$, and $H=0$ exactly on proper colorings. So the zero-temperature partition function counts them:
@@ -329,8 +330,8 @@
           $H$ is a sum of vertex terms, so the Boltzmann weight factorizes over vertices,
         </p>
         <p class="math">
-          $$P(\sigma)=\frac1Z\prod_{v\in V}\psi_v(\sigma_{\partial v}),\qquad
-          \psi_v(\sigma_{\partial v})=\exp\Big[-\beta\sum_{e<e'\ni v}\delta_{\sigma_e,\sigma_{e'}}\Big],$$
+        $$P(\sigma)=\frac1Z\prod_{v\in V}\psi_v(\sigma_{\partial v}),\qquad
+        \psi_v(\sigma_{\partial v})=\exp\Big[-\beta\sum_{\{e,e'\}\ni v,\ e\neq e'}\delta_{\sigma_e,\sigma_{e'}}\Big],$$
         </p>
         <p>
           where $\sigma_{\partial v}$ are the colors of the edges at $v$. At $\beta=\infty$, $\psi_v$ is simply the indicator that they are all different.
@@ -429,6 +430,7 @@
           where $T$ is the $q\times q$ transfer matrix with eigenvalues $q-1$ (once) and $-1$ ($q-1$ times). The Bethe value is $(q)_2^n/q^n=(q-1)^n$, which is <em>the leading eigenvalue alone</em>.
           The second term is the contribution of the one loop of the graph. For $q=2$ it is $\pm1$, and it is precisely what distinguishes the even ring (2 colorings) from the odd ring (none). So the parity
           obstruction of Section 1 is literally a loop correction to belief propagation. This is the kind of term the loop calculus of Chertkov and Chernyak, also developed at Los Alamos, was designed to resum.
+          Actually, I worked on this problem myself, deriving loop calculus from the point of view of the BKAR formula <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378437122009037" target="_blank">here</a> (a technical paper).           
         </p>
         <div class="hr"></div>
       </section>
