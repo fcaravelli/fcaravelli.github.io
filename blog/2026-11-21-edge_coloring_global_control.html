@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Edge coloring as a Potts model: dimers, trees and message passing – Francesco Caravelli</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    p.math { margin: 1rem 0; }
+    img.hero { max-width: 100%; height: auto; border-radius: 12px; }
+    .note { font-size: 0.95rem; opacity: 0.9; }
+    .hr { height: 1px; background: rgba(0,0,0,0.12); margin: 1.25rem 0; }
+    .toc { background: rgba(0,0,0,0.03); border-radius: 12px; padding: 1rem 1.25rem; }
+    .toc a { text-decoration: none; }
+    .callout { background: rgba(0,0,0,0.04); border-left: 4px solid rgba(0,0,0,0.18); padding: 0.9rem 1rem; border-radius: 10px; margin: 1rem 0; }
+    .kicker { letter-spacing: .06em; text-transform: uppercase; font-size: 0.85rem; opacity: .8; }
+    code.inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92em; }
+    figure.post-figure { margin: 1.5rem 0; }
+    figure.post-figure img { width: 100%; height: auto; border-radius: 12px; }
+    figure.post-figure svg { width: 100%; height: auto; max-width: 560px; display: block; margin: 0 auto; }
+    figure.post-figure figcaption { font-size: 0.95rem; opacity: 0.9; margin-top: 0.65rem; }
+    .equation-block { overflow-x: auto; }
+    table.numbers { border-collapse: collapse; margin: 1rem 0; width: 100%; font-size: 0.95rem; }
+    table.numbers th, table.numbers td { border-bottom: 1px solid rgba(0,0,0,0.15); padding: 0.45rem 0.6rem; text-align: left; }
+    table.numbers th { font-weight: 700; }
+  </style>
+
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719988103594554"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <script defer>
+    const KATEX_RENDER_OPTS = {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      macros: { "\\mathbbm": "\\mathbb" },
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+    };
+
+    function renderKatexIn(el) {
+      if (!el) return;
+      if (typeof renderMathInElement !== "function") return;
+      renderMathInElement(el, KATEX_RENDER_OPTS);
+    }
+
+    function whenKatexReady(cb) {
+      const maxTries = 300;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries++;
+        if (typeof renderMathInElement === "function") {
+          clearInterval(timer);
+          cb();
+        } else if (tries >= maxTries) {
+          clearInterval(timer);
+          console.warn("KaTeX auto-render not available (renderMathInElement missing).");
+        }
+      }, 10);
+    }
+
+    function renderAllMath() {
+      renderKatexIn(document.querySelector("main.content"));
+    }
+
+    window.__renderAllMath = function () {
+      whenKatexReady(renderAllMath);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      window.__renderAllMath();
+      window.addEventListener("load", () => window.__renderAllMath(), { once: true });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar"></div>
+
+    <main class="content">
+
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="fluid"
+           data-ad-layout-key="-ef+6k-30-ac+ty"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="9710109684"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+      <section id="top">
+        <p class="kicker">graph theory • edge coloring • dimers • Potts model • belief propagation</p>
+        <h3>Edge coloring as a Potts model: dimers, trees and message passing</h3>
+        <p><em>November 22nd, 2026</em></p>
+
+        <p>
+          This has been a bit of a weird week. I was in Nice (FRA) at the quantum festival, and met with quite a few people, from companies,
+          to academics, to students, researchers in National labs, investors etc etc. It's a great community,
+          and certainly the atmosphere of the Nice's well known promenade "of the stars" were a big plus!
+          If you are an italian, Corrado Augias passed away, and there are reasons to be nostalgic. If you're into finance,
+          good luck, I hope you were invested in bonds. If you are an academic and your dream was to solve 
+          the Riemann hypothesis, well, you are not in luck, since a (Lean verified) proof has been released by an AI company.
+          Left and right, this has not been a week of good news, except for us at Planckian, it's been a good week. 
+          We were awarded the EIC accelerator, which is a big injection not only of funding, but only of much needed validation.
+          In addition, we had a nice talk by Alessandro Maserati as part of our internal "salons", seminar series on 
+          broader ideas beyond quantum or science. So, overall, we cannot complain, but I'm tired!
+        </p>
+        <p>
+          Lately I have been spending a lot of time with a classical problem in graph theory, for reasons 
+          that I will explain in a few weeks in full: in particular, <em>edge coloring</em>. The goal here is to color the
+          edges of a graph so that no two edges meeting at a vertex share a color. This is quite technical combinatorics, but
+          it can be formulated as a very simple question:
+           What is the smallest number of colors you need, and how do you
+          find a coloring? 
+          Interestingly, Maserati mentioned that a good proxy for when your scientific question is "interesting" is when it is easy to state,
+           but hard to solve, e.g. the ratio between how complex it is to formulate the question vs how complex it is to solve it.
+           Edge coloring is a perfect example of this.
+          The reason we got to look into it is for a project at Planckian that should come out soon, 
+          where edge colorings play a central role. 
+          This post is a prelude to it. I will not talk about the application here, only about the math background. 
+          Instead I want to look at the problem the way a statistical physicist would, and show that it is a
+          close relative of things I have worked on for years.
+        </p>
+        <p>
+          Also, at Los Alamos I spent a good amount of time on two topics that, it turns out, needed to use message passing. The first is
+          <strong>artificial spin ice</strong>, where the degrees of freedom live on the <em>edges</em> of a lattice and the energy 
+          lives at the <em>vertices</em>
+          (the ice rule) and can be mapped often to the height model, and to dimers. Dimers are involved in what follows.
+          The second is <strong>message passing</strong>: belief propagation, the cavity method and the Bethe free energy. Both ended up in
+          <em>Practical Statistical Mechanics, Volume 2</em>, which Diego Dalvit and I are currently writing, 
+          in the chapters on dimer models and on statistical
+          models on trees. The plan of the post is: (i) define the problem and recall the classic theorems, (ii) show that a coloring is a stack of
+          <em>dimer coverings</em>, (iii) write a Hamiltonian, a Potts model on the line graph, whose ground states are the colorings, (iv) solve it with
+          belief propagation on a loop, a tree, the square and the honeycomb lattice, and see what the method gets right and what it misses.
+        </p>
+        <p class="note">
+          Prerequisites to read this post: what a graph is, the Ising/Potts model, and the idea of a partition function. 
+          Belief propagation is derived from scratch, but it's easier if you already know about it.
+        </p>
+
+        <div class="toc">
+          <strong>Contents</strong>
+          <ul>
+            <li><a href="#problem">1. The edge coloring problem</a></li>
+            <li><a href="#dimers">2. A coloring is a stack of dimer coverings</a></li>
+            <li><a href="#potts">3. A Potts Hamiltonian on the line graph</a></li>
+            <li><a href="#bp">4. Message passing for edge colorings</a></li>
+            <li><a href="#bethe">5. The paramagnetic fixed point and the Bethe count</a></li>
+            <li><a href="#trees">6. Cayley trees of degree $k$ are $k$-colorable</a></li>
+            <li><a href="#decimation">7. Finding a coloring: BP-guided decimation</a></li>
+            <li><a href="#volume2">8. Los Alamos, Volume 2, and the online material</a></li>
+            <li><a href="#caveats">9. Assumptions and what is left out</a></li>
+          </ul>
+        </div>
+
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="problem">
+        <h4>1. The edge coloring problem</h4>
+
+        <p>
+          Let me start with some formal definitions.
+          Let $G=(V,E)$ be a finite graph and let $\Delta(G)$ its maximum degree. A <em>proper $q$-edge-coloring</em> is a map
+          $\sigma:E\to\{1,\dots,q\}$ such that two edges sharing a vertex get different colors. The smallest such $q$ is an important 
+          graph invariant called the
+          <em>chromatic index</em> $\chi'(G)$. In practice, take $q$ colors, and use them to color lines, and another color for the nodes.
+          If at any node you have two lines of the same color, you have a conflict. The goal is to find a coloring with no conflicts, 
+          and to do it with as few colors as possible.
+        </p>
+        <p>
+          A lower bound is immediate: the $\Delta$ edges at a vertex of maximum degree must all be different, 
+          so $\chi'\ge\Delta$, you cannot have less colors than the maximum degree. The surprise is how
+          little room is left above it. Historically, quite a lot of effort went into proving the following theorems, 
+          which are now standard in graph theory textbooks. For instance:
+        </p>
+        <ul>
+          <li><strong>Vizing (1964).</strong> For every simple graph, $\Delta\le\chi'\le\Delta+1$. Graphs are either "class 1" ($\chi'=\Delta$) or "class 2" ($\chi'=\Delta+1$).</li>
+          <li><strong>König (1916).</strong> If $G$ is bipartite, $\chi'=\Delta$. Always class 1.</li>
+          <li><strong>Holyer (1981).</strong> Deciding whether a general cubic graph is class 1 is NP-complete.</li>
+        </ul>
+        <p>
+          The simplest class-2 graph is an odd ring: each vertex has degree 2, but two alternating colors cannot close around an odd cycle, so it needs 3.
+          The famous Petersen graph is another. Keep the odd ring in mind: it is a <em>global</em> parity obstruction, 
+          invisible to any local inspection of the graph, and
+          it will come back when we look at what message passing can and cannot see.
+        </p>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="dimers">
+        <h4>2. A coloring is a stack of dimer coverings</h4>
+
+        <p>
+          One can map the edge coloring problem to a (multi-)dimerization problem, as follows.
+          Fix a color $c$ and look at the set of edges that carry it. Since no two of them share a vertex, 
+          it is a <strong>matching</strong>. In the language of
+          statistical mechanics, a matching is a configuration of hard-core <em>dimers</em> on the edges, 
+          and the vertices it misses are <em>monomers</em>. So a
+          proper $q$-edge-coloring is the same thing as a partition of the edge set into $q$ monomer–dimer configurations.
+        </p>
+
+        <h5>2.1 Regular bipartite graphs: $k$ perfect dimer coverings</h5>
+        <p>
+          Let me pick a simple example. Let $G$ be bipartite and $k$-regular, $V=V_A\sqcup V_B$. 
+          Counting edge endpoints on each side, $k|V_A|=|E|=k|V_B|$. For any $S\subseteq V_A$, the
+          $k|S|$ edges leaving $S$ land in its neighborhood $N(S)$, each vertex of which absorbs at most $k$ of them, 
+          so $|S|\le|N(S)|$. This is Hall's condition,
+          so $G$ has a <em>perfect</em> matching, a close-packed dimer covering $M_1$. Removing it leaves a $(k-1)$-regular bipartite graph, and iterating,
+        </p>
+        <p class="math">
+          $$E=M_1\sqcup M_2\sqcup\cdots\sqcup M_k,\qquad M_c\ \text{a dimer covering of }G.$$
+        </p>
+        <p>
+          This is König's theorem for regular graphs, and it says that <strong>a $k$-edge-coloring of a $k$-regular bipartite graph is an 
+            ordered list of $k$ close-packed
+          dimer coverings that do not overlap</strong>. In matrix language, if $C$ is the biadjacency matrix (rows $V_A$, columns $V_B$), then $C=P_1+\cdots+P_k$
+          with $P_c$ permutation matrices, which is the integer version of the Birkhoff–von Neumann theorem. 
+          Three classical theorems, yet this is only one fact.
+        </p>
+        <p>
+          The simplest example is $K_{k,k}$, the complete bipartite graph. Label the rows of a $k\times k$ array by $V_A$, the columns by $V_B$, and write in cell
+          $(a,b)$ the color of edge $(a,b)$. The coloring is proper if and only if no color repeats in a row or a column. So
+          <strong>the $k$-edge-colorings of $K_{k,k}$ are exactly the Latin squares of order $k$</strong>. There are $L(3)=12$, $L(4)=576$, $L(5)=161280$, and so on.
+        </p>
+
+        <h5>2.2 Counting: permanents, Kasteleyn, and why we never need to count</h5>
+        <p>
+          An important connection is that the number of dimer coverings of a bipartite graph is the <em>permanent</em> of its 
+          biadjacency matrix. The permanent is like the determinant, but without the alternating signs. I have talked some time ago about it,
+          in a post in which I mentioned Caianelo.
+          It is a very well known factthat the number of dimer coverings of a bipartite graph is the <em>permanent</em> of $C$, which 
+          is #P-hard to compute in general. But <em>finding</em> one is easy,
+          with augmenting paths or Hopcroft–Karp. And for planar graphs even counting collapses: Kasteleyn's orientation turns the permanent into a Pfaffian,
+          $N_{\rm dimers}=|\mathrm{Pf}\,K|$ with $(\mathrm{Pf}\,K)^2=\det K$, which is how the square-lattice dimer entropy $G_{\rm Cat}/\pi\approx0.2916$ per site is obtained.
+          This is the material of the dimer chapter of Volume 2.
+        </p>
+        <p>
+          An important fact is however that for bipartite graphs a coloring can be built in polynomial time by recursion. 
+          Pad $G$ to a $\Delta$-regular bipartite multigraph. If $\Delta$ is even, color the
+          edges of an Euler circuit alternately, which splits it into two $\Delta/2$-regular halves. If $\Delta$ is odd, peel off one perfect matching first. After $O(\log\Delta)$ levels, $\Delta$
+          matchings come out. So existence and construction are settled. What a statistical physicist can still ask is: <em>how many</em> colorings are there, what does a typical one look like,
+          and is there a local, distributed algorithm that finds one, also on graphs where the combinatorial recipe does not apply?
+        </p>
+
+        <figure class="post-figure">
+          <svg id="fig-grid" viewBox="0 0 560 330" role="img" aria-label="Stripe edge coloring of a square grid with four colors"></svg>
+          <figcaption>
+            A hand-made 4-edge-coloring of the square lattice, the "stripe" coloring. Horizontal edges alternate between colors 1 and 2 from one column to the next,
+            vertical edges between colors 3 and 4 from one row to the next. In the bulk each color class is a dimer covering. Blue and red borders mark the two sublattices.
+            Compare with the coloring found by message passing in Section 7.
+          </figcaption>
+        </figure>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="potts">
+        <h4>3. A Potts Hamiltonian on the line graph</h4>
+
+        <p>
+          Now, let us turn the edge coloring problem into a statistical mechanics problem. 
+          The idea is to write a Hamiltonian whose ground states are the proper colorings, and then use the machinery of 
+          statistical mechanics to study it. 
+          This is a standard trick in combinatorial optimization.
+          Give every edge a $q$-state Potts variable $\sigma_e\in\{1,\dots,q\}$ and charge one unit of energy for every pair of edges that meet at a vertex and have
+          the same color:
+        </p>
+        <p class="math">
+          $$H(\sigma)=\sum_{v\in V}\ \sum_{\substack{e<e'\\ e,e'\ni v}}\delta_{\sigma_e,\sigma_{e'}}=\sum_{v\in V}\sum_{c=1}^{q}\frac{n_v^c\,(n_v^c-1)}{2},\qquad n_v^c=\#\{e\ni v:\sigma_e=c\}.$$
+        </p>
+        <p>
+          $H\ge0$, and $H=0$ exactly on proper colorings. So the zero-temperature partition function counts them:
+        </p>
+        <p class="math">
+          $$Z(\beta)=\sum_\sigma e^{-\beta H(\sigma)}\ \xrightarrow{\ \beta\to\infty\ }\ \#\{\text{proper $q$-edge-colorings of }G\}.$$
+        </p>
+
+        <h5>3.1 The line graph</h5>
+        <p>
+          Two edges interact if and only if they share a vertex, which is the definition of adjacency in the <em>line graph</em> $\mathcal L(G)$. So $H$ is the
+          <strong>antiferromagnetic $q$-state Potts model on $\mathcal L(G)$</strong>, and an edge coloring of $G$ is a vertex coloring of $\mathcal L(G)$. The line graph has a neat
+          algebraic form. If $B$ is the $|V|\times|E|$ incidence matrix of $G$, then
+        </p>
+        <p class="math">
+          $$B^{\mathsf T}B=2I+A_{\mathcal L},$$
+        </p>
+        <p>
+          because every edge has two endpoints and two distinct edges share at most one vertex. This identity is the backbone of the graph-theoretic treatment of spin ice
+          in Volume 2. With the color indicators $x^c_e=\delta_{\sigma_e,c}$ one has $(Bx^c)_v=n_v^c$, and the Hamiltonian becomes a quadratic form,
+        </p>
+        <p class="math">
+          $$H=\frac12\sum_{c}\,x^{c\,\mathsf T}A_{\mathcal L}\,x^c=\frac12\sum_c\Big(\|Bx^c\|^2-2\|x^c\|^2\Big)=\frac12\sum_{v,c}(n_v^c)^2-|E|.$$
+        </p>
+        <p>
+          For a $k$-regular graph with $q=k$ colors the ground states have $n_v^c=1$ everywhere, that is, $Bx^c=\mathbf 1$ for every color: <strong>each color is a perfect
+          dimer covering</strong>, and the $q$ dimer models are coupled only through the constraint $\sum_c x^c_e=1$. So the Hamiltonian makes the dimer picture of Section 2 explicit.
+        </p>
+
+        <div class="callout">
+          <strong>The spin-ice analogy.</strong> In artificial spin ice, Ising spins live on the edges (the magnetic islands) and the energy lives at the vertices: the ice rule
+          prefers two-in–two-out at every vertex. The edge-coloring Hamiltonian has exactly the same architecture, with Potts spins on the edges and an "all different" rule
+          at every vertex. Both are <em>vertex models</em>, and both become pairwise models on the line graph. This is why the edge-coloring problem felt immediately familiar.
+        </div>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="bp">
+        <h4>4. Message passing for edge colorings</h4>
+
+        <p>
+          $H$ is a sum of vertex terms, so the Boltzmann weight factorizes over vertices,
+        </p>
+        <p class="math">
+          $$P(\sigma)=\frac1Z\prod_{v\in V}\psi_v(\sigma_{\partial v}),\qquad
+          \psi_v(\sigma_{\partial v})=\exp\Big[-\beta\sum_{e<e'\ni v}\delta_{\sigma_e,\sigma_{e'}}\Big],$$
+        </p>
+        <p>
+          where $\sigma_{\partial v}$ are the colors of the edges at $v$. At $\beta=\infty$, $\psi_v$ is simply the indicator that they are all different.
+          In factor-graph language the variables are the edges and the factors are the vertices. Each variable sits in exactly two factors, its endpoints, so
+          <strong>the factor graph is $G$ itself</strong>, and its cycles are the cycles of $G$. On a tree, belief propagation is therefore exact.
+        </p>
+
+        <h5>4.1 The update rule</h5>
+        <p>
+          Since every edge variable touches only two factors, the variable-to-factor message on edge $(u,v)$ is just the factor-to-variable message coming from the other
+          endpoint. We need a single family of messages, one per directed edge: $m_{u\to v}(c)$, the probability that edge $(u,v)$ has color $c$ in the graph where the
+          vertex $v$ has been removed (the cavity graph). The belief-propagation equations are
+        </p>
+        <p class="math">
+          $$m_{u\to v}(c)\ \propto\ \sum_{\{\sigma_w\}_{w\in\partial u\setminus v}}\psi_u\big(c,\{\sigma_w\}\big)\prod_{w\in\partial u\setminus v}m_{w\to u}(\sigma_w).$$
+        </p>
+        <p>
+          At $\beta=\infty$ the sum runs over the assignments of <em>distinct</em> colors, all different from $c$, to the other edges at $u$. For a vertex of degree $d$ it has at most
+          $q^{d-1}$ terms, which is tiny for lattices. The edge marginals and the Bethe free energy follow:
+        </p>
+        <p class="math">
+          $$p_{uv}(c)\propto m_{u\to v}(c)\,m_{v\to u}(c),\qquad
+          \ln Z_{\rm Bethe}=\sum_{v}\ln Z_v-\sum_{(u,v)}\ln Z_{uv},$$
+        </p>
+        <p class="math">
+          $$Z_v=\sum_{\sigma_{\partial v}}\psi_v(\sigma_{\partial v})\prod_{w\in\partial v}m_{w\to v}(\sigma_{vw}),\qquad Z_{uv}=\sum_c m_{u\to v}(c)\,m_{v\to u}(c).$$
+        </p>
+        <p>
+          This is the standard Bethe construction of the tree chapter of Volume 2, specialized to Potts variables living on edges.
+        </p>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="bethe">
+        <h4>5. The paramagnetic fixed point and the Bethe count</h4>
+
+        <p>
+          The Hamiltonian is invariant under any permutation of the $q$ colors. A consequence is that the uniform message $m_{u\to v}(c)=1/q$ is <em>always</em> a fixed point,
+          on any graph and at any $\beta$. Call it the paramagnetic fixed point. At $\beta=\infty$ it gives
+          $Z_v=(q)_{d_v}/q^{d_v}$, with $(q)_d=q(q-1)\cdots(q-d+1)$ the falling factorial, and $Z_{uv}=1/q$. Using $\sum_v d_v=2|E|$,
+        </p>
+        <p class="math">
+          $$\boxed{\ Z_{\rm Bethe}=\frac{\prod_{v}(q)_{d_v}}{q^{|E|}}\ }$$
+        </p>
+        <p>
+          The interpretation is transparent. There are $q^{|E|}$ colorings in total. A vertex of degree $d$ sees all-different colors with probability $(q)_d/q^d$, and Bethe pretends that
+          the vertices are independent. For a $k$-regular graph with $q=k$ and $N$ vertices this reads
+        </p>
+        <p class="math">
+          $$Z_{\rm Bethe}=\Big(\frac{k!}{k^{k/2}}\Big)^{N}.$$
+        </p>
+        <p>
+          For $k$-regular <em>bipartite</em> graphs this is exactly Schrijver's lower bound on the number of $k$-edge-colorings, $(k!^2/k^k)^{N/2}$. For $K_{k,k}$ it is the classical
+          lower bound for Latin squares, $L(k)\ge (k!)^{2k}/k^{k^2}$, which follows from the van der Waerden permanent inequality and is tight at the level of $\ln L(k)\simeq k^2\ln k$. Bethe
+          and the permanent inequalities know about each other, which is a recurring theme in the dimer literature.
+        </p>
+
+        <h5>5.1 Four test cases</h5>
+        <p>
+          I computed the exact number of colorings by brute force on small instances of the four geometries of this post, and compared with the Bethe value from BP. BP was run from random
+          initial messages, and in every case it converged to the paramagnetic fixed point.
+        </p>
+
+        <table class="numbers">
+          <thead>
+            <tr><th>graph</th><th>$q$</th><th>exact</th><th>Bethe</th><th>comment</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>even ring $C_8$</td><td>2</td><td>2</td><td>1</td><td>misses the two global ground states</td></tr>
+            <tr><td>odd ring $C_7$</td><td>2</td><td>0</td><td>1</td><td>blind to the parity obstruction</td></tr>
+            <tr><td>odd ring $C_7$</td><td>3</td><td>126</td><td>128</td><td>misses the loop term $-(q-1)$</td></tr>
+            <tr><td>Cayley tree, $k=3$, depth 3</td><td>3</td><td>3072</td><td>3072</td><td>exact, as it must be</td></tr>
+            <tr><td>square lattice, $4\times4$ torus</td><td>4</td><td>44160</td><td>657</td><td>short loops: underestimate</td></tr>
+            <tr><td>honeycomb, 16-site torus</td><td>3</td><td>96</td><td>9.99</td><td>short loops: underestimate</td></tr>
+          </tbody>
+        </table>
+
+        <figure class="post-figure">
+          <img src="images/ec_bethe_vs_exact.png" alt="Exact number of edge colorings versus the Bethe estimate for rings, a Cayley tree, a square torus and a honeycomb torus" />
+          <figcaption>
+            Exact number of proper edge colorings (blue) versus the Bethe/BP estimate (orange) for a ring, a Cayley tree, the square and the honeycomb lattice.
+            BP is exact on the tree, gets the bulk term on the ring but misses the loop correction, and underestimates on the lattices with short loops. On the odd ring with two colors it predicts one
+            coloring where there is none.
+          </figcaption>
+        </figure>
+
+        <h5>5.2 The ring: where the loop correction lives</h5>
+        <p>
+          The ring is solvable and shows exactly what Bethe misses. The line graph of $C_n$ is $C_n$ itself, and the number of proper $q$-colorings of a cycle is the chromatic polynomial
+        </p>
+        <p class="math">
+          $$Z_{C_n}=\mathrm{Tr}\,T^n=(q-1)^n+(-1)^n(q-1),\qquad T=J-I,$$
+        </p>
+        <p>
+          where $T$ is the $q\times q$ transfer matrix with eigenvalues $q-1$ (once) and $-1$ ($q-1$ times). The Bethe value is $(q)_2^n/q^n=(q-1)^n$, which is <em>the leading eigenvalue alone</em>.
+          The second term is the contribution of the one loop of the graph. For $q=2$ it is $\pm1$, and it is precisely what distinguishes the even ring (2 colorings) from the odd ring (none). So the parity
+          obstruction of Section 1 is literally a loop correction to belief propagation. This is the kind of term the loop calculus of Chertkov and Chernyak, also developed at Los Alamos, was designed to resum.
+        </p>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="trees">
+        <h4>6. Cayley trees of degree $k$ are $k$-colorable</h4>
+
+        <p>
+          Take the Cayley tree $T_k$ (the Bethe lattice, truncated at depth $L$): every internal vertex has $k$ neighbors, and the leaves have one. A tree has no cycles, so it is bipartite and
+          König gives $\chi'(T_k)=k$. Here the proof is a greedy construction that you can do by hand:
+        </p>
+        <ol>
+          <li>give the $k$ edges at the root the colors $1,\dots,k$;</li>
+          <li>a vertex at depth $\ell\ge1$ has one edge going up, of some color $c$, and $k-1$ edges going down. Give the downward edges the $k-1$ colors different from $c$.</li>
+        </ol>
+        <p>
+          Nothing can go wrong later, because there is no cycle that could force a conflict further down. This is the tree version of the statement that cycles are the only obstruction.
+          The construction also counts the colorings. The root has $k!$ choices and every other internal vertex $(k-1)!$, so
+        </p>
+        <p class="math">
+          $$Z_{T_k}=k!\,\big((k-1)!\big)^{n_{\rm int}},$$
+        </p>
+        <p>
+          where $n_{\rm int}$ is the number of non-root internal vertices. For $k=3$ and depth 3, $n_{\rm int}=9$ and $Z=6\cdot2^9=3072$, which is the number in the table. The Bethe formula gives the same
+          number: $\prod_v(q)_{d_v}/q^{|E|}=6^{10}\,3^{12}/3^{21}=3072$. On a tree the paramagnetic fixed point is the exact answer, and the "independent vertices" picture is not an approximation
+          but a theorem.
+        </p>
+        <p>
+          The dimer picture on the tree is a bit different from the planar case. A tree has at most one perfect matching, and since the leaves have degree one, the color classes of a truncated
+          tree cannot all be dimer coverings: they carry monomers, mostly on the boundary. There are no faces, so the Kasteleyn sign problem is empty. Instead, monomer–dimer configurations
+          are counted exactly by the leaf-to-root recursion, which is belief propagation again.
+        </p>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="decimation">
+        <h4>7. Finding a coloring: BP-guided decimation</h4>
+
+        <p>
+          Counting is one thing. To <em>find</em> a coloring, the color symmetry has to be broken, and the paramagnetic fixed point by itself is useless for that, since every marginal is $1/q$.
+          The standard trick from the cavity-method literature is <strong>decimation</strong>:
+        </p>
+        <ol>
+          <li>add a tiny random field ($10^{-3}$) on every edge to break the color symmetry;</li>
+          <li>run BP (damping $0.5$, up to 80 sweeps) and compute the edge marginals $p_e(c)$;</li>
+          <li>take the free edges with the most polarized marginal, $\max_c p_e(c)$, and fix each to its most likely color, with a hard field;</li>
+          <li>repeat until every edge is fixed, then count the conflicts $H(\sigma)$.</li>
+        </ol>
+        <p>
+          I used the soft Potts factor at $\beta=3$ rather than the hard constraint. Hard constraints make BP brittle under decimation, since a single bad choice zeroes messages. I fixed $2\%$ of the edges per
+          step on the ring and the tree, and $0.5\%$ on the two lattices.
+        </p>
+
+        <table class="numbers">
+          <thead>
+            <tr><th>graph</th><th>$N$</th><th>$q$</th><th>solved (conflicts $=0$)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>even ring</td><td>40</td><td>2</td><td>5 / 5</td></tr>
+            <tr><td>odd ring</td><td>41</td><td>3</td><td>5 / 5</td></tr>
+            <tr><td>Cayley tree, $k=3$, depth 5</td><td>94</td><td>3</td><td>5 / 5</td></tr>
+            <tr><td>square lattice, $8\times8$ torus</td><td>64</td><td>4</td><td>5 / 5</td></tr>
+            <tr><td>honeycomb, torus</td><td>48</td><td>3</td><td>5 / 5</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          All runs found a proper coloring. The decimation rate matters on the lattices. In a few exploratory runs on a $10\times10$ square torus, fixing $2\%$ of the edges per step typically left
+          2 to 7 conflicting pairs, while fixing $0.5\%$ per step solved every run. This is the usual picture: decimating too fast commits to choices before the messages have had time to propagate the
+          consequences around the short loops.
+        </p>
+
+        <figure class="post-figure">
+          <img src="images/ec_decimation_traces.png" alt="Mean polarization of the free edges as a function of the fraction of decimated edges" />
+          <figcaption>
+            Mean polarization $\max_c p_e(c)$ of the free edges during decimation. It starts at $1/q$ (the paramagnetic point) and grows as the fixed edges propagate information through the graph.
+            On the tree and the ring, polarization spreads easily. On the lattices it builds up more slowly because of the short loops.
+          </figcaption>
+        </figure>
+
+        <figure class="post-figure">
+          <img src="images/ec_bp_colorings.png" alt="Edge colorings found by BP-guided decimation on an odd ring, a Cayley tree, the square lattice and the honeycomb lattice" />
+          <figcaption>
+            Proper edge colorings found by BP-guided decimation. Top: odd ring with 41 sites and 3 colors, and a Cayley tree with $k=3$. Bottom: an $8\times8$ square torus with 4 colors, and a 48-site
+            honeycomb torus with 3 colors (short stubs are the periodic edges). Unlike the stripe coloring of Section 2, the BP coloring of the square lattice is a "typical" one, with no particular
+            translational structure.
+          </figcaption>
+        </figure>
+
+        <p>
+          For bipartite graphs this is, of course, not needed for existence: the Euler-splitting recursion of Section 2 already produces a coloring in polynomial time. Message passing becomes interesting
+          for three other reasons: it gives the entropy, it samples typical rather than special colorings, and it is a local, distributed algorithm that does not care whether the graph is bipartite. For class-2
+          detection in general graphs, which is NP-complete by Holyer's theorem, it is a heuristic, and the ring tells us exactly what it misses: loops.
+        </p>
+        <div class="hr"></div>
+      </section>
+
+      <!-- ===================================================== -->
+      <section id="volume2">
+        <h4>8. Los Alamos, Volume 2, and the online material</h4>
+
+        <p>
+          Most of the ingredients of this post come from <em>Practical Statistical Mechanics, Volume 2</em>, written with Diego Dalvit while we were at Los Alamos. The chapter on
+          <strong>dimer models and height models</strong> has the perfect matchings, the Kasteleyn orientation and the Pfaffian count, which were topics I worked on together with Cristiano Nisoli.
+          The chapter on <strong>statistical models on trees</strong>
+          has belief propagation, the cavity method and the Bethe free energy. And the graph-theoretic treatment of <strong>spin ice</strong> has the line graph and the identity
+          $B^{\mathsf T}B=2I+A_{\mathcal L}$. Edge coloring sits right at the intersection: Potts spins on edges, a vertex rule as in spin ice, dimers as color classes, and message passing to solve it.
+        </p>
+        <p>
+          What I have written here is more than fits in the printed volume, and the next round of material, connected to the forthcoming Planckian work, will be even less likely to fit. So a good part of it
+          will live online, as supplementary material to the book, and this post is meant as the readable entry point.
+        </p>
+
+      
+        <div class="hr"></div>
+      </section>
+
+
+      <p><a href="../blog.html">← Back to Blog</a></p>
+
+      <div class="hr"></div>
+
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-6719988103594554"
+           data-ad-slot="2406334732"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    </main>
+  </div>
+
+  <script>
+    // Inline figure: stripe-colored square grid.
+    (function () {
+      const COL = ["#0072B2", "#D55E00", "#009E73", "#CC79A7"];
+      const A = "#1f4e9c", B = "#b3261e";
+      const NS = "http://www.w3.org/2000/svg";
+      function el(tag, attrs, parent) {
+        const e = document.createElementNS(NS, tag);
+        for (const k in attrs) e.setAttribute(k, attrs[k]);
+        if (parent) parent.appendChild(e);
+        return e;
+      }
+      function text(parent, x, y, s) {
+        const t = el("text", { x, y, "font-size": 13, fill: "currentColor", "font-family": "Inter, sans-serif" }, parent);
+        t.textContent = s;
+      }
+      const g = document.getElementById("fig-grid");
+      if (!g) return;
+      const cols = 6, rows = 4, s = 80, x0 = 40, y0 = 30;
+      for (let r = 0; r < rows; r++)
+        for (let c = 0; c < cols; c++) {
+          if (c < cols - 1)
+            el("line", { x1: x0 + c * s, y1: y0 + r * s, x2: x0 + (c + 1) * s, y2: y0 + r * s, stroke: COL[c % 2], "stroke-width": 5, "stroke-linecap": "round" }, g);
+          if (r < rows - 1)
+            el("line", { x1: x0 + c * s, y1: y0 + r * s, x2: x0 + c * s, y2: y0 + (r + 1) * s, stroke: COL[2 + (r % 2)], "stroke-width": 5, "stroke-linecap": "round" }, g);
+        }
+      for (let r = 0; r < rows; r++)
+        for (let c = 0; c < cols; c++)
+          el("circle", { cx: x0 + c * s, cy: y0 + r * s, r: 9, fill: "#fff", stroke: (r + c) % 2 ? B : A, "stroke-width": 3 }, g);
+      for (let i = 0; i < 4; i++) {
+        el("line", { x1: 40 + i * 90, y1: 305, x2: 66 + i * 90, y2: 305, stroke: COL[i], "stroke-width": 5, "stroke-linecap": "round" }, g);
+        text(g, 72 + i * 90, 309, "color " + (i + 1));
+      }
+    })();
+
+    async function loadSidebar() {
+      const sidebarContainer = document.getElementById("sidebar");
+
+      try {
+        const response = await fetch("../partials/sidebar.html", { cache: "no-store" });
+        const html = await response.text();
+        sidebarContainer.innerHTML = html;
+
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = sidebarContainer.querySelectorAll("a");
+        links.forEach(link => {
+          if (link.getAttribute("href") === currentPath) link.classList.add("active");
+        });
+
+        if (typeof window.__renderAllMath === "function") {
+          window.__renderAllMath();
+        }
+      } catch (e) {
+        console.warn("Sidebar failed to load:", e);
+      }
+    }
+
+    loadSidebar();
+  </script>
+</body>
+</html>
